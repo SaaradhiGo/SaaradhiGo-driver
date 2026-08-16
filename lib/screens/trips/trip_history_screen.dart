@@ -5,6 +5,9 @@ import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../widgets/app_top_bar.dart';
 import '../../widgets/route_indicator.dart';
+import 'package:provider/provider.dart';
+import '../../providers/trip_provider.dart';
+import '../../models/trip_model.dart';
 
 class TripHistoryScreen extends StatefulWidget {
   const TripHistoryScreen({super.key});
@@ -15,6 +18,22 @@ class TripHistoryScreen extends StatefulWidget {
 
 class _TripHistoryScreenState extends State<TripHistoryScreen> {
   int _selectedFilter = 0; // 0: All, 1: Completed, 2: Cancelled
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TripProvider>().fetchTrips();
+    });
+  }
+
+  void _onFilterChanged(int index) {
+    setState(() => _selectedFilter = index);
+    String status = 'all';
+    if (index == 1) status = 'completed';
+    if (index == 2) status = 'cancelled';
+    context.read<TripProvider>().fetchTrips(status: status);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,58 +78,55 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
 
             // Trip Cards List
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.containerMargin,
-                  vertical: AppSpacing.stackMd,
-                ),
-                children: [
-                  _buildTripCard(
-                    date: 'Oct 24, 10:30 PM',
-                    riderName: 'Rahul Sharma',
-                    fare: '₹480',
-                    status: 'Completed',
-                    pickup: 'Taj Mahal Palace',
-                    pickupDetail: 'Apollo Bunder',
-                    dropoff: 'Bandra Kurla Complex',
-                    dropoffDetail: 'G Block',
-                    distance: '8.4 km',
-                    duration: '22m',
-                    paymentMethod: 'Digital',
-                    isCompleted: true,
-                  ),
-                  const SizedBox(height: AppSpacing.stackMd),
-                  _buildTripCard(
-                    date: 'Oct 24, 8:15 PM',
-                    riderName: 'Priya Desai',
-                    fare: '₹0',
-                    status: 'Cancelled',
-                    pickup: 'Andheri West',
-                    pickupDetail: 'Lokhandwala',
-                    dropoff: 'Juhu Beach',
-                    dropoffDetail: 'Vile Parle',
-                    distance: '-- km',
-                    duration: '--',
-                    paymentMethod: 'N/A',
-                    isCompleted: false,
-                  ),
-                  const SizedBox(height: AppSpacing.stackMd),
-                  _buildTripCard(
-                    date: 'Oct 23, 2:45 PM',
-                    riderName: 'Amit Patel',
-                    fare: '₹850',
-                    status: 'Completed',
-                    pickup: 'Chhatrapati Shivaji Int. Airport',
-                    pickupDetail: 'T2 Departures',
-                    dropoff: 'Nariman Point',
-                    dropoffDetail: 'Trident Hotel',
-                    distance: '24.2 km',
-                    duration: '55m',
-                    paymentMethod: 'Cash',
-                    isCompleted: true,
-                  ),
-                  const SizedBox(height: 80),
-                ],
+              child: Consumer<TripProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                  }
+                  
+                  if (provider.error != null) {
+                    return Center(
+                      child: Text(
+                        provider.error!,
+                        style: AppTypography.bodyMd.copyWith(color: AppColors.error),
+                      ),
+                    );
+                  }
+
+                  if (provider.trips.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No trips found.',
+                        style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+                      ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    color: AppColors.primary,
+                    backgroundColor: AppColors.surfaceContainer,
+                    onRefresh: () async {
+                      String status = 'all';
+                      if (_selectedFilter == 1) status = 'completed';
+                      if (_selectedFilter == 2) status = 'cancelled';
+                      await context.read<TripProvider>().fetchTrips(status: status);
+                    },
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.containerMargin,
+                        vertical: AppSpacing.stackMd,
+                      ),
+                      itemCount: provider.trips.length + 1, // +1 for bottom padding
+                      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.stackMd),
+                      itemBuilder: (context, index) {
+                        if (index == provider.trips.length) {
+                          return const SizedBox(height: 80);
+                        }
+                        return _buildDynamicTripCard(provider.trips[index]);
+                      },
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -148,7 +164,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
   Widget _buildFilterChip(String label, int index) {
     final isSelected = _selectedFilter == index;
     return GestureDetector(
-      onTap: () => setState(() => _selectedFilter = index),
+      onTap: () => _onFilterChanged(index),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
@@ -168,6 +184,33 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildDynamicTripCard(TripModel trip) {
+    final isCompleted = trip.status == 'completed';
+    return _buildTripCard(
+      date: trip.createdAt != null ? _formatDate(trip.createdAt!) : 'Unknown',
+      riderName: trip.riderName ?? 'Unknown',
+      fare: '₹${trip.estimatedFare ?? '0'}',
+      status: trip.status.toUpperCase(),
+      pickup: trip.pickupAddress ?? 'Unknown',
+      pickupDetail: '',
+      dropoff: trip.destinationAddress ?? 'Unknown',
+      dropoffDetail: '',
+      distance: '${trip.distanceKm ?? '--'} km',
+      duration: '${trip.durationMin ?? '--'} mins',
+      paymentMethod: trip.paymentMethod ?? 'Digital',
+      isCompleted: isCompleted,
+    );
+  }
+
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (_) {
+      return dateStr;
+    }
   }
 
   Widget _buildTripCard({

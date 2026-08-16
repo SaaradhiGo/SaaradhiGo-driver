@@ -25,14 +25,15 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
   late Animation<double> _sheetHeightAnimation;
   final MapController _mapController = MapController();
   StreamSubscription? _wsSubscription;
+  late LocationProvider _locationProvider;
 
   @override
   void initState() {
     super.initState();
+    _locationProvider = context.read<LocationProvider>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final locProvider = context.read<LocationProvider>();
-      locProvider.initialize();
-      locProvider.addListener(_onLocationChanged);
+      _locationProvider.initialize();
+      _locationProvider.addListener(_onLocationChanged);
 
       _wsSubscription = context.read<WebSocketProvider>().rideRequestStream.listen((data) {
         if (mounted) {
@@ -110,7 +111,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
 
   @override
   void dispose() {
-    context.read<LocationProvider>().removeListener(_onLocationChanged);
+    _locationProvider.removeListener(_onLocationChanged);
     _wsSubscription?.cancel();
     _pulseController.dispose();
     _sheetHeightController.dispose();

@@ -6,9 +6,24 @@ import '../../widgets/glass_panel.dart';
 import '../../widgets/app_top_bar.dart';
 import '../../services/auth_service.dart';
 import '../../navigation/route_names.dart';
+import 'package:provider/provider.dart';
+import '../../providers/profile_provider.dart';
 
-class DriverProfileScreen extends StatelessWidget {
+class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
+
+  @override
+  State<DriverProfileScreen> createState() => _DriverProfileScreenState();
+}
+
+class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().fetchProfileData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,246 +41,289 @@ class DriverProfileScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.containerMargin,
-            vertical: AppSpacing.stackLg,
-          ),
-          child: Column(
-            children: [
-              // Profile Header Section
-              Center(
+        child: Consumer<ProfileProvider>(
+          builder: (context, provider, child) {
+            if (provider.isLoading && provider.userProfile == null) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+            }
+
+            if (provider.error != null && provider.userProfile == null) {
+              return Center(
+                child: Text(
+                  provider.error!,
+                  style: AppTypography.bodyMd.copyWith(color: AppColors.error),
+                ),
+              );
+            }
+
+            final user = provider.userProfile;
+            final driver = provider.driverProfile;
+            final summary = provider.earningsSummary;
+
+            String joinedDate = 'Unknown';
+            if (user?.createdAt != null) {
+              try {
+                final date = DateTime.parse(user!.createdAt!);
+                joinedDate = '${_getMonthShort(date.month)} \'${date.year.toString().substring(2)}';
+              } catch (_) {}
+            }
+
+            return RefreshIndicator(
+              color: AppColors.primary,
+              backgroundColor: AppColors.surfaceContainer,
+              onRefresh: () async {
+                await context.read<ProfileProvider>().fetchProfileData();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.containerMargin,
+                  vertical: AppSpacing.stackLg,
+                ),
                 child: Column(
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.primaryContainer.withValues(alpha: 0.5),
-                              width: 2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryContainer.withValues(alpha: 0.2),
-                                blurRadius: 20,
-                              ),
-                            ],
-                          ),
-                          child: const CircleAvatar(
-                            backgroundColor: AppColors.surfaceVariant,
-                            child: Icon(Icons.person, size: 50, color: AppColors.primary),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerHigh,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.outlineVariant),
-                            ),
-                            child: const Icon(
-                              Icons.verified,
-                              size: 18,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.stackSm),
-                    Text(
-                      'Vikram Singh',
-                      style: AppTypography.headlineMd.copyWith(
-                        color: AppColors.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.workspace_premium, size: 16, color: AppColors.primary),
-                        const SizedBox(width: 4),
-                        Text(
-                          'ELITE PARTNER',
-                          style: AppTypography.labelCaps.copyWith(
-                            color: AppColors.primary,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
-
-              // Metrics Bento Grid
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassPanel(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                    // Profile Header Section
+                    Center(
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Stack(
                             children: [
-                              const Icon(Icons.star, size: 16, color: AppColors.primary),
-                              const SizedBox(width: 4),
-                              Text(
-                                '4.98',
-                                style: AppTypography.dataMono.copyWith(
-                                  color: AppColors.primaryFixed,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primaryContainer.withValues(alpha: 0.2),
+                                      blurRadius: 20,
+                                    ),
+                                  ],
+                                ),
+                                child: const CircleAvatar(
+                                  backgroundColor: AppColors.surfaceVariant,
+                                  child: Icon(Icons.person, size: 50, color: AppColors.primary),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceContainerHigh,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: AppColors.outlineVariant),
+                                  ),
+                                  child: Icon(
+                                    Icons.verified,
+                                    size: 18,
+                                    color: driver?.approved == true ? AppColors.primary : AppColors.onSurfaceVariant,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.stackSm),
                           Text(
-                            'Rating',
-                            style: AppTypography.labelCaps.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.gutter),
-                  Expanded(
-                    child: GlassPanel(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
-                      child: Column(
-                        children: [
-                          Text(
-                            '8,420',
-                            style: AppTypography.dataMono.copyWith(
+                            user?.fullName ?? 'Unknown',
+                            style: AppTypography.headlineMd.copyWith(
                               color: AppColors.onSurface,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            'Total Trips',
-                            style: AppTypography.labelCaps.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.workspace_premium, size: 16, color: AppColors.primary),
+                              const SizedBox(width: 4),
+                              Text(
+                                'ELITE PARTNER',
+                                style: AppTypography.labelCaps.copyWith(
+                                  color: AppColors.primary,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.gutter),
-                  Expanded(
-                    child: GlassPanel(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Jan \'20',
-                            style: AppTypography.dataMono.copyWith(
-                              color: AppColors.onSurface,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Since',
-                            style: AppTypography.labelCaps.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
+                    const SizedBox(height: AppSpacing.stackLg),
 
-              // Personal Information Card
-              GlassPanel(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.stackMd,
-                        vertical: AppSpacing.stackSm + 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.person, color: AppColors.primary, size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Personal Details',
-                            style: AppTypography.headlineSm.copyWith(
-                              color: AppColors.onSurface,
-                              fontSize: 16,
+                    // Metrics Bento Grid
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GlassPanel(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.star, size: 16, color: AppColors.primary),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      driver?.ratings ?? 'N/A',
+                                      style: AppTypography.dataMono.copyWith(
+                                        color: AppColors.primaryFixed,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Rating',
+                                  style: AppTypography.labelCaps.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.gutter),
+                        Expanded(
+                          child: GlassPanel(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${summary?.totalTrips ?? 0}',
+                                  style: AppTypography.dataMono.copyWith(
+                                    color: AppColors.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Total Trips',
+                                  style: AppTypography.labelCaps.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.gutter),
+                        Expanded(
+                          child: GlassPanel(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            child: Column(
+                              children: [
+                                Text(
+                                  joinedDate,
+                                  style: AppTypography.dataMono.copyWith(
+                                    color: AppColors.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Since',
+                                  style: AppTypography.labelCaps.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.stackLg),
+
+                    // Personal Information Card
+                    GlassPanel(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.stackMd,
+                              vertical: AppSpacing.stackSm + 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.person, color: AppColors.primary, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Personal Details',
+                                  style: AppTypography.headlineSm.copyWith(
+                                    color: AppColors.onSurface,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          _buildInfoRow('Mobile', user?.phoneNumber ?? 'N/A', isMono: true),
+                          _buildInfoRow('Email', user?.email ?? 'N/A'),
+                          _buildInfoRow('D.O.B', user?.dob ?? 'N/A', isMono: true),
+                          _buildInfoRow('Registered Address', user?.fullAddress.isNotEmpty == true ? user!.fullAddress : 'N/A', isLast: true),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.stackLg),
+
+                    // Quick Actions List
+                    GlassPanel(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _buildActionItem(
+                            icon: Icons.description,
+                            title: 'Vehicle Documents',
+                            onTap: () => Navigator.pushNamed(context, RouteNames.documentVault),
+                          ),
+                          _buildDivider(),
+                          _buildActionItem(
+                            icon: Icons.directions_car,
+                            title: 'Vehicle Details',
+                            onTap: () => Navigator.pushNamed(context, RouteNames.vehicleInfo),
+                          ),
+                          _buildDivider(),
+                          _buildActionItem(
+                            icon: Icons.security,
+                            title: 'Safety Center',
+                            onTap: () => Navigator.pushNamed(context, RouteNames.safetyCenter),
+                          ),
+                          _buildDivider(),
+                          _buildActionItem(
+                            icon: Icons.help,
+                            title: 'Help & Support',
+                            onTap: () => Navigator.pushNamed(context, RouteNames.helpSupport),
                           ),
                         ],
                       ),
                     ),
-                    _buildInfoRow('Mobile', '+91 98765 43210', isMono: true),
-                    _buildInfoRow('Email', 'vikram.s@saaradhi.go'),
-                    _buildInfoRow('D.O.B', '12/05/1985', isMono: true),
-                    _buildInfoRow('Registered Address', 'Bandra West, Mumbai\nMaharashtra, 400050', isLast: true),
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.stackLg),
-
-              // Quick Actions List
-              GlassPanel(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  children: [
-                    _buildActionItem(
-                      icon: Icons.description,
-                      title: 'Vehicle Documents',
-                      onTap: () => Navigator.pushNamed(context, RouteNames.documentVault),
-                    ),
-                    _buildDivider(),
-                    _buildActionItem(
-                      icon: Icons.directions_car,
-                      title: 'Vehicle Details',
-                      onTap: () => Navigator.pushNamed(context, RouteNames.vehicleInfo),
-                    ),
-                    _buildDivider(),
-                    _buildActionItem(
-                      icon: Icons.security,
-                      title: 'Safety Center',
-                      onTap: () => Navigator.pushNamed(context, RouteNames.safetyCenter),
-                    ),
-                    _buildDivider(),
-                    _buildActionItem(
-                      icon: Icons.help,
-                      title: 'Help & Support',
-                      onTap: () => Navigator.pushNamed(context, RouteNames.helpSupport),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 80),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
+  }
+
+  String _getMonthShort(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    if (month >= 1 && month <= 12) return months[month - 1];
+    return '';
   }
 
   Widget _buildInfoRow(String label, String value, {bool isMono = false, bool isLast = false}) {
