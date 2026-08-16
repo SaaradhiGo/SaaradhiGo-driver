@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+import 'dart:async';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../navigation/route_names.dart';
+import '../../services/location_provider.dart';
+import '../../services/websocket_provider.dart';
 
 class DriverHomeDashboardScreen extends StatefulWidget {
   const DriverHomeDashboardScreen({super.key});
@@ -16,14 +20,26 @@ class DriverHomeDashboardScreen extends StatefulWidget {
 
 class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
     with TickerProviderStateMixin {
-  bool _isOnline = false;
   late AnimationController _pulseController;
   late AnimationController _sheetHeightController;
   late Animation<double> _sheetHeightAnimation;
+  final MapController _mapController = MapController();
+  StreamSubscription? _wsSubscription;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locProvider = context.read<LocationProvider>();
+      locProvider.initialize();
+      locProvider.addListener(_onLocationChanged);
+
+      _wsSubscription = context.read<WebSocketProvider>().rideRequestStream.listen((data) {
+        if (mounted) {
+          Navigator.pushNamed(context, RouteNames.incomingRideRequest, arguments: data);
+        }
+      });
+    });
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -38,6 +54,18 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
     )..addListener(() {
         setState(() {});
       });
+  }
+
+  void _onLocationChanged() {
+    if (!mounted) return;
+    final locProvider = context.read<LocationProvider>();
+    final wsProvider = context.read<WebSocketProvider>();
+    if (wsProvider.isOnline && locProvider.currentLocation != null) {
+      wsProvider.sendLocationUpdate(
+        locProvider.currentLocation!.latitude,
+        locProvider.currentLocation!.longitude,
+      );
+    }
   }
 
   void _onEarningsDragUpdate(DragUpdateDetails details) {
@@ -82,6 +110,8 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
 
   @override
   void dispose() {
+    context.read<LocationProvider>().removeListener(_onLocationChanged);
+    _wsSubscription?.cancel();
     _pulseController.dispose();
     _sheetHeightController.dispose();
     super.dispose();
@@ -89,97 +119,94 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = context.watch<LocationProvider>();
+    final isOnline = context.watch<WebSocketProvider>().isOnline;
+    final currentLocation = locationProvider.currentLocation ?? const LatLng(17.3850, 78.4867);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
           // 1. Interactive Map
-          FlutterMap(
-            options: const MapOptions(
-              initialCenter: LatLng(17.3850, 78.4867),
-              initialZoom: 15.0,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.saaradhigo_driver',
+          if (locationProvider.currentLocation == null)
+            Container(
+              color: AppColors.background,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(color: AppColors.primary),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Getting your location...',
+                      style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+                    ),
+                  ],
+                ),
               ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: const LatLng(17.3850, 78.4867),
-                    width: 120,
-                    height: 120,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        AnimatedBuilder(
-                          animation: _pulseController,
-                          builder: (context, child) {
-                            return Transform.scale(
-                              scale: 0.8 + (1.7 * _pulseController.value),
-                              child: Opacity(
-                                opacity: 0.8 - (0.8 * _pulseController.value),
-                                child: Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primaryContainer.withValues(alpha: 0.3),
+            )
+          else
+            FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: currentLocation,
+                initialZoom: 15.0,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.saaradhigo_driver',
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: currentLocation,
+                      width: 120,
+                      height: 120,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          AnimatedBuilder(
+                            animation: _pulseController,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: 0.8 + (1.7 * _pulseController.value),
+                                child: Opacity(
+                                  opacity: 0.8 - (0.8 * _pulseController.value),
+                                  child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                        Container(
-                          width: 16,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryContainer,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.background, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryContainer.withValues(alpha: 0.5),
-                                blurRadius: 10,
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        ),
-                        // Car Indicator 1
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: Transform.rotate(
-                            angle: 45 * 3.14159 / 180,
-                            child: const Icon(
-                              Icons.local_taxi,
-                              color: AppColors.outlineVariant,
-                              size: 20,
+                          Container(
+                            width: 16,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryContainer,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.background, width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        // Car Indicator 2
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: Transform.rotate(
-                            angle: -12 * 3.14159 / 180,
-                            child: const Icon(
-                              Icons.local_taxi,
-                              color: AppColors.outlineVariant,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
+              ],
+            ),
           
           // 2. Top Compact Header
           Positioned(
@@ -288,9 +315,13 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
             right: AppSpacing.containerMargin,
             child: Column(
               children: [
-                _buildGlassButton(Icons.explore),
+                _buildGlassButton(Icons.explore, onPressed: () {}),
                 const SizedBox(height: AppSpacing.stackSm),
-                _buildGlassButton(Icons.my_location),
+                _buildGlassButton(Icons.my_location, onPressed: () {
+                  if (locationProvider.currentLocation != null) {
+                    _mapController.move(locationProvider.currentLocation!, 15.0);
+                  }
+                }),
               ],
             ),
           ),
@@ -303,15 +334,17 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _isOnline = !_isOnline;
-                  });
-                  if (_isOnline) {
-                    Future.delayed(const Duration(seconds: 2), () {
-                      if (mounted && context.mounted && _isOnline) {
-                        Navigator.pushNamed(context, RouteNames.incomingRideRequest);
-                      }
-                    });
+                  final wsProvider = context.read<WebSocketProvider>();
+                  if (wsProvider.isOnline) {
+                    wsProvider.disconnect();
+                  } else {
+                    if (locationProvider.currentLocation != null) {
+                      wsProvider.connect(locationProvider.currentLocation!.latitude, locationProvider.currentLocation!.longitude);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please wait for location to be fetched')),
+                      );
+                    }
                   }
                 },
                 child: ClipRRect(
@@ -325,11 +358,11 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                         color: const Color(0xFF151515).withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: _isOnline 
+                          color: isOnline 
                               ? AppColors.primaryContainer 
                               : AppColors.primaryContainer.withValues(alpha: 0.4),
                         ),
-                        boxShadow: _isOnline ? [
+                        boxShadow: isOnline ? [
                           BoxShadow(
                             color: AppColors.primaryContainer.withValues(alpha: 0.3),
                             blurRadius: 12,
@@ -345,8 +378,8 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                             height: 12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _isOnline ? AppColors.primaryContainer : AppColors.surfaceVariant,
-                              boxShadow: _isOnline ? [
+                              color: isOnline ? AppColors.primaryContainer : AppColors.surfaceVariant,
+                              boxShadow: isOnline ? [
                                 BoxShadow(
                                   color: AppColors.primaryContainer.withValues(alpha: 0.8),
                                   blurRadius: 8,
@@ -356,10 +389,10 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                           ),
                           const SizedBox(width: AppSpacing.gutter),
                           Text(
-                            _isOnline ? "You're Online" : "You're Offline",
+                            isOnline ? "You're Online" : "You're Offline",
                             style: AppTypography.headlineMd.copyWith(
-                              color: _isOnline ? AppColors.primaryContainer : AppColors.onSurfaceVariant,
-                              fontWeight: _isOnline ? FontWeight.bold : FontWeight.w600,
+                              color: isOnline ? AppColors.primaryContainer : AppColors.onSurfaceVariant,
+                              fontWeight: isOnline ? FontWeight.bold : FontWeight.w600,
                             ),
                           ),
                         ],
@@ -534,7 +567,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
     );
   }
 
-  Widget _buildGlassButton(IconData icon) {
+  Widget _buildGlassButton(IconData icon, {VoidCallback? onPressed}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
@@ -554,7 +587,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
               icon,
               color: AppColors.onSurface,
             ),
-            onPressed: () {},
+            onPressed: onPressed ?? () {},
           ),
         ),
       ),

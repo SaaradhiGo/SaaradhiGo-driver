@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'navigation/app_router.dart';
 import 'navigation/route_names.dart';
 import 'services/auth_service.dart';
+import 'services/location_provider.dart';
+import 'services/websocket_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,12 +38,19 @@ class SaaradhiGoDriverApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SaaradhiGo Driver',
-      theme: AppTheme.darkTheme,
-      initialRoute: initialRoute,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => WebSocketProvider()),
+      ],
+      child: MaterialApp(
+        title: 'SaaradhiGo Driver',
+        theme: AppTheme.darkTheme,
+        initialRoute: initialRoute,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
+
