@@ -3,7 +3,6 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
-import '../../widgets/app_bottom_nav.dart';
 import '../../widgets/app_top_bar.dart';
 import '../../widgets/route_indicator.dart';
 
@@ -117,7 +116,6 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const AppBottomNav(currentIndex: 1),
     );
   }
 

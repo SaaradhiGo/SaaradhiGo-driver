@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'route_names.dart';
-import '../screens/splash/splash_screen.dart';
 import '../screens/auth/login_mobile_number.dart';
 import '../screens/auth/otp_verification.dart';
-import '../screens/home/driver_home_dashboard.dart';
-import '../screens/earnings/earnings_dashboard_screen.dart';
-import '../screens/trips/trip_history_screen.dart';
-import '../screens/profile/driver_profile_screen.dart';
-import '../screens/messages/chat_screen.dart';
+
+import '../screens/main_navigation_screen.dart';
 import '../screens/notifications/notifications_screen.dart';
 import '../screens/trips/incoming_ride_request_screen.dart';
 import '../screens/trips/accepted_ride_screen.dart';
@@ -35,8 +31,6 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       // Auth flow
-      case RouteNames.splash:
-        return _buildRoute(const SplashScreen(), settings);
 
       case RouteNames.login:
         return _buildRoute(const LoginMobileNumberScreen(), settings);
@@ -50,19 +44,19 @@ class AppRouter {
 
       // Main App Tabs
       case RouteNames.dashboard:
-        return _buildRoute(const DriverHomeDashboardScreen(), settings);
+        return _buildRoute(const MainNavigationScreen(), settings);
 
       case RouteNames.earnings:
-        return _buildRoute(const EarningsDashboardScreen(), settings);
+        return _buildRoute(const MainNavigationScreen(initialIndex: 2), settings);
 
       case RouteNames.tripHistory:
-        return _buildRoute(const TripHistoryScreen(), settings);
+        return _buildRoute(const MainNavigationScreen(initialIndex: 1), settings);
 
       case RouteNames.messages:
-        return _buildRoute(const ChatScreen(), settings);
+        return _buildRoute(const MainNavigationScreen(initialIndex: 3), settings);
 
       case RouteNames.profile:
-        return _buildRoute(const DriverProfileScreen(), settings);
+        return _buildRoute(const MainNavigationScreen(initialIndex: 4), settings);
 
       case RouteNames.notifications:
         return _buildRoute(const NotificationsScreen(), settings);

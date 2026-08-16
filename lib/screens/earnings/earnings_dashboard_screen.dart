@@ -3,7 +3,6 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
-import '../../widgets/app_bottom_nav.dart';
 import '../../widgets/app_top_bar.dart';
 
 class EarningsDashboardScreen extends StatefulWidget {
@@ -282,7 +281,6 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const AppBottomNav(currentIndex: 2),
     );
   }
 

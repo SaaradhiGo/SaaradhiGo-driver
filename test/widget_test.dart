@@ -4,7 +4,7 @@ import 'package:saaradhigo_driver/main.dart';
 void main() {
   testWidgets('App starts with splash screen', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const SaaradhiGoDriverApp());
+    await tester.pumpWidget(const SaaradhiGoDriverApp(initialRoute: '/login'));
     // Verify that the title text 'SaaradhiGo' exists in the splash screen
     expect(find.text('SaaradhiGo'), findsOneWidget);
 

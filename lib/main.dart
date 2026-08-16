@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'theme/app_theme.dart';
 import 'navigation/app_router.dart';
 import 'navigation/route_names.dart';
+import 'services/auth_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Lock to portrait mode for mobile driver app
@@ -21,18 +22,23 @@ void main() {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-  runApp(const SaaradhiGoDriverApp());
+  bool isAuthenticated = await AuthService.isAuthenticated();
+  String initialRoute = isAuthenticated ? RouteNames.dashboard : RouteNames.login;
+
+  runApp(SaaradhiGoDriverApp(initialRoute: initialRoute));
 }
 
 class SaaradhiGoDriverApp extends StatelessWidget {
-  const SaaradhiGoDriverApp({super.key});
+  final String initialRoute;
+
+  const SaaradhiGoDriverApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SaaradhiGo Driver',
       theme: AppTheme.darkTheme,
-      initialRoute: RouteNames.splash,
+      initialRoute: initialRoute,
       onGenerateRoute: AppRouter.onGenerateRoute,
       debugShowCheckedModeBanner: false,
     );

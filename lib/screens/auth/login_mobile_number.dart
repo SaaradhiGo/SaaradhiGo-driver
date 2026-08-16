@@ -66,9 +66,9 @@ class _LoginMobileNumberScreenState extends State<LoginMobileNumberScreen> {
 
     final phoneE164 = '+91$rawNumber';
     final response = await AuthService.sendOtp(phoneE164);
-    // print(response.data);
-    // print(response.statusCode);
-    // print(response.message);
+    debugPrint(response.data?.toString());
+    debugPrint(response.statusCode.toString());
+    debugPrint(response.message);
     if (!mounted) return;
     setState(() => _isLoading = false);
 
