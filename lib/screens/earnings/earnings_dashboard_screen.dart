@@ -4,6 +4,8 @@ import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../widgets/app_top_bar.dart';
+import 'package:provider/provider.dart';
+import '../../providers/earnings_provider.dart';
 
 class EarningsDashboardScreen extends StatefulWidget {
   const EarningsDashboardScreen({super.key});
@@ -13,7 +15,23 @@ class EarningsDashboardScreen extends StatefulWidget {
 }
 
 class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
-  int _selectedPeriod = 2; // 0: Today, 1: This Week, 2: This Month
+  int _selectedPeriod = 0; // 0: Today, 1: This Week, 2: This Month
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EarningsProvider>().fetchEarnings(period: 'today');
+    });
+  }
+
+  void _onPeriodChanged(int index) {
+    setState(() => _selectedPeriod = index);
+    String period = 'today';
+    if (index == 1) period = 'this_week';
+    if (index == 2) period = 'this_month';
+    context.read<EarningsProvider>().fetchEarnings(period: period);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,255 +48,289 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.containerMargin,
-            vertical: AppSpacing.stackMd,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Time Filters
-              GlassPanel(
-                padding: const EdgeInsets.all(4),
-                child: Row(
-                  children: [
-                    _buildFilterChip('Today', 0),
-                    _buildFilterChip('This Week', 1),
-                    _buildFilterChip('This Month', 2),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
+        child: Consumer<EarningsProvider>(
+          builder: (context, provider, child) {
+            if (provider.isLoading && provider.summary == null) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+            }
 
-              // Main Earnings Card
-              GlassPanel(
-                padding: const EdgeInsets.all(AppSpacing.stackLg),
-                child: Stack(
-                  children: [
-                    // Glow effect
-                    Positioned(
-                      right: -20,
-                      top: -20,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primaryContainer.withValues(alpha: 0.15),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          'Total Earnings (Oct)',
-                          style: AppTypography.bodyMd.copyWith(
-                            color: AppColors.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '₹12,840',
-                          style: AppTypography.displayLg.copyWith(
-                            color: AppColors.primary,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.stackMd),
-                        Container(
-                          height: 1,
-                          color: Colors.white.withValues(alpha: 0.1),
-                        ),
-                        const SizedBox(height: AppSpacing.stackMd),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '84',
-                                    style: AppTypography.dataMono.copyWith(
-                                      color: AppColors.primary,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Completed Trips',
-                                    style: AppTypography.labelCaps.copyWith(
-                                      color: AppColors.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: 1,
-                              height: 36,
-                              color: Colors.white.withValues(alpha: 0.1),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '62h',
-                                    style: AppTypography.dataMono.copyWith(
-                                      color: AppColors.primary,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Online Hours',
-                                    style: AppTypography.labelCaps.copyWith(
-                                      color: AppColors.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+            if (provider.error != null && provider.summary == null) {
+              return Center(
+                child: Text(
+                  provider.error!,
+                  style: AppTypography.bodyMd.copyWith(color: AppColors.error),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
+              );
+            }
 
-              // Graph Section (Trend)
-              GlassPanel(
-                padding: const EdgeInsets.all(AppSpacing.stackMd),
+            final summary = provider.summary;
+
+            return RefreshIndicator(
+              color: AppColors.primary,
+              backgroundColor: AppColors.surfaceContainer,
+              onRefresh: () async {
+                String period = 'today';
+                if (_selectedPeriod == 1) period = 'this_week';
+                if (_selectedPeriod == 2) period = 'this_month';
+                await context.read<EarningsProvider>().fetchEarnings(period: period);
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.containerMargin,
+                  vertical: AppSpacing.stackMd,
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Trend',
-                          style: AppTypography.headlineSm.copyWith(
-                            color: AppColors.onSurface,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.trending_up,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.stackSm),
-                    // Chart Box
-                    Container(
-                      height: 160,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerLowest,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                    // Time Filters
+                    GlassPanel(
+                      padding: const EdgeInsets.all(4),
+                      child: Row(
+                        children: [
+                          _buildFilterChip('Today', 0),
+                          _buildFilterChip('This Week', 1),
+                          _buildFilterChip('This Month', 2),
+                        ],
                       ),
+                    ),
+                    const SizedBox(height: AppSpacing.stackLg),
+
+                    // Main Earnings Card
+                    GlassPanel(
+                      padding: const EdgeInsets.all(AppSpacing.stackLg),
                       child: Stack(
                         children: [
-                          CustomPaint(
-                            size: const Size(double.infinity, 160),
-                            painter: _TrendChartPainter(),
-                          ),
+                          // Glow effect
                           Positioned(
-                            top: 12,
-                            right: 16,
+                            right: -20,
+                            top: -20,
                             child: Container(
-                              padding: const EdgeInsets.all(8),
+                              width: 100,
+                              height: 100,
                               decoration: BoxDecoration(
-                                color: AppColors.surfaceContainer,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                shape: BoxShape.circle,
+                                color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                _selectedPeriod == 0 
+                                    ? 'Total Earnings (Today)' 
+                                    : _selectedPeriod == 1 
+                                        ? 'Total Earnings (This Week)' 
+                                        : 'Total Earnings (This Month)',
+                                style: AppTypography.bodyMd.copyWith(
+                                  color: AppColors.onSurfaceVariant,
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                              const SizedBox(height: 8),
+                              Text(
+                                '₹${summary?.totalEarned ?? '0.00'}',
+                                style: AppTypography.displayLg.copyWith(
+                                  color: AppColors.primary,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.stackMd),
+                              Container(
+                                height: 1,
+                                color: Colors.white.withValues(alpha: 0.1),
+                              ),
+                              const SizedBox(height: AppSpacing.stackMd),
+                              Row(
                                 children: [
-                                  Text(
-                                    'Oct 24',
-                                    style: AppTypography.labelCaps.copyWith(
-                                      color: AppColors.onSurfaceVariant,
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '${summary?.totalTrips ?? 0}',
+                                          style: AppTypography.dataMono.copyWith(
+                                            color: AppColors.primary,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Completed Trips',
+                                          style: AppTypography.labelCaps.copyWith(
+                                            color: AppColors.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Text(
-                                    '₹1,240',
-                                    style: AppTypography.dataMono.copyWith(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Container(
+                                    width: 1,
+                                    height: 36,
+                                    color: Colors.white.withValues(alpha: 0.1),
                                   ),
-                                  Text(
-                                    '8 Trips',
-                                    style: AppTypography.labelCaps.copyWith(
-                                      color: AppColors.onSurfaceVariant,
-                                      fontSize: 10,
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '--',
+                                          style: AppTypography.dataMono.copyWith(
+                                            color: AppColors.primary,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Online Hours',
+                                          style: AppTypography.labelCaps.copyWith(
+                                            color: AppColors.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.stackLg),
+
+                    // Graph Section (Trend)
+                    GlassPanel(
+                      padding: const EdgeInsets.all(AppSpacing.stackMd),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Trend',
+                                style: AppTypography.headlineSm.copyWith(
+                                  color: AppColors.onSurface,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.trending_up,
+                                color: AppColors.primary,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.stackSm),
+                          // Chart Box
+                          Container(
+                            height: 160,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceContainerLowest,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                            ),
+                            child: Stack(
+                              children: [
+                                CustomPaint(
+                                  size: const Size(double.infinity, 160),
+                                  painter: _TrendChartPainter(),
+                                ),
+                                Positioned(
+                                  top: 12,
+                                  right: 16,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.surfaceContainer,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Today',
+                                          style: AppTypography.labelCaps.copyWith(
+                                            color: AppColors.onSurfaceVariant,
+                                          ),
+                                        ),
+                                        Text(
+                                          '₹${summary?.todayEarned ?? '0'}',
+                                          style: AppTypography.dataMono.copyWith(
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${summary?.todayTrips ?? 0} Trips',
+                                          style: AppTypography.labelCaps.copyWith(
+                                            color: AppColors.onSurfaceVariant,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
+                    const SizedBox(height: AppSpacing.stackLg),
 
-              // Stats Grid
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatBox(Icons.speed, '₹207', 'Avg / Hour'),
-                  ),
-                  const SizedBox(width: AppSpacing.stackSm),
-                  Expanded(
-                    child: _buildStatBox(Icons.payments, '₹4,200', 'Cash'),
-                  ),
-                  const SizedBox(width: AppSpacing.stackSm),
-                  Expanded(
-                    child: _buildStatBox(Icons.account_balance_wallet, '₹8,640', 'Digital'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.stackLg),
+                    // Stats Grid
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildStatBox(Icons.speed, '₹--', 'Avg / Hour'),
+                        ),
+                        const SizedBox(width: AppSpacing.stackSm),
+                        Expanded(
+                          child: _buildStatBox(Icons.payments, '₹--', 'Cash'),
+                        ),
+                        const SizedBox(width: AppSpacing.stackSm),
+                        Expanded(
+                          child: _buildStatBox(Icons.account_balance_wallet, '₹--', 'Digital'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.stackLg),
 
-              // Breakdown Section
-              GlassPanel(
-                padding: const EdgeInsets.all(AppSpacing.stackMd),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Breakdown',
-                      style: AppTypography.headlineSm.copyWith(
-                        color: AppColors.onSurface,
+                    // Breakdown Section
+                    GlassPanel(
+                      padding: const EdgeInsets.all(AppSpacing.stackMd),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Breakdown',
+                            style: AppTypography.headlineSm.copyWith(
+                              color: AppColors.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
+                          const SizedBox(height: 8),
+                          _buildBreakdownRow(Icons.route, 'Trip Fares', '₹${summary?.totalEarned ?? '0'}', isAccent: false),
+                          _buildBreakdownRow(Icons.star, 'Incentives', '+₹0', isAccent: true),
+                          _buildBreakdownRow(Icons.card_giftcard, 'Bonuses', '+₹0', isAccent: true),
+                          _buildBreakdownRow(Icons.volunteer_activism, 'Tips', '₹0', isAccent: false),
+                          Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
+                          _buildBreakdownRow(Icons.money_off, 'Commission', '-₹${summary?.totalCommission ?? '0'}', isError: true),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
-                    const SizedBox(height: 8),
-                    _buildBreakdownRow(Icons.route, 'Trip Fares', '₹9,800', isAccent: false),
-                    _buildBreakdownRow(Icons.star, 'Incentives', '+₹2,500', isAccent: true),
-                    _buildBreakdownRow(Icons.card_giftcard, 'Bonuses', '+₹500', isAccent: true),
-                    _buildBreakdownRow(Icons.volunteer_activism, 'Tips', '₹240', isAccent: false),
-                    Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
-                    _buildBreakdownRow(Icons.money_off, 'Adjustments', '-₹200', isError: true),
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),
-              const SizedBox(height: 80),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -288,7 +340,7 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
     final isSelected = _selectedPeriod == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedPeriod = index),
+        onTap: () => _onPeriodChanged(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8),
