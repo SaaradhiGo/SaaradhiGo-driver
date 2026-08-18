@@ -7,6 +7,7 @@ import '../../widgets/app_top_bar.dart';
 import '../../services/auth_service.dart';
 import '../../navigation/route_names.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../providers/profile_provider.dart';
 
 class DriverProfileScreen extends StatefulWidget {
@@ -72,7 +73,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
               color: AppColors.primary,
               backgroundColor: AppColors.surfaceContainer,
               onRefresh: () async {
-                await context.read<ProfileProvider>().fetchProfileData();
+                await context.read<ProfileProvider>().fetchProfileData(forceRefresh: true);
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -88,25 +89,31 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         children: [
                           Stack(
                             children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.primaryContainer.withValues(alpha: 0.5),
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primaryContainer.withValues(alpha: 0.2),
-                                      blurRadius: 20,
+                              GestureDetector(
+                                onTap: () => _pickImage(context),
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                                      width: 2,
                                     ),
-                                  ],
-                                ),
-                                child: const CircleAvatar(
-                                  backgroundColor: AppColors.surfaceVariant,
-                                  child: Icon(Icons.person, size: 50, color: AppColors.primary),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.primaryContainer.withValues(alpha: 0.2),
+                                        blurRadius: 20,
+                                      ),
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    backgroundColor: AppColors.surfaceVariant,
+                                    backgroundImage: user?.avatar != null 
+                                      ? NetworkImage(user!.avatar!.startsWith('http') ? user.avatar! : 'https://dev.api.saaradhigo.in${user.avatar}')
+                                      : null,
+                                    child: user?.avatar == null ? const Icon(Icons.person, size: 50, color: AppColors.primary) : null,
+                                  ),
                                 ),
                               ),
                               Positioned(
@@ -324,6 +331,49 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     if (month >= 1 && month <= 12) return months[month - 1];
     return '';
+  }
+
+  Future<void> _pickImage(BuildContext context) async {
+    final picker = ImagePicker();
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      backgroundColor: AppColors.surfaceContainerHigh,
+      builder: (BuildContext ctx) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: AppColors.primary),
+                title: Text('Gallery', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: AppColors.primary),
+                title: Text('Camera', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source != null) {
+      final pickedFile = await picker.pickImage(source: source);
+      if (pickedFile != null && context.mounted) {
+        final success = await context.read<ProfileProvider>().uploadAvatar(pickedFile);
+        if (success && context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text('Profile picture updated successfully')),
+           );
+        } else if (context.mounted) {
+           final error = context.read<ProfileProvider>().error;
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text(error ?? 'Failed to update profile picture')),
+           );
+        }
+      }
+    }
   }
 
   Widget _buildInfoRow(String label, String value, {bool isMono = false, bool isLast = false}) {

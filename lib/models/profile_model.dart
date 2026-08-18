@@ -26,6 +26,7 @@ class UserProfileModel {
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+    final avatarStr = json['avatar']?.toString();
     return UserProfileModel(
       id: json['id'] ?? 0,
       fullName: json['full_name']?.toString(),
@@ -36,7 +37,7 @@ class UserProfileModel {
       houseNo: json['house_no']?.toString(),
       street: json['street']?.toString(),
       zipCode: json['zip_code']?.toString(),
-      avatar: json['avatar']?.toString(),
+      avatar: (avatarStr == null || avatarStr.trim().isEmpty) ? null : avatarStr,
       createdAt: json['created_at']?.toString(),
     );
   }

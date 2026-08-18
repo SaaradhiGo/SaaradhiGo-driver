@@ -11,6 +11,8 @@ import 'providers/trip_provider.dart';
 import 'providers/earnings_provider.dart';
 import 'providers/profile_provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -52,6 +54,7 @@ class SaaradhiGoDriverApp extends StatelessWidget {
       child: MaterialApp(
         title: 'SaaradhiGo Driver',
         theme: AppTheme.darkTheme,
+        navigatorKey: navigatorKey,
         initialRoute: initialRoute,
         onGenerateRoute: AppRouter.onGenerateRoute,
         debugShowCheckedModeBanner: false,

@@ -15,6 +15,7 @@ class StorageService {
   static const String keyUserId = 'user_id';
   static const String keyUserName = 'user_name';
   static const String keyUserRole = 'user_role';
+  static const String keyUserProfile = 'user_profile';
 
   /// Write a value to secure storage
   static Future<void> write(String key, String value) async {

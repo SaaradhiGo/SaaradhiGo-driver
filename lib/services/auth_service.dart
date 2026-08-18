@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'api_client.dart';
 import 'storage_service.dart';
+import 'package:cross_file/cross_file.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 /// Authentication service for the SaaradhiGo Driver App.
 /// Integrates with the real backend API at dev.api.saaradhigo.in.
@@ -50,6 +54,8 @@ class AuthService {
       // Persist user info
       final user = response.data!['user'] as Map<String, dynamic>?;
       if (user != null) {
+        await StorageService.write(StorageService.keyUserProfile, jsonEncode(user));
+        
         final userId = user['id'];
         if (userId != null) {
           await StorageService.write(StorageService.keyUserId, userId.toString());
@@ -120,13 +126,72 @@ class AuthService {
     };
   }
 
+  /// Get the stored user profile data (complete JSON).
+  static Future<Map<String, dynamic>?> getStoredUserProfile() async {
+    final data = await StorageService.read(StorageService.keyUserProfile);
+    if (data != null) {
+      try {
+        return jsonDecode(data) as Map<String, dynamic>;
+      } catch (_) {}
+    }
+    return null;
+  }
+
   /// Fetch the user profile from the API.
   static Future<ApiResponse> fetchProfile() async {
-    return await ApiClient.get('/auth/profile/', auth: true);
+    final response = await ApiClient.get('/auth/profile/', auth: true);
+    if (response.success && response.data != null) {
+      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      if (userData != null) {
+        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+      }
+    }
+    return response;
   }
 
   /// Logout: clear all stored tokens and user data.
   static Future<void> logout() async {
     await StorageService.deleteAll();
+  }
+
+  /// Update user profile avatar.
+  static Future<ApiResponse> updateProfileAvatar(XFile image) async {
+    // Read the mime type or default to image/jpeg
+    String? mimeType = image.mimeType;
+    if (mimeType == null) {
+      final ext = image.name.split('.').last.toLowerCase();
+      if (ext == 'png') {
+        mimeType = 'image/png';
+      } else {
+        mimeType = 'image/jpeg';
+      }
+    }
+
+    String filename = image.name;
+    if (!filename.contains('.')) {
+      filename += mimeType == 'image/png' ? '.png' : '.jpg';
+    }
+
+    final bytes = await image.readAsBytes();
+    final multipartFile = http.MultipartFile.fromBytes(
+      'avatar',
+      bytes,
+      filename: filename,
+      contentType: MediaType.parse(mimeType),
+    );
+
+    final response = await ApiClient.patchMultipart(
+      '/auth/update/',
+      files: [multipartFile],
+    );
+
+    if (response.success && response.data != null) {
+      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      if (userData != null) {
+        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+      }
+    }
+
+    return response;
   }
 }

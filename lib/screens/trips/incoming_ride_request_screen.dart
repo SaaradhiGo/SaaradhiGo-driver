@@ -6,6 +6,8 @@ import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../widgets/route_indicator.dart';
 import '../../navigation/route_names.dart';
+import 'package:provider/provider.dart';
+import '../../services/websocket_provider.dart';
 
 class IncomingRideRequestScreen extends StatefulWidget {
   const IncomingRideRequestScreen({super.key});
@@ -15,25 +17,35 @@ class IncomingRideRequestScreen extends StatefulWidget {
 }
 
 class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
-  int _countdown = 15;
-  Timer? _timer;
+  StreamSubscription<Map<String, dynamic>>? _rideRequestSubscription;
+  Map<String, dynamic>? _rideData;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_countdown > 0) {
-        setState(() => _countdown--);
-      } else {
-        _timer?.cancel();
-        Navigator.pop(context); // Auto-decline when countdown finishes
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _rideRequestSubscription = context.read<WebSocketProvider>().rideRequestStream.listen((data) {
+        setState(() {
+          _rideData = data;
+        });
+      });
     });
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_rideData == null) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        _rideData = args;
+      }
+    }
+  }
+
+  @override
   void dispose() {
-    _timer?.cancel();
+    _rideRequestSubscription?.cancel();
     super.dispose();
   }
 
@@ -85,7 +97,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                           const Icon(Icons.local_taxi, color: AppColors.primary, size: 20),
                           const SizedBox(width: 8),
                           Text(
-                            'Elite Partner',
+                            'SaaradhiGo',
                             style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface),
                           ),
                         ],
@@ -146,7 +158,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                   ),
                   const SizedBox(height: AppSpacing.stackMd),
 
-                  // Header with Countdown
+                  // Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -162,32 +174,9 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'Elite Sedan • Digital Wallet',
+                            '${_rideData?['vehicle_type']?.toString().toUpperCase() ?? 'RIDE'} • ${_rideData?['payment_method']?.toString().toUpperCase() ?? 'PAYMENT'}',
                             style: AppTypography.bodyMd.copyWith(
                               color: AppColors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Countdown Circle
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: 56,
-                            height: 56,
-                            child: CircularProgressIndicator(
-                              value: _countdown / 15.0,
-                              strokeWidth: 3,
-                              color: AppColors.primary,
-                              backgroundColor: AppColors.surfaceContainerHigh,
-                            ),
-                          ),
-                          Text(
-                            '$_countdown',
-                            style: AppTypography.headlineSm.copyWith(
-                              color: AppColors.onSurface,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -217,7 +206,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'JW Marriott, Juhu',
+                                    _rideData?['pickup_address']?.toString() ?? 'Loading...',
                                     style: AppTypography.bodyLg.copyWith(
                                       color: AppColors.onSurface,
                                       fontWeight: FontWeight.w600,
@@ -231,7 +220,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Chhatrapati Shivaji Int. Airport',
+                                    _rideData?['destination_address']?.toString() ?? 'Loading...',
                                     style: AppTypography.bodyLg.copyWith(
                                       color: AppColors.onSurface,
                                       fontWeight: FontWeight.w600,
@@ -254,18 +243,18 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                               children: [
                                 const Icon(Icons.route, size: 18, color: AppColors.onSurfaceVariant),
                                 const SizedBox(width: 4),
-                                Text('8.4 km', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                                Text(_rideData?['distance_km'] != null ? '${_rideData!['distance_km']} km' : '...', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
                                 const SizedBox(width: 12),
                                 const Icon(Icons.schedule, size: 18, color: AppColors.onSurfaceVariant),
                                 const SizedBox(width: 4),
-                                Text('22 mins', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                                Text(_rideData?['duration_min'] != null ? '${_rideData!['duration_min']} mins' : '...', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text('EARNINGS', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
-                                Text('₹480', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text('₹${_rideData?['estimated_fare']?.toString() ?? '0.00'}', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ],
@@ -287,7 +276,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Ananya S.', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
+                          Text(_rideData?['rider_name']?.toString() ?? 'Rider', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
                           Row(
                             children: [
                               Text('4.9', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 13)),
@@ -314,7 +303,6 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                             elevation: 4,
                           ),
                           onPressed: () {
-                            _timer?.cancel();
                             Navigator.pushReplacementNamed(context, RouteNames.acceptedRide);
                           },
                           child: Text(
@@ -336,7 +324,6 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           onPressed: () {
-                            _timer?.cancel();
                             Navigator.pop(context);
                           },
                           child: Text(

@@ -10,6 +10,7 @@ import '../../theme/app_theme.dart';
 import '../../navigation/route_names.dart';
 import '../../services/location_provider.dart';
 import '../../services/websocket_provider.dart';
+import '../../providers/profile_provider.dart';
 
 class DriverHomeDashboardScreen extends StatefulWidget {
   const DriverHomeDashboardScreen({super.key});
@@ -123,6 +124,10 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
     final locationProvider = context.watch<LocationProvider>();
     final isOnline = context.watch<WebSocketProvider>().isOnline;
     final currentLocation = locationProvider.currentLocation ?? const LatLng(17.3850, 78.4867);
+    final profileProvider = context.watch<ProfileProvider>();
+    final user = profileProvider.userProfile;
+    final driver = profileProvider.driverProfile;
+    final summary = profileProvider.earningsSummary;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -247,9 +252,12 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                   color: AppColors.outlineVariant.withValues(alpha: 0.3),
                                 ),
                               ),
-                              child: const CircleAvatar(
+                              child: CircleAvatar(
                                 backgroundColor: AppColors.surfaceVariant,
-                                child: Icon(Icons.person, color: AppColors.primary),
+                                backgroundImage: user?.avatar != null 
+                                  ? NetworkImage(user!.avatar!.startsWith('http') ? user.avatar! : 'https://dev.api.saaradhigo.in${user.avatar}')
+                                  : null,
+                                child: user?.avatar == null ? const Icon(Icons.person, color: AppColors.primary) : null,
                               ),
                             ),
                             const SizedBox(width: AppSpacing.gutter),
@@ -257,7 +265,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Ramesh',
+                                  user?.fullName ?? 'Driver',
                                   style: AppTypography.headlineSm.copyWith(
                                     color: AppColors.onSurface,
                                   ),
@@ -265,7 +273,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                 Row(
                                   children: [
                                     Text(
-                                      '4.9',
+                                      driver?.ratings ?? 'N/A',
                                       style: AppTypography.dataMono.copyWith(
                                         color: AppColors.primaryContainer,
                                         fontWeight: FontWeight.bold,
@@ -489,7 +497,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '₹1,840',
+                                      '₹${summary?.todayEarned ?? '0.00'}',
                                       style: AppTypography.displayLg.copyWith(
                                         color: AppColors.primaryContainer,
                                       ),
@@ -498,8 +506,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                 ),
                                 IconButton(
                                   padding: EdgeInsets.zero,
-                                  alignment: Alignment.center
-                        ,
+                                  alignment: Alignment.center,
                                   icon: const Icon(
                                     Icons.chevron_right,
                                     color: AppColors.primary,
@@ -512,7 +519,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                             Row(
                               children: [
                                 Text(
-                                  '12 rides',
+                                  '${summary?.todayTrips ?? 0} rides',
                                   style: AppTypography.bodyMd.copyWith(
                                     color: AppColors.onSurfaceVariant,
                                   ),
