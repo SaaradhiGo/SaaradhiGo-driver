@@ -19,7 +19,7 @@ import '../screens/support/support_ticket_detail_screen.dart';
 import '../screens/documents/document_vault_screen.dart';
 import '../screens/vehicle/vehicle_info_screen.dart';
 import '../screens/onboarding/verification_status_screen.dart';
-import '../screens/onboarding/onboarding_personal_details_screen.dart';
+import '../screens/onboarding/profile_setup_screen.dart';
 import '../screens/onboarding/onboarding_license_screen.dart';
 import '../screens/onboarding/onboarding_photo_screen.dart';
 import '../screens/onboarding/onboarding_vehicle_screen.dart';
@@ -107,7 +107,7 @@ class AppRouter {
         return _buildRoute(const VerificationStatusScreen(), settings);
 
       case RouteNames.onboardingPersonal:
-        return _buildRoute(const OnboardingPersonalDetailsScreen(), settings);
+        return _buildRoute(const ProfileSetupScreen(), settings);
 
       case RouteNames.onboardingLicense:
         return _buildRoute(const OnboardingLicenseScreen(), settings);

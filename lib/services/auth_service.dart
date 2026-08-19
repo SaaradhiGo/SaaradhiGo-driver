@@ -156,6 +156,22 @@ class AuthService {
     await AvatarCacheService.clearAvatar();
   }
 
+  /// Update user demographic data.
+  static Future<ApiResponse> updateProfile(Map<String, dynamic> data) async {
+    final response = await ApiClient.patch(
+      '/auth/update/',
+      body: data,
+    );
+
+    if (response.success && response.data != null) {
+      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      if (userData != null) {
+        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+      }
+    }
+    return response;
+  }
+
   /// Update user profile avatar.
   static Future<ApiResponse> updateProfileAvatar(XFile image) async {
     // Read the mime type or default to image/jpeg

@@ -110,12 +110,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     setState(() => _isVerifying = false);
 
     if (response.success) {
-      // Navigate to dashboard, clearing entire back stack
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        RouteNames.dashboard,
-        (route) => false,
-      );
+      final user = response.data?['user'] as Map<String, dynamic>?;
+      final isUpdated = user?['is_updated'] ?? true;
+
+      if (!isUpdated) {
+        // Navigate to onboarding personal details screen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteNames.onboardingPersonal,
+          (route) => false,
+        );
+      } else {
+        // Navigate to dashboard, clearing entire back stack
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteNames.dashboard,
+          (route) => false,
+        );
+      }
     } else {
       // Clear OTP fields on failure
       for (var controller in _controllers) {
