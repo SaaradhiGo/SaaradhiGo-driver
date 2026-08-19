@@ -4,6 +4,7 @@ import 'storage_service.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'avatar_cache_service.dart';
 
 /// Authentication service for the SaaradhiGo Driver App.
 /// Integrates with the real backend API at dev.api.saaradhigo.in.
@@ -152,6 +153,7 @@ class AuthService {
   /// Logout: clear all stored tokens and user data.
   static Future<void> logout() async {
     await StorageService.deleteAll();
+    await AvatarCacheService.clearAvatar();
   }
 
   /// Update user profile avatar.

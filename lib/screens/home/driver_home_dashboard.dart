@@ -254,10 +254,16 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                               ),
                               child: CircleAvatar(
                                 backgroundColor: AppColors.surfaceVariant,
-                                backgroundImage: user?.avatar != null 
-                                  ? NetworkImage(user!.avatar!.startsWith('http') ? user.avatar! : 'https://dev.api.saaradhigo.in${user.avatar}')
-                                  : null,
-                                child: user?.avatar == null ? const Icon(Icons.person, color: AppColors.primary) : null,
+                                backgroundImage: profileProvider.localAvatarBytes != null 
+                                  ? MemoryImage(profileProvider.localAvatarBytes!)
+                                  : (user?.avatar != null 
+                                      ? NetworkImage(user!.avatar!.startsWith('http') 
+                                          ? user.avatar! 
+                                          : 'https://dev.api.saaradhigo.in${user.avatar!.startsWith('/') ? '' : '/'}${user.avatar}')
+                                      : null) as ImageProvider?,
+                                child: (profileProvider.localAvatarBytes == null && user?.avatar == null) 
+                                    ? const Icon(Icons.person, color: AppColors.primary) 
+                                    : null,
                               ),
                             ),
                             const SizedBox(width: AppSpacing.gutter),

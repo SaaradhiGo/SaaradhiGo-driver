@@ -5,7 +5,8 @@ import 'trips/trip_history_screen.dart';
 import 'earnings/earnings_dashboard_screen.dart';
 import 'messages/chat_screen.dart';
 import 'profile/driver_profile_screen.dart';
-
+import 'package:provider/provider.dart';
+import '../providers/profile_provider.dart';
 class MainNavigationScreen extends StatefulWidget {
   final int initialIndex;
 
@@ -27,6 +28,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _currentIndex);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().fetchProfileData();
+    });
   }
 
   @override

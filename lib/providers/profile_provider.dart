@@ -6,18 +6,22 @@ import '../services/auth_service.dart';
 import '../services/earnings_service.dart';
 import '../services/api_client.dart';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:cross_file/cross_file.dart';
+import '../services/avatar_cache_service.dart';
 
 class ProfileProvider extends ChangeNotifier {
   UserProfileModel? _userProfile;
   DriverProfileModel? _driverProfile;
   EarningsSummaryModel? _earningsSummary;
+  Uint8List? _localAvatarBytes;
   bool _isLoading = false;
   String? _error;
 
   UserProfileModel? get userProfile => _userProfile;
   DriverProfileModel? get driverProfile => _driverProfile;
   EarningsSummaryModel? get earningsSummary => _earningsSummary;
+  Uint8List? get localAvatarBytes => _localAvatarBytes;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -34,11 +38,16 @@ class ProfileProvider extends ChangeNotifier {
       }
     }
     
+    // Load local avatar
+    _localAvatarBytes = await AvatarCacheService.getLocalAvatarBytes();
+    
     notifyListeners();
 
     try {
       final futures = <Future>[];
-      final bool shouldFetchProfile = needsRefresh || _userProfile == null;
+      // Always fetch the profile data from API to get fresh S3 presigned URLs,
+      // as cached URLs expire after 15 minutes.
+      final bool shouldFetchProfile = true;
       
       if (shouldFetchProfile) {
         futures.add(AuthService.fetchProfile());
@@ -56,6 +65,15 @@ class ProfileProvider extends ChangeNotifier {
           final userData = authResponse.data!.containsKey('id') ? authResponse.data! : authResponse.data!['user'];
           if (userData != null) {
             _userProfile = UserProfileModel.fromJson(userData);
+            
+            // Check if we need to download the avatar
+            if (_userProfile?.avatar != null && _localAvatarBytes == null) {
+              final String fullUrl = _userProfile!.avatar!.startsWith('http') 
+                  ? _userProfile!.avatar! 
+                  : 'https://dev.api.saaradhigo.in${_userProfile!.avatar!.startsWith('/') ? '' : '/'}${_userProfile!.avatar}';
+              
+              _localAvatarBytes = await AvatarCacheService.downloadAndSaveAvatar(fullUrl);
+            }
           }
         }
       }
@@ -78,6 +96,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       final response = await AuthService.updateProfileAvatar(image);
       if (response.success) {
+        _localAvatarBytes = await AvatarCacheService.updateLocalAvatar(image);
         await fetchProfileData(forceRefresh: true);
         _isLoading = false;
         notifyListeners();
