@@ -5,6 +5,8 @@ import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../widgets/app_top_bar.dart';
 import '../../navigation/route_names.dart';
+import 'package:provider/provider.dart';
+import '../../providers/trip_session_provider.dart';
 
 class ArrivedAtPickupScreen extends StatefulWidget {
   const ArrivedAtPickupScreen({super.key});
@@ -18,6 +20,9 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<TripSessionProvider>();
+    final data = session.tripData;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const AppTopBar(
@@ -45,8 +50,8 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Ananya S.', style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface)),
-                          Text('Waiting at North Gate', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant)),
+                          Text(data?['rider_name']?.toString() ?? 'Rider', style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface)),
+                          Text(data?['pickup_address']?.toString() ?? 'Pickup Location', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
                         ],
                       ),
                     ),
@@ -77,7 +82,7 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Ask rider for their 4-digit PIN to start trip',
+                      'Ask rider for their 6-digit PIN to start trip',
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
                       ),
@@ -86,7 +91,7 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                     TextField(
                       controller: _otpController,
                       keyboardType: TextInputType.number,
-                      maxLength: 4,
+                      maxLength: 6,
                       textAlign: TextAlign.center,
                       style: AppTypography.displayLg.copyWith(
                         color: AppColors.primary,
@@ -94,7 +99,7 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                       ),
                       decoration: InputDecoration(
                         counterText: '',
-                        hintText: '0000',
+                        hintText: '000000',
                         hintStyle: AppTypography.displayLg.copyWith(
                           color: AppColors.onSurfaceVariant.withValues(alpha: 0.3),
                           letterSpacing: 16,
@@ -125,10 +130,18 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, RouteNames.activeTrip);
+                  onPressed: session.isLoading ? null : () {
+                    if (_otpController.text.length == 6) {
+                      session.startTrip(_otpController.text);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter 6-digit OTP')),
+                      );
+                    }
                   },
-                  child: Text(
+                  child: session.isLoading
+                    ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2))
+                    : Text(
                     'START TRIP',
                     style: AppTypography.headlineSm.copyWith(
                       color: AppColors.onPrimary,

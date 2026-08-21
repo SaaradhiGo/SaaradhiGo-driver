@@ -8,6 +8,7 @@ import 'services/auth_service.dart';
 import 'services/location_provider.dart';
 import 'services/websocket_provider.dart';
 import 'providers/trip_provider.dart';
+import 'providers/trip_session_provider.dart';
 import 'providers/earnings_provider.dart';
 import 'providers/profile_provider.dart';
 
@@ -48,6 +49,7 @@ class SaaradhiGoDriverApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => WebSocketProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => TripSessionProvider()),
         ChangeNotifierProvider(create: (_) => EarningsProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],

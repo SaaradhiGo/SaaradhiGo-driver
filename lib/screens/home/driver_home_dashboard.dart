@@ -353,6 +353,30 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                   if (wsProvider.isOnline) {
                     wsProvider.disconnect();
                   } else {
+                    final profileProvider = context.read<ProfileProvider>();
+                    final driverProfile = profileProvider.driverProfile;
+
+                    if (driverProfile == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Loading profile. Please wait...')),
+                      );
+                      return;
+                    }
+
+                    if (!driverProfile.approved) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Your documents are currently pending verification or missing.')),
+                      );
+                      return;
+                    }
+
+                    if (!driverProfile.hasActiveVehicle) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please add an active vehicle before going online.')),
+                      );
+                      return;
+                    }
+
                     if (locationProvider.currentLocation != null) {
                       wsProvider.connect(locationProvider.currentLocation!.latitude, locationProvider.currentLocation!.longitude);
                     } else {

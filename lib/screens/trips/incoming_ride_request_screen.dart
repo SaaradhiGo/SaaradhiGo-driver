@@ -8,6 +8,7 @@ import '../../widgets/route_indicator.dart';
 import '../../navigation/route_names.dart';
 import 'package:provider/provider.dart';
 import '../../services/websocket_provider.dart';
+import '../../providers/trip_session_provider.dart';
 
 class IncomingRideRequestScreen extends StatefulWidget {
   const IncomingRideRequestScreen({super.key});
@@ -279,7 +280,7 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                           Text(_rideData?['rider_name']?.toString() ?? 'Rider', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
                           Row(
                             children: [
-                              Text('4.9', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 13)),
+                              Text(_rideData?['rider_rating']?.toString() ?? 'New', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 13)),
                               const SizedBox(width: 4),
                               const Icon(Icons.star, size: 14, color: AppColors.primary),
                             ],
@@ -296,22 +297,37 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 54,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            elevation: 4,
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, RouteNames.acceptedRide);
+                        child: Consumer<TripSessionProvider>(
+                          builder: (context, sessionProvider, child) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                elevation: 4,
+                              ),
+                              onPressed: sessionProvider.isLoading ? null : () async {
+                                if (_rideData != null) {
+                                  final tripId = _rideData!['trip_id'] ?? _rideData!['id'];
+                                  sessionProvider.setTripData(_rideData!);
+                                  await sessionProvider.connect(tripId);
+                                  sessionProvider.acceptRide();
+                                }
+                              },
+                              child: sessionProvider.isLoading
+                                ? const SizedBox(
+                                    width: 24, 
+                                    height: 24, 
+                                    child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2)
+                                  )
+                                : Text(
+                                    'ACCEPT RIDE',
+                                    style: AppTypography.headlineSm.copyWith(
+                                      color: AppColors.onPrimary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                            );
                           },
-                          child: Text(
-                            'ACCEPT RIDE',
-                            style: AppTypography.headlineSm.copyWith(
-                              color: AppColors.onPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.stackSm),

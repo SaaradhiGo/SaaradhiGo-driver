@@ -4,12 +4,17 @@ import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../navigation/route_names.dart';
+import 'package:provider/provider.dart';
+import '../../providers/trip_session_provider.dart';
 
 class ActiveTripNavigationScreen extends StatelessWidget {
   const ActiveTripNavigationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<TripSessionProvider>();
+    final data = session.tripData;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -138,7 +143,7 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'Chhatrapati Shivaji T2 Airport',
+                            data?['destination_address']?.toString() ?? 'Destination',
                             style: AppTypography.bodyLg.copyWith(
                               color: AppColors.onSurface,
                               fontWeight: FontWeight.bold,
@@ -156,7 +161,7 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '18 mins',
+                            data?['duration_min'] != null ? '${data!['duration_min']} mins' : '-- mins',
                             style: AppTypography.dataMono.copyWith(
                               color: AppColors.primary,
                               fontSize: 18,
@@ -178,10 +183,12 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, RouteNames.tripSummary);
+                      onPressed: session.isLoading ? null : () {
+                        session.completeTrip();
                       },
-                      child: Text(
+                      child: session.isLoading
+                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2))
+                        : Text(
                         'COMPLETE TRIP',
                         style: AppTypography.headlineSm.copyWith(
                           color: AppColors.onPrimary,

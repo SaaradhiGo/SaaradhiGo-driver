@@ -4,12 +4,17 @@ import '../../theme/app_typography.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_panel.dart';
 import '../../navigation/route_names.dart';
+import 'package:provider/provider.dart';
+import '../../providers/trip_session_provider.dart';
 
 class TripSummaryScreen extends StatelessWidget {
   const TripSummaryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<TripSessionProvider>();
+    final data = session.tripData;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -51,7 +56,7 @@ class TripSummaryScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                '₹480',
+                '₹${data?['estimated_fare']?.toString() ?? '0.00'}',
                 style: AppTypography.displayLg.copyWith(
                   color: AppColors.primary,
                   fontSize: 48,
@@ -66,11 +71,11 @@ class TripSummaryScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildMetric('DISTANCE', '8.4 km'),
+                    _buildMetric('DISTANCE', data?['distance_km'] != null ? '${data!['distance_km']} km' : '--'),
                     Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.1)),
-                    _buildMetric('DURATION', '22 mins'),
+                    _buildMetric('DURATION', data?['duration_min'] != null ? '${data!['duration_min']} mins' : '--'),
                     Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.1)),
-                    _buildMetric('PAYMENT', 'Digital'),
+                    _buildMetric('PAYMENT', data?['payment_method']?.toString().toUpperCase() ?? 'DIGITAL'),
                   ],
                 ),
               ),
@@ -86,6 +91,7 @@ class TripSummaryScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: () {
+                    session.clearSession();
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       RouteNames.dashboard,

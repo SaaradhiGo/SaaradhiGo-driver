@@ -58,6 +58,8 @@ class DriverProfileModel {
   final bool approved;
   final String? licenseExpiry;
   final String? ratings;
+  final String? licenseDoc;
+  final dynamic activeVehicleDetails;
   
   DriverProfileModel({
     required this.id,
@@ -65,6 +67,8 @@ class DriverProfileModel {
     required this.approved,
     this.licenseExpiry,
     this.ratings,
+    this.licenseDoc,
+    this.activeVehicleDetails,
   });
 
   factory DriverProfileModel.fromJson(Map<String, dynamic> json) {
@@ -74,6 +78,11 @@ class DriverProfileModel {
       approved: json['approved'] ?? false,
       licenseExpiry: json['license_expiry']?.toString(),
       ratings: json['ratings']?.toString(),
+      licenseDoc: json['license_doc']?.toString(),
+      activeVehicleDetails: json['active_vehicle_details'] ?? json['active_vehicle'],
     );
   }
+
+  bool get hasActiveVehicle => activeVehicleDetails != null;
+  bool get hasLicense => licenseDoc != null && licenseDoc!.isNotEmpty;
 }
