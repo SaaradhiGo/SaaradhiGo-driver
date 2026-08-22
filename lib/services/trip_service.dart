@@ -22,4 +22,24 @@ class TripService {
     }
     return [];
   }
+
+  /// Fetch details of a specific trip.
+  static Future<TripModel?> getTripDetails(int tripId) async {
+    final response = await ApiClient.get('/ride/trip/$tripId/');
+    
+    if (response.success && response.data != null) {
+      return TripModel.fromJson(response.data!);
+    }
+    return null;
+  }
+
+  /// Fetch raw details of a specific trip, useful when we need all fields (e.g. for session hydration).
+  static Future<Map<String, dynamic>?> getRawTripDetails(int tripId) async {
+    final response = await ApiClient.get('/ride/trip/$tripId/');
+    
+    if (response.success && response.data != null) {
+      return response.data;
+    }
+    return null;
+  }
 }

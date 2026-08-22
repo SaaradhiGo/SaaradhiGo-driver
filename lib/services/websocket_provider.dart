@@ -23,7 +23,7 @@ class WebSocketProvider extends ChangeNotifier {
     try {
       final token = await StorageService.read(StorageService.keyAccessToken) ?? 'mock_token';
       print("token - $token");
-      final url = Uri.parse('wss://dev.api.saaradhigo.in/ws/driver/location/?token=$token&lat=$lat&lng=$lng');
+      final url = Uri.parse('ws://localhost:8000/ws/driver/location/?token=$token&lat=$lat&lng=$lng');
       
       _channel = WebSocketChannel.connect(url);
       _lastLat = lat;

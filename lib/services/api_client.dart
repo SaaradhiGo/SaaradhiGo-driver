@@ -8,7 +8,7 @@ import '../navigation/route_names.dart';
 /// HTTP API client for the SaaradhiGo backend.
 /// Handles base URL, headers, auth token injection, and response parsing.
 class ApiClient {
-  static const String baseUrl = 'https://dev.api.saaradhigo.in/api/v1';
+  static const String baseUrl = 'http://localhost:8000/api/v1';
 
   /// Build headers with optional auth token
   static Future<Map<String, String>> _headers({bool auth = false}) async {

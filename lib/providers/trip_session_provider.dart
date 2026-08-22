@@ -29,6 +29,19 @@ class TripSessionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resumeTrip(Map<String, dynamic> data) {
+    setTripData(data);
+    if (data.containsKey('status')) {
+      _currentStatus = data['status'];
+    }
+    if (_tripId != null) {
+      connect(_tripId!);
+    }
+    if (_currentStatus != null) {
+      _handleStateNavigation(_currentStatus!);
+    }
+  }
+
   Future<void> connect(int tripId) async {
     if (_isConnected && _tripId == tripId) return;
 
@@ -106,17 +119,21 @@ class TripSessionProvider extends ChangeNotifier {
     
     switch (status) {
       case 'accept':
+      case 'accepted':
         navigator.pushReplacementNamed(RouteNames.acceptedRide);
         break;
       case 'reached':
         navigator.pushReplacementNamed(RouteNames.arrivedAtPickup);
         break;
+      case 'start':
       case 'in_progress':
         navigator.pushReplacementNamed(RouteNames.activeTrip);
         break;
+      case 'complete':
       case 'completed':
         navigator.pushReplacementNamed(RouteNames.tripSummary);
         break;
+      case 'cancel':
       case 'cancelled':
         // Show snackbar and go to dashboard
         ScaffoldMessenger.of(navigator.context).showSnackBar(

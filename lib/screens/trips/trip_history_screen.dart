@@ -8,6 +8,9 @@ import '../../widgets/route_indicator.dart';
 import 'package:provider/provider.dart';
 import '../../providers/trip_provider.dart';
 import '../../models/trip_model.dart';
+import '../../navigation/route_names.dart';
+import '../../providers/trip_session_provider.dart';
+import '../../services/trip_service.dart';
 
 class TripHistoryScreen extends StatefulWidget {
   const TripHistoryScreen({super.key});
@@ -122,7 +125,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                         if (index == provider.trips.length) {
                           return const SizedBox(height: 80);
                         }
-                        return _buildDynamicTripCard(provider.trips[index]);
+                        return _buildDynamicTripCard(context, provider.trips[index]);
                       },
                     ),
                   );
@@ -186,28 +189,70 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
     );
   }
 
-  Widget _buildDynamicTripCard(TripModel trip) {
+  Widget _buildDynamicTripCard(BuildContext context, TripModel trip) {
     final isCompleted = trip.status == 'completed';
-    return _buildTripCard(
-      date: trip.createdAt != null ? _formatDate(trip.createdAt!) : 'Unknown',
-      riderName: trip.riderName ?? 'Unknown',
-      fare: '₹${trip.estimatedFare ?? '0'}',
-      status: trip.status.toUpperCase(),
-      pickup: trip.pickupAddress ?? 'Unknown',
-      pickupDetail: '',
-      dropoff: trip.destinationAddress ?? 'Unknown',
-      dropoffDetail: '',
-      distance: '${trip.distanceKm ?? '--'} km',
-      duration: '${trip.durationMin ?? '--'} mins',
-      paymentMethod: trip.paymentMethod ?? 'Digital',
-      isCompleted: isCompleted,
+    
+    // Format status nicely (e.g. "in_progress" -> "IN PROGRESS")
+    final formattedStatus = trip.status.replaceAll('_', ' ').toUpperCase();
+
+    return GestureDetector(
+      onTap: () async {
+        if (trip.status == 'completed' || trip.status == 'cancelled') {
+          Navigator.pushNamed(context, RouteNames.tripDetails, arguments: trip.id);
+        } else {
+          // Active trips: fetch full raw data before hydrating
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
+          );
+
+          final rawTripData = await TripService.getRawTripDetails(trip.id);
+          
+          if (context.mounted) {
+            Navigator.pop(context); // Dismiss loading dialog
+            if (rawTripData != null) {
+              context.read<TripSessionProvider>().resumeTrip(rawTripData);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to load active trip details')),
+              );
+            }
+          }
+        }
+      },
+      child: _buildTripCard(
+        date: trip.createdAt != null ? _formatDate(trip.createdAt!) : 'Unknown Date',
+        riderName: trip.riderName ?? 'Rider',
+        fare: '₹${trip.estimatedFare ?? '0'}',
+        status: formattedStatus,
+        pickup: trip.pickupAddress ?? 'Unknown Location',
+        pickupDetail: '',
+        dropoff: trip.destinationAddress ?? 'Unknown Location',
+        dropoffDetail: '',
+        distance: trip.distanceKm != null ? '${trip.distanceKm} km' : '-- km',
+        duration: trip.durationMin != null ? '${trip.durationMin} mins' : '-- mins',
+        paymentMethod: (trip.paymentMethod ?? 'CASH').toUpperCase(),
+        isCompleted: isCompleted,
+      ),
     );
   }
 
   String _formatDate(String dateStr) {
     try {
-      final date = DateTime.parse(dateStr);
-      return '${date.day}/${date.month}/${date.year}';
+      final date = DateTime.parse(dateStr).toLocal();
+      final day = date.day.toString().padLeft(2, '0');
+      final month = date.month.toString().padLeft(2, '0');
+      final year = date.year;
+      int hour = date.hour;
+      final minute = date.minute.toString().padLeft(2, '0');
+      final ampm = hour >= 12 ? 'PM' : 'AM';
+      if (hour > 12) hour -= 12;
+      if (hour == 0) hour = 12;
+      
+      return '$day/$month/$year, $hour:$minute $ampm';
     } catch (_) {
       return dateStr;
     }
