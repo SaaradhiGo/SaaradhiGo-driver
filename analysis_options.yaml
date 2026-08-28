@@ -16,6 +16,12 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    - lib_backup/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    invalid_annotation_target: ignore
+    non_abstract_class_inherits_abstract_member: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

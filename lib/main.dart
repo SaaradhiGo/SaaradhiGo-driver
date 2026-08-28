@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'theme/app_theme.dart';
-import 'navigation/app_router.dart';
-import 'navigation/route_names.dart';
-import 'services/auth_service.dart';
-import 'services/location_provider.dart';
-import 'services/websocket_provider.dart';
-import 'providers/trip_provider.dart';
-import 'providers/trip_session_provider.dart';
-import 'providers/earnings_provider.dart';
-import 'providers/profile_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+import 'core/theme/app_theme.dart';
+import 'routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables before any dependencies are initialized
+  await dotenv.load(fileName: ".env");
 
   // Lock to portrait mode for mobile driver app
   SystemChrome.setPreferredOrientations([
@@ -24,44 +19,30 @@ void main() async {
   ]);
 
   // Set system UI overlay style for premium dark theme
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Color(0xFF16130B),
-    systemNavigationBarIconBrightness: Brightness.light,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color(0xFF0B0B0B),
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
 
-  bool isAuthenticated = await AuthService.isAuthenticated();
-  String initialRoute = isAuthenticated ? RouteNames.dashboard : RouteNames.login;
-
-  runApp(SaaradhiGoDriverApp(initialRoute: initialRoute));
+  runApp(const ProviderScope(child: SaaradhiGoDriverApp()));
 }
 
-class SaaradhiGoDriverApp extends StatelessWidget {
-  final String initialRoute;
-
-  const SaaradhiGoDriverApp({super.key, required this.initialRoute});
+class SaaradhiGoDriverApp extends ConsumerWidget {
+  const SaaradhiGoDriverApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => LocationProvider()),
-        ChangeNotifierProvider(create: (_) => WebSocketProvider()),
-        ChangeNotifierProvider(create: (_) => TripProvider()),
-        ChangeNotifierProvider(create: (_) => TripSessionProvider()),
-        ChangeNotifierProvider(create: (_) => EarningsProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
-      ],
-      child: MaterialApp(
-        title: 'SaaradhiGo Driver',
-        theme: AppTheme.darkTheme,
-        navigatorKey: navigatorKey,
-        initialRoute: initialRoute,
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        debugShowCheckedModeBanner: false,
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
+    return MaterialApp.router(
+      title: 'SaaradhiGo Driver',
+      theme: AppTheme.darkTheme,
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
     );
   }
 }
-

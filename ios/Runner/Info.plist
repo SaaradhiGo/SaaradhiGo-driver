@@ -49,5 +49,11 @@
 	<string>This app requires access to the photo library to upload your profile picture.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera to take a profile picture.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>SaaradhiGo uses your location to find nearby ride requests and navigate active trips.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>SaaradhiGo needs background location access so ride dispatch remains available while you are online.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>SaaradhiGo needs background location access so ride dispatch remains available while you are online.</string>
 </dict>
 </plist>
