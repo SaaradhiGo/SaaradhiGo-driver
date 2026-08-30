@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../auth/presentation/providers/auth_notifier.dart';
+import '../../../auth/presentation/providers/auth_state.dart';
 import '../../domain/repositories/i_profile_repository.dart';
 import 'profile_providers.dart';
 
@@ -19,10 +21,35 @@ class ProfileNotifier extends Notifier<ProfileState> {
   Future<void> fetchProfile() async {
     state = const ProfileState.loading();
     final result = await _repository.getDriverProfile();
-    state = result.fold(
-      (failure) => ProfileState.error(failure.message),
-      (profile) => ProfileState.loaded(profile),
-    );
+    state = result.fold((failure) => ProfileState.error(failure.message), (
+      profile,
+    ) {
+      final authState = ref.read(authNotifierProvider);
+      final authUser = authState is AuthAuthenticated ? authState.user : null;
+
+      var mergedProfile = profile;
+      if (authUser != null) {
+        final currentUser = profile.user;
+        final updatedUser = (currentUser == null)
+            ? authUser
+            : currentUser.copyWith(
+                fullName: (currentUser.fullName?.isNotEmpty ?? false)
+                    ? currentUser.fullName
+                    : authUser.fullName,
+                avatar: (currentUser.avatar?.isNotEmpty ?? false)
+                    ? currentUser.avatar
+                    : authUser.avatar,
+                phoneNumber: (currentUser.phoneNumber?.isNotEmpty ?? false)
+                    ? currentUser.phoneNumber
+                    : authUser.phoneNumber,
+                email: (currentUser.email?.isNotEmpty ?? false)
+                    ? currentUser.email
+                    : authUser.email,
+              );
+        mergedProfile = profile.copyWith(user: updatedUser);
+      }
+      return ProfileState.loaded(mergedProfile);
+    });
   }
 
   /// Changes the avatar: uploads the file (presigned direct-to-S3) and, on

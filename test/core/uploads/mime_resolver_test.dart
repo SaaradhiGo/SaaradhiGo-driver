@@ -10,7 +10,6 @@ String? resolveOrNull(String? fileName) =>
     resolver.resolve(fileName: fileName, bytes: Uint8List(0));
 
 void main() {
-
   group('MimeTypeResolver', () {
     test('resolves common extensions via the allow-list', () {
       expect(resolver.resolve(fileName: 'rc.png'), 'image/png');

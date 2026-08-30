@@ -12,22 +12,23 @@ class DocumentVaultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Document Vault',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Document Vault', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
           children: [
             Text(
               'Required Documents',
-              style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               'All documents must be clear and currently valid.',
-              style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: AppSpacing.stackLg),
 
@@ -94,9 +95,20 @@ class DocumentVaultScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: AppTypography.bodyLg.copyWith(
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(expiry, style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
+                Text(
+                  expiry,
+                  style: AppTypography.labelCaps.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
@@ -109,7 +121,10 @@ class DocumentVaultScreen extends StatelessWidget {
             ),
             child: Text(
               status,
-              style: AppTypography.labelCaps.copyWith(color: badgeColor, fontSize: 11),
+              style: AppTypography.labelCaps.copyWith(
+                color: badgeColor,
+                fontSize: 11,
+              ),
             ),
           ),
         ],

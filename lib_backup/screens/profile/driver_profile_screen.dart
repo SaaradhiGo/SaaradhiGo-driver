@@ -45,7 +45,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
         child: Consumer<ProfileProvider>(
           builder: (context, provider, child) {
             if (provider.isLoading && provider.userProfile == null) {
-              return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
             }
 
             if (provider.error != null && provider.userProfile == null) {
@@ -65,7 +67,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             if (user?.createdAt != null) {
               try {
                 final date = DateTime.parse(user!.createdAt!);
-                joinedDate = '${_getMonthShort(date.month)} \'${date.year.toString().substring(2)}';
+                joinedDate =
+                    '${_getMonthShort(date.month)} \'${date.year.toString().substring(2)}';
               } catch (_) {}
             }
 
@@ -73,7 +76,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
               color: AppColors.primary,
               backgroundColor: AppColors.surfaceContainer,
               onRefresh: () async {
-                await context.read<ProfileProvider>().fetchProfileData(forceRefresh: true);
+                await context.read<ProfileProvider>().fetchProfileData(
+                  forceRefresh: true,
+                );
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -97,27 +102,43 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                                      color: AppColors.primaryContainer
+                                          .withValues(alpha: 0.5),
                                       width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.primaryContainer.withValues(alpha: 0.2),
+                                        color: AppColors.primaryContainer
+                                            .withValues(alpha: 0.2),
                                         blurRadius: 20,
                                       ),
                                     ],
                                   ),
                                   child: CircleAvatar(
                                     backgroundColor: AppColors.surfaceVariant,
-                                    backgroundImage: provider.localAvatarBytes != null 
-                                      ? MemoryImage(provider.localAvatarBytes!)
-                                      : (user?.avatar != null 
-                                          ? NetworkImage(user!.avatar!.startsWith('http') 
-                                              ? user.avatar! 
-                                              : 'https://dev.api.saaradhigo.in${user.avatar!.startsWith('/') ? '' : '/'}${user.avatar}')
-                                          : null) as ImageProvider?,
-                                    child: (provider.localAvatarBytes == null && user?.avatar == null) 
-                                        ? const Icon(Icons.person, size: 50, color: AppColors.primary) 
+                                    backgroundImage:
+                                        provider.localAvatarBytes != null
+                                        ? MemoryImage(
+                                            provider.localAvatarBytes!,
+                                          )
+                                        : (user?.avatar != null
+                                                  ? NetworkImage(
+                                                      user!.avatar!.startsWith(
+                                                            'http',
+                                                          )
+                                                          ? user.avatar!
+                                                          : 'https://dev.api.saaradhigo.in${user.avatar!.startsWith('/') ? '' : '/'}${user.avatar}',
+                                                    )
+                                                  : null)
+                                              as ImageProvider?,
+                                    child:
+                                        (provider.localAvatarBytes == null &&
+                                            user?.avatar == null)
+                                        ? const Icon(
+                                            Icons.person,
+                                            size: 50,
+                                            color: AppColors.primary,
+                                          )
                                         : null,
                                   ),
                                 ),
@@ -131,12 +152,16 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceContainerHigh,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: AppColors.outlineVariant),
+                                    border: Border.all(
+                                      color: AppColors.outlineVariant,
+                                    ),
                                   ),
                                   child: Icon(
                                     Icons.verified,
                                     size: 18,
-                                    color: driver?.approved == true ? AppColors.primary : AppColors.onSurfaceVariant,
+                                    color: driver?.approved == true
+                                        ? AppColors.primary
+                                        : AppColors.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -153,7 +178,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.workspace_premium, size: 16, color: AppColors.primary),
+                              const Icon(
+                                Icons.workspace_premium,
+                                size: 16,
+                                color: AppColors.primary,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 'ELITE PARTNER',
@@ -174,13 +203,19 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                       children: [
                         Expanded(
                           child: GlassPanel(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.stackSm,
+                            ),
                             child: Column(
                               children: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.star, size: 16, color: AppColors.primary),
+                                    const Icon(
+                                      Icons.star,
+                                      size: 16,
+                                      color: AppColors.primary,
+                                    ),
                                     const SizedBox(width: 4),
                                     Text(
                                       driver?.ratings ?? 'N/A',
@@ -205,7 +240,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         const SizedBox(width: AppSpacing.gutter),
                         Expanded(
                           child: GlassPanel(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.stackSm,
+                            ),
                             child: Column(
                               children: [
                                 Text(
@@ -229,7 +266,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         const SizedBox(width: AppSpacing.gutter),
                         Expanded(
                           child: GlassPanel(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackSm),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.stackSm,
+                            ),
                             child: Column(
                               children: [
                                 Text(
@@ -265,12 +304,20 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                               vertical: AppSpacing.stackSm + 4,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                              color: AppColors.surfaceContainerHigh.withValues(
+                                alpha: 0.5,
+                              ),
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(12),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.person, color: AppColors.primary, size: 20),
+                                const Icon(
+                                  Icons.person,
+                                  color: AppColors.primary,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Personal Details',
@@ -282,10 +329,24 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                               ],
                             ),
                           ),
-                          _buildInfoRow('Mobile', user?.phoneNumber ?? 'N/A', isMono: true),
+                          _buildInfoRow(
+                            'Mobile',
+                            user?.phoneNumber ?? 'N/A',
+                            isMono: true,
+                          ),
                           _buildInfoRow('Email', user?.email ?? 'N/A'),
-                          _buildInfoRow('D.O.B', user?.dob ?? 'N/A', isMono: true),
-                          _buildInfoRow('Registered Address', user?.fullAddress.isNotEmpty == true ? user!.fullAddress : 'N/A', isLast: true),
+                          _buildInfoRow(
+                            'D.O.B',
+                            user?.dob ?? 'N/A',
+                            isMono: true,
+                          ),
+                          _buildInfoRow(
+                            'Registered Address',
+                            user?.fullAddress.isNotEmpty == true
+                                ? user!.fullAddress
+                                : 'N/A',
+                            isLast: true,
+                          ),
                         ],
                       ),
                     ),
@@ -299,25 +360,37 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           _buildActionItem(
                             icon: Icons.description,
                             title: 'Vehicle Documents',
-                            onTap: () => Navigator.pushNamed(context, RouteNames.documentVault),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              RouteNames.documentVault,
+                            ),
                           ),
                           _buildDivider(),
                           _buildActionItem(
                             icon: Icons.directions_car,
                             title: 'Vehicle Details',
-                            onTap: () => Navigator.pushNamed(context, RouteNames.vehicleInfo),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              RouteNames.vehicleInfo,
+                            ),
                           ),
                           _buildDivider(),
                           _buildActionItem(
                             icon: Icons.security,
                             title: 'Safety Center',
-                            onTap: () => Navigator.pushNamed(context, RouteNames.safetyCenter),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              RouteNames.safetyCenter,
+                            ),
                           ),
                           _buildDivider(),
                           _buildActionItem(
                             icon: Icons.help,
                             title: 'Help & Support',
-                            onTap: () => Navigator.pushNamed(context, RouteNames.helpSupport),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              RouteNames.helpSupport,
+                            ),
                           ),
                         ],
                       ),
@@ -334,7 +407,20 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   String _getMonthShort(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     if (month >= 1 && month <= 12) return months[month - 1];
     return '';
   }
@@ -349,13 +435,26 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
           child: Wrap(
             children: [
               ListTile(
-                leading: const Icon(Icons.photo_library, color: AppColors.primary),
-                title: Text('Gallery', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: AppColors.primary,
+                ),
+                title: Text(
+                  'Gallery',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurface,
+                  ),
+                ),
                 onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: AppColors.primary),
-                title: Text('Camera', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                title: Text(
+                  'Camera',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurface,
+                  ),
+                ),
                 onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
               ),
             ],
@@ -367,26 +466,41 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     if (source != null) {
       final pickedFile = await picker.pickImage(source: source);
       if (pickedFile != null && context.mounted) {
-        final success = await context.read<ProfileProvider>().uploadAvatar(pickedFile);
+        final success = await context.read<ProfileProvider>().uploadAvatar(
+          pickedFile,
+        );
         if (success && context.mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('Profile picture updated successfully')),
-           );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture updated successfully'),
+            ),
+          );
         } else if (context.mounted) {
-           final error = context.read<ProfileProvider>().error;
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(error ?? 'Failed to update profile picture')),
-           );
+          final error = context.read<ProfileProvider>().error;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error ?? 'Failed to update profile picture'),
+            ),
+          );
         }
       }
     }
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isMono = false, bool isLast = false}) {
+  Widget _buildInfoRow(
+    String label,
+    String value, {
+    bool isMono = false,
+    bool isLast = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.stackMd),
       decoration: BoxDecoration(
-        border: isLast ? null : Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+              ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -423,16 +537,16 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+      trailing: const Icon(
+        Icons.chevron_right,
+        color: AppColors.onSurfaceVariant,
+      ),
       onTap: onTap,
     );
   }
 
   Widget _buildDivider() {
-    return Container(
-      height: 1,
-      color: Colors.white.withValues(alpha: 0.05),
-    );
+    return Container(height: 1, color: Colors.white.withValues(alpha: 0.05));
   }
 
   void _confirmLogout(BuildContext context) {
@@ -446,14 +560,18 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
         ),
         content: Text(
           'Are you sure you want to log out of SaaradhiGo?',
-          style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+          style: AppTypography.bodyMd.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
           ),
           TextButton(

@@ -16,7 +16,8 @@ class DriverHomeDashboardScreen extends StatefulWidget {
   const DriverHomeDashboardScreen({super.key});
 
   @override
-  State<DriverHomeDashboardScreen> createState() => _DriverHomeDashboardScreenState();
+  State<DriverHomeDashboardScreen> createState() =>
+      _DriverHomeDashboardScreenState();
 }
 
 class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
@@ -36,11 +37,18 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
       _locationProvider.initialize();
       _locationProvider.addListener(_onLocationChanged);
 
-      _wsSubscription = context.read<WebSocketProvider>().rideRequestStream.listen((data) {
-        if (mounted) {
-          Navigator.pushNamed(context, RouteNames.incomingRideRequest, arguments: data);
-        }
-      });
+      _wsSubscription = context
+          .read<WebSocketProvider>()
+          .rideRequestStream
+          .listen((data) {
+            if (mounted) {
+              Navigator.pushNamed(
+                context,
+                RouteNames.incomingRideRequest,
+                arguments: data,
+              );
+            }
+          });
     });
     _pulseController = AnimationController(
       vsync: this,
@@ -51,11 +59,15 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _sheetHeightAnimation = Tween<double>(begin: 130.0, end: 130.0).animate(
-      CurvedAnimation(parent: _sheetHeightController, curve: Curves.easeOutCubic),
-    )..addListener(() {
-        setState(() {});
-      });
+    _sheetHeightAnimation =
+        Tween<double>(begin: 130.0, end: 130.0).animate(
+          CurvedAnimation(
+            parent: _sheetHeightController,
+            curve: Curves.easeOutCubic,
+          ),
+        )..addListener(() {
+          setState(() {});
+        });
   }
 
   void _onLocationChanged() {
@@ -76,14 +88,17 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
       double currentHeight = _sheetHeightAnimation.value;
       currentHeight -= details.primaryDelta!;
       currentHeight = currentHeight.clamp(0.0, 240.0);
-      _sheetHeightAnimation = Tween<double>(begin: currentHeight, end: currentHeight).animate(_sheetHeightController);
+      _sheetHeightAnimation = Tween<double>(
+        begin: currentHeight,
+        end: currentHeight,
+      ).animate(_sheetHeightController);
     });
   }
 
   void _onEarningsDragEnd(DragEndDetails details) {
     double currentHeight = _sheetHeightAnimation.value;
     double targetHeight;
-    
+
     // Determine snap target based on current height
     if (currentHeight > 180.0) {
       targetHeight = 240.0; // Expanded
@@ -92,7 +107,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
     } else {
       targetHeight = 130.0; // Collapsed
     }
-    
+
     // Add velocity consideration
     if (details.primaryVelocity! < -500) {
       targetHeight = 240.0; // Fast swipe up -> expand
@@ -104,9 +119,13 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
       }
     }
 
-    _sheetHeightAnimation = Tween<double>(begin: currentHeight, end: targetHeight).animate(
-      CurvedAnimation(parent: _sheetHeightController, curve: Curves.easeOutCubic),
-    );
+    _sheetHeightAnimation =
+        Tween<double>(begin: currentHeight, end: targetHeight).animate(
+          CurvedAnimation(
+            parent: _sheetHeightController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
     _sheetHeightController.forward(from: 0.0);
   }
 
@@ -123,7 +142,8 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
   Widget build(BuildContext context) {
     final locationProvider = context.watch<LocationProvider>();
     final isOnline = context.watch<WebSocketProvider>().isOnline;
-    final currentLocation = locationProvider.currentLocation ?? const LatLng(17.3850, 78.4867);
+    final currentLocation =
+        locationProvider.currentLocation ?? const LatLng(17.3850, 78.4867);
     final profileProvider = context.watch<ProfileProvider>();
     final user = profileProvider.userProfile;
     final driver = profileProvider.driverProfile;
@@ -145,7 +165,9 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                     const SizedBox(height: 16),
                     Text(
                       'Getting your location...',
-                      style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+                      style: AppTypography.bodyMd.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -184,7 +206,8 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                     height: 32,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                      color: AppColors.primaryContainer
+                                          .withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ),
@@ -197,10 +220,15 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                             decoration: BoxDecoration(
                               color: AppColors.primaryContainer,
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.background, width: 2),
+                              border: Border.all(
+                                color: AppColors.background,
+                                width: 2,
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                                  color: AppColors.primaryContainer.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   blurRadius: 10,
                                 ),
                               ],
@@ -213,7 +241,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                 ),
               ],
             ),
-          
+
           // 2. Top Compact Header
           Positioned(
             top: 0,
@@ -222,7 +250,9 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
             child: SafeArea(
               bottom: false,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(12),
+                ),
                 child: BackdropFilter(
                   filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                   child: Container(
@@ -249,20 +279,35 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: AppColors.outlineVariant.withValues(alpha: 0.3),
+                                  color: AppColors.outlineVariant.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                               ),
                               child: CircleAvatar(
                                 backgroundColor: AppColors.surfaceVariant,
-                                backgroundImage: profileProvider.localAvatarBytes != null 
-                                  ? MemoryImage(profileProvider.localAvatarBytes!)
-                                  : (user?.avatar != null 
-                                      ? NetworkImage(user!.avatar!.startsWith('http') 
-                                          ? user.avatar! 
-                                          : 'https://dev.api.saaradhigo.in${user.avatar!.startsWith('/') ? '' : '/'}${user.avatar}')
-                                      : null) as ImageProvider?,
-                                child: (profileProvider.localAvatarBytes == null && user?.avatar == null) 
-                                    ? const Icon(Icons.person, color: AppColors.primary) 
+                                backgroundImage:
+                                    profileProvider.localAvatarBytes != null
+                                    ? MemoryImage(
+                                        profileProvider.localAvatarBytes!,
+                                      )
+                                    : (user?.avatar != null
+                                              ? NetworkImage(
+                                                  user!.avatar!.startsWith(
+                                                        'http',
+                                                      )
+                                                      ? user.avatar!
+                                                      : 'https://dev.api.saaradhigo.in${user.avatar!.startsWith('/') ? '' : '/'}${user.avatar}',
+                                                )
+                                              : null)
+                                          as ImageProvider?,
+                                child:
+                                    (profileProvider.localAvatarBytes == null &&
+                                        user?.avatar == null)
+                                    ? const Icon(
+                                        Icons.person,
+                                        color: AppColors.primary,
+                                      )
                                     : null,
                               ),
                             ),
@@ -304,7 +349,9 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                             color: AppColors.surfaceContainer,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: AppColors.outlineVariant.withValues(alpha: 0.2),
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.2,
+                              ),
                             ),
                           ),
                           child: IconButton(
@@ -313,7 +360,10 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                               color: AppColors.onSurface,
                               size: 20,
                             ),
-                            onPressed: () => Navigator.pushNamed(context, RouteNames.notifications),
+                            onPressed: () => Navigator.pushNamed(
+                              context,
+                              RouteNames.notifications,
+                            ),
                           ),
                         ),
                       ],
@@ -323,7 +373,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
               ),
             ),
           ),
-          
+
           // 3. Map Controls (Floating Right)
           Positioned(
             top: 130, // roughly top-32
@@ -332,15 +382,21 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
               children: [
                 _buildGlassButton(Icons.explore, onPressed: () {}),
                 const SizedBox(height: AppSpacing.stackSm),
-                _buildGlassButton(Icons.my_location, onPressed: () {
-                  if (locationProvider.currentLocation != null) {
-                    _mapController.move(locationProvider.currentLocation!, 15.0);
-                  }
-                }),
+                _buildGlassButton(
+                  Icons.my_location,
+                  onPressed: () {
+                    if (locationProvider.currentLocation != null) {
+                      _mapController.move(
+                        locationProvider.currentLocation!,
+                        15.0,
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
-          
+
           // 4. Online/Offline Toggle (Floating Top)
           Positioned(
             top: 100, // Below the header
@@ -358,30 +414,47 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
 
                     if (driverProfile == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Loading profile. Please wait...')),
+                        const SnackBar(
+                          content: Text('Loading profile. Please wait...'),
+                        ),
                       );
                       return;
                     }
 
                     if (!driverProfile.approved) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Your documents are currently pending verification or missing.')),
+                        const SnackBar(
+                          content: Text(
+                            'Your documents are currently pending verification or missing.',
+                          ),
+                        ),
                       );
                       return;
                     }
 
                     if (!driverProfile.hasActiveVehicle) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please add an active vehicle before going online.')),
+                        const SnackBar(
+                          content: Text(
+                            'Please add an active vehicle before going online.',
+                          ),
+                        ),
                       );
                       return;
                     }
 
                     if (locationProvider.currentLocation != null) {
-                      wsProvider.connect(locationProvider.currentLocation!.latitude, locationProvider.currentLocation!.longitude);
+                      wsProvider.connect(
+                        locationProvider.currentLocation!.latitude,
+                        locationProvider.currentLocation!.longitude,
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please wait for location to be fetched')),
+                        const SnackBar(
+                          content: Text(
+                            'Please wait for location to be fetched',
+                          ),
+                        ),
                       );
                     }
                   }
@@ -392,21 +465,30 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                     filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF151515).withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: isOnline 
-                              ? AppColors.primaryContainer 
-                              : AppColors.primaryContainer.withValues(alpha: 0.4),
+                          color: isOnline
+                              ? AppColors.primaryContainer
+                              : AppColors.primaryContainer.withValues(
+                                  alpha: 0.4,
+                                ),
                         ),
-                        boxShadow: isOnline ? [
-                          BoxShadow(
-                            color: AppColors.primaryContainer.withValues(alpha: 0.3),
-                            blurRadius: 12,
-                          )
-                        ] : [],
+                        boxShadow: isOnline
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.primaryContainer.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 12,
+                                ),
+                              ]
+                            : [],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -417,21 +499,30 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                             height: 12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: isOnline ? AppColors.primaryContainer : AppColors.surfaceVariant,
-                              boxShadow: isOnline ? [
-                                BoxShadow(
-                                  color: AppColors.primaryContainer.withValues(alpha: 0.8),
-                                  blurRadius: 8,
-                                )
-                              ] : [],
+                              color: isOnline
+                                  ? AppColors.primaryContainer
+                                  : AppColors.surfaceVariant,
+                              boxShadow: isOnline
+                                  ? [
+                                      BoxShadow(
+                                        color: AppColors.primaryContainer
+                                            .withValues(alpha: 0.8),
+                                        blurRadius: 8,
+                                      ),
+                                    ]
+                                  : [],
                             ),
                           ),
                           const SizedBox(width: AppSpacing.gutter),
                           Text(
                             isOnline ? "You're Online" : "You're Offline",
                             style: AppTypography.headlineMd.copyWith(
-                              color: isOnline ? AppColors.primaryContainer : AppColors.onSurfaceVariant,
-                              fontWeight: isOnline ? FontWeight.bold : FontWeight.w600,
+                              color: isOnline
+                                  ? AppColors.primaryContainer
+                                  : AppColors.onSurfaceVariant,
+                              fontWeight: isOnline
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
                             ),
                           ),
                         ],
@@ -442,7 +533,7 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
               ),
             ),
           ),
-          
+
           // 5. SOS FAB
           Positioned(
             bottom: 280, // matched absolute bottom positioning
@@ -466,11 +557,12 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                   color: AppColors.onErrorContainer,
                   size: 28,
                 ),
-                onPressed: () => Navigator.pushNamed(context, RouteNames.safetyCenter),
+                onPressed: () =>
+                    Navigator.pushNamed(context, RouteNames.safetyCenter),
               ),
             ),
           ),
-          
+
           // 6. Bottom Earnings Sheet
           if (_sheetHeightAnimation.value > 0)
             Positioned(
@@ -506,12 +598,14 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                 height: 4,
                                 margin: const EdgeInsets.only(bottom: 8),
                                 decoration: BoxDecoration(
-                                  color: AppColors.outlineVariant.withValues(alpha: 0.5),
+                                  color: AppColors.outlineVariant.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
                             ),
-                            
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -541,7 +635,10 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                     Icons.chevron_right,
                                     color: AppColors.primary,
                                   ),
-                                  onPressed: () => Navigator.pushNamed(context, RouteNames.earnings),
+                                  onPressed: () => Navigator.pushNamed(
+                                    context,
+                                    RouteNames.earnings,
+                                  ),
                                 ),
                               ],
                             ),
@@ -572,20 +669,31 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                                 ),
                               ],
                             ),
-                            
+
                             // Metrics Grid (Revealed when expanded)
                             if (_sheetHeightAnimation.value > 140) ...[
                               const SizedBox(height: AppSpacing.stackSm),
                               Opacity(
-                                opacity: ((_sheetHeightAnimation.value - 140) / (240 - 140)).clamp(0.0, 1.0),
+                                opacity:
+                                    ((_sheetHeightAnimation.value - 140) /
+                                            (240 - 140))
+                                        .clamp(0.0, 1.0),
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: _buildMetricCard('ACCEPTANCE', '98%', true),
+                                      child: _buildMetricCard(
+                                        'ACCEPTANCE',
+                                        '98%',
+                                        true,
+                                      ),
                                     ),
                                     const SizedBox(width: AppSpacing.stackSm),
                                     Expanded(
-                                      child: _buildMetricCard('CANCELLATION', '2%', false),
+                                      child: _buildMetricCard(
+                                        'CANCELLATION',
+                                        '2%',
+                                        false,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -599,7 +707,6 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
                 ),
               ),
             ),
-          
         ],
       ),
     );
@@ -616,15 +723,10 @@ class _DriverHomeDashboardScreenState extends State<DriverHomeDashboardScreen>
           decoration: BoxDecoration(
             color: const Color(0xFF151515).withValues(alpha: 0.85),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.1),
-            ),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: IconButton(
-            icon: Icon(
-              icon,
-              color: AppColors.onSurface,
-            ),
+            icon: Icon(icon, color: AppColors.onSurface),
             onPressed: onPressed ?? () {},
           ),
         ),

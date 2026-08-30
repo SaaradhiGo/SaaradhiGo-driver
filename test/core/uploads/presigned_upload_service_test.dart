@@ -59,16 +59,16 @@ const _signedUrl =
     '?X-Amz-Signature=deadbeef&X-Amz-Expires=900';
 
 Map<String, dynamic> _presignBody({String contentType = 'image/png'}) => {
-      'status': 'success',
-      'data': {
-        'kind': 'rc_doc',
-        'key': 'rc_docs/abcdef0123456789abcdef0123456789.png',
-        'upload_url': _signedUrl,
-        'expires_in': 900,
-        'method': 'PUT',
-        'headers': {'Content-Type': contentType},
-      },
-    };
+  'status': 'success',
+  'data': {
+    'kind': 'rc_doc',
+    'key': 'rc_docs/abcdef0123456789abcdef0123456789.png',
+    'upload_url': _signedUrl,
+    'expires_in': 900,
+    'method': 'PUT',
+    'headers': {'Content-Type': contentType},
+  },
+};
 
 Uint8List pngBytes() => Uint8List.fromList([1, 2, 3, 4, 5]);
 
@@ -130,40 +130,42 @@ void main() {
   });
 
   group('S3 PUT', () {
-    test('uses the exact presigned URL, Content-Type and raw-byte body',
-        () async {
-      final result = await service.upload(
-        kind: UploadKind.rcDoc,
-        bytes: pngBytes(),
-        mimeType: 'image/png',
-      );
+    test(
+      'uses the exact presigned URL, Content-Type and raw-byte body',
+      () async {
+        final result = await service.upload(
+          kind: UploadKind.rcDoc,
+          bytes: pngBytes(),
+          mimeType: 'image/png',
+        );
 
-      // Step 1: presign. Step 2: direct PUT. No third request.
-      expect(adapter.requests, hasLength(2));
+        // Step 1: presign. Step 2: direct PUT. No third request.
+        expect(adapter.requests, hasLength(2));
 
-      final put = lastPut(adapter)!;
-      expect(put.uri.toString(), _signedUrl);
-      expect(put.method, 'PUT');
+        final put = lastPut(adapter)!;
+        expect(put.uri.toString(), _signedUrl);
+        expect(put.method, 'PUT');
 
-      // Content-Type must be byte-for-byte the presigned value (no charset).
-      final contentTypeHeader = put.headers.entries
-          .firstWhere((e) => e.key.toLowerCase() == 'content-type')
-          .value;
-      expect(contentTypeHeader, 'image/png');
-      expect(put.contentType, 'image/png');
+        // Content-Type must be byte-for-byte the presigned value (no charset).
+        final contentTypeHeader = put.headers.entries
+            .firstWhere((e) => e.key.toLowerCase() == 'content-type')
+            .value;
+        expect(contentTypeHeader, 'image/png');
+        expect(put.contentType, 'image/png');
 
-      // Never attach Authorization/JWT or x-amz-* headers to the S3 request.
-      expect(put.headers.containsKey('authorization'), isFalse);
-      expect(
-        put.headers.keys.any((key) => key.toLowerCase().startsWith('x-amz-')),
-        isFalse,
-      );
+        // Never attach Authorization/JWT or x-amz-* headers to the S3 request.
+        expect(put.headers.containsKey('authorization'), isFalse);
+        expect(
+          put.headers.keys.any((key) => key.toLowerCase().startsWith('x-amz-')),
+          isFalse,
+        );
 
-      // Raw bytes, never multipart/form-data.
-      expect(adapter.bodies.last, pngBytes());
+        // Raw bytes, never multipart/form-data.
+        expect(adapter.bodies.last, pngBytes());
 
-      expect(result.key, 'rc_docs/abcdef0123456789abcdef0123456789.png');
-    });
+        expect(result.key, 'rc_docs/abcdef0123456789abcdef0123456789.png');
+      },
+    );
 
     test('re-presigns exactly once and retries when S3 answers 403', () async {
       var putCalls = 0;
@@ -186,61 +188,68 @@ void main() {
       expect(putCalls, 2);
     });
 
-    test('surfaces the error after the single 403 retry is exhausted',
-        () async {
-      adapter.handler = (options) async {
-        if (options.method == 'PUT') {
-          return _emptyResponse(403);
-        }
-        return _jsonResponse(200, body: _presignBody());
-      };
+    test(
+      'surfaces the error after the single 403 retry is exhausted',
+      () async {
+        adapter.handler = (options) async {
+          if (options.method == 'PUT') {
+            return _emptyResponse(403);
+          }
+          return _jsonResponse(200, body: _presignBody());
+        };
 
-      await expectLater(
-        service.upload(
-          kind: UploadKind.rcDoc,
-          bytes: pngBytes(),
-          mimeType: 'image/png',
-        ),
-        throwsA(isA<UploadForbiddenException>()),
-      );
+        await expectLater(
+          service.upload(
+            kind: UploadKind.rcDoc,
+            bytes: pngBytes(),
+            mimeType: 'image/png',
+          ),
+          throwsA(isA<UploadForbiddenException>()),
+        );
 
-      // Exactly one re-presign: two presigns, two PUTs, then give up.
-      expect(adapter.requestCount(ApiEndpoints.presignUpload), 2);
-      expect(adapter.requests.where((r) => r.method == 'PUT'), hasLength(2));
-    });
+        // Exactly one re-presign: two presigns, two PUTs, then give up.
+        expect(adapter.requestCount(ApiEndpoints.presignUpload), 2);
+        expect(adapter.requests.where((r) => r.method == 'PUT'), hasLength(2));
+      },
+    );
 
-    test('maps connection errors during PUT to UploadNetworkException',
-        () async {
-      adapter.handler = (options) async {
-        if (options.method == 'PUT') {
-          throw DioException.connectionError(
-            requestOptions: options,
-            reason: 'airplane mode',
-          );
-        }
-        return _jsonResponse(200, body: _presignBody());
-      };
+    test(
+      'maps connection errors during PUT to UploadNetworkException',
+      () async {
+        adapter.handler = (options) async {
+          if (options.method == 'PUT') {
+            throw DioException.connectionError(
+              requestOptions: options,
+              reason: 'airplane mode',
+            );
+          }
+          return _jsonResponse(200, body: _presignBody());
+        };
 
-      await expectLater(
-        service.upload(
-          kind: UploadKind.rcDoc,
-          bytes: pngBytes(),
-          mimeType: 'image/png',
-        ),
-        throwsA(isA<UploadNetworkException>()),
-      );
-    });
+        await expectLater(
+          service.upload(
+            kind: UploadKind.rcDoc,
+            bytes: pngBytes(),
+            mimeType: 'image/png',
+          ),
+          throwsA(isA<UploadNetworkException>()),
+        );
+      },
+    );
   });
 
   group('presign failure handling', () {
     test('400 INVALID_CONTENT_TYPE maps to validation error', () async {
-      adapter.handler = (_) async => _jsonResponse(400, body: {
-            'status': 'error',
-            'error': {
-              'code': 'INVALID_CONTENT_TYPE',
-              'message': 'content_type not allowed for kind rc_doc',
-            },
-          });
+      adapter.handler = (_) async => _jsonResponse(
+        400,
+        body: {
+          'status': 'error',
+          'error': {
+            'code': 'INVALID_CONTENT_TYPE',
+            'message': 'content_type not allowed for kind rc_doc',
+          },
+        },
+      );
 
       await expectLater(
         service.upload(
@@ -260,13 +269,16 @@ void main() {
     });
 
     test('403 DRIVER_REQUIRED maps to forbidden with server message', () async {
-      adapter.handler = (_) async => _jsonResponse(403, body: {
-            'status': 'error',
-            'error': {
-              'code': 'DRIVER_REQUIRED',
-              'message': 'Driver account required.',
-            },
-          });
+      adapter.handler = (_) async => _jsonResponse(
+        403,
+        body: {
+          'status': 'error',
+          'error': {
+            'code': 'DRIVER_REQUIRED',
+            'message': 'Driver account required.',
+          },
+        },
+      );
 
       await expectLater(
         service.upload(
@@ -299,39 +311,45 @@ void main() {
       );
     });
 
-    test('aborts without a PUT when the risk window elapsed since presign',
-        () async {
-      // now() is called first for the presign timestamp, then again for the
-      // risk-window check before the PUT. Return a post-window time from the
-      // second call onward to simulate a stalled upload deterministically.
-      final base = DateTime(2026, 8, 26, 12, 0, 0);
-      var clockCalls = 0;
-      var expiredSeen = false;
-      final clockS3Dio = Dio()..httpClientAdapter = adapter;
-      final clockService = PresignedUploadService(
-        dio: dio,
-        now: () {
-          clockCalls++;
-          return clockCalls == 1 ? base : base.add(const Duration(minutes: 11));
-        },
-        s3Client: clockS3Dio,
-      );
+    test(
+      'aborts without a PUT when the risk window elapsed since presign',
+      () async {
+        // now() is called first for the presign timestamp, then again for the
+        // risk-window check before the PUT. Return a post-window time from the
+        // second call onward to simulate a stalled upload deterministically.
+        final base = DateTime(2026, 8, 26, 12, 0, 0);
+        var clockCalls = 0;
+        var expiredSeen = false;
+        final clockS3Dio = Dio()..httpClientAdapter = adapter;
+        final clockService = PresignedUploadService(
+          dio: dio,
+          now: () {
+            clockCalls++;
+            return clockCalls == 1
+                ? base
+                : base.add(const Duration(minutes: 11));
+          },
+          s3Client: clockS3Dio,
+        );
 
-      await expectLater(
-        clockService.upload(
-          kind: UploadKind.rcDoc,
-          bytes: pngBytes(),
-          mimeType: 'image/png',
-        ).catchError((Object e) {
-          expiredSeen = e is UploadExpiredException;
-          throw e;
-        }),
-        throwsA(isA<UploadExpiredException>()),
-      );
+        await expectLater(
+          clockService
+              .upload(
+                kind: UploadKind.rcDoc,
+                bytes: pngBytes(),
+                mimeType: 'image/png',
+              )
+              .catchError((Object e) {
+                expiredSeen = e is UploadExpiredException;
+                throw e;
+              }),
+          throwsA(isA<UploadExpiredException>()),
+        );
 
-      expect(expiredSeen, isTrue);
-      expect(adapter.requests.where((r) => r.method == 'PUT'), isEmpty);
-    });
+        expect(expiredSeen, isTrue);
+        expect(adapter.requests.where((r) => r.method == 'PUT'), isEmpty);
+      },
+    );
   });
 
   group('client-side validation', () {
@@ -399,7 +417,8 @@ void main() {
       ..handler = (_) async => _jsonResponse(200, body: _presignBody());
     loggingDio.interceptors.add(LoggingInterceptor());
 
-    final loggingS3Dio = Dio()..httpClientAdapter = loggingDio.httpClientAdapter;
+    final loggingS3Dio = Dio()
+      ..httpClientAdapter = loggingDio.httpClientAdapter;
     final loggingService = PresignedUploadService(
       dio: loggingDio,
       now: () => currentTime,
@@ -407,17 +426,19 @@ void main() {
     );
 
     await runZoned(
-      () => loggingDio.post<dynamic>(
-        ApiEndpoints.presignUpload,
-        data: const {'kind': 'rc_doc', 'content_type': 'image/png'},
-        options: Options(headers: {'Authorization': 'Bearer $secretToken'}),
-      ).then(
-        (_) => loggingService.upload(
-          kind: UploadKind.rcDoc,
-          bytes: pngBytes(),
-          mimeType: 'image/png',
-        ),
-      ),
+      () => loggingDio
+          .post<dynamic>(
+            ApiEndpoints.presignUpload,
+            data: const {'kind': 'rc_doc', 'content_type': 'image/png'},
+            options: Options(headers: {'Authorization': 'Bearer $secretToken'}),
+          )
+          .then(
+            (_) => loggingService.upload(
+              kind: UploadKind.rcDoc,
+              bytes: pngBytes(),
+              mimeType: 'image/png',
+            ),
+          ),
       zoneSpecification: ZoneSpecification(
         print: (self, parent, zone, line) => capturedLogs.add(line),
       ),

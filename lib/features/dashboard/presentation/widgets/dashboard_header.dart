@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/driver_profile_model.dart';
-import '../../../../shared/widgets/app_server_image.dart';
+import '../../../../shared/widgets/driver_avatar.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
 
 /// Glass header from `driver_home_dashboard/code.html:144-161`: avatar, name,
-/// rating, notification bell.
+/// rating, vehicle details, notification bell.
 ///
 /// Covers the profile Loading / Error / Success states inline; the dashboard
 /// never blanks because the profile call failed.
@@ -34,7 +35,7 @@ class DashboardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _buildIdentity()),
+          Expanded(child: _buildIdentity(context)),
           // Notifications are a later phase and there is no documented
           // /driver/notifications/ endpoint, so the bell renders disabled rather
           // than pretending to be actionable.
@@ -44,7 +45,7 @@ class DashboardHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildIdentity() {
+  Widget _buildIdentity(BuildContext context) {
     return switch (profileState) {
       ProfileStateLoaded(:final profile) => _Identity(profile: profile),
       ProfileStateError(:final message) => _HeaderMessage(
@@ -73,83 +74,100 @@ class _Identity extends StatelessWidget {
     final avatarUrl = profile.user?.avatar;
     final rating = profile.ratings;
 
-    return Row(
-      children: [
-        _Avatar(url: avatarUrl, fallbackInitial: displayName),
-        const SizedBox(width: AppSpacing.gutter),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                displayName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.headlineSm.copyWith(
-                  color: AppColors.onBackground,
-                ),
+    // Format active vehicle details if available
+    final vehicleDetails = profile.activeVehicleDetails;
+    String? vehicleSubtitle;
+    if (vehicleDetails != null) {
+      final brand = vehicleDetails['brand']?.toString() ?? '';
+      final model = vehicleDetails['model']?.toString() ?? '';
+      final number = vehicleDetails['vehicle_number']?.toString() ?? '';
+      final nameStr = '$brand $model'.trim();
+
+      if (nameStr.isNotEmpty && number.isNotEmpty) {
+        vehicleSubtitle = '$nameStr • $number';
+      } else if (number.isNotEmpty) {
+        vehicleSubtitle = number;
+      } else if (nameStr.isNotEmpty) {
+        vehicleSubtitle = nameStr;
+      }
+    }
+
+    return InkWell(
+      onTap: () => context.push('/profile'),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+        child: Row(
+          children: [
+            DriverAvatar(
+              url: avatarUrl,
+              fallbackName: displayName,
+              size: 44,
+              isVerified: profile.approved,
+              onTap: () => context.push('/profile'),
+            ),
+            const SizedBox(width: AppSpacing.gutter),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.headlineSm.copyWith(
+                      color: AppColors.onBackground,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      if (rating != null) ...[
+                        Text(
+                          rating.toStringAsFixed(1),
+                          style: AppTypography.dataMono.copyWith(
+                            color: AppColors.primaryContainer,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        const Icon(
+                          Icons.star,
+                          size: 13,
+                          color: AppColors.primaryContainer,
+                        ),
+                      ],
+                      if (rating != null && vehicleSubtitle != null)
+                        Text(
+                          '  •  ',
+                          style: AppTypography.bodyMd.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 12,
+                          ),
+                        ),
+                      if (vehicleSubtitle != null)
+                        Expanded(
+                          child: Text(
+                            vehicleSubtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.bodyMd.copyWith(
+                              color: AppColors.onSurfaceVariant,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
               ),
-              if (rating != null)
-                Row(
-                  children: [
-                    Text(
-                      rating.toStringAsFixed(1),
-                      style: AppTypography.dataMono.copyWith(
-                        color: AppColors.primaryContainer,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.unit),
-                    const Icon(
-                      Icons.star,
-                      size: 14,
-                      color: AppColors.primaryContainer,
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.url, required this.fallbackInitial});
-
-  final String? url;
-  final String fallbackInitial;
-
-  @override
-  Widget build(BuildContext context) {
-    final initial = fallbackInitial.isEmpty
-        ? '?'
-        : fallbackInitial.characters.first.toUpperCase();
-
-    return Container(
-      width: 40,
-      height: 40,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.surfaceContainerHigh,
-        border: Border.all(
-          color: AppColors.outlineVariant.withValues(alpha: 0.3),
+            ),
+          ],
         ),
       ),
-      child: (url == null || url!.isEmpty)
-          ? Center(
-              child: Text(
-                initial,
-                style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            )
-          : AppServerImage(url: url!),
     );
   }
 }

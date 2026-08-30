@@ -12,15 +12,17 @@ class OnboardingLicenseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Driving License',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Driving License', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
           children: [
-            Text('Upload Driving License', style: AppTypography.headlineSm.copyWith(color: AppColors.primary)),
+            Text(
+              'Upload Driving License',
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
             const SizedBox(height: AppSpacing.stackLg),
 
             GlassPanel(
@@ -29,9 +31,21 @@ class OnboardingLicenseScreen extends StatelessWidget {
                 children: [
                   const Icon(Icons.badge, size: 60, color: AppColors.primary),
                   const SizedBox(height: 12),
-                  Text('Front & Back License Photo', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Front & Back License Photo',
+                    style: AppTypography.bodyLg.copyWith(
+                      color: AppColors.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text('Ensure license number and expiration date are clearly legible.', textAlign: TextAlign.center, style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant)),
+                  Text(
+                    'Ensure license number and expiration date are clearly legible.',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodyMd.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -43,10 +57,18 @@ class OnboardingLicenseScreen extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: Text('SAVE & CONTINUE', style: AppTypography.headlineSm.copyWith(color: AppColors.onPrimary, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'SAVE & CONTINUE',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],

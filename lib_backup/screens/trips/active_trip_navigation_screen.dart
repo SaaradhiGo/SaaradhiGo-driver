@@ -113,8 +113,13 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                 ],
               ),
               child: IconButton(
-                icon: const Icon(Icons.sos, color: AppColors.onErrorContainer, size: 28),
-                onPressed: () => Navigator.pushNamed(context, RouteNames.safetyCenter),
+                icon: const Icon(
+                  Icons.sos,
+                  color: AppColors.onErrorContainer,
+                  size: 28,
+                ),
+                onPressed: () =>
+                    Navigator.pushNamed(context, RouteNames.safetyCenter),
               ),
             ),
           ),
@@ -143,7 +148,8 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            data?['destination_address']?.toString() ?? 'Destination',
+                            data?['destination_address']?.toString() ??
+                                'Destination',
                             style: AppTypography.bodyLg.copyWith(
                               color: AppColors.onSurface,
                               fontWeight: FontWeight.bold,
@@ -161,7 +167,9 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            data?['duration_min'] != null ? '${data!['duration_min']} mins' : '-- mins',
+                            data?['duration_min'] != null
+                                ? '${data!['duration_min']} mins'
+                                : '-- mins',
                             style: AppTypography.dataMono.copyWith(
                               color: AppColors.primary,
                               fontSize: 18,
@@ -181,20 +189,31 @@ class ActiveTripNavigationScreen extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      onPressed: session.isLoading ? null : () {
-                        session.completeTrip();
-                      },
-                      child: session.isLoading
-                        ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2))
-                        : Text(
-                        'COMPLETE TRIP',
-                        style: AppTypography.headlineSm.copyWith(
-                          color: AppColors.onPrimary,
-                          fontWeight: FontWeight.bold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
+                      onPressed: session.isLoading
+                          ? null
+                          : () {
+                              session.completeTrip();
+                            },
+                      child: session.isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: AppColors.onPrimary,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              'COMPLETE TRIP',
+                              style: AppTypography.headlineSm.copyWith(
+                                color: AppColors.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ],

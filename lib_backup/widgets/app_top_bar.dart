@@ -40,9 +40,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           decoration: BoxDecoration(
             color: const Color(0xFF151515).withValues(alpha: 0.85),
             border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withValues(alpha: 0.1),
-              ),
+              bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
             ),
           ),
           child: Row(
@@ -52,8 +50,12 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   if (showBackButton)
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: AppColors.primary),
-                      onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: AppColors.primary,
+                      ),
+                      onPressed:
+                          onBackPressed ?? () => Navigator.of(context).pop(),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     )

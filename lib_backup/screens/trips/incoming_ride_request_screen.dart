@@ -14,7 +14,8 @@ class IncomingRideRequestScreen extends StatefulWidget {
   const IncomingRideRequestScreen({super.key});
 
   @override
-  State<IncomingRideRequestScreen> createState() => _IncomingRideRequestScreenState();
+  State<IncomingRideRequestScreen> createState() =>
+      _IncomingRideRequestScreenState();
 }
 
 class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
@@ -25,11 +26,14 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _rideRequestSubscription = context.read<WebSocketProvider>().rideRequestStream.listen((data) {
-        setState(() {
-          _rideData = data;
-        });
-      });
+      _rideRequestSubscription = context
+          .read<WebSocketProvider>()
+          .rideRequestStream
+          .listen((data) {
+            setState(() {
+              _rideData = data;
+            });
+          });
     });
   }
 
@@ -37,7 +41,8 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_rideData == null) {
-      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null) {
         _rideData = args;
       }
@@ -87,29 +92,45 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
             right: 0,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.containerMargin),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.containerMargin,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GlassPanel(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: Row(
                         children: [
-                          const Icon(Icons.local_taxi, color: AppColors.primary, size: 20),
+                          const Icon(
+                            Icons.local_taxi,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             'SaaradhiGo',
-                            style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface),
+                            style: AppTypography.headlineSm.copyWith(
+                              color: AppColors.onSurface,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceContainer,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.1),
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -207,7 +228,8 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                                     ),
                                   ),
                                   Text(
-                                    _rideData?['pickup_address']?.toString() ?? 'Loading...',
+                                    _rideData?['pickup_address']?.toString() ??
+                                        'Loading...',
                                     style: AppTypography.bodyLg.copyWith(
                                       color: AppColors.onSurface,
                                       fontWeight: FontWeight.w600,
@@ -221,7 +243,9 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                                     ),
                                   ),
                                   Text(
-                                    _rideData?['destination_address']?.toString() ?? 'Loading...',
+                                    _rideData?['destination_address']
+                                            ?.toString() ??
+                                        'Loading...',
                                     style: AppTypography.bodyLg.copyWith(
                                       color: AppColors.onSurface,
                                       fontWeight: FontWeight.w600,
@@ -235,27 +259,64 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Container(height: 1, color: Colors.white.withValues(alpha: 0.05)),
+                        Container(
+                          height: 1,
+                          color: Colors.white.withValues(alpha: 0.05),
+                        ),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.route, size: 18, color: AppColors.onSurfaceVariant),
+                                const Icon(
+                                  Icons.route,
+                                  size: 18,
+                                  color: AppColors.onSurfaceVariant,
+                                ),
                                 const SizedBox(width: 4),
-                                Text(_rideData?['distance_km'] != null ? '${_rideData!['distance_km']} km' : '...', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                                Text(
+                                  _rideData?['distance_km'] != null
+                                      ? '${_rideData!['distance_km']} km'
+                                      : '...',
+                                  style: AppTypography.bodyMd.copyWith(
+                                    color: AppColors.onSurface,
+                                  ),
+                                ),
                                 const SizedBox(width: 12),
-                                const Icon(Icons.schedule, size: 18, color: AppColors.onSurfaceVariant),
+                                const Icon(
+                                  Icons.schedule,
+                                  size: 18,
+                                  color: AppColors.onSurfaceVariant,
+                                ),
                                 const SizedBox(width: 4),
-                                Text(_rideData?['duration_min'] != null ? '${_rideData!['duration_min']} mins' : '...', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                                Text(
+                                  _rideData?['duration_min'] != null
+                                      ? '${_rideData!['duration_min']} mins'
+                                      : '...',
+                                  style: AppTypography.bodyMd.copyWith(
+                                    color: AppColors.onSurface,
+                                  ),
+                                ),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text('EARNINGS', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
-                                Text('₹${_rideData?['estimated_fare']?.toString() ?? '0.00'}', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text(
+                                  'EARNINGS',
+                                  style: AppTypography.labelCaps.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  '₹${_rideData?['estimated_fare']?.toString() ?? '0.00'}',
+                                  style: AppTypography.dataMono.copyWith(
+                                    color: AppColors.primary,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -277,12 +338,28 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_rideData?['rider_name']?.toString() ?? 'Rider', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.w600)),
+                          Text(
+                            _rideData?['rider_name']?.toString() ?? 'Rider',
+                            style: AppTypography.bodyLg.copyWith(
+                              color: AppColors.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                           Row(
                             children: [
-                              Text(_rideData?['rider_rating']?.toString() ?? 'New', style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 13)),
+                              Text(
+                                _rideData?['rider_rating']?.toString() ?? 'New',
+                                style: AppTypography.dataMono.copyWith(
+                                  color: AppColors.primary,
+                                  fontSize: 13,
+                                ),
+                              ),
                               const SizedBox(width: 4),
-                              const Icon(Icons.star, size: 14, color: AppColors.primary),
+                              const Icon(
+                                Icons.star,
+                                size: 14,
+                                color: AppColors.primary,
+                              ),
                             ],
                           ),
                         ],
@@ -302,30 +379,39 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                             return ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                                 elevation: 4,
                               ),
-                              onPressed: sessionProvider.isLoading ? null : () async {
-                                if (_rideData != null) {
-                                  final tripId = _rideData!['trip_id'] ?? _rideData!['id'];
-                                  sessionProvider.setTripData(_rideData!);
-                                  await sessionProvider.connect(tripId);
-                                  sessionProvider.acceptRide();
-                                }
-                              },
+                              onPressed: sessionProvider.isLoading
+                                  ? null
+                                  : () async {
+                                      if (_rideData != null) {
+                                        final tripId =
+                                            _rideData!['trip_id'] ??
+                                            _rideData!['id'];
+                                        sessionProvider.setTripData(_rideData!);
+                                        await sessionProvider.connect(tripId);
+                                        sessionProvider.acceptRide();
+                                      }
+                                    },
                               child: sessionProvider.isLoading
-                                ? const SizedBox(
-                                    width: 24, 
-                                    height: 24, 
-                                    child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2)
-                                  )
-                                : Text(
-                                    'ACCEPT RIDE',
-                                    style: AppTypography.headlineSm.copyWith(
-                                      color: AppColors.onPrimary,
-                                      fontWeight: FontWeight.bold,
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.onPrimary,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      'ACCEPT RIDE',
+                                      style: AppTypography.headlineSm.copyWith(
+                                        color: AppColors.onPrimary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
                             );
                           },
                         ),
@@ -336,8 +422,12 @@ class _IncomingRideRequestScreenState extends State<IncomingRideRequestScreen> {
                         height: 48,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.2),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           onPressed: () {
                             Navigator.pop(context);

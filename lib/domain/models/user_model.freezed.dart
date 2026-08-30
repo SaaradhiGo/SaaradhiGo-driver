@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- int get id;@JsonKey(name: 'phone_number') String get phoneNumber; UserRole get role;@JsonKey(name: 'full_name') String? get fullName; String? get email; String? get avatar;@JsonKey(name: 'is_updated') bool get isUpdated;@JsonKey(name: 'fcm_token') String? get fcmToken;
+ int get id;@JsonKey(name: 'phone_number') String? get phoneNumber; UserRole get role;@JsonKey(name: 'full_name') String? get fullName; String? get email; String? get avatar;@JsonKey(name: 'is_updated') bool get isUpdated;@JsonKey(name: 'fcm_token') String? get fcmToken;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'phone_number') String phoneNumber, UserRole role,@JsonKey(name: 'full_name') String? fullName, String? email, String? avatar,@JsonKey(name: 'is_updated') bool isUpdated,@JsonKey(name: 'fcm_token') String? fcmToken
+ int id,@JsonKey(name: 'phone_number') String? phoneNumber, UserRole role,@JsonKey(name: 'full_name') String? fullName, String? email, String? avatar,@JsonKey(name: 'is_updated') bool isUpdated,@JsonKey(name: 'fcm_token') String? fcmToken
 });
 
 
@@ -66,11 +66,11 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? phoneNumber = null,Object? role = null,Object? fullName = freezed,Object? email = freezed,Object? avatar = freezed,Object? isUpdated = null,Object? fcmToken = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? phoneNumber = freezed,Object? role = null,Object? fullName = freezed,Object? email = freezed,Object? avatar = freezed,Object? isUpdated = null,Object? fcmToken = freezed,}) {
   return _then(UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
-as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as int,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as UserRole,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'phone_number')  String phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'phone_number')  String? phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email,_that.avatar,_that.isUpdated,_that.fcmToken);case _:
@@ -182,7 +182,7 @@ return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'phone_number')  String phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'phone_number')  String? phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email,_that.avatar,_that.isUpdated,_that.fcmToken);case _:
@@ -202,7 +202,7 @@ return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'phone_number')  String phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'phone_number')  String? phoneNumber,  UserRole role, @JsonKey(name: 'full_name')  String? fullName,  String? email,  String? avatar, @JsonKey(name: 'is_updated')  bool isUpdated, @JsonKey(name: 'fcm_token')  String? fcmToken)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email,_that.avatar,_that.isUpdated,_that.fcmToken);case _:
@@ -217,12 +217,12 @@ return $default(_that.id,_that.phoneNumber,_that.role,_that.fullName,_that.email
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, @JsonKey(name: 'phone_number') required this.phoneNumber, required this.role, @JsonKey(name: 'full_name') this.fullName, this.email, this.avatar, @JsonKey(name: 'is_updated') required this.isUpdated, @JsonKey(name: 'fcm_token') this.fcmToken});
+  const _UserModel({required this.id, @JsonKey(name: 'phone_number') this.phoneNumber, this.role = UserRole.driver, @JsonKey(name: 'full_name') this.fullName, this.email, this.avatar, @JsonKey(name: 'is_updated') this.isUpdated = false, @JsonKey(name: 'fcm_token') this.fcmToken});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  int id;
-@override@JsonKey(name: 'phone_number') final  String phoneNumber;
-@override final  UserRole role;
+@override@JsonKey(name: 'phone_number') final  String? phoneNumber;
+@override@JsonKey() final  UserRole role;
 @override@JsonKey(name: 'full_name') final  String? fullName;
 @override final  String? email;
 @override final  String? avatar;
@@ -262,7 +262,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'phone_number') String phoneNumber, UserRole role,@JsonKey(name: 'full_name') String? fullName, String? email, String? avatar,@JsonKey(name: 'is_updated') bool isUpdated,@JsonKey(name: 'fcm_token') String? fcmToken
+ int id,@JsonKey(name: 'phone_number') String? phoneNumber, UserRole role,@JsonKey(name: 'full_name') String? fullName, String? email, String? avatar,@JsonKey(name: 'is_updated') bool isUpdated,@JsonKey(name: 'fcm_token') String? fcmToken
 });
 
 
@@ -279,11 +279,11 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? phoneNumber = null,Object? role = null,Object? fullName = freezed,Object? email = freezed,Object? avatar = freezed,Object? isUpdated = null,Object? fcmToken = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? phoneNumber = freezed,Object? role = null,Object? fullName = freezed,Object? email = freezed,Object? avatar = freezed,Object? isUpdated = null,Object? fcmToken = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
-as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as int,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as UserRole,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable

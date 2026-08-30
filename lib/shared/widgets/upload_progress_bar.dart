@@ -7,11 +7,7 @@ import '../../core/theme/app_typography.dart';
 /// Determinate progress bar for file uploads, styled per the design system:
 /// gold fill (#D4AF37) over a charcoal track.
 class UploadProgressBar extends StatelessWidget {
-  const UploadProgressBar({
-    super.key,
-    required this.progress,
-    this.label,
-  });
+  const UploadProgressBar({super.key, required this.progress, this.label});
 
   /// Fraction complete between 0.0 and 1.0.
   final double progress;

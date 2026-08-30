@@ -36,10 +36,10 @@ class LocationProvider extends ChangeNotifier {
         return;
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
       return;
-    } 
+    }
 
     _hasPermission = true;
     notifyListeners();
@@ -50,7 +50,7 @@ class LocationProvider extends ChangeNotifier {
       Position position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-        )
+        ),
       );
       _currentLocation = LatLng(position.latitude, position.longitude);
       notifyListeners();
@@ -61,20 +61,21 @@ class LocationProvider extends ChangeNotifier {
 
   void _startListening() {
     _positionStreamSubscription?.cancel();
-    
+
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 10, // Updates every 10 meters
     );
 
-    _positionStreamSubscription = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-      (Position? position) {
-        if (position != null) {
-          _currentLocation = LatLng(position.latitude, position.longitude);
-          notifyListeners();
-        }
-      },
-    );
+    _positionStreamSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+          (Position? position) {
+            if (position != null) {
+              _currentLocation = LatLng(position.latitude, position.longitude);
+              notifyListeners();
+            }
+          },
+        );
   }
 
   @override

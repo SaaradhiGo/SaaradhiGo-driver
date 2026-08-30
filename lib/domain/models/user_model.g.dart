@@ -8,12 +8,12 @@ part of 'user_model.dart';
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: (json['id'] as num).toInt(),
-  phoneNumber: json['phone_number'] as String,
-  role: $enumDecode(_$UserRoleEnumMap, json['role']),
+  phoneNumber: json['phone_number'] as String?,
+  role: $enumDecodeNullable(_$UserRoleEnumMap, json['role']) ?? UserRole.driver,
   fullName: json['full_name'] as String?,
   email: json['email'] as String?,
   avatar: json['avatar'] as String?,
-  isUpdated: json['is_updated'] as bool,
+  isUpdated: json['is_updated'] as bool? ?? false,
   fcmToken: json['fcm_token'] as String?,
 );
 

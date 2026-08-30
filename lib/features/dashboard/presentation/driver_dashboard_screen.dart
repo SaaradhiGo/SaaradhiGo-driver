@@ -1,18 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/location/location_providers.dart';
 import '../../../core/network/connectivity_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../domain/models/trip_model.dart';
 import '../../../shared/widgets/map_controls.dart';
 import '../../profile/presentation/providers/profile_providers.dart';
+import '../../trip/presentation/providers/trip_providers.dart';
+import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
 import 'widgets/dashboard_header.dart';
 import 'widgets/dashboard_status_banner.dart';
 import 'widgets/driver_map.dart';
+import 'widgets/incoming_ride_bottom_sheet.dart';
 import 'widgets/location_blocked_overlay.dart';
 import 'widgets/online_toggle.dart';
 
@@ -35,6 +42,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   final MapController _mapController = MapController();
   bool _followDriver = true;
   bool _mapReady = false;
+  StreamSubscription<DriverLocationRideRequest>? _rideRequestSub;
+  bool _showingRideModal = false;
 
   @override
   void initState() {
@@ -45,11 +54,82 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       // Start GPS on entry so the map has a fix before the driver taps the
       // toggle. Permission prompts are driven from here, not from goOnline().
       ref.read(locationNotifierProvider.notifier).start();
+
+      final profileState = ref.read(driverProfileNotifierProvider);
+      if (profileState is ProfileStateInitial ||
+          profileState is ProfileStateError) {
+        ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      }
+
+      _subscribeToRideRequests();
+      _checkForActiveTrip();
     });
+  }
+
+  /// Crash recovery: on entry, ask the backend for an in-flight trip and rejoin
+  /// it. Best-effort — a failure here must not block the dashboard.
+  Future<void> _checkForActiveTrip() async {
+    try {
+      final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
+      if (!mounted || trip == null || trip.status.isTerminal) return;
+      ref.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(trip);
+      if (mounted) context.push('/ride');
+    } catch (_) {
+      // No active trip / transient error — stay on the dashboard.
+    }
+  }
+
+  void _subscribeToRideRequests() {
+    _rideRequestSub?.cancel();
+    final notifier = ref.read(availabilityNotifierProvider.notifier);
+    _rideRequestSub = notifier.rideRequests.listen((event) {
+      if (!mounted || _showingRideModal) return;
+      _showIncomingRideModal(event);
+    });
+  }
+
+  void _showIncomingRideModal(DriverLocationRideRequest event) {
+    _showingRideModal = true;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalCtx) {
+        return IncomingRideBottomSheet(
+          request: event,
+          onAccept: () {
+            Navigator.pop(modalCtx);
+            _showingRideModal = false;
+            _acceptRideRequest(event);
+          },
+          onDecline: () {
+            Navigator.pop(modalCtx);
+            _showingRideModal = false;
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              const SnackBar(
+                content: Text('Ride request declined.'),
+                backgroundColor: AppColors.surfaceContainerHigh,
+              ),
+            );
+          },
+        );
+      },
+    ).then((_) {
+      _showingRideModal = false;
+    });
+  }
+
+  void _acceptRideRequest(DriverLocationRideRequest event) {
+    // Hand the offer to the trip session (opens the trip socket + sends accept)
+    // and move into the full-screen ride lifecycle. Pushed, so completing or
+    // cancelling the trip returns to this dashboard.
+    ref.read(tripSessionNotifierProvider.notifier).acceptFromRequest(event);
+    context.push('/ride');
   }
 
   @override
   void dispose() {
+    _rideRequestSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _mapController.dispose();
     super.dispose();
@@ -99,9 +179,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             alignment: Alignment.topCenter,
             child: DashboardHeader(profileState: profileState),
           ),
+          _buildToggle(locationState, availability, profileState, hasNetwork),
           _buildBanners(locationState, availability, hasNetwork),
           _buildMapControls(position),
-          _buildToggle(locationState, availability, profileState, hasNetwork),
           ..._buildBlockingOverlay(locationState),
         ],
       ),
@@ -245,7 +325,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     if (banners.isEmpty) return const SizedBox.shrink();
 
     return Positioned(
-      top: MediaQuery.paddingOf(context).top + 76,
+      top: MediaQuery.paddingOf(context).top + 144,
       left: AppSpacing.margin,
       right: AppSpacing.margin,
       child: Column(
@@ -262,7 +342,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
   Widget _buildMapControls(LatLng? position) {
     return Positioned(
-      top: MediaQuery.paddingOf(context).top + 140,
+      top: MediaQuery.paddingOf(context).top + 144,
       right: AppSpacing.margin,
       child: Column(
         children: [
@@ -288,10 +368,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     bool hasNetwork,
   ) {
     // Disabled state: anything that makes the transition impossible right now.
-    final profileReady = profileState is ProfileStateLoaded;
     final canStart =
         hasNetwork &&
-        profileReady &&
         availability is! AvailabilityStateGoingOffline &&
         locationState is! LocationStateServiceDisabled &&
         locationState is! LocationStatePermissionDenied;
@@ -299,19 +377,23 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     // offline, even after connectivity/GPS has degraded.
     final enabled = availability.isEngaged || canStart;
 
-    return Align(
-      alignment: const Alignment(0, -0.35),
-      child: OnlineToggle(
-        state: availability,
-        enabled: enabled,
-        onPressed: () {
-          final notifier = ref.read(availabilityNotifierProvider.notifier);
-          if (availability is AvailabilityStateBlocked ||
-              availability is AvailabilityStateError) {
-            notifier.acknowledge();
-          }
-          notifier.toggle();
-        },
+    return Positioned(
+      top: MediaQuery.paddingOf(context).top + 84,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: OnlineToggle(
+          state: availability,
+          enabled: enabled,
+          onPressed: () {
+            final notifier = ref.read(availabilityNotifierProvider.notifier);
+            if (availability is AvailabilityStateBlocked ||
+                availability is AvailabilityStateError) {
+              notifier.acknowledge();
+            }
+            notifier.toggle();
+          },
+        ),
       ),
     );
   }

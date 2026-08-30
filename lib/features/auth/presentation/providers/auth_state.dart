@@ -1,3 +1,5 @@
+import '../../../../domain/models/user_model.dart';
+
 sealed class AuthState {
   const AuthState();
 }
@@ -27,7 +29,8 @@ class AuthVerifyingOtp extends AuthState {
 }
 
 class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated();
+  final UserModel? user;
+  const AuthAuthenticated({this.user});
 }
 
 class AuthError extends AuthState {

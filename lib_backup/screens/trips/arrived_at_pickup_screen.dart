@@ -25,10 +25,7 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Arrived at Pickup',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Arrived at Pickup', showBackButton: true),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -50,8 +47,21 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data?['rider_name']?.toString() ?? 'Rider', style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface)),
-                          Text(data?['pickup_address']?.toString() ?? 'Pickup Location', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(
+                            data?['rider_name']?.toString() ?? 'Rider',
+                            style: AppTypography.headlineSm.copyWith(
+                              color: AppColors.onSurface,
+                            ),
+                          ),
+                          Text(
+                            data?['pickup_address']?.toString() ??
+                                'Pickup Location',
+                            style: AppTypography.bodyMd.copyWith(
+                              color: AppColors.onSurfaceVariant,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -61,7 +71,8 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.chat, color: AppColors.primary),
-                      onPressed: () => Navigator.pushNamed(context, RouteNames.messages),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, RouteNames.messages),
                     ),
                   ],
                 ),
@@ -101,18 +112,24 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                         counterText: '',
                         hintText: '000000',
                         hintStyle: AppTypography.displayLg.copyWith(
-                          color: AppColors.onSurfaceVariant.withValues(alpha: 0.3),
+                          color: AppColors.onSurfaceVariant.withValues(
+                            alpha: 0.3,
+                          ),
                           letterSpacing: 16,
                         ),
                         filled: true,
                         fillColor: AppColors.surfaceContainerHigh,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                          borderSide: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.1),
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.primary),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ),
@@ -128,26 +145,39 @@ class _ArrivedAtPickupScreenState extends State<ArrivedAtPickupScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  onPressed: session.isLoading ? null : () {
-                    if (_otpController.text.length == 6) {
-                      session.startTrip(_otpController.text);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please enter 6-digit OTP')),
-                      );
-                    }
-                  },
-                  child: session.isLoading
-                    ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2))
-                    : Text(
-                    'START TRIP',
-                    style: AppTypography.headlineSm.copyWith(
-                      color: AppColors.onPrimary,
-                      fontWeight: FontWeight.bold,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
+                  onPressed: session.isLoading
+                      ? null
+                      : () {
+                          if (_otpController.text.length == 6) {
+                            session.startTrip(_otpController.text);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please enter 6-digit OTP'),
+                              ),
+                            );
+                          }
+                        },
+                  child: session.isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: AppColors.onPrimary,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'START TRIP',
+                          style: AppTypography.headlineSm.copyWith(
+                            color: AppColors.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ],

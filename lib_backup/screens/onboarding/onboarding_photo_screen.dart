@@ -20,7 +20,12 @@ class OnboardingPhotoScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
           children: [
-            Text('Driver Profile Photo', style: AppTypography.headlineSm.copyWith(color: AppColors.primary)),
+            Text(
+              'Driver Profile Photo',
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
             const SizedBox(height: AppSpacing.stackLg),
 
             GlassPanel(
@@ -30,12 +35,27 @@ class OnboardingPhotoScreen extends StatelessWidget {
                   const CircleAvatar(
                     radius: 40,
                     backgroundColor: AppColors.surfaceVariant,
-                    child: Icon(Icons.camera_alt, size: 36, color: AppColors.primary),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 36,
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  Text('Take a clear selfie', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Take a clear selfie',
+                    style: AppTypography.bodyLg.copyWith(
+                      color: AppColors.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text('No glasses, hat, or dark background.', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant)),
+                  Text(
+                    'No glasses, hat, or dark background.',
+                    style: AppTypography.bodyMd.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -47,10 +67,18 @@ class OnboardingPhotoScreen extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: Text('SUBMIT PROFILE PHOTO', style: AppTypography.headlineSm.copyWith(color: AppColors.onPrimary, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'SUBMIT PROFILE PHOTO',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],

@@ -51,7 +51,10 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.notifications, color: AppColors.onSurfaceVariant),
+            icon: const Icon(
+              Icons.notifications,
+              color: AppColors.onSurfaceVariant,
+            ),
             onPressed: () {},
           ),
         ],
@@ -84,14 +87,20 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
               child: Consumer<TripProvider>(
                 builder: (context, provider, child) {
                   if (provider.isLoading) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    );
                   }
-                  
+
                   if (provider.error != null) {
                     return Center(
                       child: Text(
                         provider.error!,
-                        style: AppTypography.bodyMd.copyWith(color: AppColors.error),
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.error,
+                        ),
                       ),
                     );
                   }
@@ -100,7 +109,9 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                     return Center(
                       child: Text(
                         'No trips found.',
-                        style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
                       ),
                     );
                   }
@@ -112,20 +123,27 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                       String status = 'all';
                       if (_selectedFilter == 1) status = 'completed';
                       if (_selectedFilter == 2) status = 'cancelled';
-                      await context.read<TripProvider>().fetchTrips(status: status);
+                      await context.read<TripProvider>().fetchTrips(
+                        status: status,
+                      );
                     },
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.containerMargin,
                         vertical: AppSpacing.stackMd,
                       ),
-                      itemCount: provider.trips.length + 1, // +1 for bottom padding
-                      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.stackMd),
+                      itemCount:
+                          provider.trips.length + 1, // +1 for bottom padding
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSpacing.stackMd),
                       itemBuilder: (context, index) {
                         if (index == provider.trips.length) {
                           return const SizedBox(height: 80);
                         }
-                        return _buildDynamicTripCard(context, provider.trips[index]);
+                        return _buildDynamicTripCard(
+                          context,
+                          provider.trips[index],
+                        );
                       },
                     ),
                   );
@@ -171,16 +189,22 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryContainer.withValues(alpha: 0.2) : Colors.transparent,
+          color: isSelected
+              ? AppColors.primaryContainer.withValues(alpha: 0.2)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primaryContainer : AppColors.outlineVariant,
+            color: isSelected
+                ? AppColors.primaryContainer
+                : AppColors.outlineVariant,
           ),
         ),
         child: Text(
           label,
           style: AppTypography.bodyMd.copyWith(
-            color: isSelected ? AppColors.primaryContainer : AppColors.onSurfaceVariant,
+            color: isSelected
+                ? AppColors.primaryContainer
+                : AppColors.onSurfaceVariant,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             fontSize: 14,
           ),
@@ -191,14 +215,18 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
 
   Widget _buildDynamicTripCard(BuildContext context, TripModel trip) {
     final isCompleted = trip.status == 'completed';
-    
+
     // Format status nicely (e.g. "in_progress" -> "IN PROGRESS")
     final formattedStatus = trip.status.replaceAll('_', ' ').toUpperCase();
 
     return GestureDetector(
       onTap: () async {
         if (trip.status == 'completed' || trip.status == 'cancelled') {
-          Navigator.pushNamed(context, RouteNames.tripDetails, arguments: trip.id);
+          Navigator.pushNamed(
+            context,
+            RouteNames.tripDetails,
+            arguments: trip.id,
+          );
         } else {
           // Active trips: fetch full raw data before hydrating
           showDialog(
@@ -210,21 +238,25 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
           );
 
           final rawTripData = await TripService.getRawTripDetails(trip.id);
-          
+
           if (context.mounted) {
             Navigator.pop(context); // Dismiss loading dialog
             if (rawTripData != null) {
               context.read<TripSessionProvider>().resumeTrip(rawTripData);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Failed to load active trip details')),
+                const SnackBar(
+                  content: Text('Failed to load active trip details'),
+                ),
               );
             }
           }
         }
       },
       child: _buildTripCard(
-        date: trip.createdAt != null ? _formatDate(trip.createdAt!) : 'Unknown Date',
+        date: trip.createdAt != null
+            ? _formatDate(trip.createdAt!)
+            : 'Unknown Date',
         riderName: trip.riderName ?? 'Rider',
         fare: '₹${trip.estimatedFare ?? '0'}',
         status: formattedStatus,
@@ -233,7 +265,9 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
         dropoff: trip.destinationAddress ?? 'Unknown Location',
         dropoffDetail: '',
         distance: trip.distanceKm != null ? '${trip.distanceKm} km' : '-- km',
-        duration: trip.durationMin != null ? '${trip.durationMin} mins' : '-- mins',
+        duration: trip.durationMin != null
+            ? '${trip.durationMin} mins'
+            : '-- mins',
         paymentMethod: (trip.paymentMethod ?? 'CASH').toUpperCase(),
         isCompleted: isCompleted,
       ),
@@ -251,7 +285,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
       final ampm = hour >= 12 ? 'PM' : 'AM';
       if (hour > 12) hour -= 12;
       if (hour == 0) hour = 12;
-      
+
       return '$day/$month/$year, $hour:$minute $ampm';
     } catch (_) {
       return dateStr;
@@ -307,14 +341,19 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                   Text(
                     fare,
                     style: AppTypography.dataMono.copyWith(
-                      color: isCompleted ? AppColors.primary : AppColors.onSurfaceVariant,
+                      color: isCompleted
+                          ? AppColors.primary
+                          : AppColors.onSurfaceVariant,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: isCompleted
                           ? AppColors.primaryContainer.withValues(alpha: 0.15)
@@ -329,7 +368,9 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                     child: Text(
                       status,
                       style: AppTypography.labelCaps.copyWith(
-                        color: isCompleted ? AppColors.primary : AppColors.onSurfaceVariant,
+                        color: isCompleted
+                            ? AppColors.primary
+                            : AppColors.onSurfaceVariant,
                         fontSize: 11,
                       ),
                     ),
@@ -392,28 +433,46 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.route, size: 14, color: AppColors.onSurfaceVariant),
+                  const Icon(
+                    Icons.route,
+                    size: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     distance,
-                    style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant),
+                    style: AppTypography.labelCaps.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  const Icon(Icons.schedule, size: 14, color: AppColors.onSurfaceVariant),
+                  const Icon(
+                    Icons.schedule,
+                    size: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     duration,
-                    style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant),
+                    style: AppTypography.labelCaps.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  const Icon(Icons.contactless, size: 14, color: AppColors.onSurfaceVariant),
+                  const Icon(
+                    Icons.contactless,
+                    size: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     paymentMethod,
-                    style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant),
+                    style: AppTypography.labelCaps.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),

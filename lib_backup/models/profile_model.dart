@@ -37,7 +37,9 @@ class UserProfileModel {
       houseNo: json['house_no']?.toString(),
       street: json['street']?.toString(),
       zipCode: json['zip_code']?.toString(),
-      avatar: (avatarStr == null || avatarStr.trim().isEmpty) ? null : avatarStr,
+      avatar: (avatarStr == null || avatarStr.trim().isEmpty)
+          ? null
+          : avatarStr,
       createdAt: json['created_at']?.toString(),
     );
   }
@@ -60,7 +62,7 @@ class DriverProfileModel {
   final String? ratings;
   final String? licenseDoc;
   final dynamic activeVehicleDetails;
-  
+
   DriverProfileModel({
     required this.id,
     required this.status,
@@ -79,7 +81,8 @@ class DriverProfileModel {
       licenseExpiry: json['license_expiry']?.toString(),
       ratings: json['ratings']?.toString(),
       licenseDoc: json['license_doc']?.toString(),
-      activeVehicleDetails: json['active_vehicle_details'] ?? json['active_vehicle'],
+      activeVehicleDetails:
+          json['active_vehicle_details'] ?? json['active_vehicle'],
     );
   }
 

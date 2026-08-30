@@ -29,19 +29,41 @@ class IncentivesRewardsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Weekend Quest', style: AppTypography.headlineSm.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      Text(
+                        'Weekend Quest',
+                        style: AppTypography.headlineSm.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryContainer.withValues(alpha: 0.2),
+                          color: AppColors.primaryContainer.withValues(
+                            alpha: 0.2,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text('₹500 BONUS', style: AppTypography.labelCaps.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                        child: Text(
+                          '₹500 BONUS',
+                          style: AppTypography.labelCaps.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text('Complete 10 trips between Fri 6 PM and Sun 11 PM', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant)),
+                  Text(
+                    'Complete 10 trips between Fri 6 PM and Sun 11 PM',
+                    style: AppTypography.bodyMd.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.stackMd),
 
                   // Progress Bar
@@ -56,8 +78,19 @@ class IncentivesRewardsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('7 of 10 trips completed', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
-                      Text('3 trips left', style: AppTypography.labelCaps.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      Text(
+                        '7 of 10 trips completed',
+                        style: AppTypography.labelCaps.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                      Text(
+                        '3 trips left',
+                        style: AppTypography.labelCaps.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -65,12 +98,25 @@ class IncentivesRewardsScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.stackLg),
 
-            Text('Upcoming Quests', style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface)),
+            Text(
+              'Upcoming Quests',
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.onSurface,
+              ),
+            ),
             const SizedBox(height: AppSpacing.stackSm),
 
-            _buildQuestTile('Peak Hour Boost', 'Earn extra ₹50 per trip during 8 AM - 11 AM', 'Starts Mon'),
+            _buildQuestTile(
+              'Peak Hour Boost',
+              'Earn extra ₹50 per trip during 8 AM - 11 AM',
+              'Starts Mon',
+            ),
             const SizedBox(height: 8),
-            _buildQuestTile('Weekly Mileage Bonus', 'Complete 50 rides for ₹1,500 extra payout', 'Starts Mon'),
+            _buildQuestTile(
+              'Weekly Mileage Bonus',
+              'Complete 50 rides for ₹1,500 extra payout',
+              'Starts Mon',
+            ),
           ],
         ),
       ),
@@ -88,9 +134,21 @@ class IncentivesRewardsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: AppTypography.bodyLg.copyWith(
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(desc, style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant, fontSize: 13)),
+                Text(
+                  desc,
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                    fontSize: 13,
+                  ),
+                ),
               ],
             ),
           ),
@@ -100,7 +158,12 @@ class IncentivesRewardsScreen extends StatelessWidget {
               color: AppColors.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(badge, style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
+            child: Text(
+              badge,
+              style: AppTypography.labelCaps.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
           ),
         ],
       ),

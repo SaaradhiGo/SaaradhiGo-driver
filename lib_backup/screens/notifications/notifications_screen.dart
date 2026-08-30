@@ -12,10 +12,7 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Notifications',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Notifications', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -43,7 +40,8 @@ class NotificationsScreen extends StatelessWidget {
               iconColor: AppColors.primary,
               title: 'Verification Successful',
               time: '8:15 AM',
-              body: 'Your driver profile details have been verified and updated.',
+              body:
+                  'Your driver profile details have been verified and updated.',
               isUnread: true,
             ),
             const SizedBox(height: AppSpacing.stackLg),

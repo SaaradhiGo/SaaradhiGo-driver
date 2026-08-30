@@ -9,11 +9,7 @@ class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int>? onTap;
 
-  const AppBottomNav({
-    super.key,
-    required this.currentIndex,
-    this.onTap,
-  });
+  const AppBottomNav({super.key, required this.currentIndex, this.onTap});
 
   void _handleNavigation(BuildContext context, int index) {
     if (currentIndex == index) return;
@@ -49,7 +45,9 @@ class AppBottomNav extends StatelessWidget {
         filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           height: 80,
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom,
+          ),
           decoration: BoxDecoration(
             color: AppColors.surface.withValues(alpha: 0.9),
             border: Border(
@@ -80,7 +78,12 @@ class AppBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, IconData icon, String label) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    IconData icon,
+    String label,
+  ) {
     final isActive = currentIndex == index;
     return GestureDetector(
       onTap: () => _handleNavigation(context, index),
@@ -88,7 +91,9 @@ class AppBottomNav extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+          color: isActive
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -97,13 +102,17 @@ class AppBottomNav extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isActive ? AppColors.primaryContainer : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
+              color: isActive
+                  ? AppColors.primaryContainer
+                  : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: AppTypography.labelCaps.copyWith(
-                color: isActive ? AppColors.primaryContainer : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
+                color: isActive
+                    ? AppColors.primaryContainer
+                    : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
               ),
             ),
           ],

@@ -13,10 +13,7 @@ class SafetyCenterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Safety Center',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Safety Center', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -35,15 +32,30 @@ class SafetyCenterScreen extends StatelessWidget {
                       color: AppColors.errorContainer,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.sos, color: AppColors.onErrorContainer, size: 28),
+                    child: const Icon(
+                      Icons.sos,
+                      color: AppColors.onErrorContainer,
+                      size: 28,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Emergency SOS', style: AppTypography.headlineSm.copyWith(color: AppColors.error)),
-                        Text('Press for immediate police & ambulance assistance', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant, fontSize: 13)),
+                        Text(
+                          'Emergency SOS',
+                          style: AppTypography.headlineSm.copyWith(
+                            color: AppColors.error,
+                          ),
+                        ),
+                        Text(
+                          'Press for immediate police & ambulance assistance',
+                          style: AppTypography.bodyMd.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 13,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -53,7 +65,12 @@ class SafetyCenterScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.stackLg),
 
             // Safety Tools
-            Text('Safety Tools', style: AppTypography.headlineSm.copyWith(color: AppColors.primary)),
+            Text(
+              'Safety Tools',
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
             const SizedBox(height: AppSpacing.stackSm),
 
             GlassPanel(
@@ -64,14 +81,18 @@ class SafetyCenterScreen extends StatelessWidget {
                     icon: Icons.contacts,
                     title: 'Emergency Contacts',
                     subtitle: 'Manage trusted contacts notified during SOS',
-                    onTap: () => Navigator.pushNamed(context, RouteNames.emergencyContacts),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      RouteNames.emergencyContacts,
+                    ),
                   ),
                   _buildDivider(),
                   _buildSafetyTile(
                     icon: Icons.report_problem,
                     title: 'Report an Incident',
                     subtitle: 'Report safety concerns or crashes',
-                    onTap: () => Navigator.pushNamed(context, RouteNames.reportIncident),
+                    onTap: () =>
+                        Navigator.pushNamed(context, RouteNames.reportIncident),
                   ),
                   _buildDivider(),
                   _buildSafetyTile(
@@ -97,9 +118,24 @@ class SafetyCenterScreen extends StatelessWidget {
   }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.primary),
-      title: Text(title, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle, style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant, fontSize: 13)),
-      trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+      title: Text(
+        title,
+        style: AppTypography.bodyLg.copyWith(
+          color: AppColors.onSurface,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: AppTypography.bodyMd.copyWith(
+          color: AppColors.onSurfaceVariant,
+          fontSize: 13,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right,
+        color: AppColors.onSurfaceVariant,
+      ),
       onTap: onTap,
     );
   }

@@ -51,11 +51,15 @@ class TripSessionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final token = await StorageService.read(StorageService.keyAccessToken) ?? 'mock_token';
-      final url = Uri.parse('ws://localhost:8000/ws/ride/trip/$tripId/?token=$token');
-      
+      final token =
+          await StorageService.read(StorageService.keyAccessToken) ??
+          'mock_token';
+      final url = Uri.parse(
+        'ws://localhost:8000/ws/ride/trip/$tripId/?token=$token',
+      );
+
       _channel = WebSocketChannel.connect(url);
-      
+
       _channel!.stream.listen(
         (message) {
           try {
@@ -94,20 +98,20 @@ class TripSessionProvider extends ChangeNotifier {
 
   void _handleIncomingMessage(Map<String, dynamic> data) {
     final type = data['type'];
-    
+
     if (type == 'connection_established') {
       debugPrint('TripSession connected: ${data['message']}');
     } else if (type == 'trip_status_update') {
       _isLoading = false;
       _currentStatus = data['status'];
-      
+
       // Update trip data with any new info sent by server
       if (_tripData != null) {
-        _tripData = { ..._tripData!, ...data };
+        _tripData = {..._tripData!, ...data};
       } else {
         _tripData = data;
       }
-      
+
       notifyListeners();
       _handleStateNavigation(_currentStatus!);
     }
@@ -116,7 +120,7 @@ class TripSessionProvider extends ChangeNotifier {
   void _handleStateNavigation(String status) {
     if (navigatorKey.currentState == null) return;
     final navigator = navigatorKey.currentState!;
-    
+
     switch (status) {
       case 'accept':
       case 'accepted':
@@ -136,11 +140,14 @@ class TripSessionProvider extends ChangeNotifier {
       case 'cancel':
       case 'cancelled':
         // Show snackbar and go to dashboard
-        ScaffoldMessenger.of(navigator.context).showSnackBar(
-          const SnackBar(content: Text('Trip was cancelled')),
-        );
+        ScaffoldMessenger.of(
+          navigator.context,
+        ).showSnackBar(const SnackBar(content: Text('Trip was cancelled')));
         clearSession();
-        navigator.pushNamedAndRemoveUntil(RouteNames.dashboard, (route) => false);
+        navigator.pushNamedAndRemoveUntil(
+          RouteNames.dashboard,
+          (route) => false,
+        );
         break;
     }
   }
@@ -166,10 +173,7 @@ class TripSessionProvider extends ChangeNotifier {
   }
 
   void startTrip(String otp) {
-    _sendAction({
-      "action": "start",
-      "otp": otp
-    });
+    _sendAction({"action": "start", "otp": otp});
   }
 
   void completeTrip() {

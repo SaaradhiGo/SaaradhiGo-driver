@@ -61,8 +61,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
           fileName: fileName,
           bytes: bytes,
         );
-        if (mimeType == null ||
-            !UploadKind.avatar.allowsMimeType(mimeType)) {
+        if (mimeType == null || !UploadKind.avatar.allowsMimeType(mimeType)) {
           throw UploadValidationException(
             'Unsupported file type. Please use '
             '${UploadKind.avatar.friendlyTypeHint}.',

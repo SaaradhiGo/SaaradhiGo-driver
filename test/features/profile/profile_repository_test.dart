@@ -96,31 +96,33 @@ void main() {
       result.fold((f) => expect(f.message, contains('Unsupported')), (_) {});
     });
 
-    test('maps server 403 error envelope to AuthFailure with message',
-        () async {
-      dataSource.updateAvatarError = DioException(
-        requestOptions: RequestOptions(path: '/auth/update/'),
-        type: DioExceptionType.badResponse,
-        response: Response<dynamic>(
+    test(
+      'maps server 403 error envelope to AuthFailure with message',
+      () async {
+        dataSource.updateAvatarError = DioException(
           requestOptions: RequestOptions(path: '/auth/update/'),
-          statusCode: 403,
-          data: {
-            'status': 'error',
-            'error': {'code': 'PERMISSION', 'message': 'Not allowed.'},
-          },
-        ),
-      );
+          type: DioExceptionType.badResponse,
+          response: Response<dynamic>(
+            requestOptions: RequestOptions(path: '/auth/update/'),
+            statusCode: 403,
+            data: {
+              'status': 'error',
+              'error': {'code': 'PERMISSION', 'message': 'Not allowed.'},
+            },
+          ),
+        );
 
-      final result = await repository.updateAvatar(
-        bytes: Uint8List.fromList([1]),
-        fileName: 'me.png',
-      );
+        final result = await repository.updateAvatar(
+          bytes: Uint8List.fromList([1]),
+          fileName: 'me.png',
+        );
 
-      expect(result.isLeft(), isTrue);
-      result.fold((f) {
-        expect(f.message, 'Not allowed.');
-      }, (_) {});
-    });
+        expect(result.isLeft(), isTrue);
+        result.fold((f) {
+          expect(f.message, 'Not allowed.');
+        }, (_) {});
+      },
+    );
   });
 
   test('legacy multipart path used when flag OFF', () async {

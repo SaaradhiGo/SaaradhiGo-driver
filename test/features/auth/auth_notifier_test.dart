@@ -8,13 +8,16 @@ import 'package:saaradhigo_driver/features/auth/domain/auth_repository.dart';
 import 'package:saaradhigo_driver/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:saaradhigo_driver/features/auth/presentation/providers/auth_state.dart';
 
+import 'package:saaradhigo_driver/domain/models/user_model.dart';
+
 class _FakeAuthRepository implements AuthRepository {
   @override
   Future<void> requestOtp(String phoneNumber) async {}
 
   @override
-  Future<void> verifyOtp(String phoneNumber, String otp) async {
+  Future<UserModel?> verifyOtp(String phoneNumber, String otp) async {
     await SecureStorageService.saveTokens(accessToken: 'a', refreshToken: 'r');
+    return null;
   }
 
   @override

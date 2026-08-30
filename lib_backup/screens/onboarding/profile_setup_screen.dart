@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -20,7 +19,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _emergencyContactController = TextEditingController();
+  final TextEditingController _emergencyContactController =
+      TextEditingController();
   final TextEditingController _houseNoController = TextEditingController();
   final TextEditingController _streetNameController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -29,7 +29,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   XFile? _selectedImage;
   String? _networkAvatarUrl;
   final ImagePicker _picker = ImagePicker();
-  
+
   bool _isLoading = false;
 
   @override
@@ -39,7 +39,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       _loadExistingProfile();
     });
   }
-  
+
   Future<void> _loadExistingProfile() async {
     final auth = await AuthService.getStoredUserProfile();
     if (auth != null && mounted) {
@@ -47,11 +47,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         if (auth['full_name'] != null) _nameController.text = auth['full_name'];
         if (auth['email'] != null) _emailController.text = auth['email'];
         if (auth['dob'] != null) _dobController.text = auth['dob'];
-        if (auth['emergency_contact'] != null) _emergencyContactController.text = auth['emergency_contact'];
-        if (auth['house_no'] != null) _houseNoController.text = auth['house_no'];
+        if (auth['emergency_contact'] != null)
+          _emergencyContactController.text = auth['emergency_contact'];
+        if (auth['house_no'] != null)
+          _houseNoController.text = auth['house_no'];
         if (auth['street'] != null) _streetNameController.text = auth['street'];
         if (auth['city'] != null) _cityController.text = auth['city'];
-        if (auth['zip_code'] != null) _zipCodeController.text = auth['zip_code'];
+        if (auth['zip_code'] != null)
+          _zipCodeController.text = auth['zip_code'];
         if (auth['gender'] != null) {
           final g = auth['gender'].toString().toLowerCase();
           if (g == 'male' || g == 'female' || g == 'other') {
@@ -59,7 +62,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           }
         }
         if (auth['avatar'] != null && auth['avatar'].toString().isNotEmpty) {
-           _networkAvatarUrl = auth['avatar'];
+          _networkAvatarUrl = auth['avatar'];
         }
       });
     }
@@ -210,7 +213,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
     // First upload avatar if a new one is selected
     if (_selectedImage != null) {
-      final avatarResponse = await AuthService.updateProfileAvatar(_selectedImage!);
+      final avatarResponse = await AuthService.updateProfileAvatar(
+        _selectedImage!,
+      );
       if (!avatarResponse.success) {
         hasError = true;
         errorMessage = avatarResponse.message ?? 'Failed to upload avatar';
@@ -228,7 +233,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     }
 
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = false;
     });
@@ -295,7 +300,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               hintText: placeholder,
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
-                horizontal: (leadingIcon != null || suffixIcon != null) ? 0 : 16,
+                horizontal: (leadingIcon != null || suffixIcon != null)
+                    ? 0
+                    : 16,
                 vertical: 16,
               ),
               prefixIcon: leadingIcon != null
@@ -374,18 +381,20 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                           image: _selectedImage != null
                               ? DecorationImage(
                                   image: kIsWeb
-                                      ? NetworkImage(_selectedImage!.path) as ImageProvider
+                                      ? NetworkImage(_selectedImage!.path)
+                                            as ImageProvider
                                       : FileImage(File(_selectedImage!.path)),
                                   fit: BoxFit.cover,
                                 )
                               : _networkAvatarUrl != null
-                                  ? DecorationImage(
-                                      image: NetworkImage(_networkAvatarUrl!),
-                                      fit: BoxFit.cover,
-                                    )
-                                  : null,
+                              ? DecorationImage(
+                                  image: NetworkImage(_networkAvatarUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        child: _selectedImage == null && _networkAvatarUrl == null
+                        child:
+                            _selectedImage == null && _networkAvatarUrl == null
                             ? Icon(
                                 Icons.person,
                                 size: 60,

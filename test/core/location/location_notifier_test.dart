@@ -23,6 +23,10 @@ class _FakeGeolocator implements GeolocatorAdapter {
   /// geolocator_linux/web and throw [UnimplementedError].
   bool simulateUnsupportedSettings = false;
 
+  /// When true, getServiceStatusStream behaves like geolocator_web and throws
+  /// [UnsupportedError].
+  bool simulateUnsupportedServiceStatus = false;
+
   final positions = StreamController<Position>.broadcast();
   final serviceStatuses = StreamController<ServiceStatus>.broadcast();
 
@@ -37,7 +41,14 @@ class _FakeGeolocator implements GeolocatorAdapter {
       positions.stream;
 
   @override
-  Stream<ServiceStatus> getServiceStatusStream() => serviceStatuses.stream;
+  Stream<ServiceStatus> getServiceStatusStream() {
+    if (simulateUnsupportedServiceStatus) {
+      throw UnsupportedError(
+        'getServiceStatusStream is not supported on the web platform.',
+      );
+    }
+    return serviceStatuses.stream;
+  }
 
   @override
   Future<Position> getCurrentPosition(LocationSettings settings) async =>
@@ -206,4 +217,54 @@ void main() {
     expect(service.openAppSettings(), completion(isFalse));
     expect(service.openLocationSettings(), completion(isFalse));
   });
+
+  test('transitions to tracking on near-stationary fixes — guards the web '
+      'distanceFilter regression', () async {
+    // Regression: geolocator_web 4.1.x implements distanceFilter as a
+    // skipWhile over consecutive fixes, so with a 10 m filter the browser
+    // (~1 Hz samples, often < 10 m apart) suppresses almost every fix and the
+    // notifier never leaves "acquiring". The app must reach tracking for
+    // sub-filter movement; the outbound WebSocket frame gate
+    // (LocationThrottle, docs/10_LOCATION.md §2) remains the only place that
+    // enforces the >10 m / >5 s rule.
+    final notifier = container.read(locationNotifierProvider.notifier);
+    await notifier.start();
+
+    // Two fixes ~3 m apart — well under the 10 m platform distanceFilter.
+    geolocator.positions.add(_position(lat: 17.3850));
+    await pumpEventQueue();
+    expect(
+      container.read(locationNotifierProvider),
+      isA<LocationStateTracking>(),
+    );
+
+    geolocator.positions.add(_position(lat: 17.38503));
+    await pumpEventQueue();
+    final state = container.read(locationNotifierProvider);
+    expect(state, isA<LocationStateTracking>());
+    expect((state as LocationStateTracking).position.latitude, 17.38503);
+  });
+
+  test(
+    'watchServiceStatus returns empty stream on UnsupportedError (web platform)',
+    () async {
+      geolocator.simulateUnsupportedServiceStatus = true;
+
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start();
+
+      expect(
+        container.read(locationNotifierProvider),
+        isA<LocationStateAcquiring>(),
+      );
+
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      expect(
+        container.read(locationNotifierProvider),
+        isA<LocationStateTracking>(),
+      );
+    },
+  );
 }

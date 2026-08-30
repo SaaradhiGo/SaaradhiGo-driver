@@ -11,7 +11,8 @@ class EarningsDashboardScreen extends StatefulWidget {
   const EarningsDashboardScreen({super.key});
 
   @override
-  State<EarningsDashboardScreen> createState() => _EarningsDashboardScreenState();
+  State<EarningsDashboardScreen> createState() =>
+      _EarningsDashboardScreenState();
 }
 
 class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
@@ -42,7 +43,10 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
         showBackButton: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: AppColors.onSurfaceVariant),
+            icon: const Icon(
+              Icons.notifications,
+              color: AppColors.onSurfaceVariant,
+            ),
             onPressed: () {},
           ),
         ],
@@ -51,7 +55,9 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
         child: Consumer<EarningsProvider>(
           builder: (context, provider, child) {
             if (provider.isLoading && provider.summary == null) {
-              return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
             }
 
             if (provider.error != null && provider.summary == null) {
@@ -72,7 +78,9 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                 String period = 'today';
                 if (_selectedPeriod == 1) period = 'this_week';
                 if (_selectedPeriod == 2) period = 'this_month';
-                await context.read<EarningsProvider>().fetchEarnings(period: period);
+                await context.read<EarningsProvider>().fetchEarnings(
+                  period: period,
+                );
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -110,18 +118,20 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                               height: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                                color: AppColors.primaryContainer.withValues(
+                                  alpha: 0.15,
+                                ),
                               ),
                             ),
                           ),
                           Column(
                             children: [
                               Text(
-                                _selectedPeriod == 0 
-                                    ? 'Total Earnings (Today)' 
-                                    : _selectedPeriod == 1 
-                                        ? 'Total Earnings (This Week)' 
-                                        : 'Total Earnings (This Month)',
+                                _selectedPeriod == 0
+                                    ? 'Total Earnings (Today)'
+                                    : _selectedPeriod == 1
+                                    ? 'Total Earnings (This Week)'
+                                    : 'Total Earnings (This Month)',
                                 style: AppTypography.bodyMd.copyWith(
                                   color: AppColors.onSurfaceVariant,
                                 ),
@@ -148,18 +158,21 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                                       children: [
                                         Text(
                                           '${summary?.totalTrips ?? 0}',
-                                          style: AppTypography.dataMono.copyWith(
-                                            color: AppColors.primary,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: AppTypography.dataMono
+                                              .copyWith(
+                                                color: AppColors.primary,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           'Completed Trips',
-                                          style: AppTypography.labelCaps.copyWith(
-                                            color: AppColors.onSurfaceVariant,
-                                          ),
+                                          style: AppTypography.labelCaps
+                                              .copyWith(
+                                                color:
+                                                    AppColors.onSurfaceVariant,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -174,18 +187,21 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                                       children: [
                                         Text(
                                           '--',
-                                          style: AppTypography.dataMono.copyWith(
-                                            color: AppColors.primary,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: AppTypography.dataMono
+                                              .copyWith(
+                                                color: AppColors.primary,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           'Online Hours',
-                                          style: AppTypography.labelCaps.copyWith(
-                                            color: AppColors.onSurfaceVariant,
-                                          ),
+                                          style: AppTypography.labelCaps
+                                              .copyWith(
+                                                color:
+                                                    AppColors.onSurfaceVariant,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -228,7 +244,9 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                             decoration: BoxDecoration(
                               color: AppColors.surfaceContainerLowest,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.05),
+                              ),
                             ),
                             child: Stack(
                               children: [
@@ -245,7 +263,8 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                                       color: AppColors.surfaceContainer,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                        color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                        color: AppColors.primaryContainer
+                                            .withValues(alpha: 0.3),
                                       ),
                                     ),
                                     child: Column(
@@ -253,23 +272,28 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                                       children: [
                                         Text(
                                           'Today',
-                                          style: AppTypography.labelCaps.copyWith(
-                                            color: AppColors.onSurfaceVariant,
-                                          ),
+                                          style: AppTypography.labelCaps
+                                              .copyWith(
+                                                color:
+                                                    AppColors.onSurfaceVariant,
+                                              ),
                                         ),
                                         Text(
                                           '₹${summary?.todayEarned ?? '0'}',
-                                          style: AppTypography.dataMono.copyWith(
-                                            color: AppColors.primary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: AppTypography.dataMono
+                                              .copyWith(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         Text(
                                           '${summary?.todayTrips ?? 0} Trips',
-                                          style: AppTypography.labelCaps.copyWith(
-                                            color: AppColors.onSurfaceVariant,
-                                            fontSize: 10,
-                                          ),
+                                          style: AppTypography.labelCaps
+                                              .copyWith(
+                                                color:
+                                                    AppColors.onSurfaceVariant,
+                                                fontSize: 10,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -287,7 +311,11 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _buildStatBox(Icons.speed, '₹--', 'Avg / Hour'),
+                          child: _buildStatBox(
+                            Icons.speed,
+                            '₹--',
+                            'Avg / Hour',
+                          ),
                         ),
                         const SizedBox(width: AppSpacing.stackSm),
                         Expanded(
@@ -295,7 +323,11 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                         ),
                         const SizedBox(width: AppSpacing.stackSm),
                         Expanded(
-                          child: _buildStatBox(Icons.account_balance_wallet, '₹--', 'Digital'),
+                          child: _buildStatBox(
+                            Icons.account_balance_wallet,
+                            '₹--',
+                            'Digital',
+                          ),
                         ),
                       ],
                     ),
@@ -314,14 +346,45 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
+                          Container(
+                            height: 1,
+                            color: Colors.white.withValues(alpha: 0.1),
+                          ),
                           const SizedBox(height: 8),
-                          _buildBreakdownRow(Icons.route, 'Trip Fares', '₹${summary?.totalEarned ?? '0'}', isAccent: false),
-                          _buildBreakdownRow(Icons.star, 'Incentives', '+₹0', isAccent: true),
-                          _buildBreakdownRow(Icons.card_giftcard, 'Bonuses', '+₹0', isAccent: true),
-                          _buildBreakdownRow(Icons.volunteer_activism, 'Tips', '₹0', isAccent: false),
-                          Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
-                          _buildBreakdownRow(Icons.money_off, 'Commission', '-₹${summary?.totalCommission ?? '0'}', isError: true),
+                          _buildBreakdownRow(
+                            Icons.route,
+                            'Trip Fares',
+                            '₹${summary?.totalEarned ?? '0'}',
+                            isAccent: false,
+                          ),
+                          _buildBreakdownRow(
+                            Icons.star,
+                            'Incentives',
+                            '+₹0',
+                            isAccent: true,
+                          ),
+                          _buildBreakdownRow(
+                            Icons.card_giftcard,
+                            'Bonuses',
+                            '+₹0',
+                            isAccent: true,
+                          ),
+                          _buildBreakdownRow(
+                            Icons.volunteer_activism,
+                            'Tips',
+                            '₹0',
+                            isAccent: false,
+                          ),
+                          Container(
+                            height: 1,
+                            color: Colors.white.withValues(alpha: 0.1),
+                          ),
+                          _buildBreakdownRow(
+                            Icons.money_off,
+                            'Commission',
+                            '-₹${summary?.totalCommission ?? '0'}',
+                            isError: true,
+                          ),
                         ],
                       ),
                     ),
@@ -345,15 +408,23 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryContainer.withValues(alpha: 0.2) : Colors.transparent,
+            color: isSelected
+                ? AppColors.primaryContainer.withValues(alpha: 0.2)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
-            border: isSelected ? Border.all(color: AppColors.primaryContainer.withValues(alpha: 0.5)) : null,
+            border: isSelected
+                ? Border.all(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.5),
+                  )
+                : null,
           ),
           child: Center(
             child: Text(
               label,
               style: AppTypography.labelCaps.copyWith(
-                color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+                color: isSelected
+                    ? AppColors.primary
+                    : AppColors.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -390,7 +461,13 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
     );
   }
 
-  Widget _buildBreakdownRow(IconData icon, String label, String amount, {bool isAccent = false, bool isError = false}) {
+  Widget _buildBreakdownRow(
+    IconData icon,
+    String label,
+    String amount, {
+    bool isAccent = false,
+    bool isError = false,
+  }) {
     Color color = AppColors.onSurface;
     if (isAccent) color = AppColors.primary;
     if (isError) color = AppColors.error;
@@ -407,7 +484,9 @@ class _EarningsDashboardScreenState extends State<EarningsDashboardScreen> {
               Text(
                 label,
                 style: AppTypography.bodyMd.copyWith(
-                  color: isError ? AppColors.onSurfaceVariant : AppColors.onSurface,
+                  color: isError
+                      ? AppColors.onSurfaceVariant
+                      : AppColors.onSurface,
                 ),
               ),
             ],
@@ -461,7 +540,11 @@ class _TrendChartPainter extends CustomPainter {
 
     // Highlight dot
     final dotPaint = Paint()..color = AppColors.primaryContainer;
-    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.45), 5, dotPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.8, size.height * 0.45),
+      5,
+      dotPaint,
+    );
   }
 
   @override

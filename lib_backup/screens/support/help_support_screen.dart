@@ -19,10 +19,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Help Center',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Help Center', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -42,11 +39,15 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
-                      style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface),
+                      style: AppTypography.bodyLg.copyWith(
+                        color: AppColors.onSurface,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'How can we help you?',
                         hintStyle: AppTypography.bodyLg.copyWith(
-                          color: AppColors.onSurfaceVariant.withValues(alpha: 0.5),
+                          color: AppColors.onSurfaceVariant.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                         border: InputBorder.none,
                       ),
@@ -60,7 +61,9 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
             // Help Topics Grid
             Text(
               'Help Topics',
-              style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(height: AppSpacing.stackSm),
             GridView.count(
@@ -85,24 +88,48 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               padding: const EdgeInsets.all(AppSpacing.stackMd),
               child: Row(
                 children: [
-                  const Icon(Icons.support_agent, size: 40, color: AppColors.primary),
+                  const Icon(
+                    Icons.support_agent,
+                    size: 40,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Priority 24/7 Support', style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
-                        Text('Dedicated team for Elite Partners', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant, fontSize: 13)),
+                        Text(
+                          'Priority 24/7 Support',
+                          style: AppTypography.bodyLg.copyWith(
+                            color: AppColors.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Dedicated team for Elite Partners',
+                          style: AppTypography.bodyMd.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 13,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: () {},
-                    child: Text('Call', style: AppTypography.bodyMd.copyWith(color: AppColors.onPrimary, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      'Call',
+                      style: AppTypography.bodyMd.copyWith(
+                        color: AppColors.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -112,23 +139,28 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
             // FAQs Section
             Text(
               'Frequently Asked Questions',
-              style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(height: AppSpacing.stackSm),
             _buildFaqItem(
               index: 0,
               question: 'How do I update my payment details?',
-              answer: 'Navigate to the Payment section in your Driver Profile. Tap on Edit Payment Method to securely update your bank details. Changes take up to 24 hours to reflect.',
+              answer:
+                  'Navigate to the Payment section in your Driver Profile. Tap on Edit Payment Method to securely update your bank details. Changes take up to 24 hours to reflect.',
             ),
             _buildFaqItem(
               index: 1,
               question: 'What happens if a rider cancels?',
-              answer: 'If a rider cancels after 2 minutes of booking, a cancellation fee is automatically credited to your wallet.',
+              answer:
+                  'If a rider cancels after 2 minutes of booking, a cancellation fee is automatically credited to your wallet.',
             ),
             _buildFaqItem(
               index: 2,
               question: 'How is my Elite tier maintained?',
-              answer: 'Elite status requires maintaining a minimum rating of 4.8 and a 95% acceptance rate over 30 rolling days.',
+              answer:
+                  'Elite status requires maintaining a minimum rating of 4.8 and a 95% acceptance rate over 30 rolling days.',
             ),
           ],
         ),
@@ -156,7 +188,11 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     );
   }
 
-  Widget _buildFaqItem({required int index, required String question, required String answer}) {
+  Widget _buildFaqItem({
+    required int index,
+    required String question,
+    required String answer,
+  }) {
     final isExpanded = _expandedFaqs[index];
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),

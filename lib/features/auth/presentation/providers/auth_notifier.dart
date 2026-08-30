@@ -48,7 +48,8 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final token = await SecureStorageService.getAccessToken();
       if (token != null && token.isNotEmpty) {
-        state = const AuthAuthenticated();
+        final user = await SecureStorageService.getUser();
+        state = AuthAuthenticated(user: user);
       } else {
         state = const AuthUnauthenticated();
       }
@@ -131,8 +132,8 @@ class AuthNotifier extends Notifier<AuthState> {
     }
 
     try {
-      await _repository.verifyOtp(phoneNumber, otp);
-      state = const AuthAuthenticated();
+      final user = await _repository.verifyOtp(phoneNumber, otp);
+      state = AuthAuthenticated(user: user);
     } on Failure catch (e) {
       state = AuthError(message: e.message);
       Future.delayed(const Duration(seconds: 3), () {

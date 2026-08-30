@@ -7,13 +7,11 @@ import 'messages/chat_screen.dart';
 import 'profile/driver_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/profile_provider.dart';
+
 class MainNavigationScreen extends StatefulWidget {
   final int initialIndex;
 
-  const MainNavigationScreen({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const MainNavigationScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();

@@ -32,12 +32,11 @@ class GlassPanel extends StatelessWidget {
       padding: padding,
       margin: margin,
       decoration: BoxDecoration(
-        color: backgroundColor ?? const Color(0xFF151515).withValues(alpha: 0.85),
+        color:
+            backgroundColor ?? const Color(0xFF151515).withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: border ??
-            Border.all(
-              color: Colors.white.withValues(alpha: 0.1),
-            ),
+        border:
+            border ?? Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: child,
     );
@@ -51,10 +50,7 @@ class GlassPanel extends StatelessWidget {
     );
 
     if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: content,
-      );
+      return GestureDetector(onTap: onTap, child: content);
     }
 
     return content;

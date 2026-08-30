@@ -16,12 +16,12 @@ enum UserRole {
 abstract class UserModel with _$UserModel {
   const factory UserModel({
     required int id,
-    @JsonKey(name: 'phone_number') required String phoneNumber,
-    required UserRole role,
+    @JsonKey(name: 'phone_number') String? phoneNumber,
+    @Default(UserRole.driver) UserRole role,
     @JsonKey(name: 'full_name') String? fullName,
     String? email,
     String? avatar,
-    @JsonKey(name: 'is_updated') required bool isUpdated,
+    @JsonKey(name: 'is_updated') @Default(false) bool isUpdated,
     @JsonKey(name: 'fcm_token') String? fcmToken,
   }) = _UserModel;
 

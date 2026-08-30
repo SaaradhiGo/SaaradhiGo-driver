@@ -21,10 +21,7 @@ class AuthService {
   static Future<ApiResponse> sendOtp(String phoneNumber) async {
     return await ApiClient.post(
       '/auth/otp/',
-      body: {
-        'phone_number': phoneNumber,
-        'role': 'driver',
-      },
+      body: {'phone_number': phoneNumber, 'role': 'driver'},
     );
   }
 
@@ -34,10 +31,7 @@ class AuthService {
   static Future<ApiResponse> verifyOtp(String phoneNumber, String otp) async {
     final response = await ApiClient.post(
       '/auth/login/',
-      body: {
-        'phone_number': phoneNumber,
-        'otp': otp,
-      },
+      body: {'phone_number': phoneNumber, 'otp': otp},
     );
 
     if (response.success && response.data != null) {
@@ -49,17 +43,26 @@ class AuthService {
         await StorageService.write(StorageService.keyAccessToken, token);
       }
       if (refreshToken != null) {
-        await StorageService.write(StorageService.keyRefreshToken, refreshToken);
+        await StorageService.write(
+          StorageService.keyRefreshToken,
+          refreshToken,
+        );
       }
 
       // Persist user info
       final user = response.data!['user'] as Map<String, dynamic>?;
       if (user != null) {
-        await StorageService.write(StorageService.keyUserProfile, jsonEncode(user));
-        
+        await StorageService.write(
+          StorageService.keyUserProfile,
+          jsonEncode(user),
+        );
+
         final userId = user['id'];
         if (userId != null) {
-          await StorageService.write(StorageService.keyUserId, userId.toString());
+          await StorageService.write(
+            StorageService.keyUserId,
+            userId.toString(),
+          );
         }
         final fullName = user['full_name'] as String?;
         if (fullName != null) {
@@ -82,7 +85,9 @@ class AuthService {
   /// Refresh the access token using the stored refresh token.
   /// Updates secure storage with new tokens on success.
   static Future<bool> refreshToken() async {
-    final refreshToken = await StorageService.read(StorageService.keyRefreshToken);
+    final refreshToken = await StorageService.read(
+      StorageService.keyRefreshToken,
+    );
     if (refreshToken == null) return false;
 
     final response = await ApiClient.post(
@@ -98,7 +103,10 @@ class AuthService {
         await StorageService.write(StorageService.keyAccessToken, newToken);
       }
       if (newRefreshToken != null) {
-        await StorageService.write(StorageService.keyRefreshToken, newRefreshToken);
+        await StorageService.write(
+          StorageService.keyRefreshToken,
+          newRefreshToken,
+        );
       }
       return true;
     }
@@ -142,9 +150,14 @@ class AuthService {
   static Future<ApiResponse> fetchProfile() async {
     final response = await ApiClient.get('/auth/profile/', auth: true);
     if (response.success && response.data != null) {
-      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      final userData = response.data!.containsKey('id')
+          ? response.data!
+          : response.data!['user'];
       if (userData != null) {
-        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+        await StorageService.write(
+          StorageService.keyUserProfile,
+          jsonEncode(userData),
+        );
       }
     }
     return response;
@@ -158,15 +171,17 @@ class AuthService {
 
   /// Update user demographic data.
   static Future<ApiResponse> updateProfile(Map<String, dynamic> data) async {
-    final response = await ApiClient.patch(
-      '/auth/update/',
-      body: data,
-    );
+    final response = await ApiClient.patch('/auth/update/', body: data);
 
     if (response.success && response.data != null) {
-      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      final userData = response.data!.containsKey('id')
+          ? response.data!
+          : response.data!['user'];
       if (userData != null) {
-        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+        await StorageService.write(
+          StorageService.keyUserProfile,
+          jsonEncode(userData),
+        );
       }
     }
     return response;
@@ -204,9 +219,14 @@ class AuthService {
     );
 
     if (response.success && response.data != null) {
-      final userData = response.data!.containsKey('id') ? response.data! : response.data!['user'];
+      final userData = response.data!.containsKey('id')
+          ? response.data!
+          : response.data!['user'];
       if (userData != null) {
-        await StorageService.write(StorageService.keyUserProfile, jsonEncode(userData));
+        await StorageService.write(
+          StorageService.keyUserProfile,
+          jsonEncode(userData),
+        );
       }
     }
 

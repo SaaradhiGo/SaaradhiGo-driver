@@ -1,0 +1,16 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'withdrawal_block_status_model.freezed.dart';
+part 'withdrawal_block_status_model.g.dart';
+
+@freezed
+abstract class WithdrawalBlockStatusModel with _$WithdrawalBlockStatusModel {
+  const factory WithdrawalBlockStatusModel({
+    @Default(false) bool blocked,
+    @JsonKey(name: 'last_withdrawal_at') String? lastWithdrawalAt,
+    @JsonKey(name: 'block_remaining_seconds') int? blockRemainingSeconds,
+  }) = _WithdrawalBlockStatusModel;
+
+  factory WithdrawalBlockStatusModel.fromJson(Map<String, dynamic> json) =>
+      _$WithdrawalBlockStatusModelFromJson(json);
+}

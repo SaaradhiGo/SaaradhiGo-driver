@@ -38,11 +38,17 @@ class TripModel {
       estimatedFare: json['estimated_fare']?.toString(),
       finalFare: json['final_fare']?.toString(),
       surgeMultiplier: json['surge_multiplier']?.toString(),
-      createdAt: json['requested_at']?.toString() ?? json['created_at']?.toString(),
+      createdAt:
+          json['requested_at']?.toString() ?? json['created_at']?.toString(),
       pickupAddress: json['pickup_address']?.toString() ?? 'Unknown Pickup',
-      destinationAddress: json['destination_address']?.toString() ?? 'Unknown Dropoff',
-      distanceKm: json['actual_distance_km']?.toString() ?? json['estimated_distance_km']?.toString(),
-      durationMin: json['actual_duration_min']?.toString() ?? json['estimated_duration_min']?.toString(),
+      destinationAddress:
+          json['destination_address']?.toString() ?? 'Unknown Dropoff',
+      distanceKm:
+          json['actual_distance_km']?.toString() ??
+          json['estimated_distance_km']?.toString(),
+      durationMin:
+          json['actual_duration_min']?.toString() ??
+          json['estimated_duration_min']?.toString(),
       riderName: json['user']?.toString() ?? 'Rider',
       paymentMethod: json['payment_method']?.toString() ?? 'Digital',
       paymentStatus: json['payment_status']?.toString(),

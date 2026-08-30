@@ -47,16 +47,28 @@ class AppRouter {
         return _buildRoute(const MainNavigationScreen(), settings);
 
       case RouteNames.earnings:
-        return _buildRoute(const MainNavigationScreen(initialIndex: 2), settings);
+        return _buildRoute(
+          const MainNavigationScreen(initialIndex: 2),
+          settings,
+        );
 
       case RouteNames.tripHistory:
-        return _buildRoute(const MainNavigationScreen(initialIndex: 1), settings);
+        return _buildRoute(
+          const MainNavigationScreen(initialIndex: 1),
+          settings,
+        );
 
       case RouteNames.messages:
-        return _buildRoute(const MainNavigationScreen(initialIndex: 3), settings);
+        return _buildRoute(
+          const MainNavigationScreen(initialIndex: 3),
+          settings,
+        );
 
       case RouteNames.profile:
-        return _buildRoute(const MainNavigationScreen(initialIndex: 4), settings);
+        return _buildRoute(
+          const MainNavigationScreen(initialIndex: 4),
+          settings,
+        );
 
       case RouteNames.notifications:
         return _buildRoute(const NotificationsScreen(), settings);
@@ -147,16 +159,14 @@ class AppRouter {
         const end = Offset.zero;
         const curve = Curves.easeOutCubic;
 
-        var tween = Tween(begin: begin, end: end).chain(
-          CurveTween(curve: curve),
-        );
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
       transitionDuration: const Duration(milliseconds: 300),

@@ -9,11 +9,8 @@ import '../../navigation/route_names.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
-  
-  const OtpVerificationScreen({
-    super.key,
-    required this.phoneNumber,
-  });
+
+  const OtpVerificationScreen({super.key, required this.phoneNumber});
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -21,8 +18,11 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
-  final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
-  
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
+
   int _timeLeft = 45;
   Timer? _timer;
   bool _isVerifying = false;
@@ -32,7 +32,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.initState();
     _startTimer();
   }
-  
+
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeLeft > 0) {
@@ -70,7 +70,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   void _onKeyEvent(KeyEvent event, int index) {
-    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.backspace) {
       if (_controllers[index].text.isEmpty && index > 0) {
         _focusNodes[index - 1].requestFocus();
         _controllers[index - 1].clear();
@@ -92,7 +93,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         SnackBar(
           content: Text(
             'Please enter all 6 digits',
-            style: AppTypography.bodyMd.copyWith(color: AppColors.onErrorContainer),
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onErrorContainer,
+            ),
           ),
           backgroundColor: AppColors.errorContainer,
           behavior: SnackBarBehavior.floating,
@@ -139,7 +142,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         SnackBar(
           content: Text(
             response.message ?? 'Invalid OTP. Please try again.',
-            style: AppTypography.bodyMd.copyWith(color: AppColors.onErrorContainer),
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onErrorContainer,
+            ),
           ),
           backgroundColor: AppColors.errorContainer,
           behavior: SnackBarBehavior.floating,
@@ -168,7 +173,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         SnackBar(
           content: Text(
             'OTP sent successfully',
-            style: AppTypography.bodyMd.copyWith(color: AppColors.onPrimaryContainer),
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onPrimaryContainer,
+            ),
           ),
           backgroundColor: AppColors.primaryContainer,
           behavior: SnackBarBehavior.floating,
@@ -180,7 +187,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         SnackBar(
           content: Text(
             response.message ?? 'Failed to resend OTP',
-            style: AppTypography.bodyMd.copyWith(color: AppColors.onErrorContainer),
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onErrorContainer,
+            ),
           ),
           backgroundColor: AppColors.errorContainer,
           behavior: SnackBarBehavior.floating,
@@ -206,7 +215,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLow,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.outlineVariant.withValues(alpha: 0.3),
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back,
@@ -252,13 +263,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.stackLg * 1.5),
-              
+
               // OTP Input Grid
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(6, (index) {
                   return SizedBox(
-                    width: 56, // matching w-14 assuming 4px unit roughly, actually 56px
+                    width:
+                        56, // matching w-14 assuming 4px unit roughly, actually 56px
                     height: 56,
                     child: KeyboardListener(
                       focusNode: FocusNode(),
@@ -282,7 +294,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                              color: AppColors.outlineVariant.withValues(alpha: 0.3),
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -299,9 +313,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   );
                 }),
               ),
-              
+
               const SizedBox(height: AppSpacing.stackLg),
-              
+
               // Resend & Change Number Actions
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -313,8 +327,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         Text(
                           _timeLeft > 0 ? 'Resend code in ' : 'Resend code',
                           style: AppTypography.bodyMd.copyWith(
-                            color: _timeLeft == 0 ? AppColors.primary : AppColors.onSurfaceVariant,
-                            fontWeight: _timeLeft == 0 ? FontWeight.w600 : FontWeight.normal,
+                            color: _timeLeft == 0
+                                ? AppColors.primary
+                                : AppColors.onSurfaceVariant,
+                            fontWeight: _timeLeft == 0
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                           ),
                         ),
                         if (_timeLeft > 0)
@@ -342,9 +360,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
                 ],
               ),
-              
+
               const Spacer(),
-              
+
               // Primary Action Button
               Container(
                 height: 56,
@@ -352,10 +370,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   gradient: const LinearGradient(
-                    colors: [
-                      AppColors.primary,
-                      AppColors.primaryContainer,
-                    ],
+                    colors: [AppColors.primary, AppColors.primaryContainer],
                   ),
                   boxShadow: [
                     BoxShadow(

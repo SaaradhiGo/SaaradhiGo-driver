@@ -5,10 +5,7 @@ import '../theme/app_colors.dart';
 class RouteIndicator extends StatelessWidget {
   final double height;
 
-  const RouteIndicator({
-    super.key,
-    this.height = 60.0,
-  });
+  const RouteIndicator({super.key, this.height = 60.0});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +30,7 @@ class RouteIndicator extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.primary,
-                AppColors.outlineVariant,
-              ],
+              colors: [AppColors.primary, AppColors.outlineVariant],
             ),
           ),
         ),

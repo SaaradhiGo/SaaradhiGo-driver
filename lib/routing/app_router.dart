@@ -2,21 +2,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/splash/presentation/splash_screen.dart';
 import '../features/auth/presentation/login_mobile_screen.dart';
 import '../features/auth/presentation/otp_verification_screen.dart';
-import '../features/dashboard/presentation/driver_dashboard_screen.dart';
 import '../features/auth/presentation/providers/auth_notifier.dart';
 import '../features/auth/presentation/providers/auth_state.dart';
+import '../features/dashboard/presentation/driver_dashboard_screen.dart';
+import '../features/earnings/presentation/screens/earnings_dashboard_screen.dart';
+import '../features/dashboard/presentation/screens/messages_chat_screen.dart';
+import '../features/dashboard/presentation/screens/trip_history_screen.dart';
+import '../features/onboarding/presentation/screens/onboarding_licence_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_personal_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_photo_bank_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_vehicle_screen.dart';
-import '../features/onboarding/presentation/screens/onboarding_licence_screen.dart';
 import '../features/onboarding/presentation/screens/verification_status_screen.dart';
 import '../features/profile/presentation/providers/profile_providers.dart';
+import '../features/profile/presentation/screens/driver_profile_screen.dart';
+import '../features/splash/presentation/splash_screen.dart';
+import '../features/trip/presentation/screens/trip_flow_screen.dart';
+import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
 
-enum AppRoute { splash, login, otp, home }
+enum AppRoute { splash, login, otp, home, ride }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
@@ -128,10 +134,53 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return OtpVerificationScreen(phoneNumber: phone);
         },
       ),
-      GoRoute(
-        path: '/',
-        name: AppRoute.home.name,
-        builder: (context, state) => const DriverDashboardScreen(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                name: AppRoute.home.name,
+                builder: (context, state) => const DriverDashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/history',
+                builder: (context, state) => const TripHistoryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/earnings',
+                builder: (context, state) => const EarningsDashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/chat',
+                builder: (context, state) => const MessagesChatScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const DriverProfileScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/onboarding/personal',
@@ -152,6 +201,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/verification-status',
         builder: (context, state) => const VerificationStatusScreen(),
+      ),
+      // Full-screen ride lifecycle, deliberately OUTSIDE the tab shell: an
+      // active trip owns the whole screen. A single route renders the correct
+      // state screen from TripSessionState (see TripFlowScreen).
+      GoRoute(
+        path: '/ride',
+        name: AppRoute.ride.name,
+        builder: (context, state) => const TripFlowScreen(),
       ),
     ],
     errorBuilder: (context, state) =>

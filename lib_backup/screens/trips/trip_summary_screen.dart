@@ -31,7 +31,10 @@ class TripSummaryScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.primaryContainer.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primaryContainer, width: 2),
+                  border: Border.all(
+                    color: AppColors.primaryContainer,
+                    width: 2,
+                  ),
                 ),
                 child: const Icon(
                   Icons.check_circle,
@@ -71,11 +74,33 @@ class TripSummaryScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildMetric('DISTANCE', data?['distance_km'] != null ? '${data!['distance_km']} km' : '--'),
-                    Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.1)),
-                    _buildMetric('DURATION', data?['duration_min'] != null ? '${data!['duration_min']} mins' : '--'),
-                    Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.1)),
-                    _buildMetric('PAYMENT', data?['payment_method']?.toString().toUpperCase() ?? 'DIGITAL'),
+                    _buildMetric(
+                      'DISTANCE',
+                      data?['distance_km'] != null
+                          ? '${data!['distance_km']} km'
+                          : '--',
+                    ),
+                    Container(
+                      width: 1,
+                      height: 32,
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                    _buildMetric(
+                      'DURATION',
+                      data?['duration_min'] != null
+                          ? '${data!['duration_min']} mins'
+                          : '--',
+                    ),
+                    Container(
+                      width: 1,
+                      height: 32,
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                    _buildMetric(
+                      'PAYMENT',
+                      data?['payment_method']?.toString().toUpperCase() ??
+                          'DIGITAL',
+                    ),
                   ],
                 ),
               ),
@@ -88,7 +113,9 @@ class TripSummaryScreen extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () {
                     session.clearSession();
@@ -119,12 +146,17 @@ class TripSummaryScreen extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant),
+          style: AppTypography.labelCaps.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: AppTypography.dataMono.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold),
+          style: AppTypography.dataMono.copyWith(
+            color: AppColors.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );

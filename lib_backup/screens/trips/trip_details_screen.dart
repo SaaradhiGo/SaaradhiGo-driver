@@ -20,21 +20,25 @@ class TripDetailsScreen extends StatelessWidget {
       return Scaffold(
         backgroundColor: AppColors.background,
         appBar: const AppTopBar(title: 'Trip Details', showBackButton: true),
-        body: const Center(child: Text('Invalid Trip ID', style: TextStyle(color: AppColors.error))),
+        body: const Center(
+          child: Text(
+            'Invalid Trip ID',
+            style: TextStyle(color: AppColors.error),
+          ),
+        ),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Trip Details',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Trip Details', showBackButton: true),
       body: FutureBuilder<TripModel?>(
         future: TripService.getTripDetails(tripId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
           }
           if (snapshot.hasError || snapshot.data == null) {
             return Center(
@@ -53,11 +57,12 @@ class TripDetailsScreen extends StatelessWidget {
           final dropoff = trip.destinationAddress ?? 'Unknown Dropoff';
           final distance = trip.distanceKm ?? '--';
           final duration = trip.durationMin ?? '--';
-          
-          final paymentString = paymentStatus != 'null' && paymentStatus.isNotEmpty
+
+          final paymentString =
+              paymentStatus != 'null' && paymentStatus.isNotEmpty
               ? '${paymentMethod.toUpperCase()} (${paymentStatus.toUpperCase()})'
               : paymentMethod.toUpperCase();
-          
+
           return SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -105,11 +110,33 @@ class TripDetailsScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(pickup, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
-                            Text('Pickup', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
+                            Text(
+                              pickup,
+                              style: AppTypography.bodyLg.copyWith(
+                                color: AppColors.onSurface,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Pickup',
+                              style: AppTypography.labelCaps.copyWith(
+                                color: AppColors.onSurfaceVariant,
+                              ),
+                            ),
                             const SizedBox(height: 24),
-                            Text(dropoff, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
-                            Text('Dropoff', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
+                            Text(
+                              dropoff,
+                              style: AppTypography.bodyLg.copyWith(
+                                color: AppColors.onSurface,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Dropoff',
+                              style: AppTypography.labelCaps.copyWith(
+                                color: AppColors.onSurfaceVariant,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -124,24 +151,56 @@ class TripDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Trip Summary', style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface)),
+                      Text(
+                        'Trip Summary',
+                        style: AppTypography.headlineSm.copyWith(
+                          color: AppColors.onSurface,
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       _buildFareRow('Distance', '$distance km'),
                       _buildFareRow('Duration', '$duration mins'),
                       if (trip.fareBreakdown != null) ...[
-                        Container(height: 1, color: Colors.white.withValues(alpha: 0.05), margin: const EdgeInsets.symmetric(vertical: 8)),
-                        Text('FARE BREAKDOWN', style: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant)),
+                        Container(
+                          height: 1,
+                          color: Colors.white.withValues(alpha: 0.05),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                        ),
+                        Text(
+                          'FARE BREAKDOWN',
+                          style: AppTypography.labelCaps.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         if (trip.fareBreakdown!['base_fare'] != null)
-                          _buildFareRow('Base Fare', '₹${trip.fareBreakdown!['base_fare']}'),
+                          _buildFareRow(
+                            'Base Fare',
+                            '₹${trip.fareBreakdown!['base_fare']}',
+                          ),
                         if (trip.fareBreakdown!['distance_fare'] != null)
-                          _buildFareRow('Distance Fare', '₹${trip.fareBreakdown!['distance_fare']}'),
+                          _buildFareRow(
+                            'Distance Fare',
+                            '₹${trip.fareBreakdown!['distance_fare']}',
+                          ),
                         if (trip.fareBreakdown!['time_fare'] != null)
-                          _buildFareRow('Time Fare', '₹${trip.fareBreakdown!['time_fare']}'),
-                        if (trip.surgeMultiplier != null && trip.surgeMultiplier != '1.0' && trip.surgeMultiplier != '1.00')
-                          _buildFareRow('Surge Multiplier', 'x${trip.surgeMultiplier}'),
+                          _buildFareRow(
+                            'Time Fare',
+                            '₹${trip.fareBreakdown!['time_fare']}',
+                          ),
+                        if (trip.surgeMultiplier != null &&
+                            trip.surgeMultiplier != '1.0' &&
+                            trip.surgeMultiplier != '1.00')
+                          _buildFareRow(
+                            'Surge Multiplier',
+                            'x${trip.surgeMultiplier}',
+                          ),
                       ],
-                      Container(height: 1, color: Colors.white.withValues(alpha: 0.05), margin: const EdgeInsets.symmetric(vertical: 8)),
+                      Container(
+                        height: 1,
+                        color: Colors.white.withValues(alpha: 0.05),
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                      ),
                       _buildFareRow('Total Earned', '₹$fare', isTotal: true),
                     ],
                   ),
@@ -153,7 +212,6 @@ class TripDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildFareRow(String label, String value, {bool isTotal = false}) {
     return Padding(

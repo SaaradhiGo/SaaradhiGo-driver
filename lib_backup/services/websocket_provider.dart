@@ -10,10 +10,12 @@ class WebSocketProvider extends ChangeNotifier {
   Timer? _locationTimer;
   double? _lastLat;
   double? _lastLng;
-  
+
   // A StreamController to broadcast specific events like ride requests
-  final StreamController<Map<String, dynamic>> _rideRequestController = StreamController.broadcast();
-  Stream<Map<String, dynamic>> get rideRequestStream => _rideRequestController.stream;
+  final StreamController<Map<String, dynamic>> _rideRequestController =
+      StreamController.broadcast();
+  Stream<Map<String, dynamic>> get rideRequestStream =>
+      _rideRequestController.stream;
 
   bool get isOnline => _isOnline;
 
@@ -21,14 +23,18 @@ class WebSocketProvider extends ChangeNotifier {
     if (_isOnline) return;
 
     try {
-      final token = await StorageService.read(StorageService.keyAccessToken) ?? 'mock_token';
+      final token =
+          await StorageService.read(StorageService.keyAccessToken) ??
+          'mock_token';
       print("token - $token");
-      final url = Uri.parse('ws://localhost:8000/ws/driver/location/?token=$token&lat=$lat&lng=$lng');
-      
+      final url = Uri.parse(
+        'ws://localhost:8000/ws/driver/location/?token=$token&lat=$lat&lng=$lng',
+      );
+
       _channel = WebSocketChannel.connect(url);
       _lastLat = lat;
       _lastLng = lng;
-      
+
       _channel!.stream.listen(
         (message) {
           try {
@@ -53,7 +59,7 @@ class WebSocketProvider extends ChangeNotifier {
       );
 
       _isOnline = true;
-      
+
       // Send location updates every 5 seconds
       _locationTimer?.cancel();
       _locationTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
@@ -61,7 +67,7 @@ class WebSocketProvider extends ChangeNotifier {
           _sendLocationData(_lastLat!, _lastLng!);
         }
       });
-      
+
       notifyListeners();
     } catch (e) {
       debugPrint('Failed to connect WS: $e');
@@ -73,13 +79,12 @@ class WebSocketProvider extends ChangeNotifier {
 
   void _handleIncomingMessage(Map<String, dynamic> data) {
     final type = data['type'];
-    
+
     if (type == 'ride_request') {
       _rideRequestController.add(data);
     } else if (type == 'connection_established') {
       debugPrint('WS connected successfully: ${data['message']}');
-    }
-    else{
+    } else {
       debugPrint('WS message: ${data['message']}');
     }
     // Handle other event types if necessary
@@ -93,13 +98,10 @@ class WebSocketProvider extends ChangeNotifier {
       _sendLocationData(lat, lng);
     }
   }
-  
+
   void _sendLocationData(double lat, double lng) {
     if (_channel != null) {
-      final data = {
-        "lng": lng,
-        "lat": lat,
-      };
+      final data = {"lng": lng, "lat": lat};
       _channel!.sink.add(jsonEncode(data));
     }
   }

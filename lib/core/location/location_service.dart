@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:geolocator/geolocator.dart';
 
 import 'geolocator_adapter.dart';
@@ -43,10 +44,14 @@ class LocationAvailabilityResult {
   bool get hasBackgroundAccess => permission == LocationPermission.always;
 }
 
-/// Owns all `geolocator` interaction: permission negotiation, accuracy
-/// selection, and the distance-filtered position stream.
+/// Owns all `geolocator` interaction: permission negotiation and accuracy
+/// selection.
 ///
-/// Holds no state of its own — [LocationNotifier] is the stateful consumer.
+/// The platform position stream is not distance-filtered on the web because
+/// geolocator_web's `skipWhile`-based filter suppresses near-stationary fixes
+/// (see [_settingsFor]); the >10 m / >5 s rule for outbound frames lives in
+/// [LocationThrottle] instead. Holds no state of its own —
+/// [LocationNotifier] is the stateful consumer.
 class LocationService {
   LocationService(this._geolocator);
 
@@ -119,6 +124,8 @@ class LocationService {
       return await _geolocator.checkPermission();
     } on UnimplementedError {
       return LocationPermission.unableToDetermine;
+    } on UnsupportedError {
+      return LocationPermission.unableToDetermine;
     }
   }
 
@@ -127,12 +134,20 @@ class LocationService {
       return await _geolocator.requestPermission();
     } on UnimplementedError {
       return LocationPermission.unableToDetermine;
+    } on UnsupportedError {
+      return LocationPermission.unableToDetermine;
     }
   }
 
   LocationSettings _settingsFor(LocationTrackingMode mode) => LocationSettings(
     accuracy: mode.accuracy,
-    distanceFilter: distanceFilterMeters.round(),
+    // geolocator_web implements `distanceFilter` as a `skipWhile` against the
+    // previous *emitted* fix. Browsers report ~1 Hz and drivers frequently move
+    // < 10 m between samples, so almost every fix is dropped and the UI never
+    // leaves "acquiring". Disable the platform filter on web — the app-side
+    // [LocationThrottle] (docs/10_LOCATION.md §2: >10 m or >5 s) already gates
+    // outbound frames, so no backend contract is affected.
+    distanceFilter: kIsWeb ? 0 : distanceFilterMeters.round(),
   );
 
   /// Distance-filtered stream of fixes for [mode].
@@ -145,12 +160,16 @@ class LocationService {
   Future<Position?> lastKnown() => _geolocator.getLastKnownPosition();
 
   /// Service-status changes. Platforms without a service-status stream (the
-  /// base geolocator_linux class and web) throw [UnimplementedError]; fall back
-  /// to an empty stream so stream setup never fails on desktop/web.
+  /// base geolocator_linux class and web) throw [UnimplementedError] or
+  /// [UnsupportedError]; fall back to an empty stream so stream setup never
+  /// fails on desktop/web.
   Stream<ServiceStatus> watchServiceStatus() {
+    if (kIsWeb) return const Stream.empty();
     try {
       return _geolocator.getServiceStatusStream();
     } on UnimplementedError {
+      return const Stream.empty();
+    } on UnsupportedError {
       return const Stream.empty();
     }
   }
@@ -160,6 +179,8 @@ class LocationService {
       return await _geolocator.openAppSettings();
     } on UnimplementedError {
       return false;
+    } on UnsupportedError {
+      return false;
     }
   }
 
@@ -167,6 +188,8 @@ class LocationService {
     try {
       return await _geolocator.openLocationSettings();
     } on UnimplementedError {
+      return false;
+    } on UnsupportedError {
       return false;
     }
   }

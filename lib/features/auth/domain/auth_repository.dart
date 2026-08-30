@@ -3,6 +3,7 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../domain/models/user_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);
@@ -34,7 +35,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> verifyOtp(String phoneNumber, String otp) async {
+  Future<UserModel?> verifyOtp(String phoneNumber, String otp) async {
     try {
       final responseData = await _dioClient.request(
         () => _dioClient.dio.post(
@@ -50,11 +51,20 @@ class AuthRepository {
       if (responseData['status'] == 'success') {
         final token = responseData['data']['token'];
         final refreshToken = responseData['data']['refresh_token'];
+        final userRaw = responseData['data']['user'];
+        UserModel? user;
+
+        if (userRaw != null && userRaw is Map<String, dynamic>) {
+          user = UserModel.fromJson(userRaw);
+          await SecureStorageService.saveUser(user);
+        }
 
         await SecureStorageService.saveTokens(
           accessToken: token,
           refreshToken: refreshToken,
         );
+
+        return user;
       } else {
         throw Exception(responseData['message'] ?? 'Failed to verify OTP');
       }

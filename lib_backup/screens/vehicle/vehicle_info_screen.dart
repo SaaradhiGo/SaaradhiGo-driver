@@ -25,26 +25,46 @@ class VehicleInfoScreen extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.stackLg),
               child: Column(
                 children: [
-                  const Icon(Icons.directions_car, size: 60, color: AppColors.primary),
+                  const Icon(
+                    Icons.directions_car,
+                    size: 60,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'Maruti Suzuki Swift Dzire',
-                    style: AppTypography.headlineSm.copyWith(color: AppColors.onSurface),
+                    style: AppTypography.headlineSm.copyWith(
+                      color: AppColors.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'TS 07 AB 1234 • Sedan',
-                    style: AppTypography.dataMono.copyWith(color: AppColors.primary, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: AppTypography.dataMono.copyWith(
+                      color: AppColors.primary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.green.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.4),
+                      ),
                     ),
-                    child: Text('ACTIVE VEHICLE', style: AppTypography.labelCaps.copyWith(color: Colors.green)),
+                    child: Text(
+                      'ACTIVE VEHICLE',
+                      style: AppTypography.labelCaps.copyWith(
+                        color: Colors.green,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -56,7 +76,11 @@ class VehicleInfoScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  _buildSpecRow('Vehicle Number', 'TS 07 AB 1234', isMono: true),
+                  _buildSpecRow(
+                    'Vehicle Number',
+                    'TS 07 AB 1234',
+                    isMono: true,
+                  ),
                   _buildSpecRow('Model Year', '2023'),
                   _buildSpecRow('Color', 'Arctic White'),
                   _buildSpecRow('Seating Capacity', '4 + 1 Driver'),
@@ -70,17 +94,39 @@ class VehicleInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecRow(String label, String value, {bool isMono = false, bool isLast = false}) {
+  Widget _buildSpecRow(
+    String label,
+    String value, {
+    bool isMono = false,
+    bool isLast = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.stackMd),
       decoration: BoxDecoration(
-        border: isLast ? null : Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+              ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant)),
-          Text(value, style: isMono ? AppTypography.dataMono.copyWith(color: AppColors.onSurface) : AppTypography.bodyMd.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            value,
+            style: isMono
+                ? AppTypography.dataMono.copyWith(color: AppColors.onSurface)
+                : AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+          ),
         ],
       ),
     );

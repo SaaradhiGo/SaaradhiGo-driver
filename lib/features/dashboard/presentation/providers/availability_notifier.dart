@@ -140,7 +140,13 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
       );
     }
 
-    final profileState = ref.read(driverProfileNotifierProvider);
+    var profileState = ref.read(driverProfileNotifierProvider);
+    if (profileState is ProfileStateInitial ||
+        profileState is ProfileStateError) {
+      await ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      profileState = ref.read(driverProfileNotifierProvider);
+    }
+
     switch (profileState) {
       case ProfileStateLoading():
       case ProfileStateInitial():
@@ -190,24 +196,11 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
       await locationNotifier.start();
     }
 
-    LocationState locationState = ref.read(locationNotifierProvider);
-    if (locationState is LocationStateTracking &&
-        !locationState.hasBackgroundAccess) {
-      // Android grants foreground and background location in two stages. Ask
-      // for the platform's highest grant before connecting, while still
-      // allowing foreground operation when the OS only returns whileInUse.
-      await locationNotifier.start(force: true);
-      locationState = ref.read<LocationState>(locationNotifierProvider);
-    }
+    final locationState = ref.read(locationNotifierProvider);
 
     switch (locationState) {
-      case LocationStateTracking(:final weakSignal) when !weakSignal:
-        return null;
       case LocationStateTracking():
-        return const AvailabilityState.blocked(
-          reason: AvailabilityBlockReason.awaitingGpsFix,
-          message: 'Waiting for a fresh GPS signal. Please try again shortly.',
-        );
+        return null;
       case LocationStateServiceDisabled():
         return const AvailabilityState.blocked(
           reason: AvailabilityBlockReason.locationServiceDisabled,

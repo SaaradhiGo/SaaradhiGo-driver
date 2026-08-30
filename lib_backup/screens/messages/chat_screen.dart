@@ -37,11 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.isEmpty) return;
 
     setState(() {
-      _messages.add({
-        'text': text,
-        'time': '10:45 AM',
-        'isDriver': true,
-      });
+      _messages.add({'text': text, 'time': '10:45 AM', 'isDriver': true});
     });
 
     if (customText == null) {
@@ -74,7 +70,11 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.sos, color: AppColors.onErrorContainer, size: 20),
+              icon: const Icon(
+                Icons.sos,
+                color: AppColors.onErrorContainer,
+                size: 20,
+              ),
               onPressed: () {},
             ),
           ),
@@ -92,8 +92,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   if (index == 0) {
                     return Center(
                       child: Container(
-                        margin: const EdgeInsets.only(bottom: AppSpacing.stackMd),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        margin: const EdgeInsets.only(
+                          bottom: AppSpacing.stackMd,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceContainerHigh,
                           borderRadius: BorderRadius.circular(20),
@@ -112,15 +117,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   final isDriver = msg['isDriver'] as bool;
 
                   return Align(
-                    alignment: isDriver ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isDriver
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.only(bottom: AppSpacing.stackMd),
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.75,
                       ),
                       child: Column(
-                        crossAxisAlignment:
-                            isDriver ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                        crossAxisAlignment: isDriver
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.stackMd),
@@ -136,12 +144,18 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               border: isDriver
                                   ? null
-                                  : Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                                  : Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.05,
+                                      ),
+                                    ),
                             ),
                             child: Text(
                               msg['text'],
                               style: AppTypography.bodyLg.copyWith(
-                                color: isDriver ? AppColors.onPrimary : AppColors.onSurface,
+                                color: isDriver
+                                    ? AppColors.onPrimary
+                                    : AppColors.onSurface,
                               ),
                             ),
                           ),
@@ -193,15 +207,21 @@ class _ChatScreenState extends State<ChatScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(26),
-                            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.1),
+                            ),
                           ),
                           child: TextField(
                             controller: _messageController,
-                            style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface),
+                            style: AppTypography.bodyLg.copyWith(
+                              color: AppColors.onSurface,
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Message Ananya...',
                               hintStyle: AppTypography.bodyLg.copyWith(
-                                color: AppColors.onSurfaceVariant.withValues(alpha: 0.5),
+                                color: AppColors.onSurfaceVariant.withValues(
+                                  alpha: 0.5,
+                                ),
                               ),
                               border: InputBorder.none,
                             ),
@@ -225,7 +245,10 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ],
                           ),
-                          child: const Icon(Icons.send, color: AppColors.onPrimary),
+                          child: const Icon(
+                            Icons.send,
+                            color: AppColors.onPrimary,
+                          ),
                         ),
                       ),
                     ],

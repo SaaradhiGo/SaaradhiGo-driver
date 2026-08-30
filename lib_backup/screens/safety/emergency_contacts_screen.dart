@@ -9,7 +9,8 @@ class EmergencyContactsScreen extends StatefulWidget {
   const EmergencyContactsScreen({super.key});
 
   @override
-  State<EmergencyContactsScreen> createState() => _EmergencyContactsScreenState();
+  State<EmergencyContactsScreen> createState() =>
+      _EmergencyContactsScreenState();
 }
 
 class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
@@ -32,12 +33,16 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
           children: [
             Text(
               'Trusted Contacts',
-              style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               'These contacts will receive SMS notifications with your live location when SOS is triggered.',
-              style: AppTypography.bodyMd.copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: AppSpacing.stackLg),
 
@@ -55,8 +60,19 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(contact['name']!, style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface, fontWeight: FontWeight.bold)),
-                          Text(contact['phone']!, style: AppTypography.dataMono.copyWith(color: AppColors.onSurfaceVariant)),
+                          Text(
+                            contact['name']!,
+                            style: AppTypography.bodyLg.copyWith(
+                              color: AppColors.onSurface,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            contact['phone']!,
+                            style: AppTypography.dataMono.copyWith(
+                              color: AppColors.onSurfaceVariant,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -78,10 +94,18 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.primary),
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               icon: const Icon(Icons.add, color: AppColors.primary),
-              label: Text('ADD EMERGENCY CONTACT', style: AppTypography.bodyLg.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+              label: Text(
+                'ADD EMERGENCY CONTACT',
+                style: AppTypography.bodyLg.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onPressed: () {},
             ),
           ],

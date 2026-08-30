@@ -18,10 +18,7 @@ class AcceptedRideScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Ride Accepted',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Ride Accepted', showBackButton: true),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
@@ -35,7 +32,11 @@ class AcceptedRideScreen extends StatelessWidget {
                     const CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.surfaceVariant,
-                      child: Icon(Icons.person, size: 36, color: AppColors.primary),
+                      child: Icon(
+                        Icons.person,
+                        size: 36,
+                        color: AppColors.primary,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.stackMd),
                     Expanded(
@@ -51,11 +52,19 @@ class AcceptedRideScreen extends StatelessWidget {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              const Icon(Icons.star, size: 16, color: AppColors.primary),
+                              const Icon(
+                                Icons.star,
+                                size: 16,
+                                color: AppColors.primary,
+                              ),
                               const SizedBox(width: 4),
                               Text(
-                                data?['rider_rating'] != null ? '${data!['rider_rating']} Rating' : 'New Rider',
-                                style: AppTypography.dataMono.copyWith(color: AppColors.primary),
+                                data?['rider_rating'] != null
+                                    ? '${data!['rider_rating']} Rating'
+                                    : 'New Rider',
+                                style: AppTypography.dataMono.copyWith(
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ],
                           ),
@@ -69,7 +78,8 @@ class AcceptedRideScreen extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.chat, color: AppColors.primary),
-                      onPressed: () => Navigator.pushNamed(context, RouteNames.messages),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, RouteNames.messages),
                     ),
                   ],
                 ),
@@ -95,7 +105,8 @@ class AcceptedRideScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            data?['pickup_address']?.toString() ?? 'Unknown Pickup',
+                            data?['pickup_address']?.toString() ??
+                                'Unknown Pickup',
                             style: AppTypography.bodyLg.copyWith(
                               color: AppColors.onSurface,
                               fontWeight: FontWeight.bold,
@@ -106,7 +117,8 @@ class AcceptedRideScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      (data?['distance_km'] != null && data?['duration_min'] != null)
+                      (data?['distance_km'] != null &&
+                              data?['duration_min'] != null)
                           ? '${data!['distance_km']} km away • ~${data!['duration_min']} mins drive'
                           : 'Calculating distance...',
                       style: AppTypography.bodyMd.copyWith(
@@ -125,20 +137,31 @@ class AcceptedRideScreen extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  onPressed: session.isLoading ? null : () {
-                    session.markReached();
-                  },
-                  child: session.isLoading 
-                    ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: AppColors.onPrimary, strokeWidth: 2))
-                    : Text(
-                    'ARRIVED AT PICKUP',
-                    style: AppTypography.headlineSm.copyWith(
-                      color: AppColors.onPrimary,
-                      fontWeight: FontWeight.bold,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
+                  onPressed: session.isLoading
+                      ? null
+                      : () {
+                          session.markReached();
+                        },
+                  child: session.isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: AppColors.onPrimary,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'ARRIVED AT PICKUP',
+                          style: AppTypography.headlineSm.copyWith(
+                            color: AppColors.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -148,11 +171,15 @@ class AcceptedRideScreen extends StatelessWidget {
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.error),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  onPressed: session.isLoading ? null : () {
-                    session.cancelTrip();
-                  },
+                  onPressed: session.isLoading
+                      ? null
+                      : () {
+                          session.cancelTrip();
+                        },
                   child: Text(
                     'CANCEL RIDE',
                     style: AppTypography.bodyLg.copyWith(

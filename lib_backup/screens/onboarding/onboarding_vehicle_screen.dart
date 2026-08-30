@@ -12,15 +12,17 @@ class OnboardingVehicleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppTopBar(
-        title: 'Vehicle Details',
-        showBackButton: true,
-      ),
+      appBar: const AppTopBar(title: 'Vehicle Details', showBackButton: true),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.containerMargin),
           children: [
-            Text('Register Vehicle', style: AppTypography.headlineSm.copyWith(color: AppColors.primary)),
+            Text(
+              'Register Vehicle',
+              style: AppTypography.headlineSm.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
             const SizedBox(height: AppSpacing.stackLg),
 
             _buildInputField('Vehicle Number', 'TS 07 AB 1234'),
@@ -38,10 +40,18 @@ class OnboardingVehicleScreen extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: Text('SAVE VEHICLE', style: AppTypography.headlineSm.copyWith(color: AppColors.onPrimary, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'SAVE VEHICLE',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],
@@ -58,7 +68,9 @@ class OnboardingVehicleScreen extends StatelessWidget {
         style: AppTypography.bodyLg.copyWith(color: AppColors.onSurface),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: AppTypography.labelCaps.copyWith(color: AppColors.onSurfaceVariant),
+          labelStyle: AppTypography.labelCaps.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
           border: InputBorder.none,
         ),
       ),

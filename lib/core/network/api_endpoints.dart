@@ -20,7 +20,8 @@ class ApiEndpoints {
   static const String driverUpdate = '/driver/driver/update/';
   static const String driverVehicles = '/driver/vehicles/';
   static const String addVehicle = '/driver/vehicles/add/';
-  static String updateVehicle(String vehicleId) => '/driver/vehicles/$vehicleId/';
+  static String updateVehicle(String vehicleId) =>
+      '/driver/vehicles/$vehicleId/';
 
   // Uploads (presigned direct-to-S3)
   static const String presignUpload = '/uploads/presign/';
@@ -31,8 +32,13 @@ class ApiEndpoints {
   static const String driverIncentives = '/driver/incentives/';
   static const String driverEliteStatus = '/driver/elite-status/';
 
-  // Wallet
+  // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';
+  static const String driverWithdrawalBalance = '/driver/withdrawals/balance/';
+  static const String driverWithdrawalRequest = '/driver/withdrawals/request/';
+  static const String driverWithdrawalHistory = '/driver/withdrawals/history/';
+  static const String driverWithdrawalBlockStatus =
+      '/driver/withdrawals/block-status/';
 
   // Ride Execution
   static const String activeTrip = '/ride/active/';

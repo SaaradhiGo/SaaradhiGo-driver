@@ -28,19 +28,19 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> fetchProfileData({bool forceRefresh = false}) async {
     _isLoading = true;
     _error = null;
-    
+
     bool needsRefresh = forceRefresh;
-    
+
     if (!needsRefresh) {
       final cachedProfileData = await AuthService.getStoredUserProfile();
       if (cachedProfileData != null) {
         _userProfile = UserProfileModel.fromJson(cachedProfileData);
       }
     }
-    
+
     // Load local avatar
     _localAvatarBytes = await AvatarCacheService.getLocalAvatarBytes();
-    
+
     notifyListeners();
 
     try {
@@ -48,7 +48,7 @@ class ProfileProvider extends ChangeNotifier {
       // Always fetch the profile data from API to get fresh S3 presigned URLs,
       // as cached URLs expire after 15 minutes.
       final bool shouldFetchProfile = true;
-      
+
       if (shouldFetchProfile) {
         futures.add(AuthService.fetchProfile());
       } else {
@@ -61,18 +61,23 @@ class ProfileProvider extends ChangeNotifier {
 
       if (shouldFetchProfile) {
         final authResponse = results[0] as ApiResponse?;
-        if (authResponse != null && authResponse.success && authResponse.data != null) {
-          final userData = authResponse.data!.containsKey('id') ? authResponse.data! : authResponse.data!['user'];
+        if (authResponse != null &&
+            authResponse.success &&
+            authResponse.data != null) {
+          final userData = authResponse.data!.containsKey('id')
+              ? authResponse.data!
+              : authResponse.data!['user'];
           if (userData != null) {
             _userProfile = UserProfileModel.fromJson(userData);
-            
+
             // Check if we need to download the avatar
             if (_userProfile?.avatar != null && _localAvatarBytes == null) {
-              final String fullUrl = _userProfile!.avatar!.startsWith('http') 
-                  ? _userProfile!.avatar! 
+              final String fullUrl = _userProfile!.avatar!.startsWith('http')
+                  ? _userProfile!.avatar!
                   : 'https://dev.api.saaradhigo.in${_userProfile!.avatar!.startsWith('/') ? '' : '/'}${_userProfile!.avatar}';
-              
-              _localAvatarBytes = await AvatarCacheService.downloadAndSaveAvatar(fullUrl);
+
+              _localAvatarBytes =
+                  await AvatarCacheService.downloadAndSaveAvatar(fullUrl);
             }
           }
         }
