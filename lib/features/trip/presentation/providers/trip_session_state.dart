@@ -35,6 +35,9 @@ abstract class TripSessionState with _$TripSessionState {
 
     /// The transport exhausted its reconnect budget.
     @Default(false) bool socketError,
+
+    /// A cash trip's `confirm_cash` has been acknowledged by the backend.
+    @Default(false) bool cashConfirmed,
   }) = _TripSessionState;
 
   /// No trip is in flight.
@@ -45,4 +48,12 @@ abstract class TripSessionState with _$TripSessionState {
 
   /// The trip has settled into a terminal state.
   bool get isTerminal => status?.isTerminal ?? false;
+
+  /// A completed cash trip whose collection has not yet been confirmed. The
+  /// driver must confirm before leaving the summary (and the socket is held
+  /// open for it — the backend requires `completed` + a live channel).
+  bool get needsCashCollection =>
+      status == TripStatus.completed &&
+      trip?.paymentMethod == 'cash' &&
+      !cashConfirmed;
 }

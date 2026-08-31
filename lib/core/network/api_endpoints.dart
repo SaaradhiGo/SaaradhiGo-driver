@@ -29,8 +29,8 @@ class ApiEndpoints {
   // Driver Earnings, Incentives & Elite Status
   static const String driverEarnings = '/driver/earnings/';
   static const String driverEarningsSummary = '/driver/earnings/summary/';
-  static const String driverIncentives = '/driver/incentives/';
-  static const String driverEliteStatus = '/driver/elite-status/';
+  static const String driverIncentives = '/driver/driver/incentives/';
+  static const String driverEliteStatus = '/driver/driver/elite-status/';
 
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';

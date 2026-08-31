@@ -69,6 +69,16 @@ class TripStatusChanged extends TripStatusEvent {
   final Map<String, dynamic> raw;
 }
 
+/// `{"type": "trip_status_update", "status": "confirm_cash", ...}` — the backend
+/// acknowledged a `confirm_cash` action. This is NOT a lifecycle transition (the
+/// trip stays `completed`), so it is surfaced as its own event rather than mapped
+/// through [tripStatusFromWsAction].
+class TripCashConfirmed extends TripStatusEvent {
+  const TripCashConfirmed({this.message});
+
+  final String? message;
+}
+
 /// `{"type": "trip_taken", "trip_id": <int>, "message": ...}` — this offer was
 /// won by another driver.
 class TripTakenEvent extends TripStatusEvent {
@@ -204,6 +214,11 @@ class TripStatusConsumer {
           message: payload['message']?.toString(),
         );
       case 'trip_status_update':
+        // `confirm_cash` acknowledges a cash collection; it is not a lifecycle
+        // transition, so intercept it before the action→status mapping.
+        if (payload['status']?.toString() == 'confirm_cash') {
+          return TripCashConfirmed(message: payload['message']?.toString());
+        }
         final status = tripStatusFromWsAction(payload['status']?.toString());
         if (status == null) {
           return TripStatusUnknownEvent(typeName, payload);

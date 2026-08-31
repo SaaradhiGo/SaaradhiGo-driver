@@ -50,7 +50,15 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.darkText,
-          minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
+          // Height floor only. Do NOT use `Size.fromHeight` here: it means
+          // `Size(double.infinity, h)`, i.e. an infinite *minimum width*. A
+          // themed button placed in a `Row` (unbounded main axis) then throws
+          // "BoxConstraints forces an infinite width" during layout, which
+          // aborts the parent RenderFlex mid-layout and leaves siblings
+          // unsized — surfacing later as "Cannot hit test a render box with no
+          // size" / "RenderBox was not laid out". Buttons that want to stretch
+          // opt in themselves (see PrimaryButton/SecondaryButton/GhostButton).
+          minimumSize: const Size(0, AppSpacing.primaryButtonHeight),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           ),
@@ -61,7 +69,8 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.whiteText,
-          minimumSize: const Size.fromHeight(AppSpacing.touchTarget),
+          // Height floor only — see the note on `elevatedButtonTheme` above.
+          minimumSize: const Size(0, AppSpacing.touchTarget),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),

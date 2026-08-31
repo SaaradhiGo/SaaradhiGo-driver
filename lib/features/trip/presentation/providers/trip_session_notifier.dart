@@ -164,11 +164,23 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
           }
         }
         if (status.isTerminal) {
-          // No further updates on a settled trip — release the socket but keep
-          // the state so the summary/cancel UI can render.
-          _detachConsumer();
-          unawaited(LocalStorageService.clearActiveTripId());
+          // A completed cash trip still needs the driver to confirm collection,
+          // which the backend accepts only over a live socket while the trip is
+          // `completed`. Keep the channel (and the persisted id, for recovery)
+          // open in that case; release it for every other terminal outcome.
+          if (state.needsCashCollection) {
+            AppLogger.i('Holding socket open for cash confirmation');
+          } else {
+            _detachConsumer();
+            unawaited(LocalStorageService.clearActiveTripId());
+          }
         }
+
+      case TripCashConfirmed():
+        AppLogger.i('Cash collection confirmed for trip ${_consumer?.tripId}');
+        state = state.copyWith(cashConfirmed: true, actionInProgress: false);
+        _detachConsumer();
+        unawaited(LocalStorageService.clearActiveTripId());
 
       case TripTakenEvent():
         AppLogger.i('Trip taken by another driver');

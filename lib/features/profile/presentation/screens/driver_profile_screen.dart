@@ -81,6 +81,13 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      // Explicitly full-width; the theme now only sets a
+                      // height floor.
+                      minimumSize: const Size.fromHeight(
+                        AppSpacing.primaryButtonHeight,
+                      ),
+                    ),
                     onPressed: () => ref
                         .read(driverProfileNotifierProvider.notifier)
                         .fetchProfile(),

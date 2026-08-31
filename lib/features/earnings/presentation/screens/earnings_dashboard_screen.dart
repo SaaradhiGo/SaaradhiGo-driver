@@ -223,6 +223,14 @@ class _EarningsDashboardScreenState
     final summary = state.summary;
     final balance = state.withdrawalBalance;
 
+    // Every figure below is derived from real EarningsSummaryModel fields:
+    // net = gross fares − platform commission; avg/trip = net ÷ completed trips.
+    final gross = _parseMoney(summary?.totalEarned);
+    final commission = _parseMoney(summary?.totalCommission);
+    final net = gross - commission;
+    final trips = summary?.totalTrips ?? 0;
+    final avgPerTrip = trips > 0 ? net / trips : 0.0;
+
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(
@@ -266,12 +274,21 @@ class _EarningsDashboardScreenState
                 Positioned(
                   right: -20,
                   top: -20,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                  // Purely decorative accent that overflows the card bounds;
+                  // keep it out of the semantics tree, otherwise the clipped,
+                  // out-of-bounds node dirties parent data during the semantics
+                  // pass when the async earnings load relayouts the card
+                  // (triggers `!semantics.parentDataDirty`).
+                  child: ExcludeSemantics(
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primaryContainer.withValues(
+                          alpha: 0.15,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -341,7 +358,7 @@ class _EarningsDashboardScreenState
                           child: Column(
                             children: [
                               Text(
-                                '6.5h',
+                                '₹${net.toStringAsFixed(2)}',
                                 style: AppTypography.dataMono.copyWith(
                                   color: AppColors.primary,
                                   fontSize: 18,
@@ -350,7 +367,7 @@ class _EarningsDashboardScreenState
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Online Hours',
+                                'Net Earnings',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
                                 ),
@@ -409,6 +426,12 @@ class _EarningsDashboardScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryContainer,
                     foregroundColor: AppColors.darkText,
+                    // Compact, content-width button: this one sits inside a
+                    // Row, so it must not inherit a full-width minimum.
+                    minimumSize: const Size(0, AppSpacing.touchTarget),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
@@ -439,24 +462,26 @@ class _EarningsDashboardScreenState
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Quick Stats Grid
+          // Quick Stats Grid — all backend-derived (no fabricated figures).
           Row(
             children: [
-              Expanded(child: _buildStatBox(Icons.speed, '₹207', 'Avg / Hour')),
-              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: _buildStatBox(
-                  Icons.payments,
-                  '₹${summary?.todayEarned ?? '0'}',
-                  'Cash',
+                  Icons.route,
+                  '₹${avgPerTrip.toStringAsFixed(0)}',
+                  'Avg / Trip',
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
+                child: _buildStatBox(Icons.directions_car, '$trips', 'Trips'),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
                 child: _buildStatBox(
-                  Icons.credit_card,
-                  '₹${summary?.totalEarned ?? '0'}',
-                  'Digital',
+                  Icons.percent,
+                  '₹${commission.toStringAsFixed(0)}',
+                  'Commission',
                 ),
               ),
             ],
@@ -467,7 +492,7 @@ class _EarningsDashboardScreenState
           EarningsBreakdownCard(
             grossFares: summary?.totalEarned ?? '0.00',
             commission: summary?.totalCommission ?? '0.00',
-            netEarnings: summary?.totalEarned ?? '0.00',
+            netEarnings: net.toStringAsFixed(2),
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -500,6 +525,13 @@ class _EarningsDashboardScreenState
         ],
       ),
     );
+  }
+
+  /// Safely parses a decimal-string money field (backend sends `"123.45"`,
+  /// occasionally with a stray `₹`) to a double; falls back to 0.
+  double _parseMoney(String? raw) {
+    if (raw == null) return 0;
+    return double.tryParse(raw.replaceAll('₹', '').trim()) ?? 0;
   }
 
   Widget _buildFilterChip(String label, int index, int currentIndex) {
