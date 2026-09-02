@@ -18,6 +18,12 @@ import '../features/onboarding/presentation/screens/verification_status_screen.d
 import '../features/profile/presentation/providers/profile_providers.dart';
 import '../features/profile/presentation/screens/driver_profile_screen.dart';
 import '../features/splash/presentation/splash_screen.dart';
+import '../features/support/presentation/screens/emergency_contacts_screen.dart';
+import '../features/support/presentation/screens/help_support_screen.dart';
+import '../features/support/presentation/screens/report_incident_screen.dart';
+import '../features/support/presentation/screens/safety_center_screen.dart';
+import '../features/support/presentation/screens/support_ticket_detail_screen.dart';
+import '../features/support/presentation/screens/trip_chat_screen.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
@@ -209,6 +215,43 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/ride',
         name: AppRoute.ride.name,
         builder: (context, state) => const TripFlowScreen(),
+      ),
+      // Support, Safety & Comms — also OUTSIDE the tab shell so these flows
+      // open over the shell (and over the active trip) as full screens.
+      GoRoute(
+        path: '/trip-chat/:tripId',
+        builder: (context, state) {
+          final tripId =
+              int.tryParse(state.pathParameters['tripId'] ?? '') ?? 0;
+          return TripChatScreen(
+            tripId: tripId,
+            riderName: state.uri.queryParameters['riderName'],
+          );
+        },
+      ),
+      GoRoute(
+        path: '/safety',
+        builder: (context, state) => const SafetyCenterScreen(),
+      ),
+      GoRoute(
+        path: '/emergency-contacts',
+        builder: (context, state) => const EmergencyContactsScreen(),
+      ),
+      GoRoute(
+        path: '/report-incident',
+        builder: (context, state) => const ReportIncidentScreen(),
+      ),
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const HelpSupportScreen(),
+      ),
+      GoRoute(
+        path: '/support/ticket/:ticketId',
+        builder: (context, state) {
+          final ticketId =
+              int.tryParse(state.pathParameters['ticketId'] ?? '') ?? 0;
+          return SupportTicketDetailScreen(ticketId: ticketId);
+        },
       ),
     ],
     errorBuilder: (context, state) =>

@@ -8,14 +8,20 @@ import 'package:saaradhigo_driver/domain/models/withdrawal_model.dart';
 import 'package:saaradhigo_driver/features/earnings/domain/repositories/earnings_repository.dart';
 import 'package:saaradhigo_driver/features/earnings/presentation/providers/earnings_providers.dart';
 
+/// Granular failure control: each dashboard endpoint can fail independently so
+/// tests can verify the notifier's per-section error isolation.
 class StubEarningsRepository implements EarningsRepository {
-  bool shouldFail = false;
+  bool failSummary = false;
+  bool failEarningsList = false;
+  bool failBalance = false;
+  bool failWithdrawal = false;
+  bool failHistory = false;
 
   @override
   Future<EarningsSummaryModel> getEarningsSummary({
     String period = 'today',
   }) async {
-    if (shouldFail) throw Exception('Network error');
+    if (failSummary) throw Exception('Network error');
     return EarningsSummaryModel(
       totalEarned: period == 'this_week' ? '5000.00' : '1000.00',
       totalCommission: '100.00',
@@ -28,13 +34,13 @@ class StubEarningsRepository implements EarningsRepository {
     int page = 1,
     int pageSize = 20,
   }) async {
-    if (shouldFail) throw Exception('Network error');
+    if (failEarningsList) throw Exception('Network error');
     return [const EarningModel(id: 1, netEarning: '500.00')];
   }
 
   @override
   Future<WithdrawalBalanceModel> getWithdrawalBalance() async {
-    if (shouldFail) throw Exception('Network error');
+    if (failBalance) throw Exception('Network error');
     return const WithdrawalBalanceModel(
       availableBalance: 1200.0,
       blocked: false,
@@ -44,7 +50,7 @@ class StubEarningsRepository implements EarningsRepository {
 
   @override
   Future<WithdrawalModel> requestWithdrawal(double amount) async {
-    if (shouldFail) throw Exception('Network error');
+    if (failWithdrawal) throw Exception('Network error');
     return WithdrawalModel(
       id: 55,
       amount: amount.toStringAsFixed(2),
@@ -57,7 +63,7 @@ class StubEarningsRepository implements EarningsRepository {
     int page = 1,
     int pageSize = 20,
   }) async {
-    if (shouldFail) throw Exception('Network error');
+    if (failHistory) throw Exception('Network error');
     return [const WithdrawalModel(id: 1, amount: '500.00', status: 'pending')];
   }
 
@@ -99,6 +105,8 @@ void main() {
       expect(state.summary?.totalEarned, '1000.00');
       expect(state.earningsList.length, 1);
       expect(state.withdrawalBalance?.availableBalance, 1200.0);
+      expect(state.withdrawalHistory.length, 1);
+      expect(state.errorMessage, isNull);
     });
 
     test('setPeriod updates selected index and fetches new summary', () async {
@@ -143,14 +151,73 @@ void main() {
       expect(state.withdrawalSuccessMessage, contains('ID: 55'));
     });
 
-    test('handles error gracefully when repository fails', () async {
-      stubRepository.shouldFail = true;
+    test(
+      'full failure surfaces fatal error without a fallback summary',
+      () async {
+        stubRepository.failSummary = true;
+        stubRepository.failEarningsList = true;
+        stubRepository.failBalance = true;
+        stubRepository.failHistory = true;
+        final notifier = container.read(earningsNotifierProvider.notifier);
+        await notifier.loadInitialData();
+
+        final state = container.read(earningsNotifierProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.summary, isNull);
+        expect(state.errorMessage, isNotNull);
+      },
+    );
+
+    test(
+      'a failing non-summary section does not blank the dashboard',
+      () async {
+        // Summary loads fine; only the secondary sections fail.
+        stubRepository.failBalance = true;
+        stubRepository.failHistory = true;
+        final notifier = container.read(earningsNotifierProvider.notifier);
+        await notifier.loadInitialData();
+
+        final state = container.read(earningsNotifierProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.summary?.totalEarned, '1000.00');
+        expect(state.earningsList.length, 1);
+        // Failed sections keep the previous (empty) value; no fatal error since
+        // the summary — the section the dashboard needs to render — succeeded.
+        expect(state.withdrawalBalance, isNull);
+        expect(state.withdrawalHistory, isEmpty);
+        expect(state.errorMessage, isNull);
+      },
+    );
+
+    test('partial failure keeps previously loaded data on refresh', () async {
       final notifier = container.read(earningsNotifierProvider.notifier);
       await notifier.loadInitialData();
 
+      // On refresh only the balance endpoint fails: previous balance stays.
+      stubRepository.failBalance = true;
+      await notifier.refresh();
+
       final state = container.read(earningsNotifierProvider);
-      expect(state.isLoading, isFalse);
-      expect(state.errorMessage, contains('Failed to load earnings'));
+      expect(state.summary?.totalEarned, '1000.00');
+      expect(state.withdrawalBalance?.availableBalance, 1200.0);
+      expect(state.errorMessage, isNull);
     });
+
+    test(
+      'successful withdrawal refresh tolerates a failing balance fetch',
+      () async {
+        final notifier = container.read(earningsNotifierProvider.notifier);
+        await notifier.loadInitialData();
+
+        stubRepository.failBalance = true;
+        final success = await notifier.requestWithdrawal(600.0);
+        expect(success, isTrue);
+
+        final state = container.read(earningsNotifierProvider);
+        expect(state.withdrawalSuccessMessage, contains('ID: 55'));
+        // The failing balance refresh must not roll back the stored balance.
+        expect(state.withdrawalBalance?.availableBalance, 1200.0);
+      },
+    );
   });
 }

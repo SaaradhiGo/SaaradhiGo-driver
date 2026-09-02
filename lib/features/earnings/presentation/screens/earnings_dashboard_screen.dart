@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -44,6 +45,24 @@ class _EarningsDashboardScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(earningsNotifierProvider);
     final profileState = ref.watch(driverProfileNotifierProvider);
+
+    // Auto-retry a failed/stale load when connectivity returns
+    // (docs/14_ERROR_HANDLING.md:11 "Auto-retry queued HTTP requests"). Only
+    // fires when there is an error on screen or nothing loaded yet — a healthy
+    // dashboard is never spammed by a redundant refresh.
+    ref.listen<bool>(isOnlineNetworkProvider, (previous, next) {
+      if (previous == true || next != true) return;
+      final current = ref.read(earningsNotifierProvider);
+      if (current.isLoading) return;
+      final notifier = ref.read(earningsNotifierProvider.notifier);
+      if (current.summary == null) {
+        // Nothing rendered yet — a full first load (with spinner) is honest.
+        notifier.loadInitialData();
+      } else if (current.errorMessage != null) {
+        // Data on screen but a section failed — a gentle background refresh.
+        notifier.refresh();
+      }
+    });
 
     final authState = ref.watch(authNotifierProvider);
     final authUser = authState is AuthAuthenticated ? authState.user : null;
@@ -633,7 +652,7 @@ class _EarningsDashboardScreenState
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      earning.createdAt ?? 'Completed',
+                      _formatTimestamp(earning.createdAt) ?? 'Completed',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
                         fontSize: 10,
@@ -693,7 +712,7 @@ class _EarningsDashboardScreenState
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      withdrawal.requestedAt ?? 'Pending',
+                      _formatTimestamp(withdrawal.requestedAt) ?? 'Pending',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
                         fontSize: 10,
@@ -724,5 +743,34 @@ class _EarningsDashboardScreenState
         ),
       ),
     );
+  }
+
+  /// Formats an ISO-8601 timestamp (e.g. `2025-01-15T10:30:00.000Z`) for the
+  /// compact transaction tiles, without an `intl` dependency. Returns null for
+  /// null/empty/unparseable input so callers can fall back to a label.
+  String? _formatTimestamp(String? raw) {
+    if (raw == null || raw.isEmpty) return null;
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return null;
+    final local = parsed.toLocal();
+    const months = <String>[
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final month = months[local.month - 1];
+    final day = local.day.toString().padLeft(2, '0');
+    final hh = local.hour.toString().padLeft(2, '0');
+    final mm = local.minute.toString().padLeft(2, '0');
+    return '$day $month, $hh:$mm';
   }
 }

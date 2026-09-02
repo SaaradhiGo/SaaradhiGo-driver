@@ -51,6 +51,12 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
       locationNotifierProvider,
       (_, next) => _onLocationChanged(next),
     );
+    // Pause/resume the socket's reconnect budget with platform connectivity so
+    // airplane mode never exhausts the backoff (docs/14_ERROR_HANDLING.md:18).
+    ref.listen<bool>(isOnlineNetworkProvider, (previous, next) {
+      if (previous == next) return;
+      _consumer?.updateNetworkStatus(next);
+    });
     ref.onDispose(_teardown);
     return const AvailabilityState.offline();
   }

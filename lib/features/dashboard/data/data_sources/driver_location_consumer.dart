@@ -204,6 +204,12 @@ class DriverLocationConsumer {
 
   void connect() => _service.connect();
 
+  /// Forwards platform connectivity changes so the underlying transport can
+  /// pause futile reconnect attempts while offline and resume instantly when
+  /// the network returns (docs/14_ERROR_HANDLING.md:11,18).
+  void updateNetworkStatus(bool isOnline) =>
+      _service.updateNetworkStatus(isOnline);
+
   /// Pushes a location frame. The wire format is exactly `{"lat":…,"lng":…}`
   /// per `WebSocket_Documentation.md` §1 — no `bearing`, `speed`, `accuracy` or
   /// `timestamp`, none of which are documented.

@@ -9,11 +9,17 @@ part of 'withdrawal_balance_model.dart';
 _WithdrawalBalanceModel _$WithdrawalBalanceModelFromJson(
   Map<String, dynamic> json,
 ) => _WithdrawalBalanceModel(
-  availableBalance: (json['available_balance'] as num?)?.toDouble() ?? 0.0,
-  blocked: json['blocked'] as bool? ?? false,
-  blockRemainingSeconds: (json['block_remaining_seconds'] as num?)?.toInt(),
-  feePercent: (json['fee_percent'] as num?)?.toDouble() ?? 0.0,
-  minimumWithdrawal: (json['minimum_withdrawal'] as num?)?.toDouble() ?? 500.0,
+  availableBalance: json['available_balance'] == null
+      ? 0.0
+      : doubleFromJson(json['available_balance']),
+  blocked: json['blocked'] == null ? false : boolFromJson(json['blocked']),
+  blockRemainingSeconds: nullableIntFromJson(json['block_remaining_seconds']),
+  feePercent: json['fee_percent'] == null
+      ? 0.0
+      : doubleFromJson(json['fee_percent']),
+  minimumWithdrawal: json['minimum_withdrawal'] == null
+      ? 500.0
+      : doubleFromJson(json['minimum_withdrawal']),
 );
 
 Map<String, dynamic> _$WithdrawalBalanceModelToJson(

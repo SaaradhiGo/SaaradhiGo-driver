@@ -180,7 +180,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             child: DashboardHeader(profileState: profileState),
           ),
           _buildToggle(locationState, availability, profileState, hasNetwork),
-          _buildBanners(locationState, availability, hasNetwork),
+          _buildBanners(locationState, availability),
           _buildMapControls(position),
           ..._buildBlockingOverlay(locationState),
         ],
@@ -284,23 +284,16 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     );
   }
 
-  /// Offline / Refreshing / weak-GPS indicators.
+  /// Reconnecting / weak-GPS indicators.
+  ///
+  /// The global "No Internet Connection" strip is owned by
+  /// [AppConnectivityHost] (docs/14_ERROR_HANDLING.md:11), so it is NOT
+  /// duplicated here.
   Widget _buildBanners(
     LocationState locationState,
     AvailabilityState availability,
-    bool hasNetwork,
   ) {
     final banners = <Widget>[];
-
-    if (!hasNetwork) {
-      banners.add(
-        const DashboardStatusBanner(
-          message: 'NO INTERNET CONNECTION',
-          icon: Icons.wifi_off,
-          tone: DashboardBannerTone.error,
-        ),
-      );
-    }
 
     if (availability is AvailabilityStateReconnecting) {
       banners.add(

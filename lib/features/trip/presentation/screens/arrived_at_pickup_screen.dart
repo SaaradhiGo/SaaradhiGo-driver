@@ -8,6 +8,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/cancel_trip_sheet.dart';
 import '../widgets/rider_summary_row.dart';
@@ -61,6 +62,16 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
             color: AppColors.onBackground,
           ),
         ),
+        actions: [
+          TripChatButton(
+            tripId: widget.trip.id,
+            riderName: widget.trip.riderName,
+            size: 40,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          TripSosButton(tripId: widget.trip.id, size: 40),
+          const SizedBox(width: AppSpacing.sm),
+        ],
       ),
       body: SafeArea(
         child: Padding(

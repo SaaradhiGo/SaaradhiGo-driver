@@ -15,6 +15,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   avatar: json['avatar'] as String?,
   isUpdated: json['is_updated'] as bool? ?? false,
   fcmToken: json['fcm_token'] as String?,
+  emergencyContact: json['emergency_contact'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -27,6 +28,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'avatar': instance.avatar,
       'is_updated': instance.isUpdated,
       'fcm_token': instance.fcmToken,
+      'emergency_contact': instance.emergencyContact,
     };
 
 const _$UserRoleEnumMap = {

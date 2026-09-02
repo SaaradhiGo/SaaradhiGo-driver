@@ -114,10 +114,7 @@ Widget _shellHarness(EarningsState seed) {
         () => FakeAuthNotifier(const AuthAuthenticated()),
       ),
     ],
-    child: MaterialApp.router(
-      theme: AppTheme.darkTheme,
-      routerConfig: router,
-    ),
+    child: MaterialApp.router(theme: AppTheme.darkTheme, routerConfig: router),
   );
 }
 

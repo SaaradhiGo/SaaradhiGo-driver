@@ -23,6 +23,7 @@ abstract class UserModel with _$UserModel {
     String? avatar,
     @JsonKey(name: 'is_updated') @Default(false) bool isUpdated,
     @JsonKey(name: 'fcm_token') String? fcmToken,
+    @JsonKey(name: 'emergency_contact') String? emergencyContact,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

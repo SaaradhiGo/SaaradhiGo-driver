@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/network/websocket_service.dart';
 import '../../../../core/storage/local_storage_service.dart';
 import '../../../../core/utils/app_logger.dart';
@@ -27,6 +28,13 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
   @override
   TripSessionState build() {
+    // Pause/resume the trip socket's reconnect budget with platform
+    // connectivity so airplane mode never exhausts the backoff while a trip is
+    // in flight (docs/14_ERROR_HANDLING.md:18).
+    ref.listen<bool>(isOnlineNetworkProvider, (previous, next) {
+      if (previous == next) return;
+      _consumer?.updateNetworkStatus(next);
+    });
     ref.onDispose(_teardown);
     return const TripSessionState();
   }

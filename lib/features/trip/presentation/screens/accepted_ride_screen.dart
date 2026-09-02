@@ -9,6 +9,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/cancel_trip_sheet.dart';
 import '../widgets/rider_summary_row.dart';
@@ -34,6 +35,15 @@ class AcceptedRideScreen extends ConsumerWidget {
         children: [
           Positioned.fill(
             child: TripRouteMap(driver: driver, pickup: pickup, focus: pickup),
+          ),
+          // Passenger chat + SOS stay reachable while en route to pickup.
+          Positioned(
+            top: MediaQuery.paddingOf(context).top + AppSpacing.sm,
+            right: AppSpacing.margin,
+            child: TripSafetyActions(
+              tripId: trip.id,
+              riderName: trip.riderName,
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,

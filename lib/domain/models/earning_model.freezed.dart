@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EarningModel {
 
- int get id;@JsonKey(name: 'trip_id') int? get tripId;@JsonKey(name: 'amount_collected') String get amountCollected;@JsonKey(name: 'platform_fee') String get platformFee;@JsonKey(name: 'net_earning') String get netEarning;@JsonKey(name: 'created_at') String? get createdAt;
+@JsonKey(fromJson: intFromJson) int get id;@JsonKey(name: 'trip_id', fromJson: nullableIntFromJson) int? get tripId;@JsonKey(name: 'amount_collected', fromJson: moneyFromJson) String get amountCollected;@JsonKey(name: 'platform_fee', fromJson: moneyFromJson) String get platformFee;@JsonKey(name: 'net_earning', fromJson: moneyFromJson) String get netEarning;@JsonKey(name: 'created_at') String? get createdAt;
 /// Create a copy of EarningModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $EarningModelCopyWith<$Res>  {
   factory $EarningModelCopyWith(EarningModel value, $Res Function(EarningModel) _then) = _$EarningModelCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'trip_id') int? tripId,@JsonKey(name: 'amount_collected') String amountCollected,@JsonKey(name: 'platform_fee') String platformFee,@JsonKey(name: 'net_earning') String netEarning,@JsonKey(name: 'created_at') String? createdAt
+@JsonKey(fromJson: intFromJson) int id,@JsonKey(name: 'trip_id', fromJson: nullableIntFromJson) int? tripId,@JsonKey(name: 'amount_collected', fromJson: moneyFromJson) String amountCollected,@JsonKey(name: 'platform_fee', fromJson: moneyFromJson) String platformFee,@JsonKey(name: 'net_earning', fromJson: moneyFromJson) String netEarning,@JsonKey(name: 'created_at') String? createdAt
 });
 
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'trip_id')  int? tripId, @JsonKey(name: 'amount_collected')  String amountCollected, @JsonKey(name: 'platform_fee')  String platformFee, @JsonKey(name: 'net_earning')  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(name: 'trip_id', fromJson: nullableIntFromJson)  int? tripId, @JsonKey(name: 'amount_collected', fromJson: moneyFromJson)  String amountCollected, @JsonKey(name: 'platform_fee', fromJson: moneyFromJson)  String platformFee, @JsonKey(name: 'net_earning', fromJson: moneyFromJson)  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EarningModel() when $default != null:
 return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_that.netEarning,_that.createdAt);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'trip_id')  int? tripId, @JsonKey(name: 'amount_collected')  String amountCollected, @JsonKey(name: 'platform_fee')  String platformFee, @JsonKey(name: 'net_earning')  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(name: 'trip_id', fromJson: nullableIntFromJson)  int? tripId, @JsonKey(name: 'amount_collected', fromJson: moneyFromJson)  String amountCollected, @JsonKey(name: 'platform_fee', fromJson: moneyFromJson)  String platformFee, @JsonKey(name: 'net_earning', fromJson: moneyFromJson)  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _EarningModel():
 return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_that.netEarning,_that.createdAt);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'trip_id')  int? tripId, @JsonKey(name: 'amount_collected')  String amountCollected, @JsonKey(name: 'platform_fee')  String platformFee, @JsonKey(name: 'net_earning')  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(name: 'trip_id', fromJson: nullableIntFromJson)  int? tripId, @JsonKey(name: 'amount_collected', fromJson: moneyFromJson)  String amountCollected, @JsonKey(name: 'platform_fee', fromJson: moneyFromJson)  String platformFee, @JsonKey(name: 'net_earning', fromJson: moneyFromJson)  String netEarning, @JsonKey(name: 'created_at')  String? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _EarningModel() when $default != null:
 return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_that.netEarning,_that.createdAt);case _:
@@ -215,14 +215,14 @@ return $default(_that.id,_that.tripId,_that.amountCollected,_that.platformFee,_t
 @JsonSerializable()
 
 class _EarningModel implements EarningModel {
-  const _EarningModel({required this.id, @JsonKey(name: 'trip_id') this.tripId, @JsonKey(name: 'amount_collected') this.amountCollected = '0.00', @JsonKey(name: 'platform_fee') this.platformFee = '0.00', @JsonKey(name: 'net_earning') this.netEarning = '0.00', @JsonKey(name: 'created_at') this.createdAt});
+  const _EarningModel({@JsonKey(fromJson: intFromJson) this.id = 0, @JsonKey(name: 'trip_id', fromJson: nullableIntFromJson) this.tripId, @JsonKey(name: 'amount_collected', fromJson: moneyFromJson) this.amountCollected = '0.00', @JsonKey(name: 'platform_fee', fromJson: moneyFromJson) this.platformFee = '0.00', @JsonKey(name: 'net_earning', fromJson: moneyFromJson) this.netEarning = '0.00', @JsonKey(name: 'created_at') this.createdAt});
   factory _EarningModel.fromJson(Map<String, dynamic> json) => _$EarningModelFromJson(json);
 
-@override final  int id;
-@override@JsonKey(name: 'trip_id') final  int? tripId;
-@override@JsonKey(name: 'amount_collected') final  String amountCollected;
-@override@JsonKey(name: 'platform_fee') final  String platformFee;
-@override@JsonKey(name: 'net_earning') final  String netEarning;
+@override@JsonKey(fromJson: intFromJson) final  int id;
+@override@JsonKey(name: 'trip_id', fromJson: nullableIntFromJson) final  int? tripId;
+@override@JsonKey(name: 'amount_collected', fromJson: moneyFromJson) final  String amountCollected;
+@override@JsonKey(name: 'platform_fee', fromJson: moneyFromJson) final  String platformFee;
+@override@JsonKey(name: 'net_earning', fromJson: moneyFromJson) final  String netEarning;
 @override@JsonKey(name: 'created_at') final  String? createdAt;
 
 /// Create a copy of EarningModel
@@ -258,7 +258,7 @@ abstract mixin class _$EarningModelCopyWith<$Res> implements $EarningModelCopyWi
   factory _$EarningModelCopyWith(_EarningModel value, $Res Function(_EarningModel) _then) = __$EarningModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'trip_id') int? tripId,@JsonKey(name: 'amount_collected') String amountCollected,@JsonKey(name: 'platform_fee') String platformFee,@JsonKey(name: 'net_earning') String netEarning,@JsonKey(name: 'created_at') String? createdAt
+@JsonKey(fromJson: intFromJson) int id,@JsonKey(name: 'trip_id', fromJson: nullableIntFromJson) int? tripId,@JsonKey(name: 'amount_collected', fromJson: moneyFromJson) String amountCollected,@JsonKey(name: 'platform_fee', fromJson: moneyFromJson) String platformFee,@JsonKey(name: 'net_earning', fromJson: moneyFromJson) String netEarning,@JsonKey(name: 'created_at') String? createdAt
 });
 
 

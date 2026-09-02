@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'core/theme/app_theme.dart';
 import 'routing/app_router.dart';
+import 'shared/widgets/app_connectivity_host.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,9 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      // Global offline strip above every route (docs/14_ERROR_HANDLING.md:11).
+      builder: (context, child) =>
+          AppConnectivityHost(child: child ?? const SizedBox.shrink()),
     );
   }
 }

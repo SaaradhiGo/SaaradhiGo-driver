@@ -8,6 +8,28 @@ import 'package:saaradhigo_driver/features/dashboard/data/data_sources/driver_lo
 import '../../core/network/test_websocket_channel.dart';
 
 void main() {
+  test('closes the channel when network loss is reported', () async {
+    final channel = TestWebSocketChannel();
+    final consumer = DriverLocationConsumer(
+      tokenReader: () async => 'jwt',
+      positionReader: () => const LatLng(17.385, 78.486),
+      wsBaseUrlReader: () => 'wss://api.example/',
+      serviceFactory: (urlBuilder) => WebSocketService(
+        urlBuilder: urlBuilder,
+        channelFactory: (_) => channel,
+      ),
+    );
+    addTearDown(consumer.dispose);
+
+    consumer.connect();
+    await pumpEventQueue();
+    expect(channel.sink.closed, isFalse);
+
+    consumer.updateNetworkStatus(false);
+    await pumpEventQueue();
+    expect(channel.sink.closed, isTrue);
+  });
+
   test('builds the confirmed location endpoint without duplicating /ws', () {
     final plainBase = DriverLocationConsumer.buildUri(
       wsBaseUrl: 'wss://api.example/',

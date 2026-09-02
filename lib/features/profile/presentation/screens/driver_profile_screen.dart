@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -35,6 +37,15 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(driverProfileNotifierProvider);
+
+    // Auto-retry a failed profile fetch when connectivity returns
+    // (docs/14_ERROR_HANDLING.md:11).
+    ref.listen<bool>(isOnlineNetworkProvider, (previous, next) {
+      if (previous == true || next != true) return;
+      if (ref.read(driverProfileNotifierProvider) is ProfileStateError) {
+        ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -485,7 +496,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               Icons.chevron_right_rounded,
               color: AppColors.onSurfaceVariant,
             ),
-            onTap: () {},
+            onTap: () => context.push('/safety'),
           ),
         ],
       ),

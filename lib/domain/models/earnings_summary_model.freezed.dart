@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EarningsSummaryModel {
 
-@JsonKey(name: 'total_earned') String get totalEarned;@JsonKey(name: 'total_commission') String get totalCommission;@JsonKey(name: 'total_trips') int get totalTrips;@JsonKey(name: 'today_earned') String get todayEarned;@JsonKey(name: 'today_trips') int get todayTrips;@JsonKey(name: 'commission_percent') num get commissionPercent;
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String get totalEarned;@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String get totalCommission;@JsonKey(name: 'total_trips', fromJson: intFromJson) int get totalTrips;@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String get todayEarned;@JsonKey(name: 'today_trips', fromJson: intFromJson) int get todayTrips;@JsonKey(name: 'commission_percent', fromJson: numFromJson) num get commissionPercent;
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $EarningsSummaryModelCopyWith<$Res>  {
   factory $EarningsSummaryModelCopyWith(EarningsSummaryModel value, $Res Function(EarningsSummaryModel) _then) = _$EarningsSummaryModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'total_earned') String totalEarned,@JsonKey(name: 'total_commission') String totalCommission,@JsonKey(name: 'total_trips') int totalTrips,@JsonKey(name: 'today_earned') String todayEarned,@JsonKey(name: 'today_trips') int todayTrips,@JsonKey(name: 'commission_percent') num commissionPercent
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: numFromJson) num commissionPercent
 });
 
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned')  String totalEarned, @JsonKey(name: 'total_commission')  String totalCommission, @JsonKey(name: 'total_trips')  int totalTrips, @JsonKey(name: 'today_earned')  String todayEarned, @JsonKey(name: 'today_trips')  int todayTrips, @JsonKey(name: 'commission_percent')  num commissionPercent)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel() when $default != null:
 return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
@@ -180,7 +180,7 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned')  String totalEarned, @JsonKey(name: 'total_commission')  String totalCommission, @JsonKey(name: 'total_trips')  int totalTrips, @JsonKey(name: 'today_earned')  String todayEarned, @JsonKey(name: 'today_trips')  int todayTrips, @JsonKey(name: 'commission_percent')  num commissionPercent)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)  $default,) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel():
 return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
@@ -200,7 +200,7 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'total_earned')  String totalEarned, @JsonKey(name: 'total_commission')  String totalCommission, @JsonKey(name: 'total_trips')  int totalTrips, @JsonKey(name: 'today_earned')  String todayEarned, @JsonKey(name: 'today_trips')  int todayTrips, @JsonKey(name: 'commission_percent')  num commissionPercent)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)?  $default,) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel() when $default != null:
 return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
@@ -215,15 +215,15 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 @JsonSerializable()
 
 class _EarningsSummaryModel implements EarningsSummaryModel {
-  const _EarningsSummaryModel({@JsonKey(name: 'total_earned') this.totalEarned = '0.00', @JsonKey(name: 'total_commission') this.totalCommission = '0.00', @JsonKey(name: 'total_trips') this.totalTrips = 0, @JsonKey(name: 'today_earned') this.todayEarned = '0.00', @JsonKey(name: 'today_trips') this.todayTrips = 0, @JsonKey(name: 'commission_percent') this.commissionPercent = 10});
+  const _EarningsSummaryModel({@JsonKey(name: 'total_earned', fromJson: moneyFromJson) this.totalEarned = '0.00', @JsonKey(name: 'total_commission', fromJson: moneyFromJson) this.totalCommission = '0.00', @JsonKey(name: 'total_trips', fromJson: intFromJson) this.totalTrips = 0, @JsonKey(name: 'today_earned', fromJson: moneyFromJson) this.todayEarned = '0.00', @JsonKey(name: 'today_trips', fromJson: intFromJson) this.todayTrips = 0, @JsonKey(name: 'commission_percent', fromJson: numFromJson) this.commissionPercent = 10});
   factory _EarningsSummaryModel.fromJson(Map<String, dynamic> json) => _$EarningsSummaryModelFromJson(json);
 
-@override@JsonKey(name: 'total_earned') final  String totalEarned;
-@override@JsonKey(name: 'total_commission') final  String totalCommission;
-@override@JsonKey(name: 'total_trips') final  int totalTrips;
-@override@JsonKey(name: 'today_earned') final  String todayEarned;
-@override@JsonKey(name: 'today_trips') final  int todayTrips;
-@override@JsonKey(name: 'commission_percent') final  num commissionPercent;
+@override@JsonKey(name: 'total_earned', fromJson: moneyFromJson) final  String totalEarned;
+@override@JsonKey(name: 'total_commission', fromJson: moneyFromJson) final  String totalCommission;
+@override@JsonKey(name: 'total_trips', fromJson: intFromJson) final  int totalTrips;
+@override@JsonKey(name: 'today_earned', fromJson: moneyFromJson) final  String todayEarned;
+@override@JsonKey(name: 'today_trips', fromJson: intFromJson) final  int todayTrips;
+@override@JsonKey(name: 'commission_percent', fromJson: numFromJson) final  num commissionPercent;
 
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -258,7 +258,7 @@ abstract mixin class _$EarningsSummaryModelCopyWith<$Res> implements $EarningsSu
   factory _$EarningsSummaryModelCopyWith(_EarningsSummaryModel value, $Res Function(_EarningsSummaryModel) _then) = __$EarningsSummaryModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'total_earned') String totalEarned,@JsonKey(name: 'total_commission') String totalCommission,@JsonKey(name: 'total_trips') int totalTrips,@JsonKey(name: 'today_earned') String todayEarned,@JsonKey(name: 'today_trips') int todayTrips,@JsonKey(name: 'commission_percent') num commissionPercent
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: numFromJson) num commissionPercent
 });
 
 

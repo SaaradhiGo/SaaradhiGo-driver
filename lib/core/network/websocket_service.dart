@@ -63,6 +63,15 @@ class WebSocketService {
   bool _disposed = false;
   int _session = 0;
 
+  /// Last known transport availability. Optimistic (assumes online) so a slow
+  /// first connectivity probe never blocks the initial connection.
+  bool _networkOnline = true;
+
+  /// True while a reconnect is pending but paused because the device is
+  /// offline. Prevents the backoff budget being consumed by futile attempts
+  /// during airplane mode (docs/14_ERROR_HANDLING.md:11,18).
+  bool _waitingForNetwork = false;
+
   final _stateController = StreamController<WebSocketState>.broadcast();
   final _messageController = StreamController<Map<String, dynamic>>.broadcast();
 
@@ -80,6 +89,7 @@ class WebSocketService {
     if (_disposed || _connecting || _channel != null) return;
     _shouldReconnect = true;
     _reconnectAttempts = 0;
+    _waitingForNetwork = false;
     _reconnectTimer?.cancel();
     _session++;
     _connectInternal(_session);
@@ -187,8 +197,66 @@ class WebSocketService {
     }
   }
 
+  /// Reports a change in platform connectivity (from
+  /// `isOnlineNetworkProvider`).
+  ///
+  /// While offline, a live channel is torn down and any pending reconnect is
+  /// paused instead of burning the exponential-backoff budget on futile
+  /// attempts; when connectivity returns the next reconnect runs immediately
+  /// (no extra backoff wait).
+  void updateNetworkStatus(bool isOnline) {
+    if (_networkOnline == isOnline) return;
+    _networkOnline = isOnline;
+
+    if (_disposed) return;
+
+    if (!isOnline) {
+      _waitingForNetwork = true;
+      _reconnectTimer?.cancel();
+      _reconnectTimer = null;
+
+      final channel = _channel;
+      if (channel != null) {
+        // The transport is no longer usable (e.g. airplane mode toggled while
+        // a socket appeared healthy). Tear it down so the disconnected handler
+        // schedules a reconnect which will then be paused for the network.
+        AppLogger.d('WS Closing channel: no network');
+        _subscription?.cancel();
+        _subscription = null;
+        _channel = null;
+        channel.sink.close(status.goingAway);
+        _emitState(WebSocketState.disconnected);
+        if (_shouldReconnect) _scheduleReconnect(_session);
+      }
+      return;
+    }
+
+    // Back online: resume any in-progress session immediately.
+    final wasWaiting = _waitingForNetwork;
+    _waitingForNetwork = false;
+    if (wasWaiting &&
+        _shouldReconnect &&
+        !_connecting &&
+        _channel == null &&
+        _session > 0) {
+      AppLogger.d('WS Network restored — reconnecting now');
+      _reconnectAttempts = 0;
+      _reconnectTimer?.cancel();
+      _reconnectTimer = null;
+      _connectInternal(_session);
+    }
+  }
+
   void _scheduleReconnect(int session) {
     if (session != _session || !_shouldReconnect || _disposed) return;
+
+    // Do not burn backoff attempts while the platform reports no transport.
+    if (!_networkOnline) {
+      _waitingForNetwork = true;
+      AppLogger.d('WS Reconnect deferred: no network');
+      return;
+    }
+
     if (_reconnectAttempts >= _maxReconnectAttempts) {
       AppLogger.e('WS Max reconnect attempts reached');
       _emitState(WebSocketState.error);
@@ -224,6 +292,7 @@ class WebSocketService {
     _shouldReconnect = false;
     _session++;
     _connecting = false;
+    _waitingForNetwork = false;
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
     _subscription?.cancel();

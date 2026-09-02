@@ -74,8 +74,12 @@ class _WithdrawalRequestBottomSheetState
         .requestWithdrawal(amt);
 
     if (success && mounted) {
+      // Capture the messenger before popping: after `pop()` this sheet's own
+      // context is deactivated, and using it for `ScaffoldMessenger.of` would
+      // throw a "Looking up a deactivated widget's ancestor" error.
+      final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             'Withdrawal request of ₹${amt.toStringAsFixed(2)} submitted!',

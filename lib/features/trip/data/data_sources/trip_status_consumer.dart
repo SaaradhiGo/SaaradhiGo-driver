@@ -258,6 +258,11 @@ class TripStatusConsumer {
 
   void connect() => _service.connect();
 
+  /// Forwards platform connectivity changes so the transport pauses futile
+  /// reconnects while offline and resumes instantly when the network returns.
+  void updateNetworkStatus(bool isOnline) =>
+      _service.updateNetworkStatus(isOnline);
+
   /// Sends a driver action frame. The wire format is `{"action": <verb>}` with
   /// `otp` on `start` and an optional `reason` on `cancel`.
   void sendAction(String action, {String? otp, String? reason}) {

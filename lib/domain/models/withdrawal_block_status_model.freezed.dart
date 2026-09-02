@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WithdrawalBlockStatusModel {
 
- bool get blocked;@JsonKey(name: 'last_withdrawal_at') String? get lastWithdrawalAt;@JsonKey(name: 'block_remaining_seconds') int? get blockRemainingSeconds;
+@JsonKey(fromJson: boolFromJson) bool get blocked;@JsonKey(name: 'last_withdrawal_at') String? get lastWithdrawalAt;@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? get blockRemainingSeconds;
 /// Create a copy of WithdrawalBlockStatusModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $WithdrawalBlockStatusModelCopyWith<$Res>  {
   factory $WithdrawalBlockStatusModelCopyWith(WithdrawalBlockStatusModel value, $Res Function(WithdrawalBlockStatusModel) _then) = _$WithdrawalBlockStatusModelCopyWithImpl;
 @useResult
 $Res call({
- bool blocked,@JsonKey(name: 'last_withdrawal_at') String? lastWithdrawalAt,@JsonKey(name: 'block_remaining_seconds') int? blockRemainingSeconds
+@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'last_withdrawal_at') String? lastWithdrawalAt,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds
 });
 
 
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds')  int? blockRemainingSeconds)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WithdrawalBlockStatusModel() when $default != null:
 return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds);case _:
@@ -177,7 +177,7 @@ return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds')  int? blockRemainingSeconds)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds)  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalBlockStatusModel():
 return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds);case _:
@@ -197,7 +197,7 @@ return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds')  int? blockRemainingSeconds)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'last_withdrawal_at')  String? lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds)?  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalBlockStatusModel() when $default != null:
 return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds);case _:
@@ -212,12 +212,12 @@ return $default(_that.blocked,_that.lastWithdrawalAt,_that.blockRemainingSeconds
 @JsonSerializable()
 
 class _WithdrawalBlockStatusModel implements WithdrawalBlockStatusModel {
-  const _WithdrawalBlockStatusModel({this.blocked = false, @JsonKey(name: 'last_withdrawal_at') this.lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds') this.blockRemainingSeconds});
+  const _WithdrawalBlockStatusModel({@JsonKey(fromJson: boolFromJson) this.blocked = false, @JsonKey(name: 'last_withdrawal_at') this.lastWithdrawalAt, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) this.blockRemainingSeconds});
   factory _WithdrawalBlockStatusModel.fromJson(Map<String, dynamic> json) => _$WithdrawalBlockStatusModelFromJson(json);
 
-@override@JsonKey() final  bool blocked;
+@override@JsonKey(fromJson: boolFromJson) final  bool blocked;
 @override@JsonKey(name: 'last_withdrawal_at') final  String? lastWithdrawalAt;
-@override@JsonKey(name: 'block_remaining_seconds') final  int? blockRemainingSeconds;
+@override@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) final  int? blockRemainingSeconds;
 
 /// Create a copy of WithdrawalBlockStatusModel
 /// with the given fields replaced by the non-null parameter values.
@@ -252,7 +252,7 @@ abstract mixin class _$WithdrawalBlockStatusModelCopyWith<$Res> implements $With
   factory _$WithdrawalBlockStatusModelCopyWith(_WithdrawalBlockStatusModel value, $Res Function(_WithdrawalBlockStatusModel) _then) = __$WithdrawalBlockStatusModelCopyWithImpl;
 @override @useResult
 $Res call({
- bool blocked,@JsonKey(name: 'last_withdrawal_at') String? lastWithdrawalAt,@JsonKey(name: 'block_remaining_seconds') int? blockRemainingSeconds
+@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'last_withdrawal_at') String? lastWithdrawalAt,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds
 });
 
 

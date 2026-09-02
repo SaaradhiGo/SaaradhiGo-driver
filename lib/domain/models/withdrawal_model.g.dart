@@ -8,8 +8,8 @@ part of 'withdrawal_model.dart';
 
 _WithdrawalModel _$WithdrawalModelFromJson(Map<String, dynamic> json) =>
     _WithdrawalModel(
-      id: (json['id'] as num).toInt(),
-      amount: json['amount'] as String? ?? '0.00',
+      id: json['id'] == null ? 0 : intFromJson(json['id']),
+      amount: json['amount'] == null ? '0.00' : moneyFromJson(json['amount']),
       status: json['status'] as String? ?? 'pending',
       requestedAt: json['requested_at'] as String?,
     );

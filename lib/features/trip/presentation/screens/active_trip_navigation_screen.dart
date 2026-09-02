@@ -9,6 +9,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/trip_route_map.dart';
 
@@ -40,6 +41,15 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
               pickup: pickup,
               destination: destination,
               focus: destination,
+            ),
+          ),
+          // Passenger chat + SOS stay reachable during the whole active trip.
+          Positioned(
+            top: MediaQuery.paddingOf(context).top + AppSpacing.sm,
+            right: AppSpacing.margin,
+            child: TripSafetyActions(
+              tripId: trip.id,
+              riderName: trip.riderName,
             ),
           ),
           Align(

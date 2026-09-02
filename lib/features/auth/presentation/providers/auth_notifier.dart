@@ -8,6 +8,7 @@ import '../../domain/auth_repository.dart';
 import '../../../../core/network/auth_session_events.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../domain/models/user_model.dart';
 
 final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(() {
   return AuthNotifier();
@@ -145,6 +146,14 @@ class AuthNotifier extends Notifier<AuthState> {
         state = previousState;
       });
     }
+  }
+
+  /// Persists a mutation of the authenticated user (e.g. after a successful
+  /// `PATCH /auth/update/`) into both the live auth state and secure storage so
+  /// the change survives a restart without a fresh profile fetch.
+  Future<void> updateUser(UserModel user) async {
+    await SecureStorageService.saveUser(user);
+    state = AuthAuthenticated(user: user);
   }
 
   Future<void> logout() async {

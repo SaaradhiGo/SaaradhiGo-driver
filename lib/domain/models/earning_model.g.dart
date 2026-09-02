@@ -8,11 +8,17 @@ part of 'earning_model.dart';
 
 _EarningModel _$EarningModelFromJson(Map<String, dynamic> json) =>
     _EarningModel(
-      id: (json['id'] as num).toInt(),
-      tripId: (json['trip_id'] as num?)?.toInt(),
-      amountCollected: json['amount_collected'] as String? ?? '0.00',
-      platformFee: json['platform_fee'] as String? ?? '0.00',
-      netEarning: json['net_earning'] as String? ?? '0.00',
+      id: json['id'] == null ? 0 : intFromJson(json['id']),
+      tripId: nullableIntFromJson(json['trip_id']),
+      amountCollected: json['amount_collected'] == null
+          ? '0.00'
+          : moneyFromJson(json['amount_collected']),
+      platformFee: json['platform_fee'] == null
+          ? '0.00'
+          : moneyFromJson(json['platform_fee']),
+      netEarning: json['net_earning'] == null
+          ? '0.00'
+          : moneyFromJson(json['net_earning']),
       createdAt: json['created_at'] as String?,
     );
 

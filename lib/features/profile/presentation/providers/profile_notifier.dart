@@ -45,6 +45,10 @@ class ProfileNotifier extends Notifier<ProfileState> {
                 email: (currentUser.email?.isNotEmpty ?? false)
                     ? currentUser.email
                     : authUser.email,
+                emergencyContact:
+                    (currentUser.emergencyContact?.isNotEmpty ?? false)
+                    ? currentUser.emergencyContact
+                    : authUser.emergencyContact,
               );
         mergedProfile = profile.copyWith(user: updatedUser);
       }

@@ -9,12 +9,24 @@ part of 'earnings_summary_model.dart';
 _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   Map<String, dynamic> json,
 ) => _EarningsSummaryModel(
-  totalEarned: json['total_earned'] as String? ?? '0.00',
-  totalCommission: json['total_commission'] as String? ?? '0.00',
-  totalTrips: (json['total_trips'] as num?)?.toInt() ?? 0,
-  todayEarned: json['today_earned'] as String? ?? '0.00',
-  todayTrips: (json['today_trips'] as num?)?.toInt() ?? 0,
-  commissionPercent: json['commission_percent'] as num? ?? 10,
+  totalEarned: json['total_earned'] == null
+      ? '0.00'
+      : moneyFromJson(json['total_earned']),
+  totalCommission: json['total_commission'] == null
+      ? '0.00'
+      : moneyFromJson(json['total_commission']),
+  totalTrips: json['total_trips'] == null
+      ? 0
+      : intFromJson(json['total_trips']),
+  todayEarned: json['today_earned'] == null
+      ? '0.00'
+      : moneyFromJson(json['today_earned']),
+  todayTrips: json['today_trips'] == null
+      ? 0
+      : intFromJson(json['today_trips']),
+  commissionPercent: json['commission_percent'] == null
+      ? 10
+      : numFromJson(json['commission_percent']),
 );
 
 Map<String, dynamic> _$EarningsSummaryModelToJson(

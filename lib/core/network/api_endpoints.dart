@@ -46,6 +46,18 @@ class ApiEndpoints {
   static String driverCancelTrip(String tripId) =>
       '/ride/trip/$tripId/driver-cancel/';
 
+  // Ride Chat & Support, Safety
+  static String tripChatHistory(String tripId) => '/ride/trip/$tripId/chat/';
+  static const String sosRaise = '/sos/';
+  static const String supportTickets = '/support/tickets/';
+  static const String supportCreateTicket = '/support/tickets/create/';
+  static String supportTicketDetail(String ticketId) =>
+      '/support/tickets/$ticketId/';
+  static String supportTicketMessages(String ticketId) =>
+      '/support/tickets/$ticketId/messages/';
+  static String supportTicketClose(String ticketId) =>
+      '/support/tickets/$ticketId/close/';
+
   // WebSockets (Relative to wsBaseUrl)
   static const String wsDriverLocation = 'ws/driver/location/';
   static String wsTripStatus(String tripId) => 'ws/ride/trip/$tripId/';
