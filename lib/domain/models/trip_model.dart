@@ -62,6 +62,32 @@ Object? _readEstimatedFare(Map json, String key) =>
     json['estimated_fare']?.toString();
 Object? _readFinalFare(Map json, String key) => json['final_fare']?.toString();
 
+Object? _readRiderName(Map json, String key) =>
+    json['rider_name'] ?? json['user'];
+
+Object? _readCreatedAt(Map json, String key) =>
+    json['created_at']?.toString() ?? json['requested_at']?.toString();
+
+Object? _readRiderRating(Map json, String key) {
+  final val = json['rider_rating'] ?? json['rating'] ?? json['user_rating'];
+  if (val is num) return val.toDouble();
+  if (val is String) return double.tryParse(val);
+  return null;
+}
+
+Object? _readDriverRating(Map json, String key) {
+  final val = json['driver_rating'] ?? json['rating_given'];
+  if (val is num) return val.toDouble();
+  if (val is String) return double.tryParse(val);
+  return null;
+}
+
+Object? _readCancellationReason(Map json, String key) =>
+    json['cancellation_reason'] ?? json['reason'] ?? json['cancel_reason'];
+
+Object? _readSurgeMultiplier(Map json, String key) =>
+    json['surge_multiplier']?.toString();
+
 /// A single ride trip, parsed from either the `ride_request` dispatch payload,
 /// a `trip_status_update` broadcast, or `GET /ride/active/`.
 ///
@@ -73,7 +99,7 @@ abstract class TripModel with _$TripModel {
     @JsonKey(readValue: _readId) required int id,
     @JsonKey(defaultValue: TripStatus.requested) required TripStatus status,
     @JsonKey(name: 'rider_id') int? riderId,
-    @JsonKey(name: 'rider_name') String? riderName,
+    @JsonKey(readValue: _readRiderName) String? riderName,
     @JsonKey(name: 'driver_id') int? driverId,
     @JsonKey(name: 'driver_name') String? driverName,
     @JsonKey(name: 'pickup_lat') double? pickupLat,
@@ -85,10 +111,18 @@ abstract class TripModel with _$TripModel {
     @JsonKey(readValue: _readEstimatedFare) String? estimatedFare,
     @JsonKey(readValue: _readFinalFare) String? finalFare,
     @JsonKey(name: 'payment_method') String? paymentMethod,
+    @JsonKey(name: 'payment_status') String? paymentStatus,
     @JsonKey(name: 'vehicle_type') String? vehicleType,
     String? otp,
     @JsonKey(readValue: _readDistanceKm) double? distanceKm,
     @JsonKey(readValue: _readDurationMin) double? durationMin,
+    @JsonKey(readValue: _readCreatedAt) String? createdAt,
+    @JsonKey(readValue: _readRiderRating) double? riderRating,
+    @JsonKey(readValue: _readDriverRating) double? driverRating,
+    @JsonKey(name: 'fare_breakdown') Map<String, dynamic>? fareBreakdown,
+    @JsonKey(readValue: _readCancellationReason) String? cancellationReason,
+    @JsonKey(name: 'cancelled_at') String? cancelledAt,
+    @JsonKey(readValue: _readSurgeMultiplier) String? surgeMultiplier,
   }) = _TripModel;
 
   factory TripModel.fromJson(Map<String, dynamic> json) =>

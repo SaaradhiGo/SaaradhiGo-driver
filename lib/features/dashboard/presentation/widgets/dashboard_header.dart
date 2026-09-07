@@ -7,6 +7,8 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/driver_profile_model.dart';
 import '../../../../shared/widgets/driver_avatar.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../notifications/presentation/providers/notifications_providers.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
 
 /// Glass header from `driver_home_dashboard/code.html:144-161`: avatar, name,
@@ -14,14 +16,15 @@ import '../../../profile/presentation/providers/profile_providers.dart';
 ///
 /// Covers the profile Loading / Error / Success states inline; the dashboard
 /// never blanks because the profile call failed.
-class DashboardHeader extends StatelessWidget {
+class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({super.key, required this.profileState});
 
   final ProfileState profileState;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final topInset = MediaQuery.paddingOf(context).top;
+    final unreadCount = ref.watch(unreadNotificationsCountProvider);
 
     return GlassPanel(
       borderRadius: const BorderRadius.vertical(
@@ -36,10 +39,10 @@ class DashboardHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: _buildIdentity(context)),
-          // Notifications are a later phase and there is no documented
-          // /driver/notifications/ endpoint, so the bell renders disabled rather
-          // than pretending to be actionable.
-          const _NotificationBell(enabled: false),
+          _NotificationBell(
+            unreadCount: unreadCount,
+            onTap: () => context.push('/notifications'),
+          ),
         ],
       ),
     );
@@ -215,14 +218,16 @@ class _HeaderMessage extends StatelessWidget {
 }
 
 class _NotificationBell extends StatelessWidget {
-  const _NotificationBell({required this.enabled});
+  const _NotificationBell({required this.unreadCount, required this.onTap});
 
-  final bool enabled;
+  final int unreadCount;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: enabled ? 1 : 0.4,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
       child: Container(
         width: 40,
         height: 40,
@@ -233,12 +238,41 @@ class _NotificationBell extends StatelessWidget {
             color: AppColors.outlineVariant.withValues(alpha: 0.2),
           ),
         ),
-        child: const Center(
-          child: Icon(
-            Icons.notifications_outlined,
-            size: 20,
-            color: AppColors.onBackground,
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            const Icon(
+              Icons.notifications_outlined,
+              size: 20,
+              color: AppColors.onBackground,
+            ),
+            if (unreadCount > 0)
+              Positioned(
+                top: 2,
+                right: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    unreadCount > 99 ? '99+' : '$unreadCount',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.background,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

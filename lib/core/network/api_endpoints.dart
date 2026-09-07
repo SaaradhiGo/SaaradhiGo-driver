@@ -29,8 +29,11 @@ class ApiEndpoints {
   // Driver Earnings, Incentives & Elite Status
   static const String driverEarnings = '/driver/earnings/';
   static const String driverEarningsSummary = '/driver/earnings/summary/';
-  static const String driverIncentives = '/driver/driver/incentives/';
-  static const String driverEliteStatus = '/driver/driver/elite-status/';
+  static const String driverIncentives = '/driver/incentives/';
+  static const String driverIncentivesFallback = '/driver/driver/incentives/';
+  static const String driverEliteStatus = '/driver/elite-status/';
+  static const String driverEliteStatusFallback =
+      '/driver/driver/elite-status/';
 
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';
@@ -43,6 +46,7 @@ class ApiEndpoints {
   // Ride Execution
   static const String activeTrip = '/ride/active/';
   static const String tripHistory = '/ride/driver-history/';
+  static String tripDetails(String tripId) => '/ride/trip/$tripId/';
   static String driverCancelTrip(String tripId) =>
       '/ride/trip/$tripId/driver-cancel/';
 
@@ -57,6 +61,11 @@ class ApiEndpoints {
       '/support/tickets/$ticketId/messages/';
   static String supportTicketClose(String ticketId) =>
       '/support/tickets/$ticketId/close/';
+
+  // Notifications
+  static const String notifications = '/rider/notifications/';
+  static String notificationRead(int id) => '/rider/notifications/$id/read/';
+  static const String notificationsReadAll = '/rider/notifications/read-all/';
 
   // WebSockets (Relative to wsBaseUrl)
   static const String wsDriverLocation = 'ws/driver/location/';

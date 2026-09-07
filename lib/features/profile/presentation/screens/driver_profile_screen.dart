@@ -174,17 +174,46 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.workspace_premium_rounded,
-                size: 16,
-                color: AppColors.primaryContainer,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                'SAARADHIGO PARTNER',
-                style: AppTypography.labelCaps.copyWith(
-                  color: AppColors.primaryContainer,
-                  letterSpacing: 1.2,
+              InkWell(
+                onTap: () => context.push('/elite'),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm + 2,
+                    vertical: AppSpacing.unit,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                    border: Border.all(
+                      color: AppColors.primaryContainer.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.workspace_premium_rounded,
+                        size: 16,
+                        color: AppColors.primaryContainer,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'ELITE PARTNER',
+                        style: AppTypography.labelCaps.copyWith(
+                          color: AppColors.primaryContainer,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 14,
+                        color: AppColors.primaryContainer,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -462,6 +491,34 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
         children: [
           ListTile(
             leading: const Icon(
+              Icons.military_tech_rounded,
+              color: AppColors.primaryContainer,
+            ),
+            title: Text(
+              'Elite Benefits & Tier',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onBackground,
+              ),
+            ),
+            subtitle: Text(
+              'Tier perks, quality scores & qualification status',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onSurfaceVariant,
+                fontSize: 12,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.onSurfaceVariant,
+            ),
+            onTap: () => context.push('/elite'),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          ListTile(
+            leading: const Icon(
               Icons.directions_car_rounded,
               color: AppColors.primaryContainer,
             ),
@@ -475,7 +532,49 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               Icons.chevron_right_rounded,
               color: AppColors.onSurfaceVariant,
             ),
-            onTap: () {},
+            onTap: () => context.push('/vehicle'),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.description_rounded,
+              color: AppColors.primaryContainer,
+            ),
+            title: Text(
+              'Compliance & Document Vault',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onBackground,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.onSurfaceVariant,
+            ),
+            onTap: () => context.push('/documents'),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.notifications_rounded,
+              color: AppColors.primaryContainer,
+            ),
+            title: Text(
+              'Notifications Center',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onBackground,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.onSurfaceVariant,
+            ),
+            onTap: () => context.push('/notifications'),
           ),
           Divider(
             height: 1,

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DriverProfileModel {
 
- int get id; UserModel? get user; DriverStatus get status; bool get approved;@JsonKey(name: 'kyc_status') String? get kycStatus;@JsonKey(name: 'license_doc') String? get licenseDoc;@JsonKey(name: 'license_expiry') DateTime? get licenseExpiry;@JsonKey(name: 'active_vehicle') int? get activeVehicle;@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? get activeVehicleDetails;@JsonKey(name: 'total_trips') int? get totalTrips;@StringDoubleConverter() double? get ratings;
+ int get id;@UserOrIdConverter() UserModel? get user;@JsonKey(unknownEnumValue: DriverStatus.offline) DriverStatus get status;@SafeBoolConverter() bool get approved;@JsonKey(name: 'kyc_status') String? get kycStatus;@JsonKey(name: 'license_doc') String? get licenseDoc;@JsonKey(name: 'license_doc_back') String? get licenseDocBack;@SafeDateTimeConverter()@JsonKey(name: 'license_expiry') DateTime? get licenseExpiry;@JsonKey(name: 'active_vehicle') int? get activeVehicle;@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? get activeVehicleDetails;@JsonKey(name: 'total_trips') int? get totalTrips;@StringDoubleConverter() double? get ratings;
 /// Create a copy of DriverProfileModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $DriverProfileModelCopyWith<DriverProfileModel> get copyWith => _$DriverProfileM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DriverProfileModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&(identical(other.approved, approved) || other.approved == approved)&&(identical(other.kycStatus, kycStatus) || other.kycStatus == kycStatus)&&(identical(other.licenseDoc, licenseDoc) || other.licenseDoc == licenseDoc)&&(identical(other.licenseExpiry, licenseExpiry) || other.licenseExpiry == licenseExpiry)&&(identical(other.activeVehicle, activeVehicle) || other.activeVehicle == activeVehicle)&&const DeepCollectionEquality().equals(other.activeVehicleDetails, activeVehicleDetails)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.ratings, ratings) || other.ratings == ratings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DriverProfileModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&(identical(other.approved, approved) || other.approved == approved)&&(identical(other.kycStatus, kycStatus) || other.kycStatus == kycStatus)&&(identical(other.licenseDoc, licenseDoc) || other.licenseDoc == licenseDoc)&&(identical(other.licenseDocBack, licenseDocBack) || other.licenseDocBack == licenseDocBack)&&(identical(other.licenseExpiry, licenseExpiry) || other.licenseExpiry == licenseExpiry)&&(identical(other.activeVehicle, activeVehicle) || other.activeVehicle == activeVehicle)&&const DeepCollectionEquality().equals(other.activeVehicleDetails, activeVehicleDetails)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.ratings, ratings) || other.ratings == ratings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,user,status,approved,kycStatus,licenseDoc,licenseExpiry,activeVehicle,const DeepCollectionEquality().hash(activeVehicleDetails),totalTrips,ratings);
+int get hashCode => Object.hash(runtimeType,id,user,status,approved,kycStatus,licenseDoc,licenseDocBack,licenseExpiry,activeVehicle,const DeepCollectionEquality().hash(activeVehicleDetails),totalTrips,ratings);
 
 @override
 String toString() {
-  return 'DriverProfileModel(id: $id, user: $user, status: $status, approved: $approved, kycStatus: $kycStatus, licenseDoc: $licenseDoc, licenseExpiry: $licenseExpiry, activeVehicle: $activeVehicle, activeVehicleDetails: $activeVehicleDetails, totalTrips: $totalTrips, ratings: $ratings)';
+  return 'DriverProfileModel(id: $id, user: $user, status: $status, approved: $approved, kycStatus: $kycStatus, licenseDoc: $licenseDoc, licenseDocBack: $licenseDocBack, licenseExpiry: $licenseExpiry, activeVehicle: $activeVehicle, activeVehicleDetails: $activeVehicleDetails, totalTrips: $totalTrips, ratings: $ratings)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $DriverProfileModelCopyWith<$Res>  {
   factory $DriverProfileModelCopyWith(DriverProfileModel value, $Res Function(DriverProfileModel) _then) = _$DriverProfileModelCopyWithImpl;
 @useResult
 $Res call({
- int id, UserModel? user, DriverStatus status, bool approved,@JsonKey(name: 'kyc_status') String? kycStatus,@JsonKey(name: 'license_doc') String? licenseDoc,@JsonKey(name: 'license_expiry') DateTime? licenseExpiry,@JsonKey(name: 'active_vehicle') int? activeVehicle,@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? activeVehicleDetails,@JsonKey(name: 'total_trips') int? totalTrips,@StringDoubleConverter() double? ratings
+ int id,@UserOrIdConverter() UserModel? user,@JsonKey(unknownEnumValue: DriverStatus.offline) DriverStatus status,@SafeBoolConverter() bool approved,@JsonKey(name: 'kyc_status') String? kycStatus,@JsonKey(name: 'license_doc') String? licenseDoc,@JsonKey(name: 'license_doc_back') String? licenseDocBack,@SafeDateTimeConverter()@JsonKey(name: 'license_expiry') DateTime? licenseExpiry,@JsonKey(name: 'active_vehicle') int? activeVehicle,@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? activeVehicleDetails,@JsonKey(name: 'total_trips') int? totalTrips,@StringDoubleConverter() double? ratings
 });
 
 
@@ -66,7 +66,7 @@ class _$DriverProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of DriverProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user = freezed,Object? status = null,Object? approved = null,Object? kycStatus = freezed,Object? licenseDoc = freezed,Object? licenseExpiry = freezed,Object? activeVehicle = freezed,Object? activeVehicleDetails = freezed,Object? totalTrips = freezed,Object? ratings = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user = freezed,Object? status = null,Object? approved = null,Object? kycStatus = freezed,Object? licenseDoc = freezed,Object? licenseDocBack = freezed,Object? licenseExpiry = freezed,Object? activeVehicle = freezed,Object? activeVehicleDetails = freezed,Object? totalTrips = freezed,Object? ratings = freezed,}) {
   return _then(DriverProfileModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
@@ -74,6 +74,7 @@ as UserModel?,status: null == status ? _self.status : status // ignore: cast_nul
 as DriverStatus,approved: null == approved ? _self.approved : approved // ignore: cast_nullable_to_non_nullable
 as bool,kycStatus: freezed == kycStatus ? _self.kycStatus : kycStatus // ignore: cast_nullable_to_non_nullable
 as String?,licenseDoc: freezed == licenseDoc ? _self.licenseDoc : licenseDoc // ignore: cast_nullable_to_non_nullable
+as String?,licenseDocBack: freezed == licenseDocBack ? _self.licenseDocBack : licenseDocBack // ignore: cast_nullable_to_non_nullable
 as String?,licenseExpiry: freezed == licenseExpiry ? _self.licenseExpiry : licenseExpiry // ignore: cast_nullable_to_non_nullable
 as DateTime?,activeVehicle: freezed == activeVehicle ? _self.activeVehicle : activeVehicle // ignore: cast_nullable_to_non_nullable
 as int?,activeVehicleDetails: freezed == activeVehicleDetails ? _self.activeVehicleDetails : activeVehicleDetails // ignore: cast_nullable_to_non_nullable
@@ -176,10 +177,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  UserModel? user,  DriverStatus status,  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @UserOrIdConverter()  UserModel? user, @JsonKey(unknownEnumValue: DriverStatus.offline)  DriverStatus status, @SafeBoolConverter()  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_doc_back')  String? licenseDocBack, @SafeDateTimeConverter()@JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DriverProfileModel() when $default != null:
-return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
+return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseDocBack,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
   return orElse();
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  UserModel? user,  DriverStatus status,  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @UserOrIdConverter()  UserModel? user, @JsonKey(unknownEnumValue: DriverStatus.offline)  DriverStatus status, @SafeBoolConverter()  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_doc_back')  String? licenseDocBack, @SafeDateTimeConverter()@JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)  $default,) {final _that = this;
 switch (_that) {
 case _DriverProfileModel():
-return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
+return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseDocBack,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -217,10 +218,10 @@ return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  UserModel? user,  DriverStatus status,  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @UserOrIdConverter()  UserModel? user, @JsonKey(unknownEnumValue: DriverStatus.offline)  DriverStatus status, @SafeBoolConverter()  bool approved, @JsonKey(name: 'kyc_status')  String? kycStatus, @JsonKey(name: 'license_doc')  String? licenseDoc, @JsonKey(name: 'license_doc_back')  String? licenseDocBack, @SafeDateTimeConverter()@JsonKey(name: 'license_expiry')  DateTime? licenseExpiry, @JsonKey(name: 'active_vehicle')  int? activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips')  int? totalTrips, @StringDoubleConverter()  double? ratings)?  $default,) {final _that = this;
 switch (_that) {
 case _DriverProfileModel() when $default != null:
-return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
+return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,_that.licenseDoc,_that.licenseDocBack,_that.licenseExpiry,_that.activeVehicle,_that.activeVehicleDetails,_that.totalTrips,_that.ratings);case _:
   return null;
 
 }
@@ -232,16 +233,17 @@ return $default(_that.id,_that.user,_that.status,_that.approved,_that.kycStatus,
 @JsonSerializable()
 
 class _DriverProfileModel implements DriverProfileModel {
-  const _DriverProfileModel({required this.id, this.user, required this.status, required this.approved, @JsonKey(name: 'kyc_status') this.kycStatus, @JsonKey(name: 'license_doc') this.licenseDoc, @JsonKey(name: 'license_expiry') this.licenseExpiry, @JsonKey(name: 'active_vehicle') this.activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips') this.totalTrips, @StringDoubleConverter() this.ratings}): _activeVehicleDetails = activeVehicleDetails;
+  const _DriverProfileModel({this.id = 0, @UserOrIdConverter() this.user, @JsonKey(unknownEnumValue: DriverStatus.offline) this.status = DriverStatus.offline, @SafeBoolConverter() this.approved = false, @JsonKey(name: 'kyc_status') this.kycStatus, @JsonKey(name: 'license_doc') this.licenseDoc, @JsonKey(name: 'license_doc_back') this.licenseDocBack, @SafeDateTimeConverter()@JsonKey(name: 'license_expiry') this.licenseExpiry, @JsonKey(name: 'active_vehicle') this.activeVehicle, @JsonKey(name: 'active_vehicle_details')  Map<String, dynamic>? activeVehicleDetails, @JsonKey(name: 'total_trips') this.totalTrips, @StringDoubleConverter() this.ratings}): _activeVehicleDetails = activeVehicleDetails;
   factory _DriverProfileModel.fromJson(Map<String, dynamic> json) => _$DriverProfileModelFromJson(json);
 
-@override final  int id;
-@override final  UserModel? user;
-@override final  DriverStatus status;
-@override final  bool approved;
+@override@JsonKey() final  int id;
+@override@UserOrIdConverter() final  UserModel? user;
+@override@JsonKey(unknownEnumValue: DriverStatus.offline) final  DriverStatus status;
+@override@JsonKey()@SafeBoolConverter() final  bool approved;
 @override@JsonKey(name: 'kyc_status') final  String? kycStatus;
 @override@JsonKey(name: 'license_doc') final  String? licenseDoc;
-@override@JsonKey(name: 'license_expiry') final  DateTime? licenseExpiry;
+@override@JsonKey(name: 'license_doc_back') final  String? licenseDocBack;
+@override@SafeDateTimeConverter()@JsonKey(name: 'license_expiry') final  DateTime? licenseExpiry;
 @override@JsonKey(name: 'active_vehicle') final  int? activeVehicle;
  final  Map<String, dynamic>? _activeVehicleDetails;
 @override@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? get activeVehicleDetails {
@@ -268,16 +270,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DriverProfileModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&(identical(other.approved, approved) || other.approved == approved)&&(identical(other.kycStatus, kycStatus) || other.kycStatus == kycStatus)&&(identical(other.licenseDoc, licenseDoc) || other.licenseDoc == licenseDoc)&&(identical(other.licenseExpiry, licenseExpiry) || other.licenseExpiry == licenseExpiry)&&(identical(other.activeVehicle, activeVehicle) || other.activeVehicle == activeVehicle)&&const DeepCollectionEquality().equals(other._activeVehicleDetails, _activeVehicleDetails)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.ratings, ratings) || other.ratings == ratings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DriverProfileModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&(identical(other.approved, approved) || other.approved == approved)&&(identical(other.kycStatus, kycStatus) || other.kycStatus == kycStatus)&&(identical(other.licenseDoc, licenseDoc) || other.licenseDoc == licenseDoc)&&(identical(other.licenseDocBack, licenseDocBack) || other.licenseDocBack == licenseDocBack)&&(identical(other.licenseExpiry, licenseExpiry) || other.licenseExpiry == licenseExpiry)&&(identical(other.activeVehicle, activeVehicle) || other.activeVehicle == activeVehicle)&&const DeepCollectionEquality().equals(other._activeVehicleDetails, _activeVehicleDetails)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.ratings, ratings) || other.ratings == ratings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,user,status,approved,kycStatus,licenseDoc,licenseExpiry,activeVehicle,const DeepCollectionEquality().hash(_activeVehicleDetails),totalTrips,ratings);
+int get hashCode => Object.hash(runtimeType,id,user,status,approved,kycStatus,licenseDoc,licenseDocBack,licenseExpiry,activeVehicle,const DeepCollectionEquality().hash(_activeVehicleDetails),totalTrips,ratings);
 
 @override
 String toString() {
-  return 'DriverProfileModel(id: $id, user: $user, status: $status, approved: $approved, kycStatus: $kycStatus, licenseDoc: $licenseDoc, licenseExpiry: $licenseExpiry, activeVehicle: $activeVehicle, activeVehicleDetails: $activeVehicleDetails, totalTrips: $totalTrips, ratings: $ratings)';
+  return 'DriverProfileModel(id: $id, user: $user, status: $status, approved: $approved, kycStatus: $kycStatus, licenseDoc: $licenseDoc, licenseDocBack: $licenseDocBack, licenseExpiry: $licenseExpiry, activeVehicle: $activeVehicle, activeVehicleDetails: $activeVehicleDetails, totalTrips: $totalTrips, ratings: $ratings)';
 }
 
 
@@ -288,7 +290,7 @@ abstract mixin class _$DriverProfileModelCopyWith<$Res> implements $DriverProfil
   factory _$DriverProfileModelCopyWith(_DriverProfileModel value, $Res Function(_DriverProfileModel) _then) = __$DriverProfileModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, UserModel? user, DriverStatus status, bool approved,@JsonKey(name: 'kyc_status') String? kycStatus,@JsonKey(name: 'license_doc') String? licenseDoc,@JsonKey(name: 'license_expiry') DateTime? licenseExpiry,@JsonKey(name: 'active_vehicle') int? activeVehicle,@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? activeVehicleDetails,@JsonKey(name: 'total_trips') int? totalTrips,@StringDoubleConverter() double? ratings
+ int id,@UserOrIdConverter() UserModel? user,@JsonKey(unknownEnumValue: DriverStatus.offline) DriverStatus status,@SafeBoolConverter() bool approved,@JsonKey(name: 'kyc_status') String? kycStatus,@JsonKey(name: 'license_doc') String? licenseDoc,@JsonKey(name: 'license_doc_back') String? licenseDocBack,@SafeDateTimeConverter()@JsonKey(name: 'license_expiry') DateTime? licenseExpiry,@JsonKey(name: 'active_vehicle') int? activeVehicle,@JsonKey(name: 'active_vehicle_details') Map<String, dynamic>? activeVehicleDetails,@JsonKey(name: 'total_trips') int? totalTrips,@StringDoubleConverter() double? ratings
 });
 
 
@@ -305,7 +307,7 @@ class __$DriverProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of DriverProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user = freezed,Object? status = null,Object? approved = null,Object? kycStatus = freezed,Object? licenseDoc = freezed,Object? licenseExpiry = freezed,Object? activeVehicle = freezed,Object? activeVehicleDetails = freezed,Object? totalTrips = freezed,Object? ratings = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user = freezed,Object? status = null,Object? approved = null,Object? kycStatus = freezed,Object? licenseDoc = freezed,Object? licenseDocBack = freezed,Object? licenseExpiry = freezed,Object? activeVehicle = freezed,Object? activeVehicleDetails = freezed,Object? totalTrips = freezed,Object? ratings = freezed,}) {
   return _then(_DriverProfileModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
@@ -313,6 +315,7 @@ as UserModel?,status: null == status ? _self.status : status // ignore: cast_nul
 as DriverStatus,approved: null == approved ? _self.approved : approved // ignore: cast_nullable_to_non_nullable
 as bool,kycStatus: freezed == kycStatus ? _self.kycStatus : kycStatus // ignore: cast_nullable_to_non_nullable
 as String?,licenseDoc: freezed == licenseDoc ? _self.licenseDoc : licenseDoc // ignore: cast_nullable_to_non_nullable
+as String?,licenseDocBack: freezed == licenseDocBack ? _self.licenseDocBack : licenseDocBack // ignore: cast_nullable_to_non_nullable
 as String?,licenseExpiry: freezed == licenseExpiry ? _self.licenseExpiry : licenseExpiry // ignore: cast_nullable_to_non_nullable
 as DateTime?,activeVehicle: freezed == activeVehicle ? _self.activeVehicle : activeVehicle // ignore: cast_nullable_to_non_nullable
 as int?,activeVehicleDetails: freezed == activeVehicleDetails ? _self._activeVehicleDetails : activeVehicleDetails // ignore: cast_nullable_to_non_nullable

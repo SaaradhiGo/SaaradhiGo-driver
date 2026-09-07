@@ -34,10 +34,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     // For safety, let's assume interceptor unpacks it or it returns data directly based on previous conventions.
     // Let's just use response.data['data'] if it exists, otherwise response.data
     final responseData = response.data;
-    final Map<String, dynamic> dataMap =
-        responseData is Map<String, dynamic> && responseData.containsKey('data')
+    final dynamic rawData =
+        responseData is Map && responseData.containsKey('data')
         ? responseData['data']
         : responseData;
+    final Map<String, dynamic> dataMap = rawData is Map
+        ? Map<String, dynamic>.from(rawData)
+        : <String, dynamic>{};
 
     return DriverProfileModel.fromJson(dataMap);
   }

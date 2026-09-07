@@ -10,14 +10,20 @@ import '../features/dashboard/presentation/driver_dashboard_screen.dart';
 import '../features/earnings/presentation/screens/earnings_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/messages_chat_screen.dart';
 import '../features/dashboard/presentation/screens/trip_history_screen.dart';
+import '../features/trip_history/presentation/screens/trip_details_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_licence_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_personal_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_photo_bank_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_vehicle_screen.dart';
 import '../features/onboarding/presentation/screens/verification_status_screen.dart';
+import '../features/documents/presentation/screens/document_vault_screen.dart';
+import '../features/incentives/presentation/screens/elite_partner_screen.dart';
+import '../features/incentives/presentation/screens/incentives_rewards_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/providers/profile_providers.dart';
 import '../features/profile/presentation/screens/driver_profile_screen.dart';
 import '../features/splash/presentation/splash_screen.dart';
+import '../features/vehicle/presentation/screens/vehicle_info_screen.dart';
 import '../features/support/presentation/screens/emergency_contacts_screen.dart';
 import '../features/support/presentation/screens/help_support_screen.dart';
 import '../features/support/presentation/screens/report_incident_screen.dart';
@@ -159,6 +165,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/history',
                 builder: (context, state) => const TripHistoryScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'trip/:id',
+                    builder: (context, state) {
+                      final tripId =
+                          int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                      return TripDetailsScreen(tripId: tripId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -252,6 +268,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               int.tryParse(state.pathParameters['ticketId'] ?? '') ?? 0;
           return SupportTicketDetailScreen(ticketId: ticketId);
         },
+      ),
+      GoRoute(
+        path: '/documents',
+        builder: (context, state) => const DocumentVaultScreen(),
+      ),
+      GoRoute(
+        path: '/vehicle',
+        builder: (context, state) => const VehicleInfoScreen(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/incentives',
+        builder: (context, state) => const IncentivesRewardsScreen(),
+      ),
+      GoRoute(
+        path: '/elite',
+        builder: (context, state) => const ElitePartnerScreen(),
       ),
     ],
     errorBuilder: (context, state) =>

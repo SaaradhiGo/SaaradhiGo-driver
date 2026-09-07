@@ -17,6 +17,16 @@ _VehicleModel _$VehicleModelFromJson(Map<String, dynamic> json) =>
       year: (json['year'] as num?)?.toInt(),
       capacity: (json['capacity'] as num?)?.toInt(),
       status: json['status'] as String?,
+      rcDoc: json['rc_doc'] as String?,
+      vehiclePic: json['vehicle_pic'] as String?,
+      fuelType: json['fuel_type'] as String?,
+      insuranceDoc: json['insurance_doc'] as String?,
+      insuranceExpiry: json['insurance_expiry'] == null
+          ? null
+          : DateTime.parse(json['insurance_expiry'] as String),
+      fitnessExpiry: json['fitness_expiry'] == null
+          ? null
+          : DateTime.parse(json['fitness_expiry'] as String),
     );
 
 Map<String, dynamic> _$VehicleModelToJson(_VehicleModel instance) =>
@@ -30,4 +40,10 @@ Map<String, dynamic> _$VehicleModelToJson(_VehicleModel instance) =>
       'year': instance.year,
       'capacity': instance.capacity,
       'status': instance.status,
+      'rc_doc': instance.rcDoc,
+      'vehicle_pic': instance.vehiclePic,
+      'fuel_type': instance.fuelType,
+      'insurance_doc': instance.insuranceDoc,
+      'insurance_expiry': instance.insuranceExpiry?.toIso8601String(),
+      'fitness_expiry': instance.fitnessExpiry?.toIso8601String(),
     };

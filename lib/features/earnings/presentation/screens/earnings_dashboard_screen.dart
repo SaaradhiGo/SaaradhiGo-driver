@@ -507,6 +507,89 @@ class _EarningsDashboardScreenState
           ),
           const SizedBox(height: AppSpacing.md),
 
+          // Incentives & Quests Bento Card
+          InkWell(
+            onTap: () => context.push('/incentives'),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            child: GlassPanel(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryContainer.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      color: AppColors.primary,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Incentives & Quests',
+                              style: AppTypography.bodyLg.copyWith(
+                                color: AppColors.onBackground,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryContainer.withValues(
+                                  alpha: 0.2,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.radiusPill,
+                                ),
+                              ),
+                              child: Text(
+                                'BONUS',
+                                style: AppTypography.labelCaps.copyWith(
+                                  color: AppColors.primary,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Complete ride milestones & unlock weekly cash bonuses',
+                          style: AppTypography.labelCaps.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 11,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: AppColors.onSurfaceVariant,
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+
           // Breakdown Card
           EarningsBreakdownCard(
             grossFares: summary?.totalEarned ?? '0.00',

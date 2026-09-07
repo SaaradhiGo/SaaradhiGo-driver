@@ -37,6 +37,12 @@ abstract class VehicleModel with _$VehicleModel {
     int? year,
     int? capacity,
     String? status,
+    @JsonKey(name: 'rc_doc') String? rcDoc,
+    @JsonKey(name: 'vehicle_pic') String? vehiclePic,
+    @JsonKey(name: 'fuel_type') String? fuelType,
+    @JsonKey(name: 'insurance_doc') String? insuranceDoc,
+    @JsonKey(name: 'insurance_expiry') DateTime? insuranceExpiry,
+    @JsonKey(name: 'fitness_expiry') DateTime? fitnessExpiry,
   }) = _VehicleModel;
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) =>

@@ -45,7 +45,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
       }
       return const Left(ServerFailure());
     } catch (e) {
-      return const Left(UnknownFailure());
+      return Left(UnknownFailure(e.toString()));
     }
   }
 

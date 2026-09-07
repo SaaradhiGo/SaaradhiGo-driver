@@ -13,6 +13,61 @@ enum DriverStatus {
   off,
 }
 
+class UserOrIdConverter implements JsonConverter<UserModel?, dynamic> {
+  const UserOrIdConverter();
+
+  @override
+  UserModel? fromJson(dynamic json) {
+    if (json == null) return null;
+    if (json is Map<String, dynamic>) {
+      return UserModel.fromJson(json);
+    }
+    if (json is Map) {
+      return UserModel.fromJson(Map<String, dynamic>.from(json));
+    }
+    if (json is int) {
+      return UserModel(id: json);
+    }
+    return null;
+  }
+
+  @override
+  dynamic toJson(UserModel? object) => object?.toJson();
+}
+
+class SafeBoolConverter implements JsonConverter<bool, dynamic> {
+  const SafeBoolConverter();
+
+  @override
+  bool fromJson(dynamic json) {
+    if (json == null) return false;
+    if (json is bool) return json;
+    if (json is num) return json != 0;
+    if (json is String) return json.toLowerCase() == 'true' || json == '1';
+    return false;
+  }
+
+  @override
+  dynamic toJson(bool object) => object;
+}
+
+class SafeDateTimeConverter implements JsonConverter<DateTime?, dynamic> {
+  const SafeDateTimeConverter();
+
+  @override
+  DateTime? fromJson(dynamic json) {
+    if (json == null) return null;
+    if (json is String) {
+      if (json.isEmpty) return null;
+      return DateTime.tryParse(json);
+    }
+    return null;
+  }
+
+  @override
+  dynamic toJson(DateTime? object) => object?.toIso8601String();
+}
+
 class StringDoubleConverter implements JsonConverter<double?, dynamic> {
   const StringDoubleConverter();
 
@@ -38,13 +93,18 @@ class StringDoubleConverter implements JsonConverter<double?, dynamic> {
 @freezed
 abstract class DriverProfileModel with _$DriverProfileModel {
   const factory DriverProfileModel({
-    required int id,
-    UserModel? user,
-    required DriverStatus status,
-    required bool approved,
+    @Default(0) int id,
+    @UserOrIdConverter() UserModel? user,
+    @JsonKey(unknownEnumValue: DriverStatus.offline)
+    @Default(DriverStatus.offline)
+    DriverStatus status,
+    @SafeBoolConverter() @Default(false) bool approved,
     @JsonKey(name: 'kyc_status') String? kycStatus,
     @JsonKey(name: 'license_doc') String? licenseDoc,
-    @JsonKey(name: 'license_expiry') DateTime? licenseExpiry,
+    @JsonKey(name: 'license_doc_back') String? licenseDocBack,
+    @SafeDateTimeConverter()
+    @JsonKey(name: 'license_expiry')
+    DateTime? licenseExpiry,
     @JsonKey(name: 'active_vehicle') int? activeVehicle,
     @JsonKey(name: 'active_vehicle_details')
     Map<String, dynamic>? activeVehicleDetails,
