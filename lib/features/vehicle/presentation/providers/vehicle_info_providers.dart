@@ -4,6 +4,7 @@ import '../../../../core/network/dio_client.dart';
 import '../../data/data_sources/vehicles_remote_data_source.dart';
 import '../../data/repositories/vehicles_repository_impl.dart';
 import '../../domain/repositories/vehicles_repository.dart';
+import '../../../../core/uploads/presigned_upload_providers.dart';
 import 'vehicle_info_notifier.dart';
 import 'vehicle_info_state.dart';
 
@@ -17,7 +18,10 @@ final vehiclesRemoteDataSourceProvider = Provider<VehiclesRemoteDataSource>((
 });
 
 final vehiclesRepositoryProvider = Provider<VehiclesRepository>((ref) {
-  return VehiclesRepositoryImpl(ref.watch(vehiclesRemoteDataSourceProvider));
+  return VehiclesRepositoryImpl(
+    ref.watch(vehiclesRemoteDataSourceProvider),
+    uploadService: ref.watch(presignedUploadServiceProvider),
+  );
 });
 
 final vehicleInfoNotifierProvider =

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saaradhigo_driver/domain/models/vehicle_model.dart';
+import 'package:saaradhigo_driver/features/onboarding/data/models/vehicle_request_dto.dart';
 import 'package:saaradhigo_driver/features/vehicle/domain/repositories/vehicles_repository.dart';
 import 'package:saaradhigo_driver/features/vehicle/presentation/providers/vehicle_info_providers.dart';
 
@@ -52,6 +53,23 @@ class StubVehiclesRepository implements VehiclesRepository {
   ) async {
     if (shouldThrow) throw Exception('Update error');
     return vehiclesToReturn.firstWhere((v) => v.id == vehicleId);
+  }
+
+  @override
+  Future<VehicleModel> addVehicle(
+    VehicleRequestDto dto, {
+    dynamic onProgress,
+  }) async {
+    if (shouldThrow) throw Exception('Add error');
+    final newVehicle = VehicleModel(
+      id: 103,
+      vehicleNumber: dto.registrationNumber,
+      vehicleType: dto.vehicleType,
+      brand: dto.make,
+      model: dto.model,
+    );
+    vehiclesToReturn.add(newVehicle);
+    return newVehicle;
   }
 }
 

@@ -427,6 +427,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     ) {
       final message = next.messageOrNull;
       if (message == null || !mounted) return;
+      final isNoVehicle =
+          next is AvailabilityStateBlocked &&
+          next.reason == AvailabilityBlockReason.noActiveVehicle;
       final messenger = ScaffoldMessenger.maybeOf(context);
       messenger
         ?..clearSnackBars()
@@ -436,6 +439,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             backgroundColor: next is AvailabilityStateError
                 ? AppColors.errorContainer
                 : AppColors.surfaceContainerHigh,
+            action: isNoVehicle
+                ? SnackBarAction(
+                    label: 'Add Vehicle',
+                    textColor: AppColors.primary,
+                    onPressed: () => context.push('/vehicle/add'),
+                  )
+                : null,
           ),
         );
     });

@@ -107,4 +107,39 @@ void main() {
     final updated = await dataSource.updateVehicle(10, {'color': 'Black'});
     expect(updated.color, equals('Black'));
   });
+
+  test(
+    'addVehicleWithKeys posts vehicle payload to addVehicle endpoint',
+    () async {
+      adapter.handler = (options) async {
+        expect(options.method, equals('POST'));
+        expect(options.path, equals(ApiEndpoints.addVehicle));
+        expect(options.data['vehicle_number'], equals('TS09XY9999'));
+        expect(options.data['vehicle_type'], equals('sedan'));
+        expect(options.data['rc_doc'], equals('uploads/rc.pdf'));
+        return jsonResponse({
+          'status': 'success',
+          'data': {
+            'id': 42,
+            'vehicle_number': 'TS09XY9999',
+            'vehicle_type': 'sedan',
+            'make': 'Hyundai',
+            'model': 'Verna',
+            'rc_doc': 'uploads/rc.pdf',
+          },
+        });
+      };
+
+      final result = await dataSource.addVehicleWithKeys({
+        'vehicle_number': 'TS09XY9999',
+        'vehicle_type': 'sedan',
+        'make': 'Hyundai',
+        'model': 'Verna',
+        'rc_doc': 'uploads/rc.pdf',
+      });
+
+      expect(result['id'], equals(42));
+      expect(result['vehicle_number'], equals('TS09XY9999'));
+    },
+  );
 }

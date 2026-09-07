@@ -7,6 +7,7 @@ abstract class VehiclesRemoteDataSource {
   Future<List<VehicleModel>> getVehicles();
   Future<void> switchActiveVehicle(int vehicleId);
   Future<VehicleModel> updateVehicle(int vehicleId, Map<String, dynamic> data);
+  Future<Map<String, dynamic>> addVehicleWithKeys(Map<String, dynamic> body);
 }
 
 class VehiclesRemoteDataSourceImpl implements VehiclesRemoteDataSource {
@@ -76,5 +77,13 @@ class VehiclesRemoteDataSourceImpl implements VehiclesRemoteDataSource {
     );
     final map = _extractData(response.data);
     return VehicleModel.fromJson(map);
+  }
+
+  @override
+  Future<Map<String, dynamic>> addVehicleWithKeys(
+    Map<String, dynamic> body,
+  ) async {
+    final response = await dio.post(ApiEndpoints.addVehicle, data: body);
+    return _extractData(response.data);
   }
 }

@@ -23,6 +23,7 @@ import '../features/notifications/presentation/screens/notifications_screen.dart
 import '../features/profile/presentation/providers/profile_providers.dart';
 import '../features/profile/presentation/screens/driver_profile_screen.dart';
 import '../features/splash/presentation/splash_screen.dart';
+import '../features/vehicle/presentation/screens/add_vehicle_screen.dart';
 import '../features/vehicle/presentation/screens/vehicle_info_screen.dart';
 import '../features/support/presentation/screens/emergency_contacts_screen.dart';
 import '../features/support/presentation/screens/help_support_screen.dart';
@@ -276,6 +277,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/vehicle',
         builder: (context, state) => const VehicleInfoScreen(),
+      ),
+      GoRoute(
+        path: '/vehicle/add',
+        builder: (context, state) => const AddVehicleScreen(),
       ),
       GoRoute(
         path: '/notifications',

@@ -8,9 +8,12 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/driver_profile_model.dart';
+import '../../../../shared/widgets/bottom_sheet_container.dart';
+import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/driver_avatar.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
+import '../../../vehicle/presentation/providers/vehicle_info_providers.dart';
 import '../providers/profile_providers.dart';
 
 /// Driver Profile / Account Suite screen (`/profile`).
@@ -30,6 +33,10 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
       final state = ref.read(driverProfileNotifierProvider);
       if (state is ProfileStateInitial) {
         ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      }
+      final vehicleState = ref.read(vehicleInfoNotifierProvider);
+      if (vehicleState.status == VehicleInfoStatus.initial) {
+        ref.read(vehicleInfoNotifierProvider.notifier).fetchVehicleInfo();
       }
     });
   }
@@ -319,18 +326,118 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
 
   Widget _buildActiveVehicleDetails(DriverProfileModel profile) {
     final vehicle = profile.activeVehicleDetails;
-    final brand = vehicle?['brand']?.toString() ?? '';
-    final model = vehicle?['model']?.toString() ?? '';
+
+    if (vehicle == null) {
+      final vehicleState = ref.watch(vehicleInfoNotifierProvider);
+      final hasFleetVehicles = vehicleState.allVehicles.isNotEmpty;
+
+      return GlassPanel(
+        padding: const EdgeInsets.all(AppSpacing.margin),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.directions_car_outlined,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'No Active Vehicle Set',
+                              style: AppTypography.headlineSm.copyWith(
+                                color: AppColors.onBackground,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.pendingContainer.withValues(
+                                alpha: 0.2,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusPill,
+                              ),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: Text(
+                              'REQUIRED',
+                              style: AppTypography.labelCaps.copyWith(
+                                color: AppColors.primary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Register or assign your vehicle to start accepting rides and going online.',
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (hasFleetVehicles)
+              PrimaryButton(
+                text: 'Select Active Vehicle',
+                onPressed: () => _showFleetSelectorSheet(context, vehicleState),
+              )
+            else
+              PrimaryButton(
+                text: '+ Add Vehicle',
+                onPressed: () => context.push('/vehicle/add'),
+              ),
+          ],
+        ),
+      );
+    }
+
+    final brand = vehicle['brand']?.toString() ?? '';
+    final model = vehicle['model']?.toString() ?? '';
     final vehicleName = '$brand $model'.trim();
-    final vehicleNumber = vehicle?['vehicle_number']?.toString() ?? 'N/A';
-    final vehicleTypeMap = vehicle?['vehicle_type'];
+    final vehicleNumber = vehicle['vehicle_number']?.toString() ?? 'N/A';
+    final vehicleTypeMap = vehicle['vehicle_type'];
     final vehicleType = vehicleTypeMap is Map
         ? (vehicleTypeMap['description']?.toString() ??
               vehicleTypeMap['type']?.toString() ??
               'N/A')
         : 'N/A';
-    final color = vehicle?['color']?.toString() ?? '';
-    final year = vehicle?['year']?.toString() ?? '';
+    final color = vehicle['color']?.toString() ?? '';
+    final year = vehicle['year']?.toString() ?? '';
     final colorYearStr = [color, year].where((s) => s.isNotEmpty).join(' • ');
 
     return GlassPanel(
@@ -366,30 +473,135 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               ],
             ),
           ),
-          if (vehicle == null)
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.margin),
-              child: Text(
-                'No active vehicle set',
+          _infoRow(
+            'Vehicle Model',
+            vehicleName.isNotEmpty ? vehicleName : 'N/A',
+          ),
+          _infoRow('License Plate', vehicleNumber, isMono: true),
+          _infoRow('Category', vehicleType),
+          _infoRow(
+            'Color & Year',
+            colorYearStr.isNotEmpty ? colorYearStr : 'N/A',
+            isLast: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFleetSelectorSheet(BuildContext context, VehicleInfoState state) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) => BottomSheetContainer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.margin),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Select Active Vehicle',
+                style: AppTypography.headlineSm.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.unit),
+              Text(
+                'Select a vehicle to activate for your driving session.',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
               ),
-            )
-          else ...[
-            _infoRow(
-              'Vehicle Model',
-              vehicleName.isNotEmpty ? vehicleName : 'N/A',
-            ),
-            _infoRow('License Plate', vehicleNumber, isMono: true),
-            _infoRow('Category', vehicleType),
-            _infoRow(
-              'Color & Year',
-              colorYearStr.isNotEmpty ? colorYearStr : 'N/A',
-              isLast: true,
-            ),
-          ],
-        ],
+              const SizedBox(height: AppSpacing.md),
+              for (final v in state.allVehicles) ...[
+                Container(
+                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: v.id == state.activeVehicle?.id
+                        ? AppColors.primaryContainer.withValues(alpha: 0.15)
+                        : AppColors.surfaceContainer,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    border: v.id == state.activeVehicle?.id
+                        ? Border.all(color: AppColors.primary)
+                        : null,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.directions_car_rounded,
+                        color: AppColors.primary,
+                      ),
+                      title: Text(
+                        '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
+                        style: AppTypography.bodyLg.copyWith(
+                          color: AppColors.onBackground,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        v.vehicleNumber,
+                        style: AppTypography.dataMono.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                      trailing: v.id == state.activeVehicle?.id
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppColors.primary,
+                            )
+                          : TextButton(
+                              child: const Text('Activate'),
+                              onPressed: () async {
+                                Navigator.pop(sheetCtx);
+                                await ref
+                                    .read(vehicleInfoNotifierProvider.notifier)
+                                    .switchActiveVehicle(v.id);
+                                await ref
+                                    .read(
+                                      driverProfileNotifierProvider.notifier,
+                                    )
+                                    .fetchProfile();
+                              },
+                            ),
+                      onTap: v.id == state.activeVehicle?.id
+                          ? null
+                          : () async {
+                              Navigator.pop(sheetCtx);
+                              await ref
+                                  .read(vehicleInfoNotifierProvider.notifier)
+                                  .switchActiveVehicle(v.id);
+                              await ref
+                                  .read(driverProfileNotifierProvider.notifier)
+                                  .fetchProfile();
+                            },
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.add_rounded, color: AppColors.primary),
+                label: const Text('Add New Vehicle'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary),
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(sheetCtx);
+                  context.push('/vehicle/add');
+                },
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -489,113 +701,128 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          ListTile(
-            leading: const Icon(
-              Icons.military_tech_rounded,
-              color: AppColors.primaryContainer,
-            ),
-            title: Text(
-              'Elite Benefits & Tier',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: const Icon(
+                Icons.military_tech_rounded,
+                color: AppColors.primaryContainer,
               ),
-            ),
-            subtitle: Text(
-              'Tier perks, quality scores & qualification status',
-              style: AppTypography.bodyMd.copyWith(
+              title: Text(
+                'Elite Benefits & Tier',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              subtitle: Text(
+                'Tier perks, quality scores & qualification status',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                  fontSize: 12,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
-                fontSize: 12,
               ),
+              onTap: () => context.push('/elite'),
             ),
-            trailing: const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onTap: () => context.push('/elite'),
           ),
           Divider(
             height: 1,
             color: AppColors.outlineVariant.withValues(alpha: 0.1),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.directions_car_rounded,
-              color: AppColors.primaryContainer,
-            ),
-            title: Text(
-              'Active Vehicle Information',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: const Icon(
+                Icons.directions_car_rounded,
+                color: AppColors.primaryContainer,
               ),
+              title: Text(
+                'Active Vehicle Information',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/vehicle'),
             ),
-            trailing: const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onTap: () => context.push('/vehicle'),
           ),
           Divider(
             height: 1,
             color: AppColors.outlineVariant.withValues(alpha: 0.1),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.description_rounded,
-              color: AppColors.primaryContainer,
-            ),
-            title: Text(
-              'Compliance & Document Vault',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: const Icon(
+                Icons.description_rounded,
+                color: AppColors.primaryContainer,
               ),
+              title: Text(
+                'Compliance & Document Vault',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/documents'),
             ),
-            trailing: const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onTap: () => context.push('/documents'),
           ),
           Divider(
             height: 1,
             color: AppColors.outlineVariant.withValues(alpha: 0.1),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.notifications_rounded,
-              color: AppColors.primaryContainer,
-            ),
-            title: Text(
-              'Notifications Center',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: const Icon(
+                Icons.notifications_rounded,
+                color: AppColors.primaryContainer,
               ),
+              title: Text(
+                'Notifications Center',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/notifications'),
             ),
-            trailing: const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onTap: () => context.push('/notifications'),
           ),
           Divider(
             height: 1,
             color: AppColors.outlineVariant.withValues(alpha: 0.1),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.security_rounded,
-              color: AppColors.primaryContainer,
-            ),
-            title: Text(
-              'Safety & Emergency Center',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: const Icon(
+                Icons.security_rounded,
+                color: AppColors.primaryContainer,
               ),
+              title: Text(
+                'Safety & Emergency Center',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/safety'),
             ),
-            trailing: const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onTap: () => context.push('/safety'),
           ),
         ],
       ),

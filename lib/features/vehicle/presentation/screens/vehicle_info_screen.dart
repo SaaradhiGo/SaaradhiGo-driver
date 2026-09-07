@@ -62,6 +62,14 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
               onPressed: () => _showFleetSelectorSheet(context, state),
             ),
           IconButton(
+            icon: const Icon(
+              Icons.add_circle_outline_rounded,
+              color: AppColors.primary,
+            ),
+            tooltip: 'Add Vehicle',
+            onPressed: () => context.push('/vehicle/add'),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
             onPressed: () => ref
                 .read(vehicleInfoNotifierProvider.notifier)
@@ -158,6 +166,11 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
+              PrimaryButton(
+                text: '+ Add Vehicle',
+                onPressed: () => context.push('/vehicle/add'),
+              ),
+              const SizedBox(height: AppSpacing.sm),
               SecondaryButton(
                 text: 'Refresh',
                 onPressed: () => ref
@@ -640,6 +653,23 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   ),
                 ),
               ],
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.add_rounded, color: AppColors.primary),
+                label: const Text('Add New Vehicle'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary),
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(sheetCtx);
+                  context.push('/vehicle/add');
+                },
+              ),
               const SizedBox(height: AppSpacing.md),
             ],
           ),
