@@ -14,12 +14,22 @@ import 'location_service.dart';
 /// the dashboard now and by active-trip navigation later. Mirrors the placement
 /// of `core/uploads/presigned_upload_providers.dart`.
 class LocationNotifier extends Notifier<LocationState> {
-  late LocationService _service;
+  LocationService? _service;
+  LocationService get _locationService {
+    final s = _service;
+    if (s != null) return s;
+    final resolved = ref.read(locationServiceProvider);
+    _service = resolved;
+    return resolved;
+  }
 
   StreamSubscription<Position>? _subscription;
   StreamSubscription<ServiceStatus>? _serviceStatusSubscription;
   LocationTrackingMode _mode = LocationTrackingMode.idleOnline;
   bool _hasBackgroundAccess = false;
+  bool _enableForegroundService = false;
+  String? _notificationTitle;
+  String? _notificationSubtitle;
   Future<void>? _startFuture;
 
   @override
@@ -30,6 +40,8 @@ class LocationNotifier extends Notifier<LocationState> {
   }
 
   LocationTrackingMode get mode => _mode;
+  bool get enableForegroundService => _enableForegroundService;
+  bool get hasBackgroundAccess => _hasBackgroundAccess;
 
   /// Runs the permission/service pre-flight and starts streaming.
   ///
@@ -39,7 +51,16 @@ class LocationNotifier extends Notifier<LocationState> {
     LocationTrackingMode mode = LocationTrackingMode.idleOnline,
     bool requestPermission = true,
     bool force = false,
+    bool enableForegroundService = false,
+    String? notificationTitle,
+    String? notificationSubtitle,
   }) async {
+    _enableForegroundService = enableForegroundService;
+    if (notificationTitle != null) _notificationTitle = notificationTitle;
+    if (notificationSubtitle != null) {
+      _notificationSubtitle = notificationSubtitle;
+    }
+
     final inFlight = _startFuture;
     if (inFlight != null) {
       await inFlight;
@@ -72,7 +93,7 @@ class LocationNotifier extends Notifier<LocationState> {
 
     late final LocationAvailabilityResult result;
     try {
-      result = await _service.ensureAvailable(
+      result = await _locationService.ensureAvailable(
         requestIfNeeded: requestPermission,
       );
     } catch (error, stackTrace) {
@@ -125,7 +146,7 @@ class LocationNotifier extends Notifier<LocationState> {
 
   Future<void> _seedFromLastKnown() async {
     try {
-      final cached = await _service.lastKnown();
+      final cached = await _locationService.lastKnown();
       if (cached != null && state is! LocationStateTracking) {
         _emitFix(cached, weakSignal: true);
       }
@@ -140,8 +161,13 @@ class LocationNotifier extends Notifier<LocationState> {
     if (!ref.mounted) return;
 
     try {
-      _subscription = _service
-          .watch(_mode)
+      _subscription = _locationService
+          .watch(
+            _mode,
+            enableForegroundNotification: _enableForegroundService,
+            notificationTitle: _notificationTitle,
+            notificationSubtitle: _notificationSubtitle,
+          )
           .listen(
             (position) => _emitFix(position),
             onError: (Object error) {
@@ -150,7 +176,7 @@ class LocationNotifier extends Notifier<LocationState> {
             },
             cancelOnError: false,
           );
-      _serviceStatusSubscription = _service.watchServiceStatus().listen(
+      _serviceStatusSubscription = _locationService.watchServiceStatus().listen(
         (status) {
           if (status == ServiceStatus.disabled) {
             unawaited(_handleServiceDisabled());
@@ -211,16 +237,63 @@ class LocationNotifier extends Notifier<LocationState> {
     }
   }
 
+  /// Configures foreground notification presence and restarts stream if tracking.
+  Future<void> setForegroundNotification({
+    required bool enabled,
+    String? title,
+    String? subtitle,
+  }) async {
+    if (_enableForegroundService == enabled &&
+        _notificationTitle == title &&
+        _notificationSubtitle == subtitle) {
+      return;
+    }
+    _enableForegroundService = enabled;
+    if (title != null) _notificationTitle = title;
+    if (subtitle != null) _notificationSubtitle = subtitle;
+    if (state.isTracking) {
+      await _restartStream();
+    }
+  }
+
+  /// Dynamically updates the notification text (e.g. "Reconnecting to dispatch...")
+  Future<void> updateNotificationText({String? title, String? subtitle}) async {
+    if (_notificationTitle == title && _notificationSubtitle == subtitle) {
+      return;
+    }
+    if (title != null) _notificationTitle = title;
+    if (subtitle != null) _notificationSubtitle = subtitle;
+    if (state.isTracking && _enableForegroundService) {
+      await _restartStream();
+    }
+  }
+
+  /// Explicitly requests background location ("Always").
+  Future<LocationAvailabilityResult> requestBackgroundPermission() async {
+    final result = await _locationService.requestBackgroundPermission();
+    _hasBackgroundAccess = result.hasBackgroundAccess;
+    if (state is LocationStateTracking && ref.mounted) {
+      final cur = state as LocationStateTracking;
+      state = cur.copyWith(hasBackgroundAccess: _hasBackgroundAccess);
+    }
+    return result;
+  }
+
   /// Re-runs the pre-flight after the user returns from system settings.
   Future<void> retry() =>
       start(mode: _mode, requestPermission: true, force: true);
 
-  Future<bool> openAppSettings() => _service.openAppSettings();
+  Future<bool> openAppSettings() => _locationService.openAppSettings();
 
-  Future<bool> openLocationSettings() => _service.openLocationSettings();
+  Future<bool> openLocationSettings() =>
+      _locationService.openLocationSettings();
+
+  Future<bool> openBatteryOptimizationSettings() =>
+      _locationService.openBatteryOptimizationSettings();
 
   /// Stops streaming and resets to [LocationState.initial].
   Future<void> stop() async {
+    _enableForegroundService = false;
     await _stopStream();
     state = const LocationState.initial();
   }

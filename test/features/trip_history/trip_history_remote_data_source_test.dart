@@ -124,6 +124,47 @@ void main() {
       final result = await dataSource.getDriverHistory();
       expect(result, isEmpty);
     });
+
+    test(
+      'handles Django REST Framework string Decimal values and isolates malformed items',
+      () async {
+        adapter.handler = (options) async {
+          return jsonResponse({
+            'status': 'success',
+            'data': {
+              'count': 2,
+              'results': [
+                {
+                  'id': 201,
+                  'status': 'completed',
+                  'user': 'Vikram Malhotra',
+                  'final_fare': '350.00',
+                  'pickup_address': 'Airport T2',
+                  'destination_address': 'Andheri East',
+                  'pickup_lat': '19.089600',
+                  'pickup_long': '72.865600',
+                  'destination_lat': '19.113600',
+                  'destination_long': '72.869700',
+                  'actual_distance_km': '5.20',
+                  'actual_duration_min': '18.00',
+                  'payment_method': 'cash',
+                },
+                // Malformed item that would normally crash without isolation
+                {'corrupted_field': true},
+              ],
+            },
+          });
+        };
+
+        final result = await dataSource.getDriverHistory();
+        expect(result.length, equals(1));
+        expect(result.first.id, equals(201));
+        expect(result.first.riderName, equals('Vikram Malhotra'));
+        expect(result.first.distanceKm, equals(5.2));
+        expect(result.first.durationMin, equals(18.0));
+        expect(result.first.pickupLat, equals(19.0896));
+      },
+    );
   });
 
   group('TripHistoryRemoteDataSource - getTripDetails', () {

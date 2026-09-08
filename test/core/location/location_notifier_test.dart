@@ -27,6 +27,9 @@ class _FakeGeolocator implements GeolocatorAdapter {
   /// [UnsupportedError].
   bool simulateUnsupportedServiceStatus = false;
 
+  LocationSettings? lastSettings;
+  int appSettingsOpened = 0;
+
   final positions = StreamController<Position>.broadcast();
   final serviceStatuses = StreamController<ServiceStatus>.broadcast();
 
@@ -37,8 +40,10 @@ class _FakeGeolocator implements GeolocatorAdapter {
   }
 
   @override
-  Stream<Position> getPositionStream(LocationSettings settings) =>
-      positions.stream;
+  Stream<Position> getPositionStream(LocationSettings settings) {
+    lastSettings = settings;
+    return positions.stream;
+  }
 
   @override
   Stream<ServiceStatus> getServiceStatusStream() {
@@ -65,6 +70,7 @@ class _FakeGeolocator implements GeolocatorAdapter {
     if (simulateUnsupportedSettings) {
       throw UnimplementedError('openAppSettings() has not been implemented.');
     }
+    appSettingsOpened++;
     return true;
   }
 
@@ -265,6 +271,78 @@ void main() {
         container.read(locationNotifierProvider),
         isA<LocationStateTracking>(),
       );
+    },
+  );
+
+  test(
+    'setForegroundNotification configures foreground service and updates stream',
+    () async {
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start(enableForegroundService: false);
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      expect(notifier.enableForegroundService, isFalse);
+
+      await notifier.setForegroundNotification(
+        enabled: true,
+        title: 'SaaradhiGo Driver • Online',
+        subtitle: 'Active & ready for ride dispatches',
+      );
+      await pumpEventQueue();
+
+      expect(notifier.enableForegroundService, isTrue);
+    },
+  );
+
+  test(
+    'updateNotificationText updates notification text while tracking',
+    () async {
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start(enableForegroundService: true);
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      await notifier.updateNotificationText(
+        subtitle: 'Reconnecting to dispatch...',
+      );
+      await pumpEventQueue();
+
+      expect(
+        container.read(locationNotifierProvider),
+        isA<LocationStateTracking>(),
+      );
+    },
+  );
+
+  test('requestBackgroundPermission updates hasBackgroundAccess', () async {
+    geolocator.checkedPermission = LocationPermission.whileInUse;
+    geolocator.requestedPermission = LocationPermission.whileInUse;
+
+    final notifier = container.read(locationNotifierProvider.notifier);
+    await notifier.start();
+    geolocator.positions.add(_position());
+    await pumpEventQueue();
+
+    expect(notifier.hasBackgroundAccess, isFalse);
+
+    geolocator.requestedPermission = LocationPermission.always;
+    final result = await notifier.requestBackgroundPermission();
+    expect(result.hasBackgroundAccess, isTrue);
+    expect(notifier.hasBackgroundAccess, isTrue);
+
+    final state = container.read(locationNotifierProvider);
+    expect(state, isA<LocationStateTracking>());
+    expect((state as LocationStateTracking).hasBackgroundAccess, isTrue);
+  });
+
+  test(
+    'openBatteryOptimizationSettings delegates to adapter app settings',
+    () async {
+      final notifier = container.read(locationNotifierProvider.notifier);
+      final opened = await notifier.openBatteryOptimizationSettings();
+      expect(opened, isTrue);
+      expect(geolocator.appSettingsOpened, 1);
     },
   );
 }

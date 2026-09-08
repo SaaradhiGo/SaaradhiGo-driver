@@ -10,6 +10,7 @@ import '../../../core/location/location_providers.dart';
 import '../../../core/network/connectivity_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/utils/app_logger.dart';
 import '../../../domain/models/trip_model.dart';
 import '../../../shared/widgets/map_controls.dart';
 import '../../profile/presentation/providers/profile_providers.dart';
@@ -20,6 +21,7 @@ import 'widgets/dashboard_header.dart';
 import 'widgets/dashboard_status_banner.dart';
 import 'widgets/driver_map.dart';
 import 'widgets/incoming_ride_bottom_sheet.dart';
+import 'widgets/limited_background_banner.dart';
 import 'widgets/location_blocked_overlay.dart';
 import 'widgets/online_toggle.dart';
 
@@ -72,9 +74,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     try {
       final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
       if (!mounted || trip == null || trip.status.isTerminal) return;
+      AppLogger.i(
+        'Active trip detected: id=${trip.id}, status=${trip.status.name}. Rejoining /ride...',
+      );
       ref.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(trip);
-      if (mounted) context.push('/ride');
-    } catch (_) {
+      if (mounted) context.go('/ride');
+    } catch (e, st) {
+      AppLogger.w('Failed checking for active trip: $e\n$st');
       // No active trip / transient error — stay on the dashboard.
     }
   }
@@ -121,10 +127,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
   void _acceptRideRequest(DriverLocationRideRequest event) {
     // Hand the offer to the trip session (opens the trip socket + sends accept)
-    // and move into the full-screen ride lifecycle. Pushed, so completing or
-    // cancelling the trip returns to this dashboard.
+    // and move into the full-screen ride lifecycle.
     ref.read(tripSessionNotifierProvider.notifier).acceptFromRequest(event);
-    context.push('/ride');
+    context.go('/ride');
   }
 
   @override
@@ -146,6 +151,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             locationState.permanent)) {
       ref.read(locationNotifierProvider.notifier).retry();
     }
+    // Re-check for active trip when resuming from background
+    _checkForActiveTrip();
   }
 
   void _recenter() {
@@ -313,6 +320,12 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           icon: Icons.gps_not_fixed,
         ),
       );
+    }
+
+    if (availability.isOnline &&
+        locationState is LocationStateTracking &&
+        !locationState.hasBackgroundAccess) {
+      banners.add(const LimitedBackgroundBanner());
     }
 
     if (banners.isEmpty) return const SizedBox.shrink();

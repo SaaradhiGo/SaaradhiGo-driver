@@ -86,12 +86,27 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
       _throttle.reset();
       state = const AvailabilityState.goingOnline();
 
+      unawaited(
+        ref
+            .read(locationNotifierProvider.notifier)
+            .setForegroundNotification(
+              enabled: true,
+              title: 'SaaradhiGo Driver • Online',
+              subtitle: 'Active & ready for ride dispatches',
+            ),
+      );
+
       _attachConsumer();
       _consumer!.connect();
     } catch (error, stackTrace) {
       AppLogger.e('Unable to start driver availability', error, stackTrace);
       if (ref.mounted && generation == _preflightGeneration) {
         _intendsOnline = false;
+        unawaited(
+          ref
+              .read(locationNotifierProvider.notifier)
+              .setForegroundNotification(enabled: false),
+        );
         await _detachConsumer();
         state = const AvailabilityState.error(
           'Unable to connect to dispatch. Please try again.',
@@ -114,6 +129,12 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
     _preflightGeneration++;
     _intendsOnline = false;
     state = const AvailabilityState.goingOffline();
+
+    unawaited(
+      ref
+          .read(locationNotifierProvider.notifier)
+          .setForegroundNotification(enabled: false),
+    );
 
     _stopHeartbeat();
     await _detachConsumer();
@@ -301,16 +322,33 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
         if (state is! AvailabilityStateOnline) {
           state = const AvailabilityState.goingOnline();
         }
+        unawaited(
+          ref
+              .read(locationNotifierProvider.notifier)
+              .updateNotificationText(
+                subtitle: 'Active & ready for ride dispatches',
+              ),
+        );
 
       case WebSocketState.disconnected:
         _stopHeartbeat();
         state = const AvailabilityState.reconnecting();
+        unawaited(
+          ref
+              .read(locationNotifierProvider.notifier)
+              .updateNotificationText(subtitle: 'Reconnecting to dispatch...'),
+        );
 
       case WebSocketState.error:
         // Backoff exhausted. Fall back to offline per
         // docs/21_NAVIGATION_USER_FLOW_SPECIFICATION.md:109.
         _intendsOnline = false;
         _stopHeartbeat();
+        unawaited(
+          ref
+              .read(locationNotifierProvider.notifier)
+              .setForegroundNotification(enabled: false),
+        );
         unawaited(_detachConsumer());
         state = const AvailabilityState.error(
           'Lost connection to dispatch. You are offline — tap to retry.',
@@ -361,6 +399,11 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
   ) async {
     _intendsOnline = false;
     _stopHeartbeat();
+    unawaited(
+      ref
+          .read(locationNotifierProvider.notifier)
+          .setForegroundNotification(enabled: false),
+    );
     await _detachConsumer();
     state = AvailabilityState.blocked(reason: reason, message: message);
   }

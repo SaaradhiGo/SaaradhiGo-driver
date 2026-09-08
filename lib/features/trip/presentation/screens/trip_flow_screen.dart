@@ -23,8 +23,19 @@ class TripFlowScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(tripSessionNotifierProvider);
 
+    return PopScope(
+      canPop: !session.isActive,
+      child: _buildBody(context, ref, session),
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    TripSessionState session,
+  ) {
     if (session.takenByOther) {
-      return _TripEndedView(
+      return const _TripEndedView(
         icon: Icons.directions_car_filled_rounded,
         title: 'Ride taken',
         message: 'This ride was accepted by another driver.',
@@ -33,8 +44,45 @@ class TripFlowScreen extends ConsumerWidget {
 
     final trip = session.trip;
     if (trip == null) {
-      // No active trip (e.g. cleared) — nothing to show here.
-      return const _TripLoadingView(message: 'No active trip.');
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.margin),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: AppColors.onSurfaceVariant,
+                  size: 64,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'No Active Trip',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onBackground,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'There is no active trip currently assigned.',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                PrimaryButton(
+                  text: 'BACK TO DASHBOARD',
+                  onPressed: () => context.go('/'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     switch (session.status) {
@@ -54,6 +102,9 @@ class TripFlowScreen extends ConsumerWidget {
         return AcceptedRideScreen(trip: trip);
       case TripStatus.requested:
       case null:
+        if (trip.driverId != null) {
+          return AcceptedRideScreen(trip: trip);
+        }
         return _TripLoadingView(
           message: session.connecting
               ? 'Connecting to the trip…'

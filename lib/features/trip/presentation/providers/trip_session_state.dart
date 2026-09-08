@@ -49,6 +49,9 @@ abstract class TripSessionState with _$TripSessionState {
   /// The trip has settled into a terminal state.
   bool get isTerminal => status?.isTerminal ?? false;
 
+  /// True when an active, non-terminal trip is underway.
+  bool get isActive => trip != null && status != null && !isTerminal;
+
   /// A completed cash trip whose collection has not yet been confirmed. The
   /// driver must confirm before leaving the summary (and the socket is held
   /// open for it — the backend requires `completed` + a live channel).

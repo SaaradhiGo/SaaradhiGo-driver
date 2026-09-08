@@ -16,28 +16,45 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEnabled = onPressed != null && !isLoading;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.shadowGlow,
-            blurRadius: 12,
-            spreadRadius: 0,
-            offset: Offset(0, 4),
-          ),
-        ],
-        gradient: const LinearGradient(
-          colors: [AppColors.gradientStart, AppColors.gradientEnd],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        boxShadow: isEnabled
+            ? const [
+                BoxShadow(
+                  color: AppColors.shadowGlow,
+                  blurRadius: 12,
+                  spreadRadius: 0,
+                  offset: Offset(0, 4),
+                ),
+              ]
+            : const [],
+        gradient: isEnabled
+            ? const LinearGradient(
+                colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : const LinearGradient(
+                colors: [
+                  AppColors.surfaceContainerHigh,
+                  AppColors.surfaceContainer,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
       ),
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
+          disabledForegroundColor: AppColors.onSurfaceVariant.withValues(
+            alpha: 0.6,
+          ),
+          disabledBackgroundColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           ),
@@ -52,7 +69,15 @@ class PrimaryButton extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : Text(text),
+            : Text(
+                text,
+                style: isEnabled
+                    ? null
+                    : const TextStyle(
+                        color: AppColors.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+              ),
       ),
     );
   }

@@ -31,6 +31,7 @@ import '../features/support/presentation/screens/report_incident_screen.dart';
 import '../features/support/presentation/screens/safety_center_screen.dart';
 import '../features/support/presentation/screens/support_ticket_detail_screen.dart';
 import '../features/support/presentation/screens/trip_chat_screen.dart';
+import '../features/trip/presentation/providers/trip_providers.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
@@ -74,6 +75,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ).toString()
             : null;
       } else if (authState is AuthAuthenticated) {
+        // ActiveRideGuard: if an active non-terminal trip is underway, lock navigation
+        // to the ride lifecycle, allowing only permitted in-ride flows (chat, safety, SOS, support).
+        final tripSession = ref.read(tripSessionNotifierProvider);
+        if (tripSession.isActive) {
+          final currentPath = state.uri.path;
+          final isAllowedUnderRide =
+              currentPath == '/ride' ||
+              currentPath.startsWith('/trip-chat') ||
+              currentPath.startsWith('/safety') ||
+              currentPath.startsWith('/emergency-contacts') ||
+              currentPath.startsWith('/report-incident') ||
+              currentPath.startsWith('/support');
+          if (!isAllowedUnderRide) {
+            return '/ride';
+          }
+        }
+
         final profileState = ref.read(driverProfileNotifierProvider);
         return profileState.maybeMap(
           initial: (_) {
@@ -306,6 +324,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   ref.listen(driverProfileNotifierProvider, (previous, next) {
     router.refresh();
+  });
+
+  ref.listen(tripSessionNotifierProvider, (previous, next) {
+    if (previous?.isActive != next.isActive ||
+        previous?.status != next.status) {
+      router.refresh();
+    }
   });
 
   return router;

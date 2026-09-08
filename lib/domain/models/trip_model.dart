@@ -33,28 +33,121 @@ extension TripStatusX on TripStatus {
   bool get isActive => !isTerminal;
 }
 
-Object? _readId(Map json, String key) => json['id'] ?? json['trip_id'];
+double? _readDoubleVal(dynamic val) {
+  if (val == null) return null;
+  if (val is num) return val.toDouble();
+  if (val is String) return double.tryParse(val);
+  return null;
+}
+
+int? _readIntVal(dynamic val) {
+  if (val == null) return null;
+  if (val is num) return val.toInt();
+  if (val is String) return int.tryParse(val);
+  return null;
+}
+
+Object? _readId(Map json, String key) {
+  final val = json['id'] ?? json['trip_id'];
+  return _readIntVal(val) ?? 0;
+}
+
+String _normalizeStatusCode(dynamic raw) {
+  final s = raw?.toString().trim().toLowerCase() ?? '';
+  switch (s) {
+    case 'pending':
+    case 'requested':
+      return 'requested';
+    case 'accept':
+    case 'accepted':
+    case 'driver_accepted':
+      return 'accepted';
+    case 'reached':
+    case 'arrived':
+    case 'driver_reached':
+    case 'driver_arrived':
+      return 'reached';
+    case 'start':
+    case 'started':
+    case 'in_progress':
+    case 'inprogress':
+    case 'in-progress':
+    case 'trip_started':
+      return 'in_progress';
+    case 'complete':
+    case 'completed':
+    case 'trip_completed':
+    case 'finished':
+      return 'completed';
+    case 'cancel':
+    case 'cancelled':
+    case 'canceled':
+    case 'trip_cancelled':
+    case 'driver_cancelled':
+    case 'rider_cancelled':
+      return 'cancelled';
+    default:
+      return 'requested';
+  }
+}
+
+Object? _readStatus(Map json, String key) {
+  final raw = json['status'] ?? json['trip_status'];
+  if (raw is Map) {
+    return _normalizeStatusCode(
+      raw['status_code'] ?? raw['code'] ?? raw['name'],
+    );
+  }
+  if (raw != null) {
+    return _normalizeStatusCode(raw);
+  }
+  if (json['status_id'] is Map) {
+    return _normalizeStatusCode(json['status_id']['status_code']);
+  }
+  return 'requested';
+}
+
+Object? _readRiderId(Map json, String key) {
+  final val = json['rider_id'] ?? json['rider'];
+  if (val is Map) return _readIntVal(val['id']);
+  return _readIntVal(val);
+}
+
+Object? _readDriverId(Map json, String key) {
+  final val = json['driver_id'] ?? json['driver'];
+  if (val is Map) return _readIntVal(val['id']);
+  return _readIntVal(val);
+}
+
+Object? _readPickupLat(Map json, String key) =>
+    _readDoubleVal(json['pickup_lat']);
 
 // The dispatch (`ride_request`) socket payload uses `pickup_lng`/`destination_lng`;
 // the REST trip serializers use `pickup_long`/`destination_long`. Accept either
-// so a TripModel round-trips from both sources (docs/08_REALTIME.md vs
-// servers/ride/serializers.py).
+// and coerce Decimal strings.
 Object? _readPickupLng(Map json, String key) =>
-    json['pickup_lng'] ?? json['pickup_long'];
+    _readDoubleVal(json['pickup_lng'] ?? json['pickup_long']);
+
+Object? _readDestinationLat(Map json, String key) =>
+    _readDoubleVal(json['destination_lat']);
+
 Object? _readDestinationLng(Map json, String key) =>
-    json['destination_lng'] ?? json['destination_long'];
+    _readDoubleVal(json['destination_lng'] ?? json['destination_long']);
 
 // REST exposes distance/duration split into estimated_* and actual_* keys; the
 // dispatch payload uses the flat distance_km/duration_min. Prefer the actual
-// value when present (a completed trip), then estimated, then the flat key.
-Object? _readDistanceKm(Map json, String key) =>
-    json['distance_km'] ??
-    json['actual_distance_km'] ??
-    json['estimated_distance_km'];
-Object? _readDurationMin(Map json, String key) =>
-    json['duration_min'] ??
-    json['actual_duration_min'] ??
-    json['estimated_duration_min'];
+// value when present, then estimated, then the flat key.
+Object? _readDistanceKm(Map json, String key) => _readDoubleVal(
+  json['distance_km'] ??
+      json['actual_distance_km'] ??
+      json['estimated_distance_km'],
+);
+
+Object? _readDurationMin(Map json, String key) => _readDoubleVal(
+  json['duration_min'] ??
+      json['actual_duration_min'] ??
+      json['estimated_duration_min'],
+);
 
 // Fares arrive as strings over the socket but can be numeric over REST — coerce
 // so a numeric fare never throws a type error during parsing.
@@ -62,24 +155,31 @@ Object? _readEstimatedFare(Map json, String key) =>
     json['estimated_fare']?.toString();
 Object? _readFinalFare(Map json, String key) => json['final_fare']?.toString();
 
-Object? _readRiderName(Map json, String key) =>
-    json['rider_name'] ?? json['user'];
+Object? _readRiderName(Map json, String key) {
+  final val = json['rider_name'] ?? json['user'];
+  if (val is String && val.trim().isNotEmpty) return val.trim();
+  if (val is Map) {
+    final first = val['first_name'] ?? val['name'] ?? '';
+    final last = val['last_name'] ?? '';
+    final full = '$first $last'.trim();
+    if (full.isNotEmpty) return full;
+    return val['username']?.toString() ?? 'Rider';
+  }
+  if (val != null) return val.toString();
+  return 'Rider';
+}
 
 Object? _readCreatedAt(Map json, String key) =>
     json['created_at']?.toString() ?? json['requested_at']?.toString();
 
 Object? _readRiderRating(Map json, String key) {
   final val = json['rider_rating'] ?? json['rating'] ?? json['user_rating'];
-  if (val is num) return val.toDouble();
-  if (val is String) return double.tryParse(val);
-  return null;
+  return _readDoubleVal(val);
 }
 
 Object? _readDriverRating(Map json, String key) {
   final val = json['driver_rating'] ?? json['rating_given'];
-  if (val is num) return val.toDouble();
-  if (val is String) return double.tryParse(val);
-  return null;
+  return _readDoubleVal(val);
 }
 
 Object? _readCancellationReason(Map json, String key) =>
@@ -87,6 +187,14 @@ Object? _readCancellationReason(Map json, String key) =>
 
 Object? _readSurgeMultiplier(Map json, String key) =>
     json['surge_multiplier']?.toString();
+
+Object? _readFareBreakdown(Map json, String key) {
+  final val = json['fare_breakdown'];
+  if (val is Map) {
+    return Map<String, dynamic>.from(val);
+  }
+  return null;
+}
 
 /// A single ride trip, parsed from either the `ride_request` dispatch payload,
 /// a `trip_status_update` broadcast, or `GET /ride/active/`.
@@ -97,14 +205,16 @@ Object? _readSurgeMultiplier(Map json, String key) =>
 abstract class TripModel with _$TripModel {
   const factory TripModel({
     @JsonKey(readValue: _readId) required int id,
-    @JsonKey(defaultValue: TripStatus.requested) required TripStatus status,
-    @JsonKey(name: 'rider_id') int? riderId,
+    @JsonKey(defaultValue: TripStatus.requested, readValue: _readStatus)
+    required TripStatus status,
+    @JsonKey(name: 'rider_id', readValue: _readRiderId) int? riderId,
     @JsonKey(readValue: _readRiderName) String? riderName,
-    @JsonKey(name: 'driver_id') int? driverId,
+    @JsonKey(name: 'driver_id', readValue: _readDriverId) int? driverId,
     @JsonKey(name: 'driver_name') String? driverName,
-    @JsonKey(name: 'pickup_lat') double? pickupLat,
+    @JsonKey(name: 'pickup_lat', readValue: _readPickupLat) double? pickupLat,
     @JsonKey(readValue: _readPickupLng) double? pickupLng,
-    @JsonKey(name: 'destination_lat') double? destinationLat,
+    @JsonKey(name: 'destination_lat', readValue: _readDestinationLat)
+    double? destinationLat,
     @JsonKey(readValue: _readDestinationLng) double? destinationLng,
     @JsonKey(name: 'pickup_address') String? pickupAddress,
     @JsonKey(name: 'destination_address') String? destinationAddress,
@@ -119,7 +229,8 @@ abstract class TripModel with _$TripModel {
     @JsonKey(readValue: _readCreatedAt) String? createdAt,
     @JsonKey(readValue: _readRiderRating) double? riderRating,
     @JsonKey(readValue: _readDriverRating) double? driverRating,
-    @JsonKey(name: 'fare_breakdown') Map<String, dynamic>? fareBreakdown,
+    @JsonKey(name: 'fare_breakdown', readValue: _readFareBreakdown)
+    Map<String, dynamic>? fareBreakdown,
     @JsonKey(readValue: _readCancellationReason) String? cancellationReason,
     @JsonKey(name: 'cancelled_at') String? cancelledAt,
     @JsonKey(readValue: _readSurgeMultiplier) String? surgeMultiplier,

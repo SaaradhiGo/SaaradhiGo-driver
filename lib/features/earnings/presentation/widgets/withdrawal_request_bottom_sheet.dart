@@ -67,7 +67,16 @@ class _WithdrawalRequestBottomSheetState
   Future<void> _submit() async {
     final amt = double.tryParse(_amountController.text) ?? 0.0;
     _validate(amt);
-    if (_validationError != null) return;
+    if (_validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_validationError!),
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     final success = await ref
         .read(earningsNotifierProvider.notifier)
@@ -102,10 +111,14 @@ class _WithdrawalRequestBottomSheetState
 
     return BottomSheetContainer(
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          MediaQuery.of(context).viewInsets.bottom + AppSpacing.md,
         ),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,10 +126,12 @@ class _WithdrawalRequestBottomSheetState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Payout Withdrawal',
-                    style: AppTypography.headlineSm.copyWith(
-                      color: AppColors.onBackground,
+                  Expanded(
+                    child: Text(
+                      'Payout Withdrawal',
+                      style: AppTypography.headlineSm.copyWith(
+                        color: AppColors.onBackground,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -299,10 +314,24 @@ class _WithdrawalRequestBottomSheetState
               PrimaryButton(
                 text: state.isSubmittingWithdrawal
                     ? 'PROCESSING...'
-                    : 'CONFIRM WITHDRAWAL',
-                onPressed: (isBlocked || state.isSubmittingWithdrawal)
+                    : (isBlocked ? 'WITHDRAWALS LOCKED' : 'CONFIRM WITHDRAWAL'),
+                isLoading: state.isSubmittingWithdrawal,
+                onPressed: state.isSubmittingWithdrawal
                     ? null
-                    : _submit,
+                    : () {
+                        if (isBlocked) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Withdrawals are currently locked for your account. Please contact support.',
+                              ),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
+                          return;
+                        }
+                        _submit();
+                      },
               ),
               const SizedBox(height: AppSpacing.md),
             ],

@@ -72,7 +72,23 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     if (trip.status.isTerminal) return;
     if (state.trip?.id == trip.id && !state.isTerminal) return;
 
-    state = TripSessionState(trip: trip, status: trip.status, connecting: true);
+    // If an assigned active trip arrives with 'requested', normalize to 'accepted'
+    // so the driver enters the active lifecycle (heading to pickup) immediately.
+    final effectiveStatus = (trip.status == TripStatus.requested)
+        ? TripStatus.accepted
+        : trip.status;
+    final effectiveTrip = (effectiveStatus != trip.status)
+        ? trip.copyWith(status: effectiveStatus)
+        : trip;
+
+    AppLogger.i(
+      'Resuming active trip ${trip.id} in state: ${effectiveStatus.name}',
+    );
+    state = TripSessionState(
+      trip: effectiveTrip,
+      status: effectiveStatus,
+      connecting: true,
+    );
     _pendingAccept = false;
     _attachConsumer(trip.id);
     _consumer!.connect();

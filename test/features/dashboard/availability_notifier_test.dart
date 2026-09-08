@@ -45,6 +45,8 @@ ProviderContainer _container({
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('blocks an unapproved driver before creating a socket', () async {
     var consumerCreated = false;
     final container = _container(
@@ -117,4 +119,43 @@ void main() {
       expect(channel.sink.closed, isTrue);
     },
   );
+
+  test('transitions to reconnecting when socket drops', () async {
+    final channel = TestWebSocketChannel();
+    final consumer = DriverLocationConsumer(
+      tokenReader: () async => 'jwt',
+      positionReader: () => const LatLng(17.385, 78.486),
+      wsBaseUrlReader: () => 'wss://api.example/',
+      serviceFactory: (urlBuilder) => WebSocketService(
+        urlBuilder: urlBuilder,
+        channelFactory: (_) => channel,
+      ),
+    );
+    final container = _container(
+      profileState: ProfileState.loaded(_profile()),
+      locationState: _freshLocation(),
+      consumerFactory: () => consumer,
+    );
+    addTearDown(container.dispose);
+
+    final notifier = container.read(availabilityNotifierProvider.notifier);
+    await notifier.goOnline();
+    await pumpEventQueue();
+
+    channel.incoming.add(
+      '{"type":"connection_established","message":"Driver 10 connected"}',
+    );
+    await pumpEventQueue();
+    expect(
+      container.read(availabilityNotifierProvider),
+      isA<AvailabilityStateOnline>(),
+    );
+
+    channel.incoming.addError('connection reset');
+    await pumpEventQueue();
+    expect(
+      container.read(availabilityNotifierProvider),
+      isA<AvailabilityStateReconnecting>(),
+    );
+  });
 }

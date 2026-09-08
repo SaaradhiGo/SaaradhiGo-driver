@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:ui' show Color;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:geolocator/geolocator.dart';
 
 import 'geolocator_adapter.dart';
@@ -116,6 +118,50 @@ class LocationService {
     }
   }
 
+  /// Explicitly requests background location ("Always").
+  ///
+  /// On Android 11+, background location cannot be requested simultaneously
+  /// with foreground location; this method requests background access after
+  /// foreground access has already been granted.
+  Future<LocationAvailabilityResult> requestBackgroundPermission() async {
+    final serviceEnabled = await _geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return const LocationAvailabilityResult(
+        LocationAvailability.serviceDisabled,
+        LocationPermission.denied,
+      );
+    }
+
+    final permission = await _requestPermissionSafely();
+    switch (permission) {
+      case LocationPermission.always:
+        return const LocationAvailabilityResult(
+          LocationAvailability.ready,
+          LocationPermission.always,
+        );
+      case LocationPermission.whileInUse:
+        return const LocationAvailabilityResult(
+          LocationAvailability.ready,
+          LocationPermission.whileInUse,
+        );
+      case LocationPermission.deniedForever:
+        return const LocationAvailabilityResult(
+          LocationAvailability.permissionDeniedForever,
+          LocationPermission.deniedForever,
+        );
+      case LocationPermission.denied:
+        return const LocationAvailabilityResult(
+          LocationAvailability.permissionDenied,
+          LocationPermission.denied,
+        );
+      case LocationPermission.unableToDetermine:
+        return const LocationAvailabilityResult(
+          LocationAvailability.ready,
+          LocationPermission.unableToDetermine,
+        );
+    }
+  }
+
   /// `geolocator` throws [UnimplementedError] for permission APIs on platforms
   /// without a runtime permission model (e.g. geolocator_linux). Normalise that
   /// to [LocationPermission.unableToDetermine] so callers don't crash.
@@ -139,20 +185,66 @@ class LocationService {
     }
   }
 
-  LocationSettings _settingsFor(LocationTrackingMode mode) => LocationSettings(
-    accuracy: mode.accuracy,
-    // geolocator_web implements `distanceFilter` as a `skipWhile` against the
-    // previous *emitted* fix. Browsers report ~1 Hz and drivers frequently move
-    // < 10 m between samples, so almost every fix is dropped and the UI never
-    // leaves "acquiring". Disable the platform filter on web — the app-side
-    // [LocationThrottle] (docs/10_LOCATION.md §2: >10 m or >5 s) already gates
-    // outbound frames, so no backend contract is affected.
-    distanceFilter: kIsWeb ? 0 : distanceFilterMeters.round(),
-  );
+  LocationSettings _settingsFor(
+    LocationTrackingMode mode, {
+    bool enableForegroundNotification = false,
+    String? notificationTitle,
+    String? notificationSubtitle,
+  }) {
+    final distance = kIsWeb ? 0 : distanceFilterMeters.round();
+
+    if (!kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        enableForegroundNotification) {
+      return AndroidSettings(
+        accuracy: mode.accuracy,
+        distanceFilter: distance,
+        intervalDuration: const Duration(seconds: 5),
+        foregroundNotificationConfig: ForegroundNotificationConfig(
+          notificationTitle:
+              notificationTitle ??
+              (mode == LocationTrackingMode.activeTrip
+                  ? 'SaaradhiGo Driver • On Trip'
+                  : 'SaaradhiGo Driver • Online'),
+          notificationText:
+              notificationSubtitle ??
+              (mode == LocationTrackingMode.activeTrip
+                  ? 'Driving to Destination'
+                  : 'Active & ready for ride dispatches'),
+          notificationIcon: const AndroidResource(name: 'ic_launcher'),
+          color: const Color(0xFFD4AF37),
+          enableWakeLock: true,
+          setOngoing: true,
+        ),
+      );
+    }
+
+    return LocationSettings(
+      accuracy: mode.accuracy,
+      // geolocator_web implements `distanceFilter` as a `skipWhile` against the
+      // previous *emitted* fix. Browsers report ~1 Hz and drivers frequently move
+      // < 10 m between samples, so almost every fix is dropped and the UI never
+      // leaves "acquiring". Disable the platform filter on web — the app-side
+      // [LocationThrottle] (docs/10_LOCATION.md §2: >10 m or >5 s) already gates
+      // outbound frames, so no backend contract is affected.
+      distanceFilter: distance,
+    );
+  }
 
   /// Distance-filtered stream of fixes for [mode].
-  Stream<Position> watch(LocationTrackingMode mode) =>
-      _geolocator.getPositionStream(_settingsFor(mode));
+  Stream<Position> watch(
+    LocationTrackingMode mode, {
+    bool enableForegroundNotification = false,
+    String? notificationTitle,
+    String? notificationSubtitle,
+  }) => _geolocator.getPositionStream(
+    _settingsFor(
+      mode,
+      enableForegroundNotification: enableForegroundNotification,
+      notificationTitle: notificationTitle,
+      notificationSubtitle: notificationSubtitle,
+    ),
+  );
 
   Future<Position> current(LocationTrackingMode mode) =>
       _geolocator.getCurrentPosition(_settingsFor(mode));
@@ -193,4 +285,8 @@ class LocationService {
       return false;
     }
   }
+
+  /// Opens settings page where battery optimization / app details can be
+  /// adjusted by the driver.
+  Future<bool> openBatteryOptimizationSettings() => openAppSettings();
 }

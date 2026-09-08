@@ -9,15 +9,16 @@ part of 'trip_model.dart';
 _TripModel _$TripModelFromJson(Map<String, dynamic> json) => _TripModel(
   id: (_readId(json, 'id') as num).toInt(),
   status:
-      $enumDecodeNullable(_$TripStatusEnumMap, json['status']) ??
+      $enumDecodeNullable(_$TripStatusEnumMap, _readStatus(json, 'status')) ??
       TripStatus.requested,
-  riderId: (json['rider_id'] as num?)?.toInt(),
+  riderId: (_readRiderId(json, 'rider_id') as num?)?.toInt(),
   riderName: _readRiderName(json, 'riderName') as String?,
-  driverId: (json['driver_id'] as num?)?.toInt(),
+  driverId: (_readDriverId(json, 'driver_id') as num?)?.toInt(),
   driverName: json['driver_name'] as String?,
-  pickupLat: (json['pickup_lat'] as num?)?.toDouble(),
+  pickupLat: (_readPickupLat(json, 'pickup_lat') as num?)?.toDouble(),
   pickupLng: (_readPickupLng(json, 'pickupLng') as num?)?.toDouble(),
-  destinationLat: (json['destination_lat'] as num?)?.toDouble(),
+  destinationLat: (_readDestinationLat(json, 'destination_lat') as num?)
+      ?.toDouble(),
   destinationLng: (_readDestinationLng(json, 'destinationLng') as num?)
       ?.toDouble(),
   pickupAddress: json['pickup_address'] as String?,
@@ -33,7 +34,8 @@ _TripModel _$TripModelFromJson(Map<String, dynamic> json) => _TripModel(
   createdAt: _readCreatedAt(json, 'createdAt') as String?,
   riderRating: (_readRiderRating(json, 'riderRating') as num?)?.toDouble(),
   driverRating: (_readDriverRating(json, 'driverRating') as num?)?.toDouble(),
-  fareBreakdown: json['fare_breakdown'] as Map<String, dynamic>?,
+  fareBreakdown:
+      _readFareBreakdown(json, 'fare_breakdown') as Map<String, dynamic>?,
   cancellationReason:
       _readCancellationReason(json, 'cancellationReason') as String?,
   cancelledAt: json['cancelled_at'] as String?,

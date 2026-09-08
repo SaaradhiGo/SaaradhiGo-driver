@@ -24,10 +24,15 @@ class TripRemoteDataSourceImpl implements TripRemoteDataSource {
   final Dio dio;
 
   Map<String, dynamic> _extractData(dynamic responseData) {
-    if (responseData is Map<String, dynamic>) {
-      final data = responseData['data'];
-      if (data is Map<String, dynamic>) return data;
-      return responseData;
+    if (responseData is Map) {
+      final rawData =
+          responseData['data'] ?? responseData['trip'] ?? responseData;
+      if (rawData is Map) {
+        if (rawData['trip'] is Map) {
+          return Map<String, dynamic>.from(rawData['trip'] as Map);
+        }
+        return Map<String, dynamic>.from(rawData);
+      }
     }
     return <String, dynamic>{};
   }
@@ -38,11 +43,15 @@ class TripRemoteDataSourceImpl implements TripRemoteDataSource {
       final response = await dio.get(ApiEndpoints.activeTrip);
       final data = _extractData(response.data);
       if (data.isEmpty) return null;
+      // Ensure there is an actual trip id in the payload
+      if (data['id'] == null && data['trip_id'] == null) return null;
       return TripModel.fromJson(data);
     } on DioException catch (e) {
       // 404 is the documented "no active trip" signal, not a failure.
       if (e.response?.statusCode == 404) return null;
       rethrow;
+    } catch (e) {
+      return null;
     }
   }
 
