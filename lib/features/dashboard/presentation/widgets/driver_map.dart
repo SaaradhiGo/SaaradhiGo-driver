@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/app_cached_tile_provider.dart';
 import 'driver_location_marker.dart';
 
 /// Fallback centre used until the first fix lands (Hyderabad — the launch city
@@ -78,7 +79,10 @@ class DriverMap extends StatelessWidget {
             // Must match the real applicationId — the OSM tile usage policy
             // requires an identifying User-Agent.
             userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-            tileProvider: NetworkTileProvider(),
+            tileUpdateTransformer: TileUpdateTransformers.throttle(
+              const Duration(milliseconds: 100),
+            ),
+            tileProvider: AppCachedTileProvider(),
           ),
         ),
         if (position != null)

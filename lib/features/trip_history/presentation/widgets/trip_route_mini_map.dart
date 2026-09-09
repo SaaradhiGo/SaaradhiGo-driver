@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/app_cached_tile_provider.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
@@ -225,7 +226,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
                 child: TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-                  tileProvider: NetworkTileProvider(),
+                  tileProvider: AppCachedTileProvider(),
                 ),
               ),
               if (pickup != null && dest != null)

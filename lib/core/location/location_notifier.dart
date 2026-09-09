@@ -279,6 +279,48 @@ class LocationNotifier extends Notifier<LocationState> {
     return result;
   }
 
+  /// Silently re-evaluates OS permission without tearing down the position stream.
+  ///
+  /// Updates [hasBackgroundAccess] if the driver granted "Allow all the time"
+  /// in system settings, and halts tracking if permission was revoked.
+  Future<void> refreshPermissions() async {
+    try {
+      final permission = await _locationService.checkPermission();
+      if (!ref.mounted) return;
+
+      switch (permission) {
+        case LocationPermission.always:
+          _hasBackgroundAccess = true;
+          if (state is LocationStateTracking) {
+            state = (state as LocationStateTracking).copyWith(
+              hasBackgroundAccess: true,
+            );
+          }
+          break;
+        case LocationPermission.whileInUse:
+          _hasBackgroundAccess = false;
+          if (state is LocationStateTracking) {
+            state = (state as LocationStateTracking).copyWith(
+              hasBackgroundAccess: false,
+            );
+          }
+          break;
+        case LocationPermission.denied:
+        case LocationPermission.deniedForever:
+          _hasBackgroundAccess = false;
+          await _stopStream();
+          state = LocationState.permissionDenied(
+            permanent: permission == LocationPermission.deniedForever,
+          );
+          break;
+        case LocationPermission.unableToDetermine:
+          break;
+      }
+    } catch (e, st) {
+      AppLogger.w('Failed to silently refresh location permissions: $e\n$st');
+    }
+  }
+
   /// Re-runs the pre-flight after the user returns from system settings.
   Future<void> retry() =>
       start(mode: _mode, requestPermission: true, force: true);

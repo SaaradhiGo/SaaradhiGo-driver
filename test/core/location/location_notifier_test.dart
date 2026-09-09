@@ -345,4 +345,90 @@ void main() {
       expect(geolocator.appSettingsOpened, 1);
     },
   );
+
+  test(
+    'refreshPermissions updates hasBackgroundAccess to true on upgrade to always',
+    () async {
+      geolocator.checkedPermission = LocationPermission.whileInUse;
+      geolocator.requestedPermission = LocationPermission.whileInUse;
+
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start();
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      expect(notifier.hasBackgroundAccess, isFalse);
+      expect(
+        (container.read(locationNotifierProvider) as LocationStateTracking)
+            .hasBackgroundAccess,
+        isFalse,
+      );
+
+      // Simulate user toggling to "Allow all the time" in system settings
+      geolocator.checkedPermission = LocationPermission.always;
+      await notifier.refreshPermissions();
+      await pumpEventQueue();
+
+      expect(notifier.hasBackgroundAccess, isTrue);
+      expect(
+        (container.read(locationNotifierProvider) as LocationStateTracking)
+            .hasBackgroundAccess,
+        isTrue,
+      );
+    },
+  );
+
+  test(
+    'refreshPermissions updates hasBackgroundAccess to false on downgrade to whileInUse',
+    () async {
+      geolocator.checkedPermission = LocationPermission.always;
+      geolocator.requestedPermission = LocationPermission.always;
+
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start();
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      expect(notifier.hasBackgroundAccess, isTrue);
+
+      // Simulate user toggling back to "While using the app"
+      geolocator.checkedPermission = LocationPermission.whileInUse;
+      await notifier.refreshPermissions();
+      await pumpEventQueue();
+
+      expect(notifier.hasBackgroundAccess, isFalse);
+      expect(
+        (container.read(locationNotifierProvider) as LocationStateTracking)
+            .hasBackgroundAccess,
+        isFalse,
+      );
+    },
+  );
+
+  test(
+    'refreshPermissions stops stream and transitions to permissionDenied when revoked',
+    () async {
+      geolocator.checkedPermission = LocationPermission.whileInUse;
+
+      final notifier = container.read(locationNotifierProvider.notifier);
+      await notifier.start();
+      geolocator.positions.add(_position());
+      await pumpEventQueue();
+
+      expect(
+        container.read(locationNotifierProvider),
+        isA<LocationStateTracking>(),
+      );
+
+      // Simulate user revoking permission in system settings
+      geolocator.checkedPermission = LocationPermission.deniedForever;
+      await notifier.refreshPermissions();
+      await pumpEventQueue();
+
+      final state = container.read(locationNotifierProvider);
+      expect(state, isA<LocationStatePermissionDenied>());
+      expect((state as LocationStatePermissionDenied).permanent, isTrue);
+      expect(notifier.hasBackgroundAccess, isFalse);
+    },
+  );
 }

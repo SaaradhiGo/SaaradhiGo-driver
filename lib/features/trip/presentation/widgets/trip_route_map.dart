@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/app_cached_tile_provider.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
@@ -66,7 +67,10 @@ class TripRouteMap extends StatelessWidget {
           child: TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-            tileProvider: NetworkTileProvider(),
+            tileUpdateTransformer: TileUpdateTransformers.throttle(
+              const Duration(milliseconds: 100),
+            ),
+            tileProvider: AppCachedTileProvider(),
           ),
         ),
         if (pickup != null && destination != null)

@@ -150,6 +150,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         (locationState is LocationStatePermissionDenied &&
             locationState.permanent)) {
       ref.read(locationNotifierProvider.notifier).retry();
+    } else if (locationState is LocationStateTracking) {
+      ref.read(locationNotifierProvider.notifier).refreshPermissions();
     }
     // Re-check for active trip when resuming from background
     _checkForActiveTrip();

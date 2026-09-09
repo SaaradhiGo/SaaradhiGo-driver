@@ -14,11 +14,31 @@ class LoggingInterceptor extends Interceptor {
     // Presigned S3 URLs are secrets: anyone holding one can upload/overwrite
     // the object until it expires.
     'upload_url',
+    'secret',
+    'client_secret',
+    'pin',
+    'credential',
+    'api_key',
+    'jwt',
+    'auth',
+    'signature',
   };
+
+  /// Redacts sensitive query parameters from URLs before emitting to logs.
+  static String sanitizeUri(Uri uri) {
+    if (uri.queryParameters.isEmpty) return uri.toString();
+    final sanitized = uri.queryParameters.map(
+      (key, value) => MapEntry(
+        key,
+        _sensitiveKeys.contains(key.toLowerCase()) ? '[REDACTED]' : value,
+      ),
+    );
+    return uri.replace(queryParameters: sanitized).toString();
+  }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    AppLogger.i('=> ${options.method} ${options.uri}');
+    AppLogger.i('=> ${options.method} ${sanitizeUri(options.uri)}');
     AppLogger.d('Headers: ${_redactMap(options.headers)}');
     if (_isSafeToLog(options.data)) {
       AppLogger.d('Body: ${_redactValue(options.data)}');
@@ -28,7 +48,9 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    AppLogger.i('<= ${response.statusCode} ${response.requestOptions.uri}');
+    AppLogger.i(
+      '<= ${response.statusCode} ${sanitizeUri(response.requestOptions.uri)}',
+    );
     if (_isSafeToLog(response.data)) {
       AppLogger.d('Response: ${_redactValue(response.data)}');
     }
@@ -38,7 +60,7 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     AppLogger.e(
-      '<= Error ${err.response?.statusCode} ${err.requestOptions.uri}',
+      '<= Error ${err.response?.statusCode} ${sanitizeUri(err.requestOptions.uri)}',
       err.message,
       err.stackTrace,
     );

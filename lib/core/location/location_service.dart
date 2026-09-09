@@ -162,6 +162,9 @@ class LocationService {
     }
   }
 
+  /// Safely queries the current OS location permission tier.
+  Future<LocationPermission> checkPermission() => _checkPermissionSafely();
+
   /// `geolocator` throws [UnimplementedError] for permission APIs on platforms
   /// without a runtime permission model (e.g. geolocator_linux). Normalise that
   /// to [LocationPermission.unableToDetermine] so callers don't crash.
