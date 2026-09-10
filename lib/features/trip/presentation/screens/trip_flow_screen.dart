@@ -7,7 +7,9 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../shared/widgets/buttons.dart';
+import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 import '../providers/trip_providers.dart';
+import '../widgets/ride_cancelled_bottom_sheet.dart';
 import 'accepted_ride_screen.dart';
 import 'active_trip_navigation_screen.dart';
 import 'arrived_at_pickup_screen.dart';
@@ -16,22 +18,88 @@ import 'trip_summary_screen.dart';
 /// Single `/ride` entry point. Renders the correct lifecycle screen from the
 /// authoritative [TripSessionState.status] so every WebSocket-driven transition
 /// is reflected without imperative screen-to-screen navigation.
-class TripFlowScreen extends ConsumerWidget {
+class TripFlowScreen extends ConsumerStatefulWidget {
   const TripFlowScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TripFlowScreen> createState() => _TripFlowScreenState();
+}
+
+class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
+    with WidgetsBindingObserver {
+  bool _showingCancelledModal = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(tripSessionNotifierProvider.notifier).checkActiveTripOnResume();
+    }
+  }
+
+  void _showCancelledModal(String? reason) {
+    if (_showingCancelledModal || !mounted) return;
+    _showingCancelledModal = true;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (modalCtx) {
+        return RideCancelledBottomSheet(
+          reason: reason,
+          onDismiss: () {
+            Navigator.of(modalCtx, rootNavigator: true).pop();
+            _showingCancelledModal = false;
+            ref.read(tripSessionNotifierProvider.notifier).clear();
+            ref.read(availabilityNotifierProvider.notifier).goOnline();
+            if (mounted) {
+              context.go('/');
+            }
+          },
+        );
+      },
+    ).then((_) {
+      _showingCancelledModal = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<TripSessionState>(tripSessionNotifierProvider, (previous, next) {
+      if (next.status == TripStatus.cancelled) {
+        _showCancelledModal(next.cancellationReason);
+      }
+    });
+
     final session = ref.watch(tripSessionNotifierProvider);
+
+    if (session.status == TripStatus.cancelled && !_showingCancelledModal) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showCancelledModal(session.cancellationReason);
+      });
+    }
 
     return PopScope(
       canPop: !session.isActive,
-      child: _buildBody(context, ref, session),
+      child: _buildBody(context, session),
     );
   }
 
   Widget _buildBody(
     BuildContext context,
-    WidgetRef ref,
     TripSessionState session,
   ) {
     if (session.takenByOther) {
@@ -76,7 +144,10 @@ class TripFlowScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.lg),
                 PrimaryButton(
                   text: 'BACK TO DASHBOARD',
-                  onPressed: () => context.go('/'),
+                  onPressed: () {
+                    ref.read(availabilityNotifierProvider.notifier).goOnline();
+                    context.go('/');
+                  },
                 ),
               ],
             ),
@@ -89,10 +160,11 @@ class TripFlowScreen extends ConsumerWidget {
       case TripStatus.completed:
         return TripSummaryScreen(trip: trip);
       case TripStatus.cancelled:
-        return const _TripEndedView(
+        return _TripEndedView(
           icon: Icons.cancel_rounded,
           title: 'Ride cancelled',
-          message: 'This ride has been cancelled.',
+          message: 'This ride has been cancelled by the passenger.',
+          reason: session.cancellationReason,
         );
       case TripStatus.reached:
         return ArrivedAtPickupScreen(trip: trip);
@@ -147,14 +219,20 @@ class _TripEndedView extends ConsumerWidget {
     required this.icon,
     required this.title,
     required this.message,
+    this.reason,
   });
 
   final IconData icon;
   final String title;
   final String message;
+  final String? reason;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final effectiveMsg = (reason != null && reason!.trim().isNotEmpty)
+        ? '$message\n\nReason: $reason'
+        : message;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -174,7 +252,7 @@ class _TripEndedView extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                message,
+                effectiveMsg,
                 textAlign: TextAlign.center,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
@@ -185,6 +263,7 @@ class _TripEndedView extends ConsumerWidget {
                 text: 'BACK TO DASHBOARD',
                 onPressed: () {
                   ref.read(tripSessionNotifierProvider.notifier).clear();
+                  ref.read(availabilityNotifierProvider.notifier).goOnline();
                   context.go('/');
                 },
               ),

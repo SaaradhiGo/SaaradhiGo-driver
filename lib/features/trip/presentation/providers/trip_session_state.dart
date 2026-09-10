@@ -30,6 +30,9 @@ abstract class TripSessionState with _$TripSessionState {
     /// Any other non-fatal error message to show as a banner/snackbar.
     String? errorMessage,
 
+    /// Reason why the trip was cancelled (if cancelled by rider or system).
+    String? cancellationReason,
+
     /// This offer was won by another driver (`trip_taken`).
     @Default(false) bool takenByOther,
 

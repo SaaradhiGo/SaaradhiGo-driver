@@ -73,7 +73,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   Future<void> _checkForActiveTrip() async {
     try {
       final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
-      if (!mounted || trip == null || trip.status.isTerminal) return;
+      if (!mounted) return;
+      if (trip == null || trip.status.isTerminal) {
+        if (ref.read(tripSessionNotifierProvider).isActive) {
+          ref.read(tripSessionNotifierProvider.notifier).clear();
+        }
+        return;
+      }
       AppLogger.i(
         'Active trip detected: id=${trip.id}, status=${trip.status.name}. Rejoining /ride...',
       );

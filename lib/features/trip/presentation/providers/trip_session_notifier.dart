@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/connectivity_provider.dart';
@@ -95,6 +96,36 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     unawaited(LocalStorageService.setActiveTripId(trip.id.toString()));
   }
 
+  /// Checks active trip on app resume (e.g. returning from Google Maps).
+  /// If the trip was cancelled while away or no longer active on the backend,
+  /// transitions to cancelled state and alerts the driver.
+  Future<void> checkActiveTripOnResume() async {
+    if (!state.isActive) return;
+
+    try {
+      final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
+      if (trip == null || trip.status.isTerminal) {
+        AppLogger.w(
+          'Active trip check on resume: trip ended or cancelled on backend (id: ${state.trip?.id})',
+        );
+        HapticFeedback.heavyImpact();
+        state = state.copyWith(
+          status: TripStatus.cancelled,
+          trip: state.trip?.copyWith(status: TripStatus.cancelled),
+          cancellationReason: trip?.status == TripStatus.cancelled
+              ? 'Ride was cancelled by the passenger.'
+              : 'Trip is no longer active.',
+          connecting: false,
+          actionInProgress: false,
+        );
+        _detachConsumer();
+        unawaited(LocalStorageService.clearActiveTripId());
+      }
+    } catch (e, st) {
+      AppLogger.w('Failed checking active trip on resume: $e\n$st');
+    }
+  }
+
   /// Driver arrived at pickup: `{"action":"reached"}`.
   void markReached() => _sendAction('reached');
 
@@ -171,12 +202,18 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
           _sendAction('accept');
         }
 
-      case TripStatusChanged(:final status):
+      case TripStatusChanged(:final status, :final message):
         AppLogger.i('Trip ${_consumer?.tripId} → ${status.name}');
         final trip = state.trip?.copyWith(status: status);
+        if (status == TripStatus.cancelled) {
+          HapticFeedback.heavyImpact();
+        }
         state = state.copyWith(
           status: status,
           trip: trip,
+          cancellationReason: (status == TripStatus.cancelled)
+              ? (message ?? state.cancellationReason)
+              : state.cancellationReason,
           connecting: false,
           actionInProgress: false,
           otpError: null,

@@ -12,7 +12,8 @@ import '../../../../domain/models/trip_model.dart';
 /// consumer code sends verbs — verified against
 /// servers/ride/consumers.py). This is the single translation point.
 TripStatus? tripStatusFromWsAction(String? action) {
-  switch (action) {
+  final a = action?.trim().toLowerCase();
+  switch (a) {
     case 'accept':
     case 'accepted':
       return TripStatus.accepted;
@@ -26,6 +27,8 @@ TripStatus? tripStatusFromWsAction(String? action) {
       return TripStatus.completed;
     case 'cancel':
     case 'cancelled':
+    case 'canceled':
+    case 'ride_cancelled':
       return TripStatus.cancelled;
     default:
       return null;
@@ -226,7 +229,8 @@ class TripStatusConsumer {
         return TripStatusChanged(
           status: status,
           raw: payload,
-          message: payload['message']?.toString(),
+          message: payload['message']?.toString() ??
+              payload['reason']?.toString(),
           otp: payload['otp']?.toString(),
           driverInfo: payload['driver_info'] is Map<String, dynamic>
               ? payload['driver_info'] as Map<String, dynamic>
@@ -234,6 +238,14 @@ class TripStatusConsumer {
           vehicleInfo: payload['vehicle_info'] is Map<String, dynamic>
               ? payload['vehicle_info'] as Map<String, dynamic>
               : null,
+        );
+      case 'trip_cancelled':
+      case 'ride_cancelled':
+        return TripStatusChanged(
+          status: TripStatus.cancelled,
+          raw: payload,
+          message: payload['message']?.toString() ??
+              payload['reason']?.toString(),
         );
       case 'trip_taken':
         return TripTakenEvent(
