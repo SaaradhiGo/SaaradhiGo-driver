@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/utils/date_range_utils.dart';
 import '../../domain/repositories/trip_history_repository.dart';
 import 'trip_history_providers.dart';
 
@@ -28,24 +29,29 @@ class TripHistoryNotifier extends Notifier<TripHistoryState> {
     );
 
     try {
+      final range = state.effectiveDateRange;
       final trips = await _repository.getDriverHistory(
         status: state.filter.toApiStatus(),
-        dateRange: state.effectiveDateRange,
+        dateRange: range,
         page: 1,
         pageSize: 10,
       );
 
-      if (trips.isEmpty) {
+      final visible = trips
+          .where((t) => tripCreatedAtWithin(t.createdAt, range))
+          .toList();
+
+      if (trips.isEmpty || visible.isEmpty) {
         state = state.copyWith(
           status: TripHistoryStatus.empty,
           trips: [],
-          hasMore: false,
+          hasMore: trips.length >= 10,
           currentPage: 1,
         );
       } else {
         state = state.copyWith(
           status: TripHistoryStatus.success,
-          trips: trips,
+          trips: visible,
           hasMore: trips.length >= 10,
           currentPage: 1,
         );
@@ -72,18 +78,23 @@ class TripHistoryNotifier extends Notifier<TripHistoryState> {
     final nextPage = state.currentPage + 1;
 
     try {
+      final range = state.effectiveDateRange;
       final moreTrips = await _repository.getDriverHistory(
         status: state.filter.toApiStatus(),
-        dateRange: state.effectiveDateRange,
+        dateRange: range,
         page: nextPage,
         pageSize: 10,
       );
+
+      final visible = moreTrips
+          .where((t) => tripCreatedAtWithin(t.createdAt, range))
+          .toList();
 
       if (moreTrips.isEmpty) {
         state = state.copyWith(hasMore: false, isLoadingMore: false);
       } else {
         state = state.copyWith(
-          trips: [...state.trips, ...moreTrips],
+          trips: [...state.trips, ...visible],
           currentPage: nextPage,
           hasMore: moreTrips.length >= 10,
           isLoadingMore: false,

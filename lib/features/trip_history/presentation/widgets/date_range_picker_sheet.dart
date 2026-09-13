@@ -39,13 +39,17 @@ class DateRangePickerSheet extends StatelessWidget {
 
   Future<void> _handleCustomDateRange(BuildContext context) async {
     final now = DateTime.now();
+    final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2023),
-      lastDate: now,
+      lastDate: todayEnd,
       initialDateRange:
           activeCustomRange ??
-          DateTimeRange(start: now.subtract(const Duration(days: 7)), end: now),
+          DateTimeRange(
+            start: now.subtract(const Duration(days: 7)),
+            end: todayEnd,
+          ),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark().copyWith(

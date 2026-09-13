@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/date_range_utils.dart';
 import '../../../../domain/models/trip_model.dart';
 
 /// Status filter for history tab.
@@ -82,19 +83,21 @@ class TripHistoryState {
         return null;
       case DateFilterPreset.today:
         final start = DateTime(now.year, now.month, now.day);
-        final end = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        final end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
         return DateTimeRange(start: start, end: end);
       case DateFilterPreset.thisWeek:
         final weekday = now.weekday; // 1 = Monday
         final start = DateTime(now.year, now.month, now.day - (weekday - 1));
-        final end = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        final end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
         return DateTimeRange(start: start, end: end);
       case DateFilterPreset.thisMonth:
         final start = DateTime(now.year, now.month, 1);
-        final end = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        final end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
         return DateTimeRange(start: start, end: end);
       case DateFilterPreset.custom:
-        return customDateRange;
+        final range = customDateRange;
+        if (range == null) return null;
+        return normalizeDateRange(range);
     }
   }
 
