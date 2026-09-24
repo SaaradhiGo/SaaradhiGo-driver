@@ -1,5 +1,5 @@
 name: saaradhigo_driver
-description: "SaaradhiGo Drive — the driver-side app for the VahanGo ride-hailing platform."
+description: "SaaradhiGo Drive — the driver-side app for the SaaradhiGo ride-hailing platform."
 publish_to: 'none'
 version: 0.1.0+1
 

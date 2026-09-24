@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   const AppTheme._();
 
-  /// VahanGo brand green. Chosen as the seed rather than hardcoding a palette
+  /// SaaradhiGo brand green. Chosen as the seed rather than hardcoding a palette
   /// so Material 3 derives contrast-correct containers for both brightnesses.
   static const Color brand = Color(0xFF00C853);
   static const Color danger = Color(0xFFD32F2F);
