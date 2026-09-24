@@ -122,47 +122,55 @@ void main() {
       return controller;
     }
 
+    // A lifecycle command is now request/response: the controller waits for the
+    // server's answer instead of firing and hoping. So the reply has to be emitted
+    // while the command is in flight -- awaiting the command first would deadlock,
+    // which is exactly what a driver app hanging on `isBusy` looked like before.
+    //
+    // These tests deliberately answer with the OLD `trip_status_update` broadcast
+    // and no `command_ack` at all. That is the compatibility proof: the app still
+    // works against a server that predates the ack protocol.
     test('arrived → start with OTP → complete follows the server', () async {
       final controller = await acceptedController();
 
-      await controller.markArrived();
+      final arriving = controller.markArrived();
       await settle();
       expect(lastSent()['action'], 'reached');
-
       channel().emit({
         'type': 'trip_status_update',
         'trip_id': 101,
         'status': 'reached',
       });
+      await arriving;
       await settle();
       expect(container.read(tripControllerProvider).trip!.status,
           TripStatus.reached);
 
-      await controller.startTrip('123456');
+      final starting = controller.startTrip('123456');
       await settle();
       expect(lastSent()['action'], 'start');
       expect(lastSent()['otp'], '123456',
           reason: 'the rider OTP is what proves the right passenger boarded');
-
       channel().emit({
         'type': 'trip_status_update',
         'trip_id': 101,
         'status': 'start',
       });
+      await starting;
       await settle();
       final started = container.read(tripControllerProvider).trip!;
       expect(started.status, TripStatus.inProgress);
       expect(started.otpVerified, isTrue);
 
-      await controller.completeTrip();
+      final completing = controller.completeTrip();
       await settle();
       expect(lastSent()['action'], 'complete');
-
       channel().emit({
         'type': 'trip_status_update',
         'trip_id': 101,
         'status': 'complete',
       });
+      await completing;
       await settle();
       final finished = container.read(tripControllerProvider);
       expect(finished.trip!.status, TripStatus.completed);
@@ -173,13 +181,13 @@ void main() {
     test('a wrong OTP surfaces inline, not as a failure banner', () async {
       final controller = await acceptedController();
 
-      await controller.startTrip('000000');
+      final starting = controller.startTrip('000000');
       await settle();
-
       channel().emit({
         'type': 'error',
         'message': 'Invalid OTP provided',
       });
+      await starting;
       await settle();
 
       final state = container.read(tripControllerProvider);
@@ -193,11 +201,11 @@ void main() {
     test('confirm_cash is sent and the payment status flips', () async {
       final controller = await acceptedController();
 
-      await controller.confirmCash();
+      final confirming = controller.confirmCash();
       await settle();
       expect(lastSent()['action'], 'confirm_cash');
-
       channel().emit({'type': 'cash_payment_confirmed', 'trip_id': 101});
+      await confirming;
       await settle();
 
       expect(container.read(tripControllerProvider).trip!.isPaid, isTrue);

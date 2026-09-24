@@ -256,6 +256,9 @@ class CommandDispatcher {
   bool _isLegacyAnswerFor(Map<String, dynamic> e, String action) {
     final type = e['type'];
     if (type == 'error') return true;
+    // `confirm_cash` has never been answered by a status broadcast; its reply is
+    // its own frame type.
+    if (type == 'cash_payment_confirmed') return action == 'confirm_cash';
     if (type != 'trip_status_update' && type != 'trip_update') return false;
     return e['status']?.toString() == action;
   }
