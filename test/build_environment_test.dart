@@ -116,12 +116,22 @@ void main() {
 
     testWidgets('the badge is hidden from screen readers', (tester) async {
       // A driver using TalkBack should not hear "QA" before every screen.
+      //
+      // Asserted against the semantics tree rather than by counting
+      // ExcludeSemantics widgets: MaterialApp ships its own, so a widget-type
+      // count would pass or fail for reasons unrelated to the badge.
+      final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         const EnvironmentBadge(
           child: MaterialApp(home: Scaffold(body: Text('content'))),
         ),
       );
-      expect(find.byType(ExcludeSemantics), findsOneWidget);
+
+      expect(find.text(AppConfig.environmentLabel), findsOneWidget,
+          reason: 'the badge is still painted');
+      expect(find.bySemanticsLabel(AppConfig.environmentLabel), findsNothing,
+          reason: 'but a screen reader must not announce it');
+      handle.dispose();
     });
   });
 }
