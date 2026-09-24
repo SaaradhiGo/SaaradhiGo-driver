@@ -49,3 +49,55 @@ jobs:
 
       - name: Test
         run: flutter test --reporter expanded
+
+  # A build is a different gate from a test.
+  #
+  # `flutter test` runs on the Dart VM and proves nothing about whether the app
+  # compiles for Android. For the app that issues trip lifecycle commands, "it
+  # compiles for a handset" is the minimum before anyone is asked to drive with
+  # it, and until now no APK had ever been produced by anything.
+  #
+  # Debug build: it needs no signing secrets, and android/app/build.gradle.kts
+  # already uses the debug signing config for release, so a "release" artifact
+  # here would be debug-signed and the name would mislead.
+  #
+  # NOTE ON PUSH NOTIFICATIONS. This app depends on firebase_messaging, but the
+  # com.google.gms.google-services plugin is commented out in
+  # android/app/build.gradle.kts because android/app/google-services.json is
+  # absent. Firebase.initializeApp() therefore throws at runtime, PushService
+  # catches it and sets _ready = false, and the app registers no FCM token. The
+  # APK this job produces builds and runs, and it CANNOT receive a background ride
+  # offer. That is a configuration gap to close before a pilot, not a build
+  # problem, and it is why this job does not pretend to verify notifications.
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Report artifact size
+        run: ls -lh build/app/outputs/flutter-apk/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: driver-debug-apk-${{ github.sha }}
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
