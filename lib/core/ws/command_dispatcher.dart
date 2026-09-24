@@ -69,6 +69,7 @@ class CommandResult {
     this.detail,
     this.attempts = 1,
     this.wasAlreadyDone = false,
+    this.viaBroadcast = false,
   });
 
   final CommandOutcome outcome;
@@ -86,6 +87,11 @@ class CommandResult {
   /// True when the server said the command had already taken effect. Useful for
   /// telemetry: a non-zero rate here means acknowledgements are being lost.
   final bool wasAlreadyDone;
+
+  /// True when this was resolved by the legacy `trip_status_update` broadcast
+  /// rather than a `command_ack`. Expected only against a server that predates
+  /// the ack protocol; a non-zero rate in production means a version skew.
+  final bool viaBroadcast;
 
   bool get isSuccess => outcome == CommandOutcome.committed;
 }
@@ -154,7 +160,7 @@ class CommandDispatcher {
       }
 
       // Subscribe BEFORE sending, or a fast server can answer into the gap.
-      final ack = _waitForAck(id);
+      final ack = _awaitAnswer(id, action);
       socket.send({'action': action, 'command_id': id, ...?extra});
 
       final frame = await ack;
@@ -169,6 +175,24 @@ class CommandDispatcher {
         }
         await _backoff(attempt);
         continue;
+      }
+
+      if (frame['type'] != 'command_ack') {
+        // A server without ack support. The broadcast (or its `error`) is the only
+        // answer available, so use it rather than hanging: this app must keep
+        // working if the server is older than it, or gets rolled back.
+        final isError = frame['type'] == 'error';
+        return CommandResult(
+          outcome:
+              isError ? CommandOutcome.rejected : CommandOutcome.committed,
+          commandId: id,
+          // The broadcast carries the verb ('complete'), not the stored status;
+          // TripStatus.parse accepts both.
+          tripStatus: frame['status']?.toString(),
+          detail: isError ? frame['message']?.toString() : null,
+          attempts: attempt,
+          viaBroadcast: true,
+        );
       }
 
       final status = frame['status']?.toString();
@@ -204,14 +228,36 @@ class CommandDispatcher {
     );
   }
 
-  /// The ack for [id], or null if [ackTimeout] passes first.
-  Future<Map<String, dynamic>?> _waitForAck(String id) {
+  /// The server's answer to this command, or null if [ackTimeout] passes first.
+  ///
+  /// Prefers a correlated `command_ack`. Falls back to the older, uncorrelated
+  /// signals -- the `trip_status_update` broadcast and the `error` frame -- so
+  /// this app still works against a server that predates the ack protocol, or one
+  /// that has been rolled back. Without that fallback, a version skew would leave
+  /// every lifecycle command hanging, which is a worse failure than the one this
+  /// class was written to fix.
+  Future<Map<String, dynamic>?> _awaitAnswer(String id, String action) {
     return socket.events
-        .where((e) =>
-            e['type'] == 'command_ack' && e['command_id']?.toString() == id)
+        .where((e) => _isAckFor(e, id) || _isLegacyAnswerFor(e, action))
         .cast<Map<String, dynamic>?>()
         .first
         .timeout(ackTimeout, onTimeout: () => null);
+  }
+
+  bool _isAckFor(Map<String, dynamic> e, String id) =>
+      e['type'] == 'command_ack' && e['command_id']?.toString() == id;
+
+  /// The pre-ack contract: a status broadcast naming this action, or an `error`.
+  ///
+  /// `error` is uncorrelated, so in principle it could belong to something else.
+  /// In practice the UI issues one command at a time on a per-trip socket, and
+  /// this is exactly how the controller behaved before the ack protocol existed,
+  /// so it is not a new risk.
+  bool _isLegacyAnswerFor(Map<String, dynamic> e, String action) {
+    final type = e['type'];
+    if (type == 'error') return true;
+    if (type != 'trip_status_update' && type != 'trip_update') return false;
+    return e['status']?.toString() == action;
   }
 
   /// True once connected, waiting up to [reconnectGrace]. [WsClient] reconnects

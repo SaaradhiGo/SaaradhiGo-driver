@@ -99,14 +99,17 @@ void main() {
     await client.connect();
     final dispatcher = CommandDispatcher(
       socket: client,
-      ackTimeout: const Duration(milliseconds: 60),
+      ackTimeout: const Duration(milliseconds: 300),
       maxAttempts: 3,
     );
 
     final pending = dispatcher.send('complete');
 
-    // Let the first attempt time out, then answer the second.
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+    // Wait for the retry to actually go out rather than guessing at the backoff.
+    final deadline = DateTime.now().add(const Duration(seconds: 5));
+    while (channel.sent.length < 2 && DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+    }
     expect(channel.sent.length, greaterThanOrEqualTo(2),
         reason: 'a timed-out command must be retried');
     final first = sentCommandId(0);
@@ -269,5 +272,110 @@ void main() {
 
     expect(result.outcome, CommandOutcome.unknown);
     expect(result.reason, 'not_connected');
+  });
+
+  group('graceful degradation against a server without ack support', () {
+    // A version skew must not leave every lifecycle command hanging. That would
+    // be a worse failure than the one the ack protocol fixes, so the old
+    // uncorrelated signals still count as answers.
+
+    test('a trip_status_update broadcast resolves the command', () async {
+      final client = buildClient();
+      addTearDown(client.dispose);
+      await client.connect();
+      final dispatcher = CommandDispatcher(
+        socket: client,
+        ackTimeout: const Duration(milliseconds: 400),
+        maxAttempts: 1,
+      );
+
+      final pending = dispatcher.send('complete');
+      await Future<void>.delayed(Duration.zero);
+
+      channel.emit({
+        'type': 'trip_status_update',
+        'trip_id': 101,
+        'status': 'complete',
+        'message': 'Trip completed',
+      });
+
+      final result = await pending;
+      expect(result.isSuccess, isTrue);
+      expect(result.viaBroadcast, isTrue,
+          reason: 'so a version skew is visible in telemetry');
+      expect(result.tripStatus, 'complete');
+    });
+
+    test('a broadcast for a DIFFERENT action does not resolve the command',
+        () async {
+      final client = buildClient();
+      addTearDown(client.dispose);
+      await client.connect();
+      final dispatcher = CommandDispatcher(
+        socket: client,
+        ackTimeout: const Duration(milliseconds: 200),
+        maxAttempts: 1,
+      );
+
+      final pending = dispatcher.send('complete');
+      await Future<void>.delayed(Duration.zero);
+
+      channel.emit({
+        'type': 'trip_status_update',
+        'trip_id': 101,
+        'status': 'reached',
+      });
+
+      final result = await pending;
+      expect(result.outcome, CommandOutcome.unknown,
+          reason: 'another trip event must not be mistaken for our answer');
+    });
+
+    test('a legacy error frame resolves as rejected', () async {
+      final client = buildClient();
+      addTearDown(client.dispose);
+      await client.connect();
+      final dispatcher = CommandDispatcher(
+        socket: client,
+        ackTimeout: const Duration(milliseconds: 400),
+        maxAttempts: 3,
+      );
+
+      final pending = dispatcher.send('start', extra: {'otp': '000000'});
+      await Future<void>.delayed(Duration.zero);
+
+      channel.emit({'type': 'error', 'message': 'Invalid OTP provided'});
+
+      final result = await pending;
+      expect(result.outcome, CommandOutcome.rejected);
+      expect(result.detail, contains('OTP'));
+      expect(channel.sent.length, 1, reason: 'a rejection is not retried');
+    });
+
+    test('a correlated ack is preferred over a broadcast', () async {
+      final client = buildClient();
+      addTearDown(client.dispose);
+      await client.connect();
+      final dispatcher = CommandDispatcher(
+        socket: client,
+        ackTimeout: const Duration(milliseconds: 400),
+        maxAttempts: 1,
+      );
+
+      final pending = dispatcher.send('complete');
+      await Future<void>.delayed(Duration.zero);
+
+      channel.emit({
+        'type': 'command_ack',
+        'command': 'complete',
+        'command_id': sentCommandId(0),
+        'status': 'committed',
+        'trip_status': 'completed',
+      });
+
+      final result = await pending;
+      expect(result.viaBroadcast, isFalse);
+      expect(result.tripStatus, 'completed');
+    });
   });
 }
