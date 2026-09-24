@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/providers.dart';
+import '../../../core/ws/command_dispatcher.dart';
 import '../../../core/ws/ws_client.dart';
 import '../../dispatch/presentation/dispatch_controller.dart';
 import '../domain/trip.dart';
@@ -66,6 +67,10 @@ class TripState {
 /// says rather than assuming success.
 class TripController extends Notifier<TripState> {
   WsClient? _socket;
+
+  /// Waits for the server's `command_ack` instead of trusting `send()`.
+  /// Created with the socket, discarded with it.
+  CommandDispatcher? _commands;
 
   /// Which trip [_socket] is currently attached to, so adopting a trip we
   /// just accepted does not tear down the very socket that carried the
@@ -194,18 +199,140 @@ class TripController extends Notifier<TripState> {
     }
   }
 
+  /// Issue a lifecycle command and wait for the server to confirm it committed.
+  ///
+  /// This used to be `socket.send(...)` followed by an open-ended wait for the
+  /// `trip_status_update` broadcast. Two things were wrong with that, and the
+  /// second is the reason a driver was once shown a finished ride whose trip was
+  /// still `in_progress`:
+  ///
+  ///   * `send()` succeeding proves only that bytes left this device. On a
+  ///     half-open socket it succeeds and the command is simply lost.
+  ///   * the broadcast is delivered over the server's channel layer, which
+  ///     silently drops messages to a busy channel. The acknowledgement for a
+  ///     command that *did* commit could be thrown away, and with no timeout we
+  ///     would sit in `isBusy` forever.
+  ///
+  /// Now we wait for a correlated `command_ack`, retry the same `command_id` on
+  /// silence, and — crucially — never claim success without one. An
+  /// unacknowledged command reconciles against durable state instead of guessing.
   Future<void> _send(String action, {Map<String, dynamic>? extra}) async {
-    final socket = _socket;
-    if (socket == null || !socket.isConnected) {
+    final dispatcher = _commands;
+    if (dispatcher == null) {
       state = state.copyWith(
         error: Exception('Not connected. Reconnecting — try again shortly.'),
       );
       return;
     }
+
     state = state.copyWith(isBusy: true, clearError: true);
-    socket.send({'action': action, ...?extra});
-    // The state change lands via the socket's own broadcast, which is also
-    // what the rider receives — one source of truth for both apps.
+    final result = await dispatcher.send(action, extra: extra);
+
+    switch (result.outcome) {
+      case CommandOutcome.committed:
+        // `already_done` lands here too, and must: it means a previous attempt of
+        // this same command committed. Treating it as an error would show a
+        // failure on a ride that had finished.
+        _applyStatus(result.tripStatus);
+        if (result.wasAlreadyDone) {
+          debugPrint(
+            'command $action was already applied server-side '
+            '(attempts=${result.attempts}) — an ack was lost',
+          );
+        }
+
+      case CommandOutcome.rejected:
+        final message = result.detail ?? 'Action failed';
+        final isOtp = (result.reason ?? '').contains('otp') ||
+            message.toLowerCase().contains('otp');
+        state = state.copyWith(
+          isBusy: false,
+          otpError: isOtp ? message : null,
+          error: isOtp ? null : Exception(message),
+        );
+        // A rejection still tells us the durable state, so stop guessing.
+        _applyStatus(result.tripStatus, clearBusy: false);
+
+      case CommandOutcome.unknown:
+        // The honest case. We do not know whether it landed, so we neither claim
+        // success nor claim failure: we re-read the trip from the server, which
+        // is durable truth, and let that decide.
+        debugPrint(
+          'command $action unacknowledged after ${result.attempts} attempts '
+          '(${result.reason}) — reconciling against the server',
+        );
+        await _reconcile();
+    }
+  }
+
+  /// Fold a server-reported durable status into local state.
+  ///
+  /// Takes the stored value (`completed`), not the verb we sent (`complete`).
+  void _applyStatus(String? statusCode, {bool clearBusy = true}) {
+    if (statusCode == null) {
+      if (clearBusy) state = state.copyWith(isBusy: false);
+      return;
+    }
+    final status = TripStatus.parse(statusCode);
+    final current = state.trip;
+    if (current == null) {
+      if (clearBusy) state = state.copyWith(isBusy: false);
+      return;
+    }
+
+    final updated = current.copyWith(
+      status: status,
+      reachedAt: status == TripStatus.reached ? DateTime.now() : null,
+      startedAt: status == TripStatus.inProgress ? DateTime.now() : null,
+      completedAt: status == TripStatus.completed ? DateTime.now() : null,
+      cancelledAt: status == TripStatus.cancelled ? DateTime.now() : null,
+      otpVerified: status == TripStatus.inProgress ? true : null,
+    );
+
+    state = state.copyWith(
+      trip: updated,
+      isBusy: clearBusy ? false : null,
+      clearError: true,
+      clearOtpError: true,
+      justCompleted: status == TripStatus.completed,
+    );
+    unawaited(
+      ref.read(localStoreProvider).writeTripSnapshot(updated.toJson()),
+    );
+  }
+
+  /// Ask the server what is actually true.
+  ///
+  /// Used when a command went unacknowledged. PostgreSQL wins over anything this
+  /// app believes, so a completion that committed is discovered rather than
+  /// retried, and one that did not is left retryable.
+  Future<void> _reconcile() async {
+    try {
+      final trip = await ref.read(tripRepositoryProvider).fetchActiveTrip();
+      if (trip == null) {
+        // No active trip means it reached a terminal state. Do not invent which.
+        state = state.copyWith(isBusy: false);
+        return;
+      }
+      state = state.copyWith(
+        trip: trip,
+        isBusy: false,
+        clearError: true,
+        justCompleted: trip.status == TripStatus.completed,
+      );
+      unawaited(
+        ref.read(localStoreProvider).writeTripSnapshot(trip.toJson()),
+      );
+    } on Object catch (e) {
+      state = state.copyWith(
+        isBusy: false,
+        error: Exception(
+          'Could not confirm the last action. Check your connection and '
+          'refresh before retrying.',
+        ),
+      );
+      debugPrint('reconcile failed: $e');
+    }
   }
 
   Future<void> _openSocket(int tripId) async {
@@ -222,6 +349,7 @@ class TripController extends Notifier<TripState> {
       },
     );
     _socket = socket;
+    _commands = CommandDispatcher(socket: socket);
     _socketTripId = tripId;
     _eventSub = socket.events.listen(_onEvent);
     _statusSub = socket.status.listen((ws) {
@@ -306,6 +434,7 @@ class TripController extends Notifier<TripState> {
 
   Future<void> _closeSocket() async {
     _socketTripId = null;
+    _commands = null;
     await _eventSub?.cancel();
     _eventSub = null;
     await _statusSub?.cancel();
