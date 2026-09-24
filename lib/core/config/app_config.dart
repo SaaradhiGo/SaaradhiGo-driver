@@ -9,18 +9,82 @@
 /// Build with:
 ///   flutter build apk --dart-define=API_BASE_URL=https://api.saaradhigo.in/api/v1 \
 ///                     --dart-define=WS_BASE_URL=wss://api.saaradhigo.in/ws
+///
+/// A RELEASE build that omits those, or that points at a dev/staging/localhost
+/// host, refuses to start and says why -- see [misconfiguration]. Previously the
+/// defaults pointed at QA, so a forgotten flag shipped a store build talking to
+/// test data, with nothing in the app to indicate it. Debug builds keep the QA
+/// fallback so local development needs no flags.
 class AppConfig {
   const AppConfig._();
 
-  static const String apiBaseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://dev.api.saaradhigo.in/api/v1',
-  );
+  /// Raw build-time values. Empty when the build did not supply them, which is
+  /// the case this class exists to catch.
+  static const String _rawApiBaseUrl = String.fromEnvironment('API_BASE_URL');
+  static const String _rawWsBaseUrl = String.fromEnvironment('WS_BASE_URL');
 
-  static const String wsBaseUrl = String.fromEnvironment(
-    'WS_BASE_URL',
-    defaultValue: 'wss://dev.api.saaradhigo.in/ws',
-  );
+  /// Convenience fallbacks for DEBUG builds only.
+  ///
+  /// A developer running `flutter run` with no flags should get the QA stack, not
+  /// an error. A release build gets no such courtesy -- see [misconfiguration].
+  static const String _devApiBaseUrl = 'https://dev.api.saaradhigo.in/api/v1';
+  static const String _devWsBaseUrl = 'wss://dev.api.saaradhigo.in/ws';
+
+  static String get apiBaseUrl =>
+      _rawApiBaseUrl.isNotEmpty ? _rawApiBaseUrl : (isProduction ? '' : _devApiBaseUrl);
+
+  static String get wsBaseUrl =>
+      _rawWsBaseUrl.isNotEmpty ? _rawWsBaseUrl : (isProduction ? '' : _devWsBaseUrl);
+
+  /// Hosts that must never appear in a release build.
+  ///
+  /// Shipping a store build that talks to QA is worse than shipping one that does
+  /// not start: real drivers would accept real-looking rides against test data,
+  /// and nothing in the app would say so.
+  static const List<String> _nonProductionMarkers = <String>[
+    'dev.',
+    'staging.',
+    'qa.',
+    'localhost',
+    '127.0.0.1',
+    '10.0.2.2',
+  ];
+
+  /// Why this build must refuse to start, or null when it is configured sanely.
+  ///
+  /// Only ever non-null for a RELEASE build. Debug builds are left alone so local
+  /// development does not need flags.
+  static String? get misconfiguration {
+    if (!isProduction) return null;
+    if (_rawApiBaseUrl.isEmpty || _rawWsBaseUrl.isEmpty) {
+      return 'This release build was compiled without API_BASE_URL and '
+          'WS_BASE_URL. Rebuild with --dart-define for the target environment.';
+    }
+    final offending = _nonProductionMarkers.where(
+      (m) => _rawApiBaseUrl.contains(m) || _rawWsBaseUrl.contains(m),
+    );
+    if (offending.isNotEmpty) {
+      return 'This release build points at a non-production host '
+          '("${offending.first}"). Rebuild with the production URLs.';
+    }
+    return null;
+  }
+
+  /// Short label for the environment, shown on any build that is not production.
+  ///
+  /// A QA build in somebody's hand should be identifiable without asking.
+  static String get environmentLabel {
+    if (_rawApiBaseUrl.isEmpty) return isProduction ? 'UNCONFIGURED' : 'LOCAL/QA';
+    for (final marker in _nonProductionMarkers) {
+      if (_rawApiBaseUrl.contains(marker)) {
+        return marker == 'dev.' ? 'QA' : marker.replaceAll('.', '').toUpperCase();
+      }
+    }
+    return 'PRODUCTION';
+  }
+
+  /// True when this build should wear a visible environment badge.
+  static bool get showEnvironmentBadge => environmentLabel != 'PRODUCTION';
 
   /// How often the app pushes a location frame while on duty.
   ///
