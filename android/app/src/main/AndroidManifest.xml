@@ -43,10 +43,16 @@
              server-side Maps key used by the backend proxy. It must be
              restricted in Google Cloud Console to this package name plus the
              release signing SHA-1, which is what makes shipping it in the
-             APK acceptable. Injected at build time:
-               flutter build apk --dart-define=... \
-                 -Pmaps.apiKey=AIza...
-             so the key is never committed. -->
+             APK acceptable. Injected at build time via a Gradle property
+             (see android/app/build.gradle.kts), so it is never committed.
+
+             CAUTION: a double hyphen is illegal inside an XML comment. This
+             block used to spell out an example flutter build command that
+             contained one, which made the whole manifest unparseable. Every
+             APK build failed with ManifestMerger2 "Error parsing
+             AndroidManifest.xml", and nothing else caught it because
+             flutter test and flutter analyze never read this file. Keep
+             example command lines out of here. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}"/>
