@@ -121,6 +121,46 @@ class AuthController extends Notifier<AuthState> {
     }
   }
 
+  /// Email + password sign-in.
+  ///
+  /// Mirrors [verifyOtp]: on success the state becomes signedIn with the
+  /// user, on failure the error is kept for the screen to render. Returns
+  /// false and leaves the error in state rather than throwing, because the
+  /// login screen is the only caller and it has to show something either way.
+  Future<bool> emailLogin({
+    required String email,
+    required String password,
+    String? mfaCode,
+  }) async {
+    state = state.copyWith(isBusy: true, clearError: true);
+    try {
+      final user = await ref.read(authRepositoryProvider).emailLogin(
+            email: email,
+            password: password,
+            mfaCode: mfaCode,
+          );
+      state = AuthState(status: AuthStatus.signedIn, user: user);
+      return true;
+    } on Object catch (e) {
+      state = state.copyWith(isBusy: false, error: e);
+      return false;
+    }
+  }
+
+  /// Ask for a password-reset link. True means the request was accepted; it
+  /// never reveals whether an account exists.
+  Future<bool> requestPasswordReset(String email) async {
+    state = state.copyWith(isBusy: true, clearError: true);
+    try {
+      await ref.read(authRepositoryProvider).requestPasswordReset(email);
+      state = state.copyWith(isBusy: false);
+      return true;
+    } on Object catch (e) {
+      state = state.copyWith(isBusy: false, error: e);
+      return false;
+    }
+  }
+
   Future<void> signOut() async {
     state = state.copyWith(isBusy: true);
     await ref.read(authRepositoryProvider).logout();

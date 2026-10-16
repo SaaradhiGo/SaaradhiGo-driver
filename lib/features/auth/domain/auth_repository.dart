@@ -18,6 +18,16 @@ abstract class AuthRepository {
     String? deviceToken,
   });
 
+  /// Email + password sign-in. `mfaCode` is only needed by an operator.
+  Future<AuthUser> emailLogin({
+    required String email,
+    required String password,
+    String? mfaCode,
+  });
+
+  /// Ask for a password-reset link. Reveals nothing about the address.
+  Future<void> requestPasswordReset(String email);
+
   Future<AuthUser> fetchProfile();
 
   Future<AuthUser> updateProfile({String? fullName, String? email});

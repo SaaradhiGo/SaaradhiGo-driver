@@ -141,12 +141,40 @@ class FakeAuthRepository implements AuthRepository {
   String? lastOtpPhone;
   int logoutCount = 0;
 
+  // Email auth. Recorded so a test can assert what was sent, and scriptable
+  // so a test can drive the failure branches.
+  String? lastEmailLoginEmail;
+  String? lastEmailLoginPassword;
+  String? lastEmailLoginMfaCode;
+  String? lastPasswordResetEmail;
+  Object? emailLoginError;
+
   static const user = AuthUser(
     id: 7,
     phoneNumber: '+919999000001',
     fullName: 'Test Driver',
     role: 'driver',
   );
+
+  @override
+  Future<AuthUser> emailLogin({
+    required String email,
+    required String password,
+    String? mfaCode,
+  }) async {
+    lastEmailLoginEmail = email;
+    lastEmailLoginPassword = password;
+    lastEmailLoginMfaCode = mfaCode;
+    final error = emailLoginError;
+    if (error != null) throw error;
+    signedIn = true;
+    return user;
+  }
+
+  @override
+  Future<void> requestPasswordReset(String email) async {
+    lastPasswordResetEmail = email;
+  }
 
   @override
   Future<void> requestOtp(String phoneNumber) async {

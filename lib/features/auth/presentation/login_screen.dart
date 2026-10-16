@@ -15,14 +15,75 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
+/// Which credential the driver is using.
+///
+/// Mobile + OTP stays the default: it is what a driver partner has, it needs
+/// no password, and it is the only route that can create an account. Email is
+/// for a driver who has set a password, and for QA accounts that must be
+/// reachable without waiting on SMS delivery.
+enum LoginMode { mobile, email }
+
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _controller = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  LoginMode _mode = LoginMode.mobile;
+  bool _showPassword = false;
 
   @override
   void dispose() {
     _controller.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitEmail() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    FocusScope.of(context).unfocus();
+
+    final ok = await ref.read(authControllerProvider.notifier).emailLogin(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+
+    if (!mounted) return;
+    if (ok) {
+      // Straight to the app: the password WAS the proof, so there is no OTP
+      // step to go through.
+      context.go(Routes.home);
+      return;
+    }
+    final error = ref.read(authControllerProvider).error;
+    if (error != null) showErrorSnack(context, error);
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter your email address first, then tap again'),
+        ),
+      );
+      return;
+    }
+
+    await ref.read(authControllerProvider.notifier)
+        .requestPasswordReset(email);
+    if (!mounted) return;
+
+    // The same message whatever the server found -- it deliberately does not
+    // confirm whether an account exists.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'If that address belongs to an account, we have sent a reset link.',
+        ),
+      ),
+    );
   }
 
   /// The backend stores and matches E.164. Accepting a bare 10-digit number
@@ -96,40 +157,134 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Sign in with the mobile number registered with your '
-                  'driver account.',
+                  _mode == LoginMode.mobile
+                      ? 'Sign in with the mobile number registered with your '
+                          'driver account.'
+                      : 'Sign in with the email address and password on your '
+                          'driver account.',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 32),
-                TextFormField(
-                  controller: _controller,
-                  autofocus: true,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(12),
+                const SizedBox(height: 24),
+
+                // Mobile | Email. Mobile first and default.
+                SegmentedButton<LoginMode>(
+                  key: const Key('login_mode_tabs'),
+                  segments: const [
+                    ButtonSegment(
+                      value: LoginMode.mobile,
+                      label: Text('Mobile'),
+                      icon: Icon(Icons.sms_outlined, size: 18),
+                    ),
+                    ButtonSegment(
+                      value: LoginMode.email,
+                      label: Text('Email'),
+                      icon: Icon(Icons.alternate_email, size: 18),
+                    ),
                   ],
-                  validator: _validate,
-                  onFieldSubmitted: (_) => _submit(),
-                  decoration: const InputDecoration(
-                    labelText: 'Mobile number',
-                    prefixText: '+91  ',
-                    hintText: '9XXXXXXXXX',
-                  ),
+                  selected: {_mode},
+                  onSelectionChanged: (selection) => setState(() {
+                    _mode = selection.first;
+                    // The form holds different fields per mode, so a
+                    // validation error from the other one must not linger.
+                    _formKey.currentState?.reset();
+                  }),
                 ),
                 const SizedBox(height: 24),
+
+                if (_mode == LoginMode.mobile)
+                  TextFormField(
+                    key: const Key('login_phone_field'),
+                    controller: _controller,
+                    autofocus: true,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(12),
+                    ],
+                    validator: _validate,
+                    onFieldSubmitted: (_) => _submit(),
+                    decoration: const InputDecoration(
+                      labelText: 'Mobile number',
+                      prefixText: '+91  ',
+                      hintText: '9XXXXXXXXX',
+                    ),
+                  ),
+
+                if (_mode == LoginMode.email) ...[
+                  TextFormField(
+                    key: const Key('login_email_field'),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    validator: (value) {
+                      final text = (value ?? '').trim();
+                      if (text.isEmpty) return 'Enter your email address';
+                      if (!text.contains('@') || !text.contains('.')) {
+                        return 'That does not look like an email address';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      hintText: 'you@example.com',
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    key: const Key('login_password_field'),
+                    controller: _passwordController,
+                    obscureText: !_showPassword,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _submitEmail(),
+                    validator: (value) => (value ?? '').isEmpty
+                        ? 'Enter your password'
+                        : null,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        key: const Key('login_password_visibility'),
+                        onPressed: () =>
+                            setState(() => _showPassword = !_showPassword),
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      key: const Key('login_forgot_password'),
+                      onPressed: auth.isBusy ? null : _forgotPassword,
+                      child: const Text('Forgot password?'),
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: auth.isBusy ? null : _submit,
+                  key: const Key('login_submit'),
+                  onPressed: auth.isBusy
+                      ? null
+                      : (_mode == LoginMode.mobile ? _submit : _submitEmail),
                   child: auth.isBusy
                       ? const SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(strokeWidth: 2.4),
                         )
-                      : const Text('Send OTP'),
+                      : Text(_mode == LoginMode.mobile
+                          ? 'Send OTP'
+                          : 'Sign in'),
                 ),
                 const SizedBox(height: 20),
                 Text(

@@ -10,6 +10,10 @@ class ApiEndpoints {
   // --- auth (servers/auth_user/urls.py) ---
   static const String requestOtp = '/auth/otp/';
   static const String login = '/auth/login/';
+
+  // Email + password. Additive: phone + OTP above is unchanged.
+  static const String emailLogin = '/auth/email/login/';
+  static const String passwordForgot = '/auth/password/forgot/';
   static const String refresh = '/auth/refresh/';
   static const String logout = '/auth/logout/';
   static const String userProfile = '/auth/profile/';

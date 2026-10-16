@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import '../storage/token_store.dart';
 import 'api_endpoints.dart';
+import '../../features/auth/data/auth_repository_impl.dart'
+    show readTokenPair;
 import 'api_exception.dart';
 
 /// Called when the refresh token is dead and the driver has to sign in again.
@@ -121,8 +123,12 @@ class ApiClient {
       );
 
       final body = unwrap(response.data);
-      final access = body?['access'] as String?;
-      final newRefresh = body?['refresh'] as String?;
+      // Same contract mismatch as login had: the server sends `token` and
+      // `refresh_token`, so reading `access`/`refresh` meant every refresh
+      // silently failed and every session died after 15 minutes.
+      final tokens = readTokenPair(body);
+      final access = tokens.access;
+      final newRefresh = tokens.refresh;
       if (access == null || access.isEmpty) return null;
 
       await _tokenStore.write(access: access, refresh: newRefresh);

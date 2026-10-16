@@ -40,19 +40,60 @@ class AuthRepositoryImpl implements AuthRepository {
       skipAuth: true,
     );
 
-    final access = data['access'] as String?;
-    final refresh = data['refresh'] as String?;
-    if (access == null || access.isEmpty) {
+    final tokens = readTokenPair(data);
+    if (tokens.access == null) {
       throw const _AuthContractException(
         'Login succeeded but no token was returned.',
       );
     }
-    await _tokenStore.write(access: access, refresh: refresh);
+    await _tokenStore.write(access: tokens.access!, refresh: tokens.refresh);
 
     final userJson = data['user'];
     return userJson is Map<String, dynamic>
         ? AuthUser.fromJson(userJson)
         : await fetchProfile();
+  }
+
+  @override
+  Future<AuthUser> emailLogin({
+    required String email,
+    required String password,
+    String? mfaCode,
+  }) async {
+    final data = await _api.post(
+      ApiEndpoints.emailLogin,
+      body: {
+        'email': email,
+        'password': password,
+        'mfa_code': ?mfaCode,
+      },
+      skipAuth: true,
+    );
+
+    final tokens = readTokenPair(data);
+    if (tokens.access == null) {
+      throw const _AuthContractException(
+        'Sign-in succeeded but no token was returned.',
+      );
+    }
+    await _tokenStore.write(access: tokens.access!, refresh: tokens.refresh);
+
+    final userJson = data['user'];
+    return userJson is Map<String, dynamic>
+        ? AuthUser.fromJson(userJson)
+        : await fetchProfile();
+  }
+
+  @override
+  Future<void> requestPasswordReset(String email) async {
+    // The server answers 200 with the same message for every address, so
+    // there is nothing to branch on and nothing to report back beyond "the
+    // request was accepted".
+    await _api.post(
+      ApiEndpoints.passwordForgot,
+      body: {'email': email},
+      skipAuth: true,
+    );
   }
 
   @override
@@ -101,4 +142,38 @@ class _AuthContractException implements Exception {
   final String message;
   @override
   String toString() => message;
+}
+
+/// Pull the access/refresh pair out of an auth response.
+///
+/// THE DEFECT THIS FIXES
+/// ---------------------
+/// This app read `data['access']` and `data['refresh']`. The backend returns
+/// `token` and `refresh_token` (see `servers/auth_user/views.py` — the login
+/// response is `{'token', 'refresh_token', 'user'}` and the refresh response
+/// is `{'token', 'refresh_token'}`).
+///
+/// So `verifyOtp` always threw "Login succeeded but no token was returned."
+/// and the refresh interceptor always failed silently. **No driver could sign
+/// in with this build at all**, and nothing caught it: the unit tests used
+/// their own fixtures with the wrong key names, and `flutter analyze` cannot
+/// see an API contract.
+///
+/// Both spellings are accepted so the app keeps working if the server ever
+/// adds the shorter aliases, but `token`/`refresh_token` is what it sends
+/// today and is what the tests pin.
+({String? access, String? refresh}) readTokenPair(Map<String, dynamic>? data) {
+  if (data == null) return (access: null, refresh: null);
+  String? pick(List<String> keys) {
+    for (final key in keys) {
+      final value = data[key];
+      if (value is String && value.isNotEmpty) return value;
+    }
+    return null;
+  }
+
+  return (
+    access: pick(['token', 'access', 'access_token']),
+    refresh: pick(['refresh_token', 'refresh']),
+  );
 }
