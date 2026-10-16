@@ -252,6 +252,29 @@ class _KycCard extends StatelessWidget {
                 value: Fmt.duration(profile.lockoutRemaining!),
                 valueColor: AppTheme.warning,
               ),
+
+            // The way out of "Documents needed".
+            //
+            // This card used to be read-only: it said "Not uploaded" and the
+            // app offered no way to change that, so a driver could be
+            // onboarded exactly as far as a permanent block. The backend has
+            // accepted document uploads all along.
+            if (profile.kycState != KycState.approved) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const Key('profile_upload_documents'),
+                  onPressed: () => context.push(Routes.kycDocuments),
+                  icon: const Icon(Icons.upload_file, size: 18),
+                  label: Text(
+                    profile.hasLicense
+                        ? 'Update my documents'
+                        : 'Upload my documents',
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -268,12 +291,26 @@ class _VehicleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final v = vehicle;
     if (v == null) {
-      return const Card(
+      return Card(
         child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            'No active vehicle. You cannot go online until a vehicle is '
-            'added and activated on your account.',
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'No active vehicle. You cannot go online until a vehicle is '
+                'added and approved on your account.',
+              ),
+              const SizedBox(height: 12),
+              // Previously a dead end: the message named the blocker and the
+              // app had no screen that could clear it.
+              FilledButton.icon(
+                key: const Key('profile_add_vehicle'),
+                onPressed: () => context.push(Routes.kycVehicle),
+                icon: const Icon(Icons.directions_car, size: 18),
+                label: const Text('Add my vehicle'),
+              ),
+            ],
           ),
         ),
       );

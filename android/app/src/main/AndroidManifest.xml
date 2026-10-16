@@ -85,6 +85,26 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Android 14+ foreground service type.
+             MANDATORY from API 34: startForeground() for a location service
+             whose manifest declares no `foregroundServiceType` throws
+             MissingForegroundServiceTypeException and the app crashes. The
+             flutter_background_service plugin declares the service but NOT
+             the type (see flutter_background_service_android's own manifest),
+             so the app has to add it. The rider app already did; this one did
+             not, which means going on duty crashed the driver app on any
+             Android 14 phone.
+
+             Declared with the same name the plugin uses, so the manifest
+             merger adds the attribute to the plugin's own declaration rather
+             than creating a second service. -->
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"
+            android:stopWithTask="false"
+        />
     </application>
 
     <queries>

@@ -9,6 +9,8 @@ import '../features/auth/presentation/splash_screen.dart';
 import '../features/earnings/presentation/earnings_screen.dart';
 import '../features/history/presentation/history_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/kyc/presentation/document_upload_screen.dart';
+import '../features/kyc/presentation/vehicle_registration_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/safety/presentation/safety_screen.dart';
 import '../features/safety/presentation/support_screen.dart';
@@ -32,6 +34,12 @@ class Routes {
   static const safety = '/safety';
   static const support = '/support';
   static const settings = '/settings';
+
+  // KYC. Two steps: the driver's own documents, then the vehicle and its
+  // papers. Reachable from the profile screen, which is where a driver who
+  // cannot go online is told why.
+  static const kycDocuments = '/kyc/documents';
+  static const kycVehicle = '/kyc/vehicle';
 }
 
 /// Bridges a Riverpod provider to GoRouter's `refreshListenable`.
@@ -110,6 +118,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.profile,
         builder: (_, _) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: Routes.kycDocuments,
+        builder: (_, _) => const DocumentUploadScreen(),
+      ),
+      GoRoute(
+        path: Routes.kycVehicle,
+        builder: (_, _) => const VehicleRegistrationScreen(),
       ),
       GoRoute(
         path: Routes.safety,

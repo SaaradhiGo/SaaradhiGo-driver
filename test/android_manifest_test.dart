@@ -69,6 +69,64 @@ void main() {
     expect(declared, contains('android.permission.INTERNET'));
   });
 
+  test('the background location service declares a foregroundServiceType', () {
+    // Android 14 (API 34) requirement. startForeground() for a location
+    // service whose manifest declares no type throws
+    // MissingForegroundServiceTypeException, so the driver app crashed the
+    // moment a driver went on duty on a modern phone.
+    //
+    // flutter_background_service declares the <service> but not the type, so
+    // the app must add it. This is the kind of defect that cannot be caught by
+    // `flutter test` on a Dart VM or by `flutter analyze`, and an APK build
+    // succeeds with it -- only a device shows it. Hence a text assertion.
+    final doc = XmlDocument.parse(manifest.readAsStringSync());
+    final services = doc.findAllElements('service').toList();
+
+    final background = services.where(
+      (e) => (e.getAttribute('android:name') ?? '')
+          .endsWith('flutter_background_service.BackgroundService'),
+    );
+
+    expect(
+      background,
+      isNotEmpty,
+      reason: 'the app must declare the plugin service so it can add the '
+          'Android 14 foregroundServiceType attribute',
+    );
+    expect(
+      background.first.getAttribute('android:foregroundServiceType'),
+      'location',
+      reason: 'without foregroundServiceType="location" going on duty throws '
+          'MissingForegroundServiceTypeException on Android 14+',
+    );
+  });
+
+  test('the permissions that foreground location needs are declared', () {
+    final doc = XmlDocument.parse(manifest.readAsStringSync());
+    final declared = doc
+        .findAllElements('uses-permission')
+        .map((e) => e.getAttribute('android:name'))
+        .whereType<String>()
+        .toSet();
+
+    // All three are required together on API 34: the type in the service
+    // declaration is checked against a matching FOREGROUND_SERVICE_* grant.
+    expect(declared, contains('android.permission.FOREGROUND_SERVICE'));
+    expect(declared,
+        contains('android.permission.FOREGROUND_SERVICE_LOCATION'));
+    expect(declared, contains('android.permission.ACCESS_BACKGROUND_LOCATION'));
+  });
+
+  test('no API key or password is committed in the manifest', () {
+    final text = manifest.readAsStringSync();
+    // The rider app shipped a literal AIza... Maps key in its manifest from
+    // the initial commit. Keys belong in a Gradle placeholder fed by a secret.
+    expect(text, isNot(contains('AIza')),
+        reason: 'a Google API key is committed in the manifest');
+    expect(text.toLowerCase(), isNot(matches(RegExp(r'password\s*='))),
+        reason: 'a password appears in the manifest');
+  });
+
   test('a manifest placeholder is supplied by Gradle', () {
     // The manifest references ${MAPS_API_KEY}. An unsupplied placeholder is a
     // build failure, so the two files have to agree.
