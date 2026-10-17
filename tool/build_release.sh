@@ -40,8 +40,8 @@
 set -euo pipefail
 
 PROD_API="https://api.saaradhigo.in/api/v1/"
-PROD_WS="wss://api.saaradhigo.in/ws"
-QA_API="https://dev.api.saaradhigo.in/"
+PROD_WS="wss://api.saaradhigo.in/"
+QA_API="https://dev.api.saaradhigo.in/api/v1/"
 QA_WS="wss://dev.api.saaradhigo.in/"
 
 TARGET="${1:-}"
