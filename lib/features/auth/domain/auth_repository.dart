@@ -5,17 +5,65 @@ import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/app_logger.dart';
+import '../../../../core/notifications/push_providers.dart';
 import '../../../../domain/models/user_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);
-  return AuthRepository(dioClient);
+  final registrar = ref.watch(pushRegistrarProvider);
+  return AuthRepository(
+    dioClient,
+    deviceTokenReader: registrar.deviceTokenForLogin,
+    onSessionEnded: registrar.clearLocalToken,
+  );
 });
 
 class AuthRepository {
   final DioClient _dioClient;
 
-  AuthRepository(this._dioClient);
+  /// The FCM token for this device, or null when push is unavailable.
+  ///
+  /// Injected rather than reached for, because `firebase_messaging` throws
+  /// `MissingPluginException` under `flutter test` -- so a repository that
+  /// called it directly could not be tested at all.
+  final Future<String?> Function()? _deviceTokenReader;
+
+  /// Runs when the session ends, to drop this install's push token.
+  final Future<void> Function()? _onSessionEnded;
+
+  AuthRepository(
+    this._dioClient, {
+    Future<String?> Function()? deviceTokenReader,
+    Future<void> Function()? onSessionEnded,
+  }) : _deviceTokenReader = deviceTokenReader,
+       _onSessionEnded = onSessionEnded;
+
+  /// The login body, with `device_token` present only when there is a real
+  /// one to send.
+  ///
+  /// This used to hard-code `'device_token': 'dummy_device_token'`, which the
+  /// backend stored verbatim. Every driver row then held a token that could
+  /// never receive anything, while dispatch's filter -- `if
+  /// getattr(r.user_id, 'fcm_token', None)` -- counted them as push-capable
+  /// and queued a message for each. Omitting the key is strictly better: the
+  /// login view only writes `fcm_token` when one is supplied, so a login
+  /// without push leaves a previously good token alone.
+  Future<Map<String, dynamic>> _withDeviceToken(
+    Map<String, dynamic> body,
+  ) async {
+    final reader = _deviceTokenReader;
+    if (reader == null) return body;
+    try {
+      final token = await reader();
+      if (token != null && token.isNotEmpty) {
+        return {...body, 'device_token': token};
+      }
+    } catch (e) {
+      // Push registration must never be able to fail a login.
+      AppLogger.w('Could not read a device token for login: $e');
+    }
+    return body;
+  }
 
   Future<void> requestOtp(String phoneNumber) async {
     try {
@@ -40,13 +88,12 @@ class AuthRepository {
   Future<UserModel?> verifyOtp(String phoneNumber, String otp) async {
     try {
       final responseData = await _dioClient.request(
-        () => _dioClient.dio.post(
+        () async => _dioClient.dio.post(
           ApiEndpoints.login,
-          data: {
+          data: await _withDeviceToken({
             'phone_number': phoneNumber,
             'otp': otp,
-            'device_token': 'dummy_device_token',
-          },
+          }),
         ),
       );
 
@@ -75,9 +122,9 @@ class AuthRepository {
   }) async {
     try {
       final responseData = await _dioClient.request(
-        () => _dioClient.dio.post(
+        () async => _dioClient.dio.post(
           ApiEndpoints.emailLogin,
-          data: {'email': email, 'password': password},
+          data: await _withDeviceToken({'email': email, 'password': password}),
         ),
       );
 
@@ -142,6 +189,20 @@ class AuthRepository {
     } catch (e) {
       AppLogger.w('Server-side logout did not complete; clearing locally', e);
     }
+
+    // Drop this install's push token. `POST /auth/logout/` clears the
+    // server's copy, which is the half that stops dispatch addressing this
+    // handset; this is the device half, and it runs even when the call above
+    // failed -- a driver with no signal still ends their session completely.
+    final onSessionEnded = _onSessionEnded;
+    if (onSessionEnded != null) {
+      try {
+        await onSessionEnded();
+      } catch (e) {
+        AppLogger.w('Could not clear the local push token at logout', e);
+      }
+    }
+
     await SecureStorageService.clearTokens();
   }
 
