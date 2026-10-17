@@ -55,6 +55,11 @@ class ApiEndpoints {
 
   // Ride Execution
   static const String activeTrip = '/ride/active/';
+
+  // Rate a completed trip. Drivers rate riders, riders rate drivers; the
+  // server enforces one rating per user per trip. Live the whole time and
+  // called by neither app, so every average sat at its default.
+  static const String rateTrip = '/ride/rate-trip/';
   static const String tripHistory = '/ride/driver-history/';
   static String tripDetails(String tripId) => '/ride/trip/$tripId/';
   static String driverCancelTrip(String tripId) =>

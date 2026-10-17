@@ -8,6 +8,7 @@ import '../../data/repositories/trip_repository_impl.dart';
 import '../../domain/repositories/trip_repository.dart';
 import 'trip_session_notifier.dart';
 import 'trip_session_state.dart';
+import '../../data/data_sources/rating_remote_data_source.dart';
 
 export 'trip_session_state.dart';
 
@@ -31,6 +32,11 @@ final tripStatusConsumerFactoryProvider = Provider<TripStatusConsumerFactory>((
     tripId: tripId,
     tokenReader: SecureStorageService.getAccessToken,
   );
+});
+
+/// Rating a passenger on a completed trip.
+final ratingRemoteDataSourceProvider = Provider<RatingRemoteDataSource>((ref) {
+  return RatingRemoteDataSourceImpl(ref.watch(dioClientProvider).dio);
 });
 
 final tripSessionNotifierProvider =
