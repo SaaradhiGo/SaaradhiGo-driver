@@ -28,6 +28,12 @@ class AuthVerifyingOtp extends AuthState {
   const AuthVerifyingOtp({required this.phoneNumber});
 }
 
+/// Email + password is in flight. A separate state from the OTP ones because
+/// the UI shows a different form and must not light up the OTP spinner.
+class AuthSigningIn extends AuthState {
+  const AuthSigningIn();
+}
+
 class AuthAuthenticated extends AuthState {
   final UserModel? user;
   const AuthAuthenticated({this.user});
