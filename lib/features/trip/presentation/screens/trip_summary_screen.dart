@@ -10,6 +10,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../earnings/presentation/widgets/cash_collection_dialog.dart';
 import '../providers/trip_providers.dart';
+import '../widgets/rate_passenger_sheet.dart';
 
 /// State `completed` — post-drop-off confirmation and earnings. For a cash trip
 /// the driver must confirm collection (`{"action":"confirm_cash"}`) before
@@ -25,6 +26,22 @@ class TripSummaryScreen extends ConsumerStatefulWidget {
 
 class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
   bool _promptShown = false;
+  bool _rated = false;
+
+  Future<void> _ratePassenger() async {
+    final rated = await showRatePassengerSheet(
+      context,
+      tripId: trip.id,
+      riderName: trip.riderName,
+    );
+    if (!mounted) return;
+    if (rated) {
+      setState(() => _rated = true);
+      ScaffoldMessenger.maybeOf(
+        context,
+      )?.showSnackBar(const SnackBar(content: Text('Thanks — rating saved.')));
+    }
+  }
 
   TripModel get trip => widget.trip;
 
@@ -143,6 +160,17 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
                 _cashReminder(),
               ],
               const Spacer(),
+              // Rating the passenger. The only record that a rider was
+              // abusive or kept the driver waiting, and the input an
+              // operator needs to act on a pattern. Offered as an action
+              // rather than a modal: a driver with the next ride waiting
+              // must not be held on this screen.
+              if (!_rated)
+                SecondaryButton(
+                  text: 'RATE PASSENGER',
+                  onPressed: _ratePassenger,
+                ),
+              if (!_rated) const SizedBox(height: AppSpacing.sm),
               if (needsCash)
                 PrimaryButton(
                   text: 'CONFIRM CASH COLLECTED',
