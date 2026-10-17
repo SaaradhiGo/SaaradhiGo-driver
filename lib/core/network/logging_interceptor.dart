@@ -3,6 +3,32 @@ import 'package:dio/dio.dart';
 import '../utils/app_logger.dart';
 
 class LoggingInterceptor extends Interceptor {
+  /// Key-name SUBSTRINGS that mark a value as not loggable.
+  ///
+  /// Exact enumeration is what failed here. The list below had
+  /// `device_token` but not `fcm_token`, so when the app started PATCHing
+  /// `{'fcm_token': ...}` to /auth/update/ to register a rotated push token,
+  /// that body was logged in full. A device token is a credential: anyone
+  /// holding one can push to that handset.
+  ///
+  /// The backend's `base/logging_filters.py` already matches by substring for
+  /// exactly this reason -- "exact enumeration would inevitably miss one" --
+  /// so this mirrors it rather than inventing a second policy.
+  static const _sensitiveKeySubstrings = {
+    'token',
+    'secret',
+    'password',
+    'passwd',
+    'authorization',
+    'otp',
+    'jwt',
+    'api_key',
+    'apikey',
+    'credential',
+    'signature',
+    'cvv',
+  };
+
   static const _sensitiveKeys = {
     'authorization',
     'access_token',
@@ -24,13 +50,23 @@ class LoggingInterceptor extends Interceptor {
     'signature',
   };
 
+  /// True when a key's name marks its value as not loggable.
+  static bool isSensitiveKey(String key) {
+    final lower = key.toLowerCase();
+    if (_sensitiveKeys.contains(lower)) return true;
+    for (final fragment in _sensitiveKeySubstrings) {
+      if (lower.contains(fragment)) return true;
+    }
+    return false;
+  }
+
   /// Redacts sensitive query parameters from URLs before emitting to logs.
   static String sanitizeUri(Uri uri) {
     if (uri.queryParameters.isEmpty) return uri.toString();
     final sanitized = uri.queryParameters.map(
       (key, value) => MapEntry(
         key,
-        _sensitiveKeys.contains(key.toLowerCase()) ? '[REDACTED]' : value,
+        isSensitiveKey(key) ? '[REDACTED]' : value,
       ),
     );
     return uri.replace(queryParameters: sanitized).toString();
@@ -88,9 +124,7 @@ class LoggingInterceptor extends Interceptor {
     return value.map(
       (key, item) => MapEntry(
         key.toString(),
-        _sensitiveKeys.contains(key.toString().toLowerCase())
-            ? '[REDACTED]'
-            : _redactValue(item),
+        isSensitiveKey(key.toString()) ? '[REDACTED]' : _redactValue(item),
       ),
     );
   }
