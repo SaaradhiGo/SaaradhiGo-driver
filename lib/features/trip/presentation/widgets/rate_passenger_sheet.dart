@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons.dart';
-import '../../data/data_sources/rating_remote_data_source.dart';
 import '../providers/trip_providers.dart';
 
 /// Rate the passenger on a trip that just ended.
