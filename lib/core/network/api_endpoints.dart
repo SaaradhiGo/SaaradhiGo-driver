@@ -29,11 +29,16 @@ class ApiEndpoints {
   // Driver Earnings, Incentives & Elite Status
   static const String driverEarnings = '/driver/earnings/';
   static const String driverEarningsSummary = '/driver/earnings/summary/';
-  static const String driverIncentives = '/driver/incentives/';
-  static const String driverIncentivesFallback = '/driver/driver/incentives/';
-  static const String driverEliteStatus = '/driver/elite-status/';
-  static const String driverEliteStatusFallback =
-      '/driver/driver/elite-status/';
+  // The doubled `driver/` is correct and is not a typo: servers/driver/urls.py
+  // is included at `/driver/` and declares `path('driver/incentives/')`, so
+  // the full route is /api/v1/driver/driver/incentives/.
+  //
+  // These were a pair each -- a single-segment "primary" and a doubled
+  // "fallback" tried on 404. The primary never existed, so every incentives
+  // and elite-status read made one guaranteed-404 request before the real
+  // one. Collapsed to the route the server actually serves.
+  static const String driverIncentives = '/driver/driver/incentives/';
+  static const String driverEliteStatus = '/driver/driver/elite-status/';
 
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';

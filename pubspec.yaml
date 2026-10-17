@@ -89,9 +89,17 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  assets:
-    - .env
+  # There is deliberately NO `assets:` section.
+  #
+  # `.env` used to be listed here. Anything under `assets:` is packed into the
+  # APK and can be extracted with `unzip`, so a bundled .env is a published
+  # file. It was also gitignored, so CI never had one -- which made the
+  # dev-host fallback in EnvironmentConfig the effective configuration of
+  # every CI build, including any release build CI might produce.
+  #
+  # Configuration now comes from --dart-define; see
+  # lib/core/network/environment_config.dart. Re-adding an `assets:` section
+  # for images is fine; re-adding `.env` to it is not.
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

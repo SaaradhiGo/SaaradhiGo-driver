@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'core/network/environment_config.dart';
 import 'core/theme/app_theme.dart';
 import 'routing/app_router.dart';
 import 'shared/widgets/app_connectivity_host.dart';
@@ -10,8 +10,10 @@ import 'shared/widgets/app_connectivity_host.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables before any dependencies are initialized
-  await dotenv.load(fileName: ".env");
+  // Load a local .env if the developer has one. This no longer throws when
+  // there is none -- `.env` is not a bundled asset any more, so on a device
+  // and in CI there is nothing to load and --dart-define supplies the values.
+  await EnvironmentConfig.init();
 
   // Lock to portrait mode for mobile driver app
   SystemChrome.setPreferredOrientations([

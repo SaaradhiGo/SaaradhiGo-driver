@@ -79,35 +79,37 @@ void main() {
     });
 
     test(
-      'getIncentives falls back to driverIncentivesFallback on 404',
+      'getIncentives makes exactly ONE request, to the real route',
       () async {
-        int attempt = 0;
+        // This used to try '/driver/incentives/' and retry
+        // '/driver/driver/incentives/' on 404. The single-segment path never
+        // existed -- servers/driver/urls.py is included at /driver/ and
+        // declares path('driver/incentives/') -- so every read cost a
+        // guaranteed 404 before the call that worked.
+        int attempts = 0;
         adapter.handler = (options) async {
-          attempt++;
-          if (attempt == 1) {
-            expect(options.path, equals(ApiEndpoints.driverIncentives));
-            return jsonResponse({'detail': 'Not found'}, statusCode: 404);
-          } else {
-            expect(options.path, equals(ApiEndpoints.driverIncentivesFallback));
-            return jsonResponse({
-              'status': 'success',
-              'data': [
-                {
-                  'id': 202,
-                  'title': 'Peak Hour Boost',
-                  'target_trips': 5,
-                  'progress_trips': 2,
-                  'reward_amount': '250.00',
-                },
-              ],
-            });
-          }
+          attempts++;
+          expect(options.path, equals(ApiEndpoints.driverIncentives));
+          expect(options.path, equals('/driver/driver/incentives/'));
+          return jsonResponse({
+            'status': 'success',
+            'data': [
+              {
+                'id': 202,
+                'title': 'Peak Hour Boost',
+                'target_trips': 5,
+                'progress_trips': 2,
+                'reward_amount': '250.00',
+              },
+            ],
+          });
         };
 
         final results = await dataSource.getIncentives();
         expect(results.length, equals(1));
         expect(results.first.id, equals(202));
-        expect(attempt, equals(2));
+        expect(attempts, equals(1),
+            reason: 'a second request means the 404 retry is back');
       },
     );
 
@@ -141,36 +143,30 @@ void main() {
     });
 
     test(
-      'getEliteStatus falls back to driverEliteStatusFallback on 404',
+      'getEliteStatus makes exactly ONE request, to the real route',
       () async {
-        int attempt = 0;
+        int attempts = 0;
         adapter.handler = (options) async {
-          attempt++;
-          if (attempt == 1) {
-            expect(options.path, equals(ApiEndpoints.driverEliteStatus));
-            return jsonResponse({'detail': 'Not found'}, statusCode: 404);
-          } else {
-            expect(
-              options.path,
-              equals(ApiEndpoints.driverEliteStatusFallback),
-            );
-            return jsonResponse({
-              'status': 'success',
-              'data': {
-                'tier': 'Silver',
-                'total_trips': 25,
-                'rating': '4.9',
-                'acceptance_rate': '100%',
-                'cancellation_rate': '0%',
-              },
-            });
-          }
+          attempts++;
+          expect(options.path, equals(ApiEndpoints.driverEliteStatus));
+          expect(options.path, equals('/driver/driver/elite-status/'));
+          return jsonResponse({
+            'status': 'success',
+            'data': {
+              'tier': 'Silver',
+              'total_trips': 25,
+              'rating': '4.9',
+              'acceptance_rate': '100%',
+              'cancellation_rate': '0%',
+            },
+          });
         };
 
         final status = await dataSource.getEliteStatus();
         expect(status.tier, equals('Silver'));
         expect(status.totalTrips, equals(25));
-        expect(attempt, equals(2));
+        expect(attempts, equals(1),
+            reason: 'a second request means the 404 retry is back');
       },
     );
   });

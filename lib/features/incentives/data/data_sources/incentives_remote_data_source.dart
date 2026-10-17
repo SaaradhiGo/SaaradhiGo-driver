@@ -46,16 +46,10 @@ class IncentivesRemoteDataSourceImpl implements IncentivesRemoteDataSource {
 
   @override
   Future<List<IncentiveQuestModel>> getIncentives() async {
-    Response response;
-    try {
-      response = await dio.get(ApiEndpoints.driverIncentives);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        response = await dio.get(ApiEndpoints.driverIncentivesFallback);
-      } else {
-        rethrow;
-      }
-    }
+    // One request. This used to try a single-segment path first and retry the
+    // doubled one on 404; the single-segment path never existed, so the retry
+    // was the only call that ever worked.
+    final response = await dio.get(ApiEndpoints.driverIncentives);
 
     final rawList = _extractList(response.data);
     return rawList
@@ -68,16 +62,7 @@ class IncentivesRemoteDataSourceImpl implements IncentivesRemoteDataSource {
 
   @override
   Future<EliteStatusModel> getEliteStatus() async {
-    Response response;
-    try {
-      response = await dio.get(ApiEndpoints.driverEliteStatus);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        response = await dio.get(ApiEndpoints.driverEliteStatusFallback);
-      } else {
-        rethrow;
-      }
-    }
+    final response = await dio.get(ApiEndpoints.driverEliteStatus);
 
     final rawMap = _extractMap(response.data);
     return EliteStatusModel.fromJson(rawMap);
