@@ -48,7 +48,24 @@ class EnvironmentConfig {
   );
   static const String _defineWsBaseUrl = String.fromEnvironment('WS_BASE_URL');
 
-  static const String _devApiBaseUrl = 'https://dev.api.saaradhigo.in/';
+  /// The REST base MUST end in `/api/v1/`.
+  ///
+  /// `base/urls.py` routes the API only at `path('api/v1/', include(...))`,
+  /// and every constant in ApiEndpoints is a bare path like `/auth/otp/`
+  /// that Dio appends to this. Without the prefix every request in the app
+  /// resolves to `https://host/auth/otp/`, which is not a routed path -- so
+  /// **every REST call 404s**. The app had never been run end to end against
+  /// the live API, which is how a base URL that cannot work survived.
+  static const String _devApiBaseUrl = 'https://dev.api.saaradhigo.in/api/v1/';
+
+  /// The WS base must NOT include `ws`, and must end in `/`.
+  ///
+  /// This app's socket constants already carry the prefix
+  /// (`ws/driver/location/`, `ws/ride/trip/<id>/`) and are concatenated
+  /// directly onto this. The RIDER app uses the opposite convention -- its
+  /// base ends in `/ws` and its paths do not -- so the two are not
+  /// interchangeable, and copying one app's value to the other produces
+  /// `/wsws/...`.
   static const String _devWsBaseUrl = 'wss://dev.api.saaradhigo.in/';
 
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');
