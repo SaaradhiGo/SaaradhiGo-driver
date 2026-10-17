@@ -270,6 +270,85 @@ void main() {
     });
   });
 
+  group("the server's own expiry wins over the age heuristic", () {
+    test('an offer the server says has expired is dropped', () {
+      // The payload now carries expires_at, so the app stops comparing the
+      // FCM send time against a hard-coded 90 seconds copied from the
+      // backend -- a guess about server behaviour living in a client.
+      final coordinator = build();
+      addTearDown(coordinator.dispose);
+
+      final decision = coordinator.onPushOffer(
+        PushOffer(
+          tripId: 42,
+          source: PushOfferSource.openedFromTerminated,
+          sentAt: clock,
+          expiresAt: clock.subtract(const Duration(seconds: 1)),
+        ),
+      );
+
+      expect(decision, OfferDecision.stale);
+    });
+
+    test('a FRESH offer is accepted even when it looks old by age', () {
+      // The case the heuristic got wrong: a server with a longer timeout
+      // than 90s, or a push delivered late but still valid. The server said
+      // it is live, so it is live.
+      final coordinator = build();
+      addTearDown(coordinator.dispose);
+
+      final decision = coordinator.onPushOffer(
+        PushOffer(
+          tripId: 42,
+          source: PushOfferSource.foreground,
+          sentAt: clock.subtract(const Duration(minutes: 4)),
+          expiresAt: clock.add(const Duration(minutes: 1)),
+        ),
+      );
+
+      expect(
+        decision,
+        OfferDecision.awaitingSocketDetails,
+        reason: 'the age heuristic must not override the server',
+      );
+    });
+
+    test('the heuristic still applies when the server sent no expiry', () {
+      // An older server build. The fallback has to keep working.
+      final coordinator = build();
+      addTearDown(coordinator.dispose);
+
+      expect(
+        coordinator.onPushOffer(
+          pushOffer(42, age: const Duration(seconds: 91)),
+        ),
+        OfferDecision.stale,
+      );
+      expect(
+        coordinator.onPushOffer(
+          pushOffer(43, age: const Duration(seconds: 20)),
+        ),
+        OfferDecision.awaitingSocketDetails,
+      );
+    });
+
+    test('an unparseable expiry falls back rather than dropping the offer', () {
+      final offer = PushOffer.tryParse({
+        'trip_id': '42',
+        'type': 'ride_request',
+        'expires_at': 'nonsense',
+      }, source: PushOfferSource.foreground);
+
+      expect(offer, isNotNull);
+      expect(offer!.expiresAt, isNull);
+      expect(
+        offer.hasExpiredAt(DateTime.now()),
+        isNull,
+        reason: 'a malformed expiry must not silently expire a live offer',
+      );
+    });
+  });
+
   group('a settled trip cannot be re-offered', () {
     test('after accepting, a late push is ignored', () {
       // This is the duplicate-acceptance case. The driver accepted over the

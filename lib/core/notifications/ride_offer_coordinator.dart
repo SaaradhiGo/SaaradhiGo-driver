@@ -169,8 +169,19 @@ class RideOfferCoordinator {
 
   /// A push announced an offer.
   OfferDecision onPushOffer(PushOffer offer) {
+    // The server's own expiry wins when it sent one. The age heuristic below
+    // stays as the fallback for an older server build that does not.
+    final expired = offer.hasExpiredAt(_now());
+    if (expired == true) {
+      AppLogger.i(
+        'Push offer for trip ${offer.tripId} ignored: the server said it '
+        'expired at ${offer.expiresAt}',
+      );
+      return lastDecision = OfferDecision.stale;
+    }
+
     final age = offer.ageAt(_now());
-    if (age != null && age > offerLifetime) {
+    if (expired == null && age != null && age > offerLifetime) {
       AppLogger.i(
         'Push offer for trip ${offer.tripId} ignored: ${age.inSeconds}s old, '
         'past the ${offerLifetime.inSeconds}s accept timeout',
