@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/network/environment_config.dart';
+import 'core/notifications/push_providers.dart';
+import 'core/utils/app_logger.dart';
 import 'core/theme/app_theme.dart';
 import 'routing/app_router.dart';
 import 'shared/widgets/app_connectivity_host.dart';
@@ -46,7 +48,41 @@ void main() async {
     return;
   }
 
-  runApp(const ProviderScope(child: SaaradhiGoDriverApp()));
+  // One container, so the push stack started here is the same one the widget
+  // tree uses. Starting it before runApp matters for exactly one case: the
+  // app launched by a notification tap from terminated. `getInitialMessage()`
+  // hands that message over once, and it has to be read before the first
+  // frame or it is lost -- the coordinator retains the offer until a screen
+  // exists to show it.
+  final container = ProviderContainer();
+  await _startPushStack(container);
+
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: const SaaradhiGoDriverApp(),
+    ),
+  );
+}
+
+/// Bring up FCM, if this build has it. Never throws.
+///
+/// Push is the fallback channel for a ride offer -- the dispatch WebSocket
+/// only reaches a running, connected app. A build without
+/// `android/app/google-services.json` reports itself unavailable and the app
+/// runs exactly as before, on the socket alone.
+Future<void> _startPushStack(ProviderContainer container) async {
+  try {
+    final availability = await container
+        .read(pushRegistrarProvider)
+        .initialize();
+    if (!availability.isAvailable) return;
+    await container.read(rideOfferCoordinatorProvider).start();
+  } catch (e) {
+    // A driver must be able to start the app on a phone with broken or
+    // absent Play Services.
+    AppLogger.w('Push stack did not start: $e');
+  }
 }
 
 class SaaradhiGoDriverApp extends ConsumerWidget {

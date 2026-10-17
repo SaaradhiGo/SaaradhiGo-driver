@@ -7,6 +7,36 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// --- Firebase Cloud Messaging -----------------------------------------------
+//
+// Applied ONLY when android/app/google-services.json is present.
+//
+// That file is issued by the Firebase console for a specific Android client
+// (package com.saaradhigo.driver) and it is not in this repository -- it is
+// gitignored, because it belongs to a project the owner controls and has to
+// be fetched per environment.
+//
+// The google-services plugin FAILS THE BUILD when the file is missing, with
+// "File google-services.json is missing". Applying it unconditionally would
+// mean this app could not be built, analysed or tested by anyone who has not
+// been given the file -- including CI, which needs no push to run a test
+// suite. Applying it conditionally means the build works everywhere, and
+// becomes a real FCM build the moment the file is dropped in.
+//
+// The Dart side mirrors this exactly: PushService reports itself unavailable
+// rather than throwing, and the app keeps dispatching over the WebSocket. See
+// lib/core/notifications/push_service.dart.
+val googleServicesFile = file("google-services.json")
+if (googleServicesFile.exists()) {
+    apply(plugin = "com.google.gms.google-services")
+    logger.lifecycle("google-services.json found -- FCM is enabled for this build.")
+} else {
+    logger.lifecycle(
+        "google-services.json absent -- building WITHOUT FCM. Push will report " +
+            "itself unavailable at runtime and dispatch will rely on the WebSocket."
+    )
+}
+
 // --- Release signing -------------------------------------------------------
 //
 // Material comes from one of two places, never from this file:
@@ -112,6 +142,12 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        // Required by flutter_local_notifications, which uses java.time on
+        // API levels that do not have it. Without this the build fails at
+        // :app:checkDebugAarMetadata with "requires core library desugaring
+        // to be enabled" -- it is a hard requirement of the dependency, not
+        // a preference.
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -172,6 +208,11 @@ android {
             )
         }
     }
+}
+
+dependencies {
+    // Same version the rider app ships, which is already running it.
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

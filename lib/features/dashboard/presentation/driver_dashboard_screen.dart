@@ -20,6 +20,8 @@ import 'providers/dashboard_providers.dart';
 import 'widgets/dashboard_header.dart';
 import 'widgets/dashboard_status_banner.dart';
 import 'widgets/driver_map.dart';
+import '../../../core/notifications/push_providers.dart';
+import '../../../core/notifications/ride_offer_coordinator.dart';
 import 'widgets/incoming_ride_bottom_sheet.dart';
 import 'widgets/limited_background_banner.dart';
 import 'widgets/location_blocked_overlay.dart';
@@ -45,6 +47,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   bool _followDriver = true;
   bool _mapReady = false;
   StreamSubscription<DriverLocationRideRequest>? _rideRequestSub;
+  StreamSubscription<PresentableOffer>? _offerSub;
+  StreamSubscription<int>? _expiredOfferSub;
   bool _showingRideModal = false;
 
   @override
@@ -91,32 +95,87 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     }
   }
 
+  /// Both channels now go through [RideOfferCoordinator].
+  ///
+  /// Dispatch announces every offer twice -- a `ride_request` frame on this
+  /// socket and an FCM push to the same driver -- so that a backgrounded or
+  /// terminated app still hears about it. Subscribing to the socket directly,
+  /// as this did, meant the push had nowhere to arrive and the same trip
+  /// could raise the sheet twice.
+  ///
+  /// The socket is still the only channel that can PRESENT an offer: the push
+  /// carries `{trip_id, type}` and `GET /ride/trip/<id>/` refuses a driver
+  /// who is not yet assigned, so there is no way to learn the rider or the
+  /// pickup from a push alone.
   void _subscribeToRideRequests() {
     _rideRequestSub?.cancel();
+    _offerSub?.cancel();
+    _expiredOfferSub?.cancel();
+
+    final coordinator = ref.read(rideOfferCoordinatorProvider);
     final notifier = ref.read(availabilityNotifierProvider.notifier);
+
     _rideRequestSub = notifier.rideRequests.listen((event) {
-      if (!mounted || _showingRideModal) return;
-      _showIncomingRideModal(event);
+      final tripId = event.tripId;
+      if (tripId == null) return;
+      coordinator.onSocketOffer(tripId, event.payload);
     });
+
+    _offerSub = coordinator.offers.listen((offer) {
+      if (!mounted || _showingRideModal) return;
+      _showIncomingRideModal(offer);
+    });
+
+    _expiredOfferSub = coordinator.expiredOffers.listen((tripId) {
+      if (!mounted) return;
+      // A push said a ride was coming and the socket never described it: a
+      // later wave took it, or the rider cancelled. Say so, rather than
+      // leaving the driver staring at a dashboard after tapping a
+      // notification.
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(
+          content: Text('That ride is no longer available.'),
+          backgroundColor: AppColors.surfaceContainerHigh,
+        ),
+      );
+    });
+
+    // The terminated-app path: main() read the launch notification before any
+    // screen existed, and the socket may have described it before this screen
+    // subscribed. A retained offer is shown as soon as there is somewhere to
+    // show it.
+    final pending = coordinator.pendingOffer;
+    if (pending != null && !_showingRideModal) {
+      _showIncomingRideModal(pending);
+    }
   }
 
-  void _showIncomingRideModal(DriverLocationRideRequest event) {
+  void _showIncomingRideModal(PresentableOffer offer) {
     _showingRideModal = true;
+    final request = DriverLocationRideRequest(offer.payload);
+    final coordinator = ref.read(rideOfferCoordinatorProvider);
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (modalCtx) {
         return IncomingRideBottomSheet(
-          request: event,
+          request: request,
           onAccept: () {
             Navigator.pop(modalCtx);
             _showingRideModal = false;
-            _acceptRideRequest(event);
+            // Settle BEFORE accepting. A second wave's push or socket frame
+            // for this trip can land while the accept is in flight, and
+            // without this the sheet could come back up over the ride screen
+            // and invite a second accept of a trip the driver already has.
+            coordinator.markSettled(offer.tripId);
+            _acceptRideRequest(request);
           },
           onDecline: () {
             Navigator.pop(modalCtx);
             _showingRideModal = false;
+            coordinator.markSettled(offer.tripId);
             ScaffoldMessenger.maybeOf(context)?.showSnackBar(
               const SnackBar(
                 content: Text('Ride request declined.'),
@@ -128,6 +187,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       },
     ).then((_) {
       _showingRideModal = false;
+      // Dismissed by swiping it away: the driver has seen and ignored it, so
+      // it must not be re-presented by the other channel.
+      coordinator.markSettled(offer.tripId);
     });
   }
 
@@ -141,6 +203,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   @override
   void dispose() {
     _rideRequestSub?.cancel();
+    _offerSub?.cancel();
+    _expiredOfferSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _mapController.dispose();
     super.dispose();
