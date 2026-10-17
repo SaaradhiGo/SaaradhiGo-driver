@@ -107,7 +107,7 @@ if (buildingRelease && !hasReleaseSigning) {
 }
 
 android {
-    namespace = "com.saaradhigo.saaradhigo_driver"
+    namespace = "com.saaradhigo.driver"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -121,14 +121,19 @@ android {
     }
 
     defaultConfig {
-        // NOTE: this is the Flutter-generated id and it is what the Play
-        // listing will be created with. An applicationId can never be changed
-        // after the first upload, so if the pilot should ship as
-        // `com.saaradhigo.driver` instead, it has to be decided BEFORE the
-        // first release goes to the Play Console. Flagged, not changed here:
-        // it is a product decision, and the upload keystore does not care
-        // which id it signs.
-        applicationId = "com.saaradhigo.saaradhigo_driver"
+        // Settled before the first upload, which is the only moment it is
+        // free: an applicationId can never be changed afterwards.
+        //
+        // Was `com.saaradhigo.saaradhigo_driver`, which Flutter generated from
+        // the project directory name -- it doubled the brand and carried an
+        // underscore that would have appeared in the public Play URL. The
+        // change cost nothing because nothing outside this repo was bound to
+        // it: no Firebase client, no OAuth client, no deep link, no Play
+        // listing, and no backend reference.
+        //
+        // `namespace` above moved with it, so the R/BuildConfig package and
+        // the Kotlin source package agree; MainActivity.kt moved to match.
+        applicationId = "com.saaradhigo.driver"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
