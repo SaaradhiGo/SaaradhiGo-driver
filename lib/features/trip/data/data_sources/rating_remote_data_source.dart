@@ -123,8 +123,9 @@ class RatingRemoteDataSourceImpl implements RatingRemoteDataSource {
   static String? _codeFrom(dynamic data) {
     if (data is Map) {
       final error = data['error'];
-      if (error is Map && error['code'] is String)
+      if (error is Map && error['code'] is String) {
         return error['code'] as String;
+      }
     }
     return null;
   }
