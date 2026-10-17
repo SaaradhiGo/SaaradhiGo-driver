@@ -36,6 +36,7 @@ class PushOffer {
     this.title,
     this.body,
     this.sentAt,
+    this.expiresAt,
   });
 
   final int tripId;
@@ -51,6 +52,16 @@ class PushOffer {
   /// backend's own `TRIP_ACCEPT_TIMEOUT_SECONDS` (90s), after which
   /// `auto_cancel_trip` has closed the trip regardless.
   final DateTime? sentAt;
+
+  /// When the server says this offer stops being acceptable.
+  ///
+  /// Added to the dispatch payload so this app stops guessing. It used to
+  /// compare [sentAt] against a hard-coded 90 seconds copied from the
+  /// backend's `TRIP_ACCEPT_TIMEOUT_SECONDS` -- a guess about server
+  /// behaviour living in a client, which goes quietly wrong the moment the
+  /// timeout is retuned. When present this is authoritative; when absent the
+  /// old heuristic still applies, so an older server build keeps working.
+  final DateTime? expiresAt;
 
   /// True when the driver got here by tapping the notification, so the app
   /// should take them to the offer rather than waiting for them to notice it.
@@ -79,7 +90,23 @@ class PushOffer {
       title: title,
       body: body,
       sentAt: sentAt,
+      expiresAt: _asUtcDate(data['expires_at']),
     );
+  }
+
+  /// True when the server's own expiry has passed. Null when it said nothing.
+  bool? hasExpiredAt(DateTime now) {
+    final expiry = expiresAt;
+    if (expiry == null) return null;
+    return now.isAfter(expiry);
+  }
+
+  static DateTime? _asUtcDate(Object? raw) {
+    if (raw is DateTime) return raw;
+    if (raw is String && raw.trim().isNotEmpty) {
+      return DateTime.tryParse(raw.trim())?.toUtc();
+    }
+    return null;
   }
 
   /// How old this offer is, or null when FCM gave no send time.
