@@ -55,8 +55,7 @@ class _HostileSecureStorage extends FlutterSecureStoragePlatform {
   Future<bool> containsKey({
     required String key,
     required Map<String, String> options,
-  }) async =>
-      data.containsKey(key);
+  }) async => data.containsKey(key);
 
   @override
   Future<void> delete({
@@ -94,8 +93,7 @@ class _HostileSecureStorage extends FlutterSecureStoragePlatform {
   @override
   Future<Map<String, String>> readAll({
     required Map<String, String> options,
-  }) async =>
-      data;
+  }) async => data;
 
   @override
   Future<void> write({
@@ -121,8 +119,7 @@ class _ThrowingAuthRepository implements AuthRepository {
   Future<UserModel?> emailLogin({
     required String email,
     required String password,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future<String> requestPasswordReset(String email) async => 'sent';
@@ -152,8 +149,11 @@ void main() {
       expect(await SecureStorageService.getAccessToken(), isNull);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('auth_session_revoked'), isNull,
-          reason: 'a successful logout should leave no trace');
+      expect(
+        prefs.getBool('auth_session_revoked'),
+        isNull,
+        reason: 'a successful logout should leave no trace',
+      );
     });
 
     test('a token written by a later login is readable again', () async {
@@ -181,9 +181,11 @@ void main() {
     test('it still attempts every key -- one failure shields none', () async {
       await SecureStorageService.clearTokens();
 
-      expect(store.deleteAttempts,
-          containsAll(['access_token', 'refresh_token', 'user_data']),
-          reason: 'the original code stopped at the first throw');
+      expect(
+        store.deleteAttempts,
+        containsAll(['access_token', 'refresh_token', 'user_data']),
+        reason: 'the original code stopped at the first throw',
+      );
     });
 
     test('the surviving token is unreadable afterwards', () async {
@@ -207,8 +209,11 @@ void main() {
       SecureStorageService.resetSessionRevocationCacheForTests();
 
       expect(store.data['access_token'], 'live-access-token');
-      expect(await SecureStorageService.getAccessToken(), isNull,
-          reason: 'this is the cold start that used to restore the session');
+      expect(
+        await SecureStorageService.getAccessToken(),
+        isNull,
+        reason: 'this is the cold start that used to restore the session',
+      );
       expect(await SecureStorageService.getUser(), isNull);
     });
 
@@ -239,8 +244,11 @@ void main() {
       await dio.get<dynamic>('/driver/profile/');
 
       expect(seen, isNotNull);
-      expect(seen!.headers.containsKey('Authorization'), isFalse,
-          reason: 'a revoked session must not authenticate a request');
+      expect(
+        seen!.headers.containsKey('Authorization'),
+        isFalse,
+        reason: 'a revoked session must not authenticate a request',
+      );
     });
   });
 
@@ -271,13 +279,19 @@ void main() {
 
       final notifier = container.read(authNotifierProvider.notifier);
       await pumpEventQueue();
-      expect(container.read(authNotifierProvider), isA<AuthAuthenticated>(),
-          reason: 'the fixture starts with a stored token');
+      expect(
+        container.read(authNotifierProvider),
+        isA<AuthAuthenticated>(),
+        reason: 'the fixture starts with a stored token',
+      );
 
       await notifier.logout();
 
-      expect(container.read(authNotifierProvider), isA<AuthUnauthenticated>(),
-          reason: 'the state change used to sit after the await that threw');
+      expect(
+        container.read(authNotifierProvider),
+        isA<AuthUnauthenticated>(),
+        reason: 'the state change used to sit after the await that threw',
+      );
     });
   });
 }
@@ -294,9 +308,13 @@ class _CapturingAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     onRequest(options);
-    return ResponseBody.fromString('{"status":"success"}', 200, headers: {
-      Headers.contentTypeHeader: [Headers.jsonContentType],
-    });
+    return ResponseBody.fromString(
+      '{"status":"success"}',
+      200,
+      headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      },
+    );
   }
 
   @override

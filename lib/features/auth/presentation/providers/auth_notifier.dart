@@ -54,9 +54,11 @@ class AuthNotifier extends Notifier<AuthState> {
   /// failure (refresh token rejected). The router redirects to /login.
   void sessionExpired() {
     if (state is AuthUnauthenticated) return;
-    _setState(const AuthUnauthenticated(
-      reason: 'Your session has expired. Please log in again.',
-    ));
+    _setState(
+      const AuthUnauthenticated(
+        reason: 'Your session has expired. Please log in again.',
+      ),
+    );
   }
 
   Future<void> _checkAuthStatus() async {
@@ -69,7 +71,7 @@ class AuthNotifier extends Notifier<AuthState> {
         _setState(const AuthUnauthenticated());
       }
     } catch (e) {
-      // Fail closed: an unreadable store is not a reason to assume a
+      // Fail closed: an unreadable store is not a reason to assume a
       // session still exists.
       _setState(const AuthUnauthenticated());
     }
@@ -106,9 +108,9 @@ class AuthNotifier extends Notifier<AuthState> {
 
     final canProceed = await _checkRateLimit();
     if (!canProceed) {
-      _setState(const AuthError(
-        message: 'Too many attempts. Please try again later.',
-      ));
+      _setState(
+        const AuthError(message: 'Too many attempts. Please try again later.'),
+      );
       // Revert to previous valid state after a short delay so UI can recover
       Future.delayed(const Duration(seconds: 3), () {
         _setState(previousState);
@@ -138,9 +140,9 @@ class AuthNotifier extends Notifier<AuthState> {
 
     final canProceed = await _checkRateLimit();
     if (!canProceed) {
-      _setState(const AuthError(
-        message: 'Too many attempts. Please try again later.',
-      ));
+      _setState(
+        const AuthError(message: 'Too many attempts. Please try again later.'),
+      );
       Future.delayed(const Duration(seconds: 3), () {
         _setState(previousState);
       });

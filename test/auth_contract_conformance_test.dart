@@ -50,8 +50,10 @@ Map<String, dynamic> _endpoint(String name) {
   final endpoints = _loadContract()['endpoints'] as Map<String, dynamic>;
   final entry = endpoints[name];
   if (entry == null) {
-    fail('The contract has no entry "$name". Endpoints captured: '
-        '${endpoints.keys.join(", ")}');
+    fail(
+      'The contract has no entry "$name". Endpoints captured: '
+      '${endpoints.keys.join(", ")}',
+    );
   }
   return entry as Map<String, dynamic>;
 }
@@ -101,12 +103,12 @@ void main() {
   void replay(String name) {
     final entry = _endpoint(name);
     adapter.handler = (options) async => ResponseBody.fromString(
-          jsonEncode(entry['body']),
-          entry['status_code'] as int,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
+      jsonEncode(entry['body']),
+      entry['status_code'] as int,
+      headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      },
+    );
   }
 
   group('the contract file itself', () {
@@ -129,16 +131,20 @@ void main() {
     test('the paths this app posts to are the paths the server captured', () {
       // Binds the constants to the server's own notes, so a renamed route
       // fails here rather than as a 404 on a driver's phone.
-      expect(_endpoint('auth_login_otp')['note'],
-          contains(ApiEndpoints.login));
-      expect(_endpoint('auth_login_email')['note'],
-          contains(ApiEndpoints.emailLogin));
-      expect(_endpoint('auth_refresh')['note'],
-          contains(ApiEndpoints.refreshToken));
-      expect(_endpoint('auth_logout')['note'],
-          contains(ApiEndpoints.logout));
-      expect(_endpoint('auth_password_forgot')['note'],
-          contains(ApiEndpoints.passwordForgot));
+      expect(_endpoint('auth_login_otp')['note'], contains(ApiEndpoints.login));
+      expect(
+        _endpoint('auth_login_email')['note'],
+        contains(ApiEndpoints.emailLogin),
+      );
+      expect(
+        _endpoint('auth_refresh')['note'],
+        contains(ApiEndpoints.refreshToken),
+      );
+      expect(_endpoint('auth_logout')['note'], contains(ApiEndpoints.logout));
+      expect(
+        _endpoint('auth_password_forgot')['note'],
+        contains(ApiEndpoints.passwordForgot),
+      );
     });
   });
 
@@ -150,8 +156,10 @@ void main() {
 
       final expected = _data('auth_login_otp');
       expect(await SecureStorageService.getAccessToken(), expected['token']);
-      expect(await SecureStorageService.getRefreshToken(),
-          expected['refresh_token']);
+      expect(
+        await SecureStorageService.getRefreshToken(),
+        expected['refresh_token'],
+      );
     });
 
     test('posts to the captured path', () async {
@@ -173,16 +181,20 @@ void main() {
 
       final expected = _data('auth_login_email');
       expect(await SecureStorageService.getAccessToken(), expected['token']);
-      expect(await SecureStorageService.getRefreshToken(),
-          expected['refresh_token']);
+      expect(
+        await SecureStorageService.getRefreshToken(),
+        expected['refresh_token'],
+      );
       expect(adapter.requests.single.path, ApiEndpoints.emailLogin);
     });
 
     test('the OTP and email logins have the SAME envelope', () {
       // This is what lets one session layer serve both. If the server ever
       // diverges them, it fails here rather than in production.
-      expect(_data('auth_login_email').keys.toSet(),
-          _data('auth_login_otp').keys.toSet());
+      expect(
+        _data('auth_login_email').keys.toSet(),
+        _data('auth_login_otp').keys.toSet(),
+      );
     });
 
     test('a rejected login is a failure, not a blank session', () async {
@@ -200,36 +212,36 @@ void main() {
       expect(await SecureStorageService.getRefreshToken(), isNull);
     });
 
-    test("the driver is shown the server's message, not a generic one",
-        () async {
-      // DioClient read only `data['message']`, which this API never sends,
-      // so every refusal became "Authentication failed" -- which does not
-      // tell a driver that their password was wrong.
-      replay('auth_login_email_rejected');
+    test(
+      "the driver is shown the server's message, not a generic one",
+      () async {
+        // DioClient read only `data['message']`, which this API never sends,
+        // so every refusal became "Authentication failed" -- which does not
+        // tell a driver that their password was wrong.
+        replay('auth_login_email_rejected');
 
-      final expected =
-          ((_body('auth_login_email_rejected')['error']) as Map)['message'];
+        final expected =
+            ((_body('auth_login_email_rejected')['error']) as Map)['message'];
 
-      await expectLater(
-        repository.emailLogin(email: 'a@b.test', password: 'wrong'),
-        throwsA(isA<Failure>().having(
-          (f) => f.message,
-          'message',
-          expected,
-        )),
-      );
-    });
+        await expectLater(
+          repository.emailLogin(email: 'a@b.test', password: 'wrong'),
+          throwsA(isA<Failure>().having((f) => f.message, 'message', expected)),
+        );
+      },
+    );
 
     test('the refusal carries no hint about which part was wrong', () {
-      final error =
-          (_body('auth_login_email_rejected')['error'] as Map)
-              .cast<String, dynamic>();
+      final error = (_body('auth_login_email_rejected')['error'] as Map)
+          .cast<String, dynamic>();
 
       expect(error['message'], 'Invalid email or password.');
       final text = jsonEncode(error).toLowerCase();
       for (final leak in ['no account', 'not found', 'unknown', 'no such']) {
-        expect(text.contains(leak), isFalse,
-            reason: 'the refusal leaks "$leak"');
+        expect(
+          text.contains(leak),
+          isFalse,
+          reason: 'the refusal leaks "$leak"',
+        );
       }
     });
 
@@ -261,59 +273,69 @@ void main() {
       expect(data.containsKey('access'), isFalse);
     });
 
-    test('the interceptor refreshes from the captured body and retries',
-        () async {
-      // Drives the REAL AuthInterceptor: a 401 on a normal call, then the
-      // server's own captured refresh response, then the retry.
-      FlutterSecureStorage.setMockInitialValues({
-        'access_token': 'stale-access-token',
-        'refresh_token': 'stored-refresh-token',
-      });
-      SecureStorageService.resetSessionRevocationCacheForTests();
+    test(
+      'the interceptor refreshes from the captured body and retries',
+      () async {
+        // Drives the REAL AuthInterceptor: a 401 on a normal call, then the
+        // server's own captured refresh response, then the retry.
+        FlutterSecureStorage.setMockInitialValues({
+          'access_token': 'stale-access-token',
+          'refresh_token': 'stored-refresh-token',
+        });
+        SecureStorageService.resetSessionRevocationCacheForTests();
 
-      final refreshed = _data('auth_refresh');
-      var retried = false;
+        final refreshed = _data('auth_refresh');
+        var retried = false;
 
-      adapter.handler = (options) async {
-        if (options.path == ApiEndpoints.refreshToken) {
+        adapter.handler = (options) async {
+          if (options.path == ApiEndpoints.refreshToken) {
+            return ResponseBody.fromString(
+              jsonEncode(_body('auth_refresh')),
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+          if (options.headers['Authorization'] ==
+              'Bearer ${refreshed['token']}') {
+            retried = true;
+            return ResponseBody.fromString(
+              jsonEncode({'status': 'success', 'data': {}}),
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
           return ResponseBody.fromString(
-            jsonEncode(_body('auth_refresh')),
-            200,
+            jsonEncode({
+              'status': 'error',
+              'error': {'message': 'expired'},
+            }),
+            401,
             headers: {
               Headers.contentTypeHeader: [Headers.jsonContentType],
             },
           );
-        }
-        if (options.headers['Authorization'] ==
-            'Bearer ${refreshed['token']}') {
-          retried = true;
-          return ResponseBody.fromString(
-            jsonEncode({'status': 'success', 'data': {}}),
-            200,
-            headers: {
-              Headers.contentTypeHeader: [Headers.jsonContentType],
-            },
-          );
-        }
-        return ResponseBody.fromString(
-          jsonEncode({'status': 'error', 'error': {'message': 'expired'}}),
-          401,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
+        };
+
+        final client = DioClient();
+        client.dio.httpClientAdapter = adapter;
+        await client.dio.get<dynamic>(ApiEndpoints.getProfile);
+
+        expect(retried, isTrue, reason: 'the original request was not retried');
+        expect(
+          await SecureStorageService.getAccessToken(),
+          refreshed['token'],
+          reason: 'the rotated pair was not stored',
         );
-      };
-
-      final client = DioClient();
-      client.dio.httpClientAdapter = adapter;
-      await client.dio.get<dynamic>(ApiEndpoints.getProfile);
-
-      expect(retried, isTrue, reason: 'the original request was not retried');
-      expect(await SecureStorageService.getAccessToken(), refreshed['token'],
-          reason: 'the rotated pair was not stored');
-      expect(await SecureStorageService.getRefreshToken(),
-          refreshed['refresh_token']);
-    });
+        expect(
+          await SecureStorageService.getRefreshToken(),
+          refreshed['refresh_token'],
+        );
+      },
+    );
   });
 
   group('logout', () {
@@ -341,11 +363,10 @@ void main() {
       replay('auth_login_otp');
       await repository.verifyOtp('+919999000001', '100001');
 
-      adapter.handler = (options) async =>
-          throw DioException.connectionError(
-            requestOptions: options,
-            reason: 'no network',
-          );
+      adapter.handler = (options) async => throw DioException.connectionError(
+        requestOptions: options,
+        reason: 'no network',
+      );
 
       await expectLater(repository.logout(), completes);
       expect(await SecureStorageService.getAccessToken(), isNull);
@@ -353,29 +374,38 @@ void main() {
   });
 
   group('password reset', () {
-    test('forgot-password reveals nothing, and the app repeats it verbatim',
-        () async {
-      replay('auth_password_forgot');
+    test(
+      'forgot-password reveals nothing, and the app repeats it verbatim',
+      () async {
+        replay('auth_password_forgot');
 
-      final message =
-          await repository.requestPasswordReset('someone@example.test');
+        final message = await repository.requestPasswordReset(
+          'someone@example.test',
+        );
 
-      expect(message, _data('auth_password_forgot')['message']);
-      expect(message.toLowerCase(),
-          contains('if that address belongs to an account'));
-      expect(adapter.requests.single.path, ApiEndpoints.passwordForgot);
-    });
+        expect(message, _data('auth_password_forgot')['message']);
+        expect(
+          message.toLowerCase(),
+          contains('if that address belongs to an account'),
+        );
+        expect(adapter.requests.single.path, ApiEndpoints.passwordForgot);
+      },
+    );
   });
 
   group('role-based access', () {
     test('a rider token is refused at an operator endpoint', () {
-      expect(_endpoint('auth_rbac_rider_denied_admin')['status_code'],
-          anyOf(401, 403));
+      expect(
+        _endpoint('auth_rbac_rider_denied_admin')['status_code'],
+        anyOf(401, 403),
+      );
     });
 
     test('an anonymous request is refused', () {
-      expect(_endpoint('auth_profile_anonymous_denied')['status_code'],
-          anyOf(401, 403));
+      expect(
+        _endpoint('auth_profile_anonymous_denied')['status_code'],
+        anyOf(401, 403),
+      );
     });
   });
 }

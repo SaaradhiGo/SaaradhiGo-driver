@@ -22,8 +22,11 @@ void main() {
   final manifest = File('android/app/src/main/AndroidManifest.xml');
 
   test('the Android manifest exists', () {
-    expect(manifest.existsSync(), isTrue,
-        reason: 'android/app/src/main/AndroidManifest.xml is missing');
+    expect(
+      manifest.existsSync(),
+      isTrue,
+      reason: 'android/app/src/main/AndroidManifest.xml is missing',
+    );
   });
 
   test('the Android manifest is well-formed XML', () {
@@ -45,7 +48,8 @@ void main() {
       expect(
         body.contains('--'),
         isFalse,
-        reason: 'a double hyphen inside an XML comment makes the whole manifest '
+        reason:
+            'a double hyphen inside an XML comment makes the whole manifest '
             'unparseable and every APK build fail. Offending comment starts: '
             '${body.trim().split('\n').first}',
       );
@@ -75,29 +79,34 @@ void main() {
     final services = doc.findAllElements('service').toList();
 
     final geolocator = services.where(
-      (e) => (e.getAttribute('android:name') ?? '')
-          .endsWith('geolocator.GeolocatorLocationService'),
+      (e) => (e.getAttribute('android:name') ?? '').endsWith(
+        'geolocator.GeolocatorLocationService',
+      ),
     );
 
     expect(
       geolocator,
       isNotEmpty,
-      reason: 'the app must re-declare the geolocator service so it can add '
+      reason:
+          'the app must re-declare the geolocator service so it can add '
           'the Android 14 foregroundServiceType attribute',
     );
     expect(
       geolocator.first.getAttribute('android:foregroundServiceType'),
       'location',
-      reason: 'without foregroundServiceType="location" going on duty throws '
+      reason:
+          'without foregroundServiceType="location" going on duty throws '
           'MissingForegroundServiceTypeException on Android 14+',
     );
 
     // Name-agnostic: whatever the plugin is called, SOME declared service must
     // carry the location type, or background tracking cannot run at all.
     expect(
-      services.any((e) =>
-          (e.getAttribute('android:foregroundServiceType') ?? '')
-              .contains('location')),
+      services.any(
+        (e) => (e.getAttribute('android:foregroundServiceType') ?? '').contains(
+          'location',
+        ),
+      ),
       isTrue,
       reason: 'no declared service has foregroundServiceType="location"',
     );
@@ -110,7 +119,9 @@ void main() {
     // declaration is checked against a matching FOREGROUND_SERVICE_* grant.
     expect(declared, contains('android.permission.FOREGROUND_SERVICE'));
     expect(
-        declared, contains('android.permission.FOREGROUND_SERVICE_LOCATION'));
+      declared,
+      contains('android.permission.FOREGROUND_SERVICE_LOCATION'),
+    );
     expect(declared, contains('android.permission.ACCESS_BACKGROUND_LOCATION'));
   });
 
@@ -120,13 +131,23 @@ void main() {
     // its initial commit, which is why that key has to be rotated. This app
     // renders maps with flutter_map over OSM tiles and needs no Google Maps
     // key at all; this assertion keeps it that way.
-    expect(text, isNot(contains('AIza')),
-        reason: 'a Google API key is committed in the manifest');
-    expect(text, isNot(contains('com.google.android.geo.API_KEY')),
-        reason: 'this app uses flutter_map/OSM and must not acquire a '
-            'dependency on a Google Maps key');
-    expect(text.toLowerCase(), isNot(matches(RegExp(r'password\s*='))),
-        reason: 'a password appears in the manifest');
+    expect(
+      text,
+      isNot(contains('AIza')),
+      reason: 'a Google API key is committed in the manifest',
+    );
+    expect(
+      text,
+      isNot(contains('com.google.android.geo.API_KEY')),
+      reason:
+          'this app uses flutter_map/OSM and must not acquire a '
+          'dependency on a Google Maps key',
+    );
+    expect(
+      text.toLowerCase(),
+      isNot(matches(RegExp(r'password\s*='))),
+      reason: 'a password appears in the manifest',
+    );
   });
 
   test('every manifest placeholder is supplied by Gradle', () {
@@ -145,16 +166,16 @@ void main() {
       expect(
         gradle.contains('manifestPlaceholders["$name"]'),
         isTrue,
-        reason: 'the manifest uses \${$name} and build.gradle.kts does not '
+        reason:
+            'the manifest uses \${$name} and build.gradle.kts does not '
             'define it; an unsupplied placeholder fails the build',
       );
     }
   });
 }
 
-Set<String> _permissions(File manifest) => XmlDocument.parse(
-      manifest.readAsStringSync(),
-    )
+Set<String> _permissions(File manifest) =>
+    XmlDocument.parse(manifest.readAsStringSync())
         .findAllElements('uses-permission')
         .map((e) => e.getAttribute('android:name'))
         .whereType<String>()

@@ -108,8 +108,11 @@ void main() {
         final results = await dataSource.getIncentives();
         expect(results.length, equals(1));
         expect(results.first.id, equals(202));
-        expect(attempts, equals(1),
-            reason: 'a second request means the 404 retry is back');
+        expect(
+          attempts,
+          equals(1),
+          reason: 'a second request means the 404 retry is back',
+        );
       },
     );
 
@@ -165,8 +168,11 @@ void main() {
         final status = await dataSource.getEliteStatus();
         expect(status.tier, equals('Silver'));
         expect(status.totalTrips, equals(25));
-        expect(attempts, equals(1),
-            reason: 'a second request means the 404 retry is back');
+        expect(
+          attempts,
+          equals(1),
+          reason: 'a second request means the 404 retry is back',
+        );
       },
     );
   });
