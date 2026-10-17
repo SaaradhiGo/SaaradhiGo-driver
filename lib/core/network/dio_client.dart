@@ -45,6 +45,26 @@ class DioClient {
     }
   }
 
+  /// The server's own explanation of a failure.
+  ///
+  /// This read only `data['message']`, which this API never sends. Every
+  /// error envelope is `{"status": "error", "error": {"code": ..., "message":
+  /// ...}}`, so a rejected login showed the hardcoded "Authentication failed"
+  /// instead of "Invalid email or password." -- the one message that tells a
+  /// driver what to do next. `detail` is DRF's own default, which a view that
+  /// raises before the envelope wrapper can still produce.
+  String? _messageFrom(dynamic data) {
+    if (data is! Map) return null;
+
+    final error = data['error'];
+    if (error is Map && error['message'] != null) {
+      return error['message'].toString();
+    }
+    if (data['message'] != null) return data['message'].toString();
+    if (data['detail'] != null) return data['detail'].toString();
+    return null;
+  }
+
   void _handleDioError(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
@@ -57,12 +77,7 @@ class DioClient {
       final statusCode = e.response?.statusCode;
       final data = e.response?.data;
 
-      String? errorMessage;
-      if (data != null &&
-          data is Map<String, dynamic> &&
-          data['message'] != null) {
-        errorMessage = data['message'].toString();
-      }
+      final errorMessage = _messageFrom(data);
 
       if (statusCode == 401 || statusCode == 403) {
         throw AuthFailure(errorMessage ?? 'Authentication failed');

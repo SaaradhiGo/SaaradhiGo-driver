@@ -163,6 +163,46 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  /// Email + password sign-in.
+  ///
+  /// No client-side rate limit, deliberately. The OTP paths have one because
+  /// every attempt costs an SMS; an email attempt costs nothing, the server
+  /// enforces the lockout, and a client-side counter here would lock a driver
+  /// out of their own login screen without being any obstacle to an attacker
+  /// who is not using this app.
+  Future<void> emailLogin({
+    required String email,
+    required String password,
+  }) async {
+    final previousState = state;
+    _setState(const AuthSigningIn());
+
+    try {
+      final user = await _repository.emailLogin(
+        email: email.trim(),
+        password: password,
+      );
+      _setState(AuthAuthenticated(user: user));
+    } on Failure catch (e) {
+      // The server's own words -- "Invalid email or password." for both a
+      // wrong password and an unknown address, so nothing here reveals which.
+      _setState(AuthError(message: e.message));
+      Future.delayed(const Duration(seconds: 3), () {
+        _setState(previousState);
+      });
+    } catch (e) {
+      _setState(AuthError(message: e.toString().replaceAll('Exception: ', '')));
+      Future.delayed(const Duration(seconds: 3), () {
+        _setState(previousState);
+      });
+    }
+  }
+
+  /// Asks for a password reset link. Returns the server's message, which is
+  /// identical for a known and an unknown address by design.
+  Future<String> requestPasswordReset(String email) =>
+      _repository.requestPasswordReset(email.trim());
+
   /// Persists a mutation of the authenticated user (e.g. after a successful
   /// `PATCH /auth/update/`) into both the live auth state and secure storage so
   /// the change survives a restart without a fresh profile fetch.

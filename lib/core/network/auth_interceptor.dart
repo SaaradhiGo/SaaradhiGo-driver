@@ -9,6 +9,22 @@ class AuthInterceptor extends Interceptor {
   static const _refreshAttemptedExtra = 'auth_refresh_attempted';
   static const _skipRefreshExtra = 'auth_skip_refresh';
 
+  /// Endpoints where a 401 means "those credentials are wrong", not "your
+  /// session ended".
+  ///
+  /// Only `/auth/login/` was excluded. A rejected email login therefore ran
+  /// the refresh path: with no stored refresh token that clears the session
+  /// and emits sessionExpired, so a driver who mistyped their password was
+  /// told "Your session has expired. Please log in again." on the login
+  /// screen -- and, now that clearing sets a revocation tombstone, it would
+  /// also void a session they still had in another tab of the app.
+  static const _unauthenticatedPaths = <String>{
+    ApiEndpoints.login,
+    ApiEndpoints.emailLogin,
+    ApiEndpoints.requestOtp,
+    ApiEndpoints.passwordForgot,
+  };
+
   final Dio _dio;
   Future<_TokenPair?>? _refreshFuture;
 
@@ -44,7 +60,7 @@ class AuthInterceptor extends Interceptor {
         requestOptions.extra[_refreshAttemptedExtra] == true;
 
     if (statusCode != 401 ||
-        requestOptions.path == ApiEndpoints.login ||
+        _unauthenticatedPaths.contains(requestOptions.path) ||
         isRefreshRequest ||
         requestOptions.extra[_skipRefreshExtra] == true ||
         hasAlreadyRefreshed) {

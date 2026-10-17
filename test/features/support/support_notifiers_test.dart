@@ -27,6 +27,16 @@ class StubAuthRepository implements AuthRepository {
   Future<UserModel?> verifyOtp(String phoneNumber, String otp) async => null;
 
   @override
+  Future<UserModel?> emailLogin({
+    required String email,
+    required String password,
+  }) async =>
+      null;
+
+  @override
+  Future<String> requestPasswordReset(String email) async => 'sent';
+
+  @override
   Future<void> logout() async {}
 }
 

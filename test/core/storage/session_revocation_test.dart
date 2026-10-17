@@ -116,6 +116,16 @@ class _ThrowingAuthRepository implements AuthRepository {
 
   @override
   Future<void> logout() async => throw PlatformException(code: 'nope');
+
+  @override
+  Future<UserModel?> emailLogin({
+    required String email,
+    required String password,
+  }) async =>
+      null;
+
+  @override
+  Future<String> requestPasswordReset(String email) async => 'sent';
 }
 
 void main() {

@@ -22,6 +22,18 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   Future<void> logout() async {}
+
+  @override
+  Future<UserModel?> emailLogin({
+    required String email,
+    required String password,
+  }) async {
+    await SecureStorageService.saveTokens(accessToken: 'a', refreshToken: 'r');
+    return null;
+  }
+
+  @override
+  Future<String> requestPasswordReset(String email) async => 'sent';
 }
 
 void main() {

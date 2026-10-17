@@ -15,6 +15,11 @@ class ApiEndpoints {
   static const String getProfile = '/auth/profile/';
   static const String logout = '/auth/logout/';
 
+  // Email + password, alongside phone + OTP. Paths taken from the
+  // generated contract (test/contracts/auth_contracts.json), not guessed.
+  static const String emailLogin = '/auth/email/login/';
+  static const String passwordForgot = '/auth/password/forgot/';
+
   // Driver Profile & Vehicles
   static const String driverProfile = '/driver/driver/profile/';
   static const String driverUpdate = '/driver/driver/update/';
