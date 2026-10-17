@@ -72,9 +72,7 @@ void main() {
   Future<void> pumpLogin(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(repository),
-        ],
+        overrides: [authRepositoryProvider.overrideWithValue(repository)],
         child: const MaterialApp(home: LoginMobileScreen()),
       ),
     );
@@ -103,8 +101,9 @@ void main() {
     await tester.tap(find.text('Send OTP'));
     await tester.pump();
 
-    expect(repository.otpRequests, ['+919876543210'],
-        reason: 'the +91 prefix and the trim must be unchanged');
+    expect(repository.otpRequests, [
+      '+919876543210',
+    ], reason: 'the +91 prefix and the trim must be unchanged');
   });
 
   testWidgets('a short number is rejected before any request', (tester) async {
@@ -125,9 +124,13 @@ void main() {
     expect(find.text('Sign in'), findsOneWidget);
 
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Email'), '  driver@example.test ');
+      find.widgetWithText(TextFormField, 'Email'),
+      '  driver@example.test ',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Password'), 'Cadence-Harbour-74');
+      find.widgetWithText(TextFormField, 'Password'),
+      'Cadence-Harbour-74',
+    );
     await tester.tap(find.text('Sign in'));
     await tester.pump();
 
@@ -136,8 +139,9 @@ void main() {
     ], reason: 'the address is trimmed; the password is sent exactly as typed');
   });
 
-  testWidgets('empty email fields are rejected before any request',
-      (tester) async {
+  testWidgets('empty email fields are rejected before any request', (
+    tester,
+  ) async {
     await pumpLogin(tester);
     await openEmailTab(tester);
 
@@ -154,11 +158,11 @@ void main() {
     await openEmailTab(tester);
 
     EditableText passwordField() => tester.widget<EditableText>(
-          find.descendant(
-            of: find.widgetWithText(TextFormField, 'Password'),
-            matching: find.byType(EditableText),
-          ),
-        );
+      find.descendant(
+        of: find.widgetWithText(TextFormField, 'Password'),
+        matching: find.byType(EditableText),
+      ),
+    );
 
     expect(passwordField().obscureText, isTrue);
 
@@ -177,9 +181,13 @@ void main() {
     await openEmailTab(tester);
 
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Email'), 'driver@example.test');
+      find.widgetWithText(TextFormField, 'Email'),
+      'driver@example.test',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Password'), 'wrong');
+      find.widgetWithText(TextFormField, 'Password'),
+      'wrong',
+    );
     await tester.tap(find.text('Sign in'));
     await tester.pump();
     await tester.pump();
@@ -206,13 +214,16 @@ void main() {
     expect(repository.resetRequests, isEmpty);
   });
 
-  testWidgets('forgot password repeats the server message verbatim',
-      (tester) async {
+  testWidgets('forgot password repeats the server message verbatim', (
+    tester,
+  ) async {
     await pumpLogin(tester);
     await openEmailTab(tester);
 
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Email'), 'driver@example.test');
+      find.widgetWithText(TextFormField, 'Email'),
+      'driver@example.test',
+    );
     await tester.tap(find.text('Forgot password?'));
     await tester.pump();
     await tester.pump();
@@ -221,22 +232,26 @@ void main() {
     expect(find.text(repository.resetMessage), findsOneWidget);
   });
 
-  testWidgets('no password is left anywhere in the widget tree after signing in',
-      (tester) async {
-    await pumpLogin(tester);
-    await openEmailTab(tester);
+  testWidgets(
+    'no password is left anywhere in the widget tree after signing in',
+    (tester) async {
+      await pumpLogin(tester);
+      await openEmailTab(tester);
 
-    await tester.enterText(
-        find.widgetWithText(TextFormField, 'Password'), 'Cadence-Harbour-74');
-    await tester.pump();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Password'),
+        'Cadence-Harbour-74',
+      );
+      await tester.pump();
 
-    // The field itself holds it, of course. Nothing else may render it: no
-    // debug label, no error message echoing the input, no Text widget.
-    final texts = tester
-        .widgetList<Text>(find.byType(Text))
-        .map((t) => t.data ?? '')
-        .where((s) => s.contains('Cadence-Harbour-74'));
+      // The field itself holds it, of course. Nothing else may render it: no
+      // debug label, no error message echoing the input, no Text widget.
+      final texts = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.data ?? '')
+          .where((s) => s.contains('Cadence-Harbour-74'));
 
-    expect(texts, isEmpty);
-  });
+      expect(texts, isEmpty);
+    },
+  );
 }

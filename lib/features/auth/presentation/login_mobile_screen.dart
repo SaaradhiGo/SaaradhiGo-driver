@@ -57,7 +57,9 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
 
   void _submitEmail() {
     if (_emailFormKey.currentState?.validate() ?? false) {
-      ref.read(authNotifierProvider.notifier).emailLogin(
+      ref
+          .read(authNotifierProvider.notifier)
+          .emailLogin(
             email: _emailController.text,
             password: _passwordController.text,
           );
@@ -90,8 +92,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor:
-            isError ? Theme.of(context).colorScheme.error : null,
+        backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
       ),
     );
   }

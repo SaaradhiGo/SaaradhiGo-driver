@@ -30,8 +30,7 @@ class StubAuthRepository implements AuthRepository {
   Future<UserModel?> emailLogin({
     required String email,
     required String password,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future<String> requestPasswordReset(String email) async => 'sent';

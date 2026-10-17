@@ -58,10 +58,16 @@ void main() {
     // The exact line that shipped.
     expect(
       text,
-      isNot(contains(RegExp(
-          r'signingConfig\s*=\s*signingConfigs\.getByName\("debug"\)\s*$',
-          multiLine: true))),
-      reason: 'the release build type assigns the debug signing config '
+      isNot(
+        contains(
+          RegExp(
+            r'signingConfig\s*=\s*signingConfigs\.getByName\("debug"\)\s*$',
+            multiLine: true,
+          ),
+        ),
+      ),
+      reason:
+          'the release build type assigns the debug signing config '
           'unconditionally',
     );
     expect(
@@ -76,14 +82,25 @@ void main() {
 
     // The guard, not just the config: without it a missing keystore silently
     // falls back to debug again.
-    expect(text, contains('Release build refused'),
-        reason: 'no guard stops an unsigned release build');
-    expect(text, contains('gradle.startParameter.taskNames'),
-        reason: 'the guard must fire only for release tasks, so that '
-            '`flutter build apk --debug` keeps working with no secrets');
-    expect(text, contains('allowDebugSigning'),
-        reason: 'there must be an explicit, logged opt-out for '
-            '`flutter run --release` on a dev machine');
+    expect(
+      text,
+      contains('Release build refused'),
+      reason: 'no guard stops an unsigned release build',
+    );
+    expect(
+      text,
+      contains('gradle.startParameter.taskNames'),
+      reason:
+          'the guard must fire only for release tasks, so that '
+          '`flutter build apk --debug` keeps working with no secrets',
+    );
+    expect(
+      text,
+      contains('allowDebugSigning'),
+      reason:
+          'there must be an explicit, logged opt-out for '
+          '`flutter run --release` on a dev machine',
+    );
   });
 
   test('signing material is read from key.properties or the environment', () {
@@ -95,8 +112,11 @@ void main() {
       'ANDROID_KEY_PASSWORD',
       'ANDROID_STORE_PASSWORD',
     ]) {
-      expect(text, contains(name),
-          reason: 'CI supplies signing material through $name');
+      expect(
+        text,
+        contains(name),
+        reason: 'CI supplies signing material through $name',
+      );
     }
     expect(text, contains('key.properties'));
   });
@@ -106,12 +126,21 @@ void main() {
 
     // Every credential must arrive from a file or the environment. A literal
     // here would be committed, which is the whole thing being avoided.
-    expect(text, isNot(contains(RegExp(r'storePassword\s*=\s*"[^"$]'))),
-        reason: 'a literal store password is committed');
-    expect(text, isNot(contains(RegExp(r'keyPassword\s*=\s*"[^"$]'))),
-        reason: 'a literal key password is committed');
-    expect(text, isNot(contains('.jks"')),
-        reason: 'a keystore path literal is committed');
+    expect(
+      text,
+      isNot(contains(RegExp(r'storePassword\s*=\s*"[^"$]'))),
+      reason: 'a literal store password is committed',
+    );
+    expect(
+      text,
+      isNot(contains(RegExp(r'keyPassword\s*=\s*"[^"$]'))),
+      reason: 'a literal key password is committed',
+    );
+    expect(
+      text,
+      isNot(contains('.jks"')),
+      reason: 'a keystore path literal is committed',
+    );
   });
 
   test('the keystore and its properties file are gitignored', () {
@@ -126,14 +155,19 @@ void main() {
     final strays = Directory('android')
         .listSync(recursive: true)
         .whereType<File>()
-        .where((f) =>
-            f.path.endsWith('.jks') ||
-            f.path.endsWith('.keystore') ||
-            f.path.endsWith('key.properties'))
+        .where(
+          (f) =>
+              f.path.endsWith('.jks') ||
+              f.path.endsWith('.keystore') ||
+              f.path.endsWith('key.properties'),
+        )
         .map((f) => f.path)
         .toList();
 
-    expect(strays, isEmpty,
-        reason: 'signing material is in the repo tree: ${strays.join(", ")}');
+    expect(
+      strays,
+      isEmpty,
+      reason: 'signing material is in the repo tree: ${strays.join(", ")}',
+    );
   });
 }
