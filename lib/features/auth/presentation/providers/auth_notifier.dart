@@ -8,6 +8,7 @@ import '../../domain/auth_repository.dart';
 import '../../../../core/network/auth_session_events.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/utils/app_logger.dart';
 import '../../../../domain/models/user_model.dart';
 
 final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(() {
@@ -36,13 +37,26 @@ class AuthNotifier extends Notifier<AuthState> {
     return const AuthUnknown();
   }
 
+  /// Assigns [next] unless this provider has been disposed in the meantime.
+  ///
+  /// Every state write in this class happens after an await or a timer, and
+  /// Riverpod 3 throws `Cannot use the Ref ... after it has been disposed` if
+  /// the provider went away first. That is a real crash on a real phone --
+  /// leave the login screen within the three seconds an error message is held
+  /// and the delayed revert lands on a dead Ref -- and it is invisible to a
+  /// test that never disposes its container.
+  void _setState(AuthState next) {
+    if (!ref.mounted) return;
+    state = next;
+  }
+
   /// Ends the session after the network layer reports an unrecoverable auth
   /// failure (refresh token rejected). The router redirects to /login.
   void sessionExpired() {
     if (state is AuthUnauthenticated) return;
-    state = const AuthUnauthenticated(
+    _setState(const AuthUnauthenticated(
       reason: 'Your session has expired. Please log in again.',
-    );
+    ));
   }
 
   Future<void> _checkAuthStatus() async {
@@ -50,13 +64,14 @@ class AuthNotifier extends Notifier<AuthState> {
       final token = await SecureStorageService.getAccessToken();
       if (token != null && token.isNotEmpty) {
         final user = await SecureStorageService.getUser();
-        state = AuthAuthenticated(user: user);
+        _setState(AuthAuthenticated(user: user));
       } else {
-        state = const AuthUnauthenticated();
+        _setState(const AuthUnauthenticated());
       }
     } catch (e) {
-      // Fallback if secure storage throws an error (e.g., on some Web environments)
-      state = const AuthUnauthenticated();
+      // Fail closed: an unreadable store is not a reason to assume a
+      // session still exists.
+      _setState(const AuthUnauthenticated());
     }
   }
 
@@ -87,63 +102,63 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> requestOtp(String phoneNumber) async {
     final previousState = state;
-    state = const AuthRequestingOtp();
+    _setState(const AuthRequestingOtp());
 
     final canProceed = await _checkRateLimit();
     if (!canProceed) {
-      state = const AuthError(
+      _setState(const AuthError(
         message: 'Too many attempts. Please try again later.',
-      );
+      ));
       // Revert to previous valid state after a short delay so UI can recover
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
       return;
     }
 
     try {
       await _repository.requestOtp(phoneNumber);
-      state = AuthOtpSent(phoneNumber: phoneNumber);
+      _setState(AuthOtpSent(phoneNumber: phoneNumber));
     } on Failure catch (e) {
-      state = AuthError(message: e.message);
+      _setState(AuthError(message: e.message));
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
     } catch (e) {
-      state = AuthError(message: e.toString().replaceAll('Exception: ', ''));
+      _setState(AuthError(message: e.toString().replaceAll('Exception: ', '')));
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
     }
   }
 
   Future<void> verifyOtp(String phoneNumber, String otp) async {
     final previousState = state;
-    state = AuthVerifyingOtp(phoneNumber: phoneNumber);
+    _setState(AuthVerifyingOtp(phoneNumber: phoneNumber));
 
     final canProceed = await _checkRateLimit();
     if (!canProceed) {
-      state = const AuthError(
+      _setState(const AuthError(
         message: 'Too many attempts. Please try again later.',
-      );
+      ));
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
       return;
     }
 
     try {
       final user = await _repository.verifyOtp(phoneNumber, otp);
-      state = AuthAuthenticated(user: user);
+      _setState(AuthAuthenticated(user: user));
     } on Failure catch (e) {
-      state = AuthError(message: e.message);
+      _setState(AuthError(message: e.message));
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
     } catch (e) {
-      state = AuthError(message: e.toString().replaceAll('Exception: ', ''));
+      _setState(AuthError(message: e.toString().replaceAll('Exception: ', '')));
       Future.delayed(const Duration(seconds: 3), () {
-        state = previousState;
+        _setState(previousState);
       });
     }
   }
@@ -153,11 +168,23 @@ class AuthNotifier extends Notifier<AuthState> {
   /// the change survives a restart without a fresh profile fetch.
   Future<void> updateUser(UserModel user) async {
     await SecureStorageService.saveUser(user);
-    state = AuthAuthenticated(user: user);
+    _setState(AuthAuthenticated(user: user));
   }
 
+  /// Ends the session locally no matter what the stores do.
+  ///
+  /// The state change used to sit on the line AFTER `await
+  /// _repository.logout()`, so a throw from secure storage skipped it and
+  /// left the driver signed in on a screen they had just logged out of.
+  /// Clearing the store is best-effort and cannot now throw either -- see
+  /// SecureStorageService.clearTokens.
   Future<void> logout() async {
-    await _repository.logout();
-    state = const AuthUnauthenticated();
+    try {
+      await _repository.logout();
+    } catch (e) {
+      AppLogger.e('Clearing stored credentials failed during logout', e);
+    } finally {
+      _setState(const AuthUnauthenticated());
+    }
   }
 }

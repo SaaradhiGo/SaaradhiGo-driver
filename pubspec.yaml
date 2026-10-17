@@ -80,6 +80,11 @@ dev_dependencies:
   # flutter test nor flutter analyze reads that file.
   xml: ^7.0.1
 
+  # test/core/storage/session_revocation_test.dart installs a secure store
+  # that THROWS, which is the case the real guarantee depends on and which
+  # FlutterSecureStorage.setMockInitialValues cannot express.
+  flutter_secure_storage_platform_interface: ^1.1.2
+
 dependency_overrides:
   path_provider_foundation: 2.4.1
 

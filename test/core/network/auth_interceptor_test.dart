@@ -10,6 +10,7 @@ import 'package:saaradhigo_driver/core/network/auth_interceptor.dart';
 import 'package:saaradhigo_driver/core/network/auth_session_events.dart';
 import 'package:saaradhigo_driver/core/network/logging_interceptor.dart';
 import 'package:saaradhigo_driver/core/storage/secure_storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   const expiredAccessToken = 'expired-access-token';
@@ -21,6 +22,13 @@ void main() {
   late _StubHttpClientAdapter adapter;
 
   setUp(() {
+    // SecureStorageService keeps a session-revocation tombstone in
+    // SharedPreferences, and refuses to hand out a token while it is set or
+    // unreadable. Both stores therefore have to be present for a token read
+    // to succeed -- which is the point: a store it cannot consult is not
+    // treated as consent to use a credential.
+    SharedPreferences.setMockInitialValues({});
+    SecureStorageService.resetSessionRevocationCacheForTests();
     FlutterSecureStorage.setMockInitialValues({
       'access_token': expiredAccessToken,
       'refresh_token': refreshToken,
