@@ -133,6 +133,14 @@ class EnvironmentConfig {
     'localhost',
     '127.0.0.1',
     '10.0.2.2',
+    // Railway's generated hostnames, e.g. backend-qa-811d.up.railway.app.
+    // The QA backend is reachable ONLY at one of these today, and the string
+    // 'qa.' above does not match 'backend-qa-811d' -- a hyphen, not a dot. So
+    // a release build aimed at the real QA server passed this guard as though
+    // it were production, and the QA badge keyed off the same judgement. Any
+    // railway.app host is by definition not the production domain, which is
+    // api.saaradhigo.in.
+    'railway.app',
   ];
 
   /// Why this build must not run, or null when it is fine.
