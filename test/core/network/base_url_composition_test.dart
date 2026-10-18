@@ -142,7 +142,14 @@ void main() {
         multiLine: true,
       ).firstMatch(script);
       if (match == null) fail('tool/build_release.sh has no $name');
-      return match.group(1)!;
+      final raw = match.group(1)!;
+      // The script writes these as overridable shell defaults:
+      //   QA_API="\${SAARADHIGO_QA_API:-https://host/api/v1}"
+      // so what a build actually uses, absent an override, is the part after
+      // ':-'. Reading the raw string instead gave Uri.parse an empty host and
+      // made every assertion here pass or fail for the wrong reason.
+      final expansion = RegExp(r'^\$\{[A-Z_]+:-(.*)\}$').firstMatch(raw);
+      return expansion != null ? expansion.group(1)! : raw;
     }
 
     test('both REST targets carry /api/v1', () {
@@ -171,11 +178,38 @@ void main() {
       }
     });
 
-    test('QA points at the QA host and production at the production host', () {
-      expect(value('QA_API'), contains('dev.api.saaradhigo.in'));
-      expect(value('QA_WS'), contains('dev.api.saaradhigo.in'));
-      expect(value('PROD_API'), isNot(contains('dev.')));
-      expect(value('PROD_WS'), isNot(contains('dev.')));
+    test('QA and production point at DIFFERENT hosts', () {
+      // The host itself is deliberately not asserted any more: it moved once
+      // already, when dev.api.saaradhigo.in turned out to resolve to nothing
+      // that answers. Pinning a hostname here just means this test has to be
+      // edited whenever the QA server moves, which teaches people to edit it
+      // without thinking. What must never drift is that QA and production are
+      // not the same machine, and that production is the real domain.
+      final qaHost = Uri.parse(value('QA_API')).host;
+      final prodHost = Uri.parse(value('PROD_API')).host;
+
+      expect(qaHost, isNotEmpty);
+      expect(qaHost, isNot(prodHost));
+      expect(prodHost, 'api.saaradhigo.in');
+      expect(Uri.parse(value('QA_WS')).host, qaHost,
+          reason: 'REST and WebSocket must address the same QA server');
+      expect(Uri.parse(value('PROD_WS')).host, prodHost);
+    });
+
+    test('the QA host is one the app will REFUSE to ship as a release', () {
+      // The QA server lives on a railway.app hostname. 'qa.' did not match
+      // 'backend-qa-811d' -- hyphen, not dot -- so a release build aimed at
+      // the real QA server passed the non-production guard as though it were
+      // production. Whatever host QA uses, the guard has to recognise it.
+      final qa = value('QA_API');
+      final refusal = EnvironmentConfig.evaluate(
+        isProduction: true,
+        allowNonProductionHost: false,
+        api: qa,
+        ws: value('QA_WS'),
+      );
+      expect(refusal, isNotNull,
+          reason: 'a release build pointed at $qa must be refused');
     });
   });
 
