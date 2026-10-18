@@ -87,8 +87,25 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # The APK must be told which server to talk to.
+      #
+      # A bare `flutter build apk --debug` compiles in EnvironmentConfig's
+      # fallback, `https://dev.api.saaradhigo.in`, a host that resolves but
+      # never answers. Every APK this job has ever produced was therefore
+      # unusable for QA: installing one and signing in just times out after
+      # 10s with no server-side trace. Found by installing this artifact on
+      # the QA emulator and reading logcat.
+      #
+      # Repository variables let the target move without editing this file;
+      # the defaults are the current QA service.
       - name: Build debug APK
-        run: flutter build apk --debug
+        env:
+          QA_API: ${{ vars.SAARADHIGO_QA_API_BASE || 'https://backend-qa-811d.up.railway.app/api/v1/' }}
+          QA_WS: ${{ vars.SAARADHIGO_QA_WS_BASE || 'wss://backend-qa-811d.up.railway.app/' }}
+        run: |
+          flutter build apk --debug \
+            --dart-define=API_BASE_URL="$QA_API" \
+            --dart-define=WS_BASE_URL="$QA_WS"
 
       - name: Report artifact size
         run: ls -lh build/app/outputs/flutter-apk/
