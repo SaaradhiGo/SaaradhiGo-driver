@@ -21,6 +21,9 @@ _DriverProfileModel _$DriverProfileModelFromJson(
   approved: json['approved'] == null
       ? false
       : const SafeBoolConverter().fromJson(json['approved']),
+  dispatchEligible: json['dispatch_eligible'] == null
+      ? false
+      : const SafeBoolConverter().fromJson(json['dispatch_eligible']),
   kycStatus: json['kyc_status'] as String?,
   licenseDoc: json['license_doc'] as String?,
   licenseDocBack: json['license_doc_back'] as String?,
@@ -37,6 +40,9 @@ Map<String, dynamic> _$DriverProfileModelToJson(_DriverProfileModel instance) =>
       'user': const UserOrIdConverter().toJson(instance.user),
       'status': _$DriverStatusEnumMap[instance.status]!,
       'approved': const SafeBoolConverter().toJson(instance.approved),
+      'dispatch_eligible': const SafeBoolConverter().toJson(
+        instance.dispatchEligible,
+      ),
       'kyc_status': instance.kycStatus,
       'license_doc': instance.licenseDoc,
       'license_doc_back': instance.licenseDocBack,
