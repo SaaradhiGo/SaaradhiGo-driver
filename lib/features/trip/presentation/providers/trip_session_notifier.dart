@@ -27,6 +27,21 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   /// the queued action (accept) is sent exactly once the channel is ready.
   bool _pendingAccept = false;
 
+  /// Bounds the wait between accepting an offer and the backend confirming it.
+  ///
+  /// THE FAILURE THIS CLOSES (trip #79 on QA)
+  /// The driver accepted an offer the backend had ALREADY cancelled
+  /// (`no_driver_accepted`). The accept was refused, no `trip_status_update`
+  /// ever arrived, and the app sat on "Preparing ride…" forever -- while
+  /// holding the trip screen, so it showed no further offers and the driver
+  /// was invisible to dispatch while still appearing online. There was no
+  /// timeout anywhere on this path.
+  Timer? _acceptWatchdog;
+
+  /// Long enough for a slow network to deliver the update, short enough that
+  /// a driver is not stranded on a dead screen.
+  static const Duration _acceptTimeout = Duration(seconds: 15);
+
   @override
   TripSessionState build() {
     // Pause/resume the trip socket's reconnect budget with platform
@@ -66,6 +81,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     _pendingAccept = true;
     _attachConsumer(tripId);
     _consumer!.connect();
+    _armAcceptWatchdog();
   }
 
   /// Crash recovery: rejoins an in-flight trip returned by `GET /ride/active/`.
@@ -146,6 +162,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
   /// Clears a settled/aborted session so the driver returns to idle.
   void clear() {
+    _cancelAcceptWatchdog();
     _teardown();
     _pendingAccept = false;
     state = const TripSessionState();
@@ -204,6 +221,10 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
       case TripStatusChanged(:final status, :final message):
         AppLogger.i('Trip ${_consumer?.tripId} → ${status.name}');
+        // The backend has spoken about this trip, so the acceptance is no
+        // longer in doubt and the watchdog must not fire later and tear down
+        // a ride that is genuinely ours.
+        _cancelAcceptWatchdog();
         final trip = state.trip?.copyWith(status: status);
         if (status == TripStatus.cancelled) {
           HapticFeedback.heavyImpact();
@@ -245,6 +266,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
       case TripTakenEvent():
         AppLogger.i('Trip taken by another driver');
+        _cancelAcceptWatchdog();
         _detachConsumer();
         unawaited(LocalStorageService.clearActiveTripId());
         state = state.copyWith(
@@ -255,6 +277,14 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
       case TripStatusErrorEvent(:final message, :final isOtpError):
         AppLogger.w('Trip action rejected: $message');
+        // The backend refused something. If we were still waiting for an
+        // accept to be confirmed, that refusal IS the answer -- reconcile now
+        // rather than sitting on the screen until the watchdog fires.
+        if (_acceptWatchdog != null && state.status != TripStatus.accepted) {
+          _cancelAcceptWatchdog();
+          unawaited(_reconcileAfterAcceptTimeout());
+          return;
+        }
         if (isOtpError) {
           state = state.copyWith(actionInProgress: false, otpError: message);
         } else {
@@ -299,6 +329,105 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   }
 
   void _teardown() {
+    _cancelAcceptWatchdog();
     _detachConsumer();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Acceptance watchdog
+  // ---------------------------------------------------------------------------
+
+  void _armAcceptWatchdog() {
+    _cancelAcceptWatchdog();
+    _acceptWatchdog = Timer(_acceptTimeout, () {
+      unawaited(_reconcileAfterAcceptTimeout());
+    });
+  }
+
+  void _cancelAcceptWatchdog() {
+    _acceptWatchdog?.cancel();
+    _acceptWatchdog = null;
+  }
+
+  /// The accept was not confirmed in time. Ask the BACKEND what is true.
+  ///
+  /// The app's own state is the thing in doubt here, so it is not consulted:
+  /// `/ride/active/` is authoritative about whether this driver is on a trip.
+  ///
+  ///   * a live trip for us  -> adopt it and carry on (the update was lost,
+  ///                            not the trip)
+  ///   * anything else       -> the offer is gone. Release the screen so the
+  ///                            driver returns to the duty screen and dispatch
+  ///                            can offer them the next ride.
+  Future<void> _reconcileAfterAcceptTimeout() async {
+    _acceptWatchdog = null;
+
+    // Already settled while the timer was pending.
+    if (state.isTerminal || state.status == TripStatus.accepted) return;
+    if (state.trip == null) return;
+
+    final pendingTripId = state.trip?.id;
+    AppLogger.w(
+      'Accept not confirmed in time for trip $pendingTripId; '
+      'reconciling against the backend',
+    );
+
+    TripModel? active;
+    try {
+      active = await ref.read(tripRepositoryProvider).getActiveTrip();
+    } catch (error, stackTrace) {
+      // Could not ask. Do NOT strand the driver on the trip screen on the
+      // strength of a failed request -- release it and let /ride/active/
+      // recovery re-adopt the trip if there really is one.
+      AppLogger.w('Reconcile failed', error, stackTrace);
+      _releaseUnconfirmedRide(
+        'We could not confirm that ride. You are back online.',
+      );
+      return;
+    }
+
+    if (active != null && !active.status.isTerminal) {
+      AppLogger.i('Reconcile: backend has trip ${active.id} active; adopting');
+      _cancelAcceptWatchdog();
+      _pendingAccept = false;
+
+      // Adopt the backend's view directly rather than calling
+      // `resumeActiveTrip`: that method early-returns when the session
+      // already holds this trip id, which is exactly the situation here --
+      // so routing through it left the driver on "Preparing ride…" with a
+      // trip the backend had confirmed. Caught by the test below.
+      final adopted = (active.status == TripStatus.requested)
+          ? active.copyWith(status: TripStatus.accepted)
+          : active;
+      state = state.copyWith(
+        trip: adopted,
+        status: adopted.status,
+        connecting: false,
+        actionInProgress: false,
+        errorMessage: null,
+      );
+      unawaited(LocalStorageService.setActiveTripId(adopted.id.toString()));
+
+      // Re-attach only if we lost the channel; the existing one is already
+      // subscribed to this trip.
+      if (_consumer == null) {
+        _attachConsumer(adopted.id);
+        _consumer!.connect();
+      }
+      return;
+    }
+
+    _releaseUnconfirmedRide(
+      'That ride is no longer available. You are back online.',
+    );
+  }
+
+  /// Drops an unconfirmed ride and returns the driver to the duty screen.
+  void _releaseUnconfirmedRide(String message) {
+    _cancelAcceptWatchdog();
+    _pendingAccept = false;
+    _detachConsumer();
+    unawaited(LocalStorageService.clearActiveTripId());
+    state = TripSessionState(offerLost: true, errorMessage: message);
   }
 }

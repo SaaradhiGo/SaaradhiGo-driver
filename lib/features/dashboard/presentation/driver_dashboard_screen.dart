@@ -315,8 +315,12 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   Widget _buildAcquiring(LocationState locationState) {
     final message = switch (locationState) {
       LocationStateError(:final message) => message,
-      LocationStateServiceDisabled() => 'Location services are off.',
-      LocationStatePermissionDenied() => 'Location permission required.',
+      LocationStateServiceDisabled() =>
+        'Location services are off. Turn them on to go online.',
+      LocationStatePermissionDenied(:final permanent) => permanent
+          ? 'Location permission is blocked. Enable it in Settings to go '
+                'online.'
+          : 'SaaradhiGo needs your location to receive ride requests.',
       _ => 'Getting your location…',
     };
     final isError =
@@ -348,12 +352,41 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
                   color: AppColors.onSurfaceVariant,
                 ),
               ),
+              // Every blocking location state now offers the action that
+              // actually resolves it. Previously only `error` had a button,
+              // so a driver whose location services were off, or whose
+              // permission was denied, was told what was wrong and given
+              // nothing to do about it.
               if (locationState is LocationStateError) ...[
                 const SizedBox(height: AppSpacing.md),
                 TextButton(
                   onPressed: () =>
                       ref.read(locationNotifierProvider.notifier).retry(),
                   child: const Text('Retry'),
+                ),
+              ] else if (locationState is LocationStateServiceDisabled) ...[
+                const SizedBox(height: AppSpacing.md),
+                TextButton(
+                  onPressed: () => ref
+                      .read(locationNotifierProvider.notifier)
+                      .openLocationSettings(),
+                  child: const Text('Turn on location'),
+                ),
+              ] else if (locationState is LocationStatePermissionDenied) ...[
+                const SizedBox(height: AppSpacing.md),
+                TextButton(
+                  onPressed: () => locationState.permanent
+                      // Permanently denied: only the system settings screen
+                      // can change this, asking again does nothing.
+                      ? ref
+                            .read(locationNotifierProvider.notifier)
+                            .openAppSettings()
+                      : ref.read(locationNotifierProvider.notifier).retry(),
+                  child: Text(
+                    locationState.permanent
+                        ? 'Open settings'
+                        : 'Grant permission',
+                  ),
                 ),
               ],
             ],

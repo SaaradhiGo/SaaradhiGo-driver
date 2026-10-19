@@ -24,6 +24,20 @@ class LocationNotifier extends Notifier<LocationState> {
   }
 
   StreamSubscription<Position>? _subscription;
+
+  /// Bounds how long the driver may sit on "Getting your location…".
+  ///
+  /// THE FAILURE THIS CLOSES
+  /// `acquiring` had no timeout. If the platform never produced a first fix
+  /// -- a cold GPS indoors, a provider that silently never fires -- the duty
+  /// screen showed "Getting your location…" forever, with no error, no retry
+  /// and no way to go online. The state machine already knew how to say
+  /// "service disabled", "permission denied" and "error"; nothing ever moved
+  /// it out of `acquiring`.
+  Timer? _acquireTimeout;
+
+  /// Long enough for a genuine cold start, short enough not to strand anyone.
+  static const Duration _acquireLimit = Duration(seconds: 25);
   StreamSubscription<ServiceStatus>? _serviceStatusSubscription;
   LocationTrackingMode _mode = LocationTrackingMode.idleOnline;
   bool _hasBackgroundAccess = false;
@@ -135,6 +149,7 @@ class LocationNotifier extends Notifier<LocationState> {
 
     if (previous == null) {
       state = const LocationState.acquiring();
+      _armAcquireTimeout();
       // Seed the map immediately if the platform has a cached fix, so the user
       // is not staring at a spinner while the first stream event lands.
       await _seedFromLastKnown();
@@ -194,7 +209,32 @@ class LocationNotifier extends Notifier<LocationState> {
     }
   }
 
+  void _armAcquireTimeout() {
+    _cancelAcquireTimeout();
+    _acquireTimeout = Timer(_acquireLimit, () {
+      _acquireTimeout = null;
+      if (!ref.mounted) return;
+      // Only act if we are STILL waiting. A fix, a permission refusal or a
+      // disabled-service result all move the state on and cancel this.
+      if (state is! LocationStateAcquiring) return;
+      AppLogger.w(
+        'No location fix within ${_acquireLimit.inSeconds}s; surfacing a '
+        'recoverable error instead of waiting forever',
+      );
+      state = const LocationState.error(
+        'We could not get your location. Move somewhere with a clearer view '
+        'of the sky, check that GPS is on, then try again.',
+      );
+    });
+  }
+
+  void _cancelAcquireTimeout() {
+    _acquireTimeout?.cancel();
+    _acquireTimeout = null;
+  }
+
   void _retainFixOrShowError() {
+    _cancelAcquireTimeout();
     if (!ref.mounted) return;
     final retained = state.positionOrNull;
     if (retained != null) {
@@ -218,6 +258,9 @@ class LocationNotifier extends Notifier<LocationState> {
 
   void _emitFix(Position position, {bool weakSignal = false}) {
     if (!ref.mounted) return;
+    // A fix arrived, so the acquisition is no longer in doubt. This also
+    // covers the cached-fix seed, which is a real position.
+    _cancelAcquireTimeout();
     state = LocationState.tracking(
       position: LatLng(position.latitude, position.longitude),
       timestamp: position.timestamp,
@@ -335,12 +378,16 @@ class LocationNotifier extends Notifier<LocationState> {
 
   /// Stops streaming and resets to [LocationState.initial].
   Future<void> stop() async {
+    _cancelAcquireTimeout();
     _enableForegroundService = false;
     await _stopStream();
     state = const LocationState.initial();
   }
 
   Future<void> _stopStream() async {
+    // NB: the acquisition timeout is deliberately NOT cancelled here.
+    // `_restartStream()` calls this immediately after the timeout is armed,
+    // so cancelling here disarmed it every time and the bound never fired.
     final sub = _subscription;
     _subscription = null;
     final serviceStatusSub = _serviceStatusSubscription;
