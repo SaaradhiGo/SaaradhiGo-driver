@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../storage/secure_storage_service.dart';
 import 'api_endpoints.dart';
 import 'auth_session_events.dart';
+import 'jwt_expiry.dart';
 import '../utils/app_logger.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -100,6 +101,36 @@ class AuthInterceptor extends Interceptor {
     } on DioException catch (retryError) {
       handler.next(retryError);
     }
+  }
+
+  /// An access token that is actually usable right now.
+  ///
+  /// The WebSocket handshake puts the token in the query string and never goes
+  /// through Dio, so the 401 path above cannot help it: the server refuses the
+  /// upgrade and the client sees only `WebSocketChannelException`. Observed on
+  /// QA -- a driver app left open past the access-token lifetime could not go
+  /// online again at all. It retried six times, gave up ("Max reconnect
+  /// attempts reached"), and settled on "You're Offline" with no explanation,
+  /// while a freshly minted token for the same account connected first try.
+  ///
+  /// So the socket asks for a token it can rely on, and the expiry is read
+  /// from the token rather than discovered by being rejected. Refreshes are
+  /// deduplicated with the 401 path, so a REST call and a reconnect racing
+  /// each other still perform one refresh.
+  ///
+  /// Returns null only when there is no session left to refresh, in which case
+  /// `_refreshTokens` has already cleared it and emitted `sessionExpired`.
+  Future<String?> ensureFreshAccessToken() async {
+    final stored = await SecureStorageService.getAccessToken();
+    if (stored != null && stored.isNotEmpty && !isJwtExpired(stored)) {
+      return stored;
+    }
+    if (stored == null || stored.isEmpty) {
+      // Nothing to present and nothing to prove; let the refresh token decide.
+      return _getRefreshedAccessToken();
+    }
+    AppLogger.i('Access token expired; refreshing before connecting a socket');
+    return _getRefreshedAccessToken();
   }
 
   String? _bearerTokenFrom(Map<String, dynamic> headers) {

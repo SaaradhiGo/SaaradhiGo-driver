@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/dio_client.dart';
-import '../../../../core/storage/secure_storage_service.dart';
 import '../../data/data_sources/trip_remote_data_source.dart';
 import '../../data/data_sources/trip_status_consumer.dart';
 import '../../data/repositories/trip_repository_impl.dart';
@@ -30,7 +29,9 @@ final tripStatusConsumerFactoryProvider = Provider<TripStatusConsumerFactory>((
 ) {
   return (tripId) => TripStatusConsumer(
     tripId: tripId,
-    tokenReader: SecureStorageService.getAccessToken,
+    // Refreshed if it has expired; an expired token here would silence trip
+    // updates mid-ride, on the socket that carries start/complete/cancel.
+    tokenReader: ref.read(socketAccessTokenProvider),
   );
 });
 

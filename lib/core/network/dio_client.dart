@@ -10,8 +10,20 @@ final dioClientProvider = Provider<DioClient>((ref) {
   return DioClient();
 });
 
+/// The access token a WebSocket should connect with.
+///
+/// Sockets used to read storage directly, which meant connecting with whatever
+/// was last written there -- including an access token that had already
+/// expired. This goes through the same refresh the REST client uses, so the
+/// three driver sockets and Dio can never disagree about who is signed in.
+final socketAccessTokenProvider = Provider<Future<String?> Function()>((ref) {
+  final client = ref.watch(dioClientProvider);
+  return client.freshAccessToken;
+});
+
 class DioClient {
   late final Dio _dio;
+  late final AuthInterceptor _auth;
 
   DioClient() {
     _dio = Dio(
@@ -27,10 +39,15 @@ class DioClient {
       ),
     );
 
-    _dio.interceptors.addAll([LoggingInterceptor(), AuthInterceptor(_dio)]);
+    _auth = AuthInterceptor(_dio);
+    _dio.interceptors.addAll([LoggingInterceptor(), _auth]);
   }
 
   Dio get dio => _dio;
+
+  /// An access token that has not already expired, refreshing it if needed.
+  /// Used by the WebSocket URL builders, which cannot rely on a 401.
+  Future<String?> freshAccessToken() => _auth.ensureFreshAccessToken();
 
   /// Helper method to execute requests and standardise error handling
   Future<dynamic> request(Future<Response> Function() requestFunction) async {
