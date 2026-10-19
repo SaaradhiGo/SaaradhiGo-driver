@@ -110,8 +110,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           loaded: (s) {
             final profile = s.profile;
 
-            // 1. If the driver is fully approved/verified by the backend, they belong on the home screen.
-            if (profile.approved) {
+            // 1. If the backend says this driver may operate, they belong on
+            // the home screen.
+            //
+            // `dispatchEligible` rather than `approved`: the server decides
+            // eligibility at its dispatch gates, and for a QA test driver
+            // with simulated eligibility those gates say yes while `approved`
+            // correctly stays false. Reading `approved` here sent such a
+            // driver to the onboarding wizard the server had already let
+            // past. `approved` is still honoured on its own so a backend
+            // that does not send the new field behaves exactly as before.
+            if (profile.approved || profile.dispatchEligible) {
               return (isGoingToLogin ||
                       isGoingToSplash ||
                       isGoingToOtp ||

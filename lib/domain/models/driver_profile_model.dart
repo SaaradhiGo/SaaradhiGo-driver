@@ -99,6 +99,21 @@ abstract class DriverProfileModel with _$DriverProfileModel {
     @Default(DriverStatus.offline)
     DriverStatus status,
     @SafeBoolConverter() @Default(false) bool approved,
+    /// MAY THIS DRIVER OPERATE RIGHT NOW.
+    ///
+    /// Not the same question as `approved`, which means a human reviewed
+    /// real documents. The backend computes this from the same rule its
+    /// dispatch sockets use, so the app and the server stop disagreeing: a
+    /// QA test driver with simulated eligibility used to be accepted by the
+    /// sockets and sent to the onboarding wizard by this app at the same
+    /// time.
+    ///
+    /// Defaults to false, so a build talking to a backend that does not send
+    /// it behaves exactly as before.
+    @SafeBoolConverter()
+    @Default(false)
+    @JsonKey(name: 'dispatch_eligible')
+    bool dispatchEligible,
     @JsonKey(name: 'kyc_status') String? kycStatus,
     @JsonKey(name: 'license_doc') String? licenseDoc,
     @JsonKey(name: 'license_doc_back') String? licenseDocBack,
