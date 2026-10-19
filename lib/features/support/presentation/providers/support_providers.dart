@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/dio_client.dart';
-import '../../../../core/storage/secure_storage_service.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
@@ -43,7 +42,8 @@ final tripChatConsumerFactoryProvider = Provider<TripChatConsumerFactory>((
 ) {
   return (tripId) => TripChatConsumer(
     tripId: tripId,
-    tokenReader: SecureStorageService.getAccessToken,
+    // Refreshed if it has expired, like the other two sockets.
+    tokenReader: ref.read(socketAccessTokenProvider),
   );
 });
 
