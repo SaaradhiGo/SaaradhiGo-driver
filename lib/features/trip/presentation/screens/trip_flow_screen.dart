@@ -110,6 +110,18 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       );
     }
 
+    // The accept was never confirmed -- the offer had already been cancelled,
+    // or the backend did not answer in time. Say so and get the driver off
+    // this screen; staying on it is what made them invisible to dispatch.
+    if (session.offerLost) {
+      return _TripEndedView(
+        icon: Icons.timer_off_rounded,
+        title: 'Ride no longer available',
+        message: session.errorMessage
+            ?? 'That ride is no longer available. You are back online.',
+      );
+    }
+
     final trip = session.trip;
     if (trip == null) {
       return Scaffold(
