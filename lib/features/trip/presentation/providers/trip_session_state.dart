@@ -47,6 +47,13 @@ abstract class TripSessionState with _$TripSessionState {
     /// duty screen. Distinct from `takenByOther` (a known race with another
     /// driver) and from `socketError` (transport, trip may still be ours).
     @Default(false) bool offerLost,
+
+    /// True when the backend refused the accept for a reason about the
+    /// DRIVER (a fatigue lockout, a cancellation cooldown) rather than about
+    /// the ride. The two need different words on screen: "ride no longer
+    /// available" is actively wrong when the ride is fine and the driver is
+    /// the one who cannot take it.
+    @Default(false) bool refusedByBackend,
   }) = _TripSessionState;
 
   /// No trip is in flight.

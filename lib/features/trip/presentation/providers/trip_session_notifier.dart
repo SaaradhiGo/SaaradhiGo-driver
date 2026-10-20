@@ -428,15 +428,20 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
     _releaseUnconfirmedRide(
       refusal ?? 'That ride is no longer available. You are back online.',
+      refused: refusal != null,
     );
   }
 
   /// Drops an unconfirmed ride and returns the driver to the duty screen.
-  void _releaseUnconfirmedRide(String message) {
+  void _releaseUnconfirmedRide(String message, {bool refused = false}) {
     _cancelAcceptWatchdog();
     _pendingAccept = false;
     _detachConsumer();
     unawaited(LocalStorageService.clearActiveTripId());
-    state = TripSessionState(offerLost: true, errorMessage: message);
+    state = TripSessionState(
+      offerLost: true,
+      errorMessage: message,
+      refusedByBackend: refused,
+    );
   }
 }
