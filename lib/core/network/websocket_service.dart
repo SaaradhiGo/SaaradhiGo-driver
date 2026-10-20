@@ -3,6 +3,15 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+// `status.goingAway` is 1001, which dart:io's WebSocket.close() REFUSES:
+// "close code must be 1000 or in the range 3000-4999". Every teardown threw
+// an unhandled exception because of it. Observed on QA after a driver
+// accepted trip #94: the accept acked, the app then tore down its socket,
+// the throw aborted the flow, `/ride/active/` answered NO_ACTIVE_TRIP and
+// the driver was left with no trip at all.
+//
+// 1000 (normal closure) is the right code for a client hanging up anyway --
+// 1001 means "the server is going away", which is not what is happening.
 import '../utils/app_logger.dart';
 
 enum WebSocketState { disconnected, connecting, connected, error }
@@ -224,7 +233,7 @@ class WebSocketService {
         _subscription?.cancel();
         _subscription = null;
         _channel = null;
-        channel.sink.close(status.goingAway);
+        channel.sink.close(status.normalClosure);
         _emitState(WebSocketState.disconnected);
         if (_shouldReconnect) _scheduleReconnect(_session);
       }
@@ -297,7 +306,7 @@ class WebSocketService {
     _reconnectTimer = null;
     _subscription?.cancel();
     _subscription = null;
-    _channel?.sink.close(status.goingAway);
+    _channel?.sink.close(status.normalClosure);
     _channel = null;
     if (hadConnection) _emitState(WebSocketState.disconnected);
   }
