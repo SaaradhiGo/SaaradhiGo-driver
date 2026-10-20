@@ -242,6 +242,47 @@ void main() {
       });
     });
 
+    test('the backend\'s reason for refusing an accept reaches the driver', () {
+      // FOUND ON QA, TRIPS #93-#96.
+      //
+      // Four rides in a row were refused by the backend with:
+      //
+      //   "You have reached the 12-hour daily limit, or are in a cooldown
+      //    after recent cancellations. Try again after 08:25:18Z."
+      //
+      // The app logged exactly that, then showed the driver "That ride is no
+      // longer available. You are back online." Those mean opposite things:
+      // one invites them to wait for the next offer, the other means no
+      // offer will be acceptable for another four hours. The driver sat
+      // there re-accepting rides that could never succeed.
+      fakeAsync((async) {
+        late _FakeConsumer consumer;
+        final repo = _FakeTripRepository();  // no active trip: refusal stands
+        final container = _container(repo, (c) => consumer = c);
+        addTearDown(container.dispose);
+
+        final notifier = container.read(tripSessionNotifierProvider.notifier);
+        unawaited(notifier.acceptFromRequest(_offer));
+        async.flushMicrotasks();
+
+        const refusal =
+            'You have reached the 12-hour daily limit, or are in a cooldown '
+            'after recent cancellations. Try again after 08:25:18Z.';
+        consumer.emit(const TripStatusErrorEvent(refusal));
+        async.flushMicrotasks();
+        async.elapse(const Duration(seconds: 2));
+        async.flushMicrotasks();
+
+        final state = container.read(tripSessionNotifierProvider);
+        expect(state.offerLost, isTrue);
+        expect(
+          state.errorMessage,
+          refusal,
+          reason: 'the driver must be told why, not a generic substitute',
+        );
+      });
+    });
+
     test('duplicate acceptance of the same offer is ignored', () {
       fakeAsync((async) {
         final repo = _FakeTripRepository(

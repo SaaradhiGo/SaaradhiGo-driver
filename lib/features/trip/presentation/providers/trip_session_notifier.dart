@@ -282,7 +282,11 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
         // rather than sitting on the screen until the watchdog fires.
         if (_acceptWatchdog != null && state.status != TripStatus.accepted) {
           _cancelAcceptWatchdog();
-          unawaited(_reconcileAfterAcceptTimeout());
+          // Hand the backend's reason along. Without this the driver was told
+          // "That ride is no longer available" when the truth was a fatigue
+          // lockout with an expiry time -- seen on QA, where the app logged
+          // the real message and then showed a different one.
+          unawaited(_reconcileAfterAcceptTimeout(refusal: message));
           return;
         }
         if (isOtpError) {
@@ -359,7 +363,12 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   ///   * anything else       -> the offer is gone. Release the screen so the
   ///                            driver returns to the duty screen and dispatch
   ///                            can offer them the next ride.
-  Future<void> _reconcileAfterAcceptTimeout() async {
+  /// [refusal] is the backend's own words for why an accept was refused,
+  /// when there are any. It is preferred over the generic "no longer
+  /// available" text, because the two mean very different things to a driver:
+  /// one is "somebody else got it", the other is "you are locked out until
+  /// 08:25 and nothing you do will help before then".
+  Future<void> _reconcileAfterAcceptTimeout({String? refusal}) async {
     _acceptWatchdog = null;
 
     // Already settled while the timer was pending.
@@ -418,7 +427,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     }
 
     _releaseUnconfirmedRide(
-      'That ride is no longer available. You are back online.',
+      refusal ?? 'That ride is no longer available. You are back online.',
     );
   }
 
