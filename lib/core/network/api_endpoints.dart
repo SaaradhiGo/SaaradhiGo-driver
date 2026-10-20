@@ -82,6 +82,9 @@ class ApiEndpoints {
   static String notificationRead(int id) => '/rider/notifications/$id/read/';
   static const String notificationsReadAll = '/rider/notifications/read-all/';
 
+  // Maps. The Google key stays on the server; these are proxy paths.
+  static const String mapsDirections = '/ride/maps/directions';
+
   // WebSockets (Relative to wsBaseUrl)
   static const String wsDriverLocation = 'ws/driver/location/';
   static String wsTripStatus(String tripId) => 'ws/ride/trip/$tripId/';

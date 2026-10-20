@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+
+import '../providers/route_providers.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/app_cached_tile_provider.dart';
@@ -8,13 +11,24 @@ import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
 /// Dark route map for the active-trip screens: driver, pickup and destination
-/// markers with a connecting polyline.
+/// markers with the ROAD between them.
 ///
-/// Shares the charcoal tile treatment of the dashboard [DriverMap]. This is a
-/// static overview map, not turn-by-turn navigation — real routing needs a
-/// directions provider + API key, a product/backend decision (see the phase
-/// doc). The polyline is a straight great-circle line between the two points.
-class TripRouteMap extends StatelessWidget {
+/// Shares the charcoal tile treatment of the dashboard [DriverMap]. Still an
+/// overview map, not turn-by-turn navigation — navigation is handed to the
+/// device's own map app.
+///
+/// It used to draw a straight great-circle line, because real routing needed
+/// "a directions provider + API key, a product/backend decision". That
+/// decision has since been made: Routes API is enabled and the backend
+/// proxies it at `/ride/maps/directions`, caching each answer and keeping the
+/// key server-side. So the line is now the actual road.
+///
+/// Which leg is drawn follows what the screen passes: the pickup screen gives
+/// driver + pickup, so the driver sees the road to the passenger; the active
+/// trip gives pickup + destination. If no route comes back, NO line is drawn.
+/// A straight line between two points looks like a road that isn't there, and
+/// this app does not draw roads that do not exist.
+class TripRouteMap extends ConsumerWidget {
   const TripRouteMap({
     super.key,
     this.driver,
@@ -38,10 +52,33 @@ class TripRouteMap extends StatelessWidget {
     0, 0, 0, 1, 0, //
   ];
 
+  /// The leg worth drawing for what this screen was given.
+  ///
+  /// Destination wins when there is one -- that is the active trip. Otherwise
+  /// driver -> pickup, which is the leg the driver is actually travelling
+  /// before collection.
+  RouteLeg? _leg() {
+    if (pickup != null && destination != null) {
+      return RouteLeg(pickup!, destination!);
+    }
+    if (driver != null && pickup != null) return RouteLeg(driver!, pickup!);
+    return null;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final center =
         focus ?? pickup ?? destination ?? driver ?? kFallbackMapCenter;
+
+    // Watching a leg-keyed provider means a GPS frame that does not move the
+    // driver ~110 m resolves to the same leg and no request is made.
+    final leg = _leg();
+    final road = leg == null
+        ? const <LatLng>[]
+        : ref.watch(routeForLegProvider(leg)).maybeWhen(
+              data: (points) => points,
+              orElse: () => const <LatLng>[],
+            );
 
     final markers = <Marker>[
       if (driver != null)
@@ -73,11 +110,13 @@ class TripRouteMap extends StatelessWidget {
             tileProvider: AppCachedTileProvider(),
           ),
         ),
-        if (pickup != null && destination != null)
+        // Only a real road. While the lookup is in flight, or if it failed,
+        // the map shows markers and nothing between them.
+        if (road.length > 1)
           PolylineLayer(
             polylines: [
               Polyline(
-                points: [pickup!, destination!],
+                points: road,
                 strokeWidth: 4,
                 color: AppColors.primary.withValues(alpha: 0.8),
               ),
