@@ -280,6 +280,12 @@ void main() {
           refusal,
           reason: 'the driver must be told why, not a generic substitute',
         );
+        expect(
+          state.refusedByBackend,
+          isTrue,
+          reason: 'so the screen does not title this "ride no longer '
+              'available" over a message saying the driver is locked out',
+        );
       });
     });
 
