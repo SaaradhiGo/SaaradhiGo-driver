@@ -128,7 +128,7 @@ void main() {
   group('LoggingInterceptor Security & Sanitization Tests', () {
     test('redacts sensitive query parameters from URLs', () {
       final uri = Uri.parse(
-        'https://dev.api.saaradhigo.in/driver/location/?token=secret_jwt_token&lat=17.385&lng=78.486&otp=999999&api_key=priv_key',
+        'https://dev.api.saaradhigo.com/driver/location/?token=secret_jwt_token&lat=17.385&lng=78.486&otp=999999&api_key=priv_key',
       );
 
       final sanitized = LoggingInterceptor.sanitizeUri(uri);

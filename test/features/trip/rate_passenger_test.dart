@@ -67,7 +67,7 @@ void main() {
   setUp(() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://dev.api.saaradhigo.in/',
+        baseUrl: 'https://dev.api.saaradhigo.com/',
         // Without this, Dio throws for any non-2xx before the data source can
         // read the body -- and the refusal codes are the whole point here.
         validateStatus: (_) => true,

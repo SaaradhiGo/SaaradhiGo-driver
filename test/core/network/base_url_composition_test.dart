@@ -88,7 +88,7 @@ void main() {
       // The exact value that could never work.
       expect(
         EnvironmentConfig.apiBaseUrl,
-        isNot('https://dev.api.saaradhigo.in/'),
+        isNot('https://backend-qa-811d.up.railway.app/'),
       );
     });
   });
@@ -190,7 +190,7 @@ void main() {
 
       expect(qaHost, isNotEmpty);
       expect(qaHost, isNot(prodHost));
-      expect(prodHost, 'api.saaradhigo.in');
+      expect(prodHost, 'api.saaradhigo.com');
       expect(Uri.parse(value('QA_WS')).host, qaHost,
           reason: 'REST and WebSocket must address the same QA server');
       expect(Uri.parse(value('PROD_WS')).host, prodHost);

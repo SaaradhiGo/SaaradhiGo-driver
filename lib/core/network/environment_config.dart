@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// This used to be three lines:
 ///
 ///     await dotenv.load(fileName: ".env");
-///     dotenv.env['API_BASE_URL'] ?? 'https://dev.api.saaradhigo.in/'
+///     dotenv.env['API_BASE_URL'] ?? 'https://backend-qa-811d.up.railway.app/'
 ///
 /// with `.env` declared as a Flutter **asset** in pubspec.yaml. Two problems,
 /// one of which is a security issue and the other of which is worse:
@@ -20,7 +20,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 ///      removed exactly this for exactly this reason.
 ///
 ///   2. **A missing or stale `.env` silently pointed a release build at
-///      dev.** `?? 'https://dev.api.saaradhigo.in/'` is a fallback that
+///      dev.** `?? 'https://backend-qa-811d.up.railway.app/'` is a fallback that
 ///      cannot fail loudly: a store build with no `.env` would talk to test
 ///      data, against drivers who are not there, with nothing on screen to
 ///      say so. `.env` is gitignored, so CI never had one.
@@ -38,8 +38,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 ///
 /// Build for production with:
 ///   flutter build apk --release \
-///     --dart-define=API_BASE_URL=https://api.saaradhigo.in/api/v1/ \
-///     --dart-define=WS_BASE_URL=wss://api.saaradhigo.in/ws
+///     --dart-define=API_BASE_URL=https://api.saaradhigo.com/api/v1/ \
+///     --dart-define=WS_BASE_URL=wss://api.saaradhigo.com/ws
 class EnvironmentConfig {
   const EnvironmentConfig._();
 
@@ -56,7 +56,14 @@ class EnvironmentConfig {
   /// resolves to `https://host/auth/otp/`, which is not a routed path -- so
   /// **every REST call 404s**. The app had never been run end to end against
   /// the live API, which is how a base URL that cannot work survived.
-  static const String _devApiBaseUrl = 'https://dev.api.saaradhigo.in/api/v1/';
+  // THE QA SERVER, BY THE ONLY HOSTNAME THAT ANSWERS. dev.api.saaradhigo.in
+  // resolves (16.112.4.47) and times out on 443. The official domain is
+  // saaradhigo.com, but api.saaradhigo.com has no DNS record yet, so
+  // defaulting to it would repeat the same failure in a new spelling.
+  // `railway.app` is a non-production marker, so a release build aimed
+  // here is still refused unless it opts in.
+  static const String _devApiBaseUrl =
+      'https://backend-qa-811d.up.railway.app/api/v1/';
 
   /// The WS base must NOT include `ws`, and must end in `/`.
   ///
@@ -66,7 +73,7 @@ class EnvironmentConfig {
   /// base ends in `/ws` and its paths do not -- so the two are not
   /// interchangeable, and copying one app's value to the other produces
   /// `/wsws/...`.
-  static const String _devWsBaseUrl = 'wss://dev.api.saaradhigo.in/';
+  static const String _devWsBaseUrl = 'wss://backend-qa-811d.up.railway.app/';
 
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
@@ -84,7 +91,7 @@ class EnvironmentConfig {
   ///   * [environmentLabel] still reports 'non-production', and the app shows
   ///     a QA banner, so such a build cannot be mistaken for the real one.
   ///
-  ///   flutter build apk --release   ///     --dart-define=ALLOW_NON_PRODUCTION_HOST=true   ///     --dart-define=API_BASE_URL=https://dev.api.saaradhigo.in/ ...
+  ///   flutter build apk --release   ///     --dart-define=ALLOW_NON_PRODUCTION_HOST=true   ///     --dart-define=API_BASE_URL=https://backend-qa-811d.up.railway.app/ ...
   static const bool allowNonProductionHost = bool.fromEnvironment(
     'ALLOW_NON_PRODUCTION_HOST',
   );
@@ -139,7 +146,7 @@ class EnvironmentConfig {
     // a release build aimed at the real QA server passed this guard as though
     // it were production, and the QA badge keyed off the same judgement. Any
     // railway.app host is by definition not the production domain, which is
-    // api.saaradhigo.in.
+    // api.saaradhigo.com.
     'railway.app',
   ];
 
