@@ -21,10 +21,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:saaradhigo_driver/core/network/environment_config.dart';
 import 'package:saaradhigo_driver/main.dart';
 
-const _prodApi = 'https://api.saaradhigo.in/api/v1/';
-const _prodWs = 'wss://api.saaradhigo.in/ws';
-const _qaApi = 'https://dev.api.saaradhigo.in/';
-const _qaWs = 'wss://dev.api.saaradhigo.in/';
+const _prodApi = 'https://api.saaradhigo.com/api/v1/';
+const _prodWs = 'wss://api.saaradhigo.com/ws';
+const _qaApi = 'https://backend-qa-811d.up.railway.app/';
+const _qaWs = 'wss://backend-qa-811d.up.railway.app/';
 
 String? evaluate({
   bool isProduction = true,
@@ -80,9 +80,9 @@ void main() {
   group('a release build pointed at a non-production host', () {
     test('is refused for every marker', () {
       for (final host in const [
-        'https://dev.api.saaradhigo.in/',
-        'https://staging.api.saaradhigo.in/',
-        'https://qa.api.saaradhigo.in/',
+        'https://dev.api.saaradhigo.com/',
+        'https://staging.api.saaradhigo.com/',
+        'https://qa.api.saaradhigo.com/',
         'http://localhost:8000/',
         'http://127.0.0.1:8000/',
         'http://10.0.2.2:8000/',
@@ -102,7 +102,13 @@ void main() {
     });
 
     test('names the marker it objected to', () {
-      expect(evaluate(api: _qaApi), contains('dev.'));
+      // 'dev.' was the marker that matched the old QA host
+      // dev.api.saaradhigo.in. QA answers on a Railway hostname now, so
+      // the marker is 'railway.app'. What the test is for is that the
+      // refusal names WHICH rule it tripped.
+      expect(evaluate(api: _qaApi), contains('railway.app'));
+      expect(evaluate(api: 'https://dev.api.saaradhigo.com/'),
+          contains('dev.'));
     });
   });
 

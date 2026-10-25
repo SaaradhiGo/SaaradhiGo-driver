@@ -31,7 +31,7 @@ void main() {
   late NotificationsRemoteDataSourceImpl dataSource;
 
   setUp(() {
-    dio = Dio(BaseOptions(baseUrl: 'https://dev.api.saaradhigo.in/'));
+    dio = Dio(BaseOptions(baseUrl: 'https://dev.api.saaradhigo.com/'));
     adapter = _StubHttpClientAdapter();
     dio.httpClientAdapter = adapter;
     dataSource = NotificationsRemoteDataSourceImpl(dio);
