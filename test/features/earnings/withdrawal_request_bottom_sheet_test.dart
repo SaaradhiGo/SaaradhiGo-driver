@@ -34,6 +34,8 @@ void main() {
               blocked: false,
               minimumWithdrawal: 500.0,
               feePercent: 2.5,
+              feeDisplay: '2.5%',
+              currency: 'INR',
             ),
           ),
         );
@@ -57,7 +59,7 @@ void main() {
         );
 
         expect(find.text('Payout Withdrawal'), findsOneWidget);
-        expect(find.text('₹8200.00'), findsOneWidget);
+        expect(find.text('\u20B98200.00'), findsOneWidget);
 
         // Tap quick amount: ₹1,000
         await tester.tap(find.text('₹1,000'));
@@ -74,6 +76,76 @@ void main() {
         expect(notifier.submittedAmount, 1000.0);
       },
     );
+
+    Future<void> pumpSheet(
+      WidgetTester tester,
+      WithdrawalBalanceModel balance,
+    ) async {
+      final notifier = _FakeEarningsNotifier(
+        EarningsState(withdrawalBalance: balance),
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [earningsNotifierProvider.overrideWith(() => notifier)],
+          child: MaterialApp(
+            theme: AppTheme.darkTheme,
+            home: const Scaffold(body: WithdrawalRequestBottomSheet()),
+          ),
+        ),
+      );
+    }
+
+    // THE FEE RULE: the fee line is the server's text, shown only when the
+    // server charges a fee.
+    testWidgets('shows the transfer fee exactly as the API says it', (
+      tester,
+    ) async {
+      await pumpSheet(
+        tester,
+        const WithdrawalBalanceModel(
+          availableBalance: 5000.0,
+          minimumWithdrawal: 500.0,
+          feePercent: 1.5,
+          feeDisplay: '1.5%',
+          currency: 'INR',
+        ),
+      );
+      expect(find.textContaining('Transfer fee is 1.5%.'), findsOneWidget);
+      expect(find.textContaining('Minimum withdrawal is \u20B9500.'), findsOneWidget);
+    });
+
+    testWidgets('shows no fee text at all when the fee is zero', (tester) async {
+      await pumpSheet(
+        tester,
+        const WithdrawalBalanceModel(
+          availableBalance: 5000.0,
+          minimumWithdrawal: 500.0,
+          feePercent: 0.0,
+          currency: 'INR',
+        ),
+      );
+      expect(find.textContaining('fee'), findsNothing);
+      expect(find.textContaining('Fee'), findsNothing);
+      expect(find.textContaining('Minimum withdrawal is \u20B9500.'), findsOneWidget);
+    });
+
+    testWidgets('speaks the currency the API returns, not a rupee sign', (
+      tester,
+    ) async {
+      await pumpSheet(
+        tester,
+        const WithdrawalBalanceModel(
+          availableBalance: 30.0,
+          minimumWithdrawal: 1.0,
+          feePercent: 0.0,
+          currency: 'USD',
+        ),
+      );
+      expect(find.text('\$30.00'), findsOneWidget);
+      expect(find.textContaining('Minimum withdrawal is \$1.'), findsOneWidget);
+      expect(find.textContaining('\u20B9'), findsNothing);
+      expect(find.byIcon(Icons.currency_rupee), findsNothing);
+    });
 
     testWidgets(
       'shows validation SnackBar when tapping submit with empty amount',

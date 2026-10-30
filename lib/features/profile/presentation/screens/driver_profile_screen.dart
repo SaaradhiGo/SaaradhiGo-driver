@@ -709,13 +709,13 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                 color: AppColors.primaryContainer,
               ),
               title: Text(
-                'Elite Benefits & Tier',
+                'Elite Tier',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onBackground,
                 ),
               ),
               subtitle: Text(
-                'Tier perks, quality scores & qualification status',
+                'Quality scores & qualification status',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
                   fontSize: 12,

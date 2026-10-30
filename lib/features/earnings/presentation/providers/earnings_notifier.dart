@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/utils/app_logger.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../domain/models/earning_model.dart';
 import '../../../../domain/models/earnings_summary_model.dart';
 import '../../../../domain/models/withdrawal_balance_model.dart';
@@ -213,7 +214,7 @@ class EarningsNotifier extends Notifier<EarningsState> {
     if (amount < balance.minimumWithdrawal) {
       state = state.copyWith(
         errorMessage:
-            'Minimum withdrawal amount is ₹${balance.minimumWithdrawal.toStringAsFixed(2)}',
+            'Minimum withdrawal amount is ${formatMoney(balance.minimumWithdrawal, balance.currency)}',
       );
       return false;
     }
@@ -257,7 +258,7 @@ class EarningsNotifier extends Notifier<EarningsState> {
         withdrawalBalance: nextBalance,
         withdrawalHistory: nextHistory,
         withdrawalSuccessMessage:
-            'Withdrawal request of ₹${amount.toStringAsFixed(2)} submitted successfully (ID: ${withdrawal.id}).',
+            'Withdrawal request of ${formatMoney(amount, balance.currency)} submitted successfully (ID: ${withdrawal.id}).',
       );
       return true;
     } catch (e) {

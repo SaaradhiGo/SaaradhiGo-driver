@@ -216,7 +216,7 @@ class _SupportBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Priority 24/7 Support',
+                  'Support',
                   style: AppTypography.bodyLg.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.bold,
@@ -224,7 +224,7 @@ class _SupportBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Our team typically replies within 24 hours.',
+                  'Raise a ticket and our team replies here.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
                     fontSize: 13,
