@@ -45,6 +45,7 @@ class StubEarningsRepository implements EarningsRepository {
       availableBalance: 1200.0,
       blocked: false,
       minimumWithdrawal: 500.0,
+      currency: 'INR',
     );
   }
 

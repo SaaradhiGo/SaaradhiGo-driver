@@ -160,6 +160,36 @@ void main() {
     });
   });
 
+  group('WithdrawalBalanceModel fee and currency', () {
+    test('decodes fee_display and currency from the API', () {
+      final balance = WithdrawalBalanceModel.fromJson(const {
+        'available_balance': 30.0,
+        'fee_percent': 1.5,
+        'fee_display': '1.5%',
+        'minimum_withdrawal': 1.0,
+        'currency': 'USD',
+      });
+      expect(balance.feeDisplay, '1.5%');
+      expect(balance.currency, 'USD');
+    });
+
+    test('fee_display null means no fee; a missing currency stays null', () {
+      final balance = WithdrawalBalanceModel.fromJson(const {
+        'available_balance': 30.0,
+        'fee_percent': 0.0,
+        'fee_display': null,
+        'minimum_withdrawal': 500.0,
+      });
+      expect(balance.feeDisplay, isNull);
+      expect(balance.currency, isNull);
+    });
+
+    test('there is no client-side minimum default', () {
+      final balance = WithdrawalBalanceModel.fromJson(const {});
+      expect(balance.minimumWithdrawal, 0.0);
+    });
+  });
+
   group('WithdrawalBlockStatusModel.fromJson', () {
     test('decodes the documented payload', () {
       final status = WithdrawalBlockStatusModel.fromJson(const {

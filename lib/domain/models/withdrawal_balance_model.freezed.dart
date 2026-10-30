@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WithdrawalBalanceModel {
 
-@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double get availableBalance;@JsonKey(fromJson: boolFromJson) bool get blocked;@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? get blockRemainingSeconds;@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double get feePercent;@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double get minimumWithdrawal;
+@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double get availableBalance;@JsonKey(fromJson: boolFromJson) bool get blocked;@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? get blockRemainingSeconds;@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double get feePercent;@JsonKey(name: 'fee_display') String? get feeDisplay;@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double get minimumWithdrawal;@JsonKey(name: 'currency') String? get currency;
 /// Create a copy of WithdrawalBalanceModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $WithdrawalBalanceModelCopyWith<WithdrawalBalanceModel> get copyWith => _$Withdr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WithdrawalBalanceModel&&(identical(other.availableBalance, availableBalance) || other.availableBalance == availableBalance)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.blockRemainingSeconds, blockRemainingSeconds) || other.blockRemainingSeconds == blockRemainingSeconds)&&(identical(other.feePercent, feePercent) || other.feePercent == feePercent)&&(identical(other.minimumWithdrawal, minimumWithdrawal) || other.minimumWithdrawal == minimumWithdrawal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WithdrawalBalanceModel&&(identical(other.availableBalance, availableBalance) || other.availableBalance == availableBalance)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.blockRemainingSeconds, blockRemainingSeconds) || other.blockRemainingSeconds == blockRemainingSeconds)&&(identical(other.feePercent, feePercent) || other.feePercent == feePercent)&&(identical(other.feeDisplay, feeDisplay) || other.feeDisplay == feeDisplay)&&(identical(other.minimumWithdrawal, minimumWithdrawal) || other.minimumWithdrawal == minimumWithdrawal)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,availableBalance,blocked,blockRemainingSeconds,feePercent,minimumWithdrawal);
+int get hashCode => Object.hash(runtimeType,availableBalance,blocked,blockRemainingSeconds,feePercent,feeDisplay,minimumWithdrawal,currency);
 
 @override
 String toString() {
-  return 'WithdrawalBalanceModel(availableBalance: $availableBalance, blocked: $blocked, blockRemainingSeconds: $blockRemainingSeconds, feePercent: $feePercent, minimumWithdrawal: $minimumWithdrawal)';
+  return 'WithdrawalBalanceModel(availableBalance: $availableBalance, blocked: $blocked, blockRemainingSeconds: $blockRemainingSeconds, feePercent: $feePercent, feeDisplay: $feeDisplay, minimumWithdrawal: $minimumWithdrawal, currency: $currency)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $WithdrawalBalanceModelCopyWith<$Res>  {
   factory $WithdrawalBalanceModelCopyWith(WithdrawalBalanceModel value, $Res Function(WithdrawalBalanceModel) _then) = _$WithdrawalBalanceModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double availableBalance,@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds,@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double feePercent,@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double minimumWithdrawal
+@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double availableBalance,@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds,@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double feePercent,@JsonKey(name: 'fee_display') String? feeDisplay,@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double minimumWithdrawal,@JsonKey(name: 'currency') String? currency
 });
 
 
@@ -66,14 +66,16 @@ class _$WithdrawalBalanceModelCopyWithImpl<$Res>
 
 /// Create a copy of WithdrawalBalanceModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? availableBalance = null,Object? blocked = null,Object? blockRemainingSeconds = freezed,Object? feePercent = null,Object? minimumWithdrawal = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? availableBalance = null,Object? blocked = null,Object? blockRemainingSeconds = freezed,Object? feePercent = null,Object? feeDisplay = freezed,Object? minimumWithdrawal = null,Object? currency = freezed,}) {
   return _then(WithdrawalBalanceModel(
 availableBalance: null == availableBalance ? _self.availableBalance : availableBalance // ignore: cast_nullable_to_non_nullable
 as double,blocked: null == blocked ? _self.blocked : blocked // ignore: cast_nullable_to_non_nullable
 as bool,blockRemainingSeconds: freezed == blockRemainingSeconds ? _self.blockRemainingSeconds : blockRemainingSeconds // ignore: cast_nullable_to_non_nullable
 as int?,feePercent: null == feePercent ? _self.feePercent : feePercent // ignore: cast_nullable_to_non_nullable
-as double,minimumWithdrawal: null == minimumWithdrawal ? _self.minimumWithdrawal : minimumWithdrawal // ignore: cast_nullable_to_non_nullable
-as double,
+as double,feeDisplay: freezed == feeDisplay ? _self.feeDisplay : feeDisplay // ignore: cast_nullable_to_non_nullable
+as String?,minimumWithdrawal: null == minimumWithdrawal ? _self.minimumWithdrawal : minimumWithdrawal // ignore: cast_nullable_to_non_nullable
+as double,currency: freezed == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -158,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'fee_display')  String? feeDisplay, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal, @JsonKey(name: 'currency')  String? currency)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WithdrawalBalanceModel() when $default != null:
-return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.minimumWithdrawal);case _:
+return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.feeDisplay,_that.minimumWithdrawal,_that.currency);case _:
   return orElse();
 
 }
@@ -179,10 +181,10 @@ return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'fee_display')  String? feeDisplay, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal, @JsonKey(name: 'currency')  String? currency)  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalBalanceModel():
-return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.minimumWithdrawal);case _:
+return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.feeDisplay,_that.minimumWithdrawal,_that.currency);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +201,10 @@ return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'available_balance', fromJson: doubleFromJson)  double availableBalance, @JsonKey(fromJson: boolFromJson)  bool blocked, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson)  int? blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson)  double feePercent, @JsonKey(name: 'fee_display')  String? feeDisplay, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson)  double minimumWithdrawal, @JsonKey(name: 'currency')  String? currency)?  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalBalanceModel() when $default != null:
-return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.minimumWithdrawal);case _:
+return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds,_that.feePercent,_that.feeDisplay,_that.minimumWithdrawal,_that.currency);case _:
   return null;
 
 }
@@ -214,14 +216,16 @@ return $default(_that.availableBalance,_that.blocked,_that.blockRemainingSeconds
 @JsonSerializable()
 
 class _WithdrawalBalanceModel implements WithdrawalBalanceModel {
-  const _WithdrawalBalanceModel({@JsonKey(name: 'available_balance', fromJson: doubleFromJson) this.availableBalance = 0.0, @JsonKey(fromJson: boolFromJson) this.blocked = false, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) this.blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson) this.feePercent = 0.0, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) this.minimumWithdrawal = 500.0});
+  const _WithdrawalBalanceModel({@JsonKey(name: 'available_balance', fromJson: doubleFromJson) this.availableBalance = 0.0, @JsonKey(fromJson: boolFromJson) this.blocked = false, @JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) this.blockRemainingSeconds, @JsonKey(name: 'fee_percent', fromJson: doubleFromJson) this.feePercent = 0.0, @JsonKey(name: 'fee_display') this.feeDisplay, @JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) this.minimumWithdrawal = 0.0, @JsonKey(name: 'currency') this.currency});
   factory _WithdrawalBalanceModel.fromJson(Map<String, dynamic> json) => _$WithdrawalBalanceModelFromJson(json);
 
 @override@JsonKey(name: 'available_balance', fromJson: doubleFromJson) final  double availableBalance;
 @override@JsonKey(fromJson: boolFromJson) final  bool blocked;
 @override@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) final  int? blockRemainingSeconds;
 @override@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) final  double feePercent;
+@override@JsonKey(name: 'fee_display') final  String? feeDisplay;
 @override@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) final  double minimumWithdrawal;
+@override@JsonKey(name: 'currency') final  String? currency;
 
 /// Create a copy of WithdrawalBalanceModel
 /// with the given fields replaced by the non-null parameter values.
@@ -236,16 +240,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WithdrawalBalanceModel&&(identical(other.availableBalance, availableBalance) || other.availableBalance == availableBalance)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.blockRemainingSeconds, blockRemainingSeconds) || other.blockRemainingSeconds == blockRemainingSeconds)&&(identical(other.feePercent, feePercent) || other.feePercent == feePercent)&&(identical(other.minimumWithdrawal, minimumWithdrawal) || other.minimumWithdrawal == minimumWithdrawal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WithdrawalBalanceModel&&(identical(other.availableBalance, availableBalance) || other.availableBalance == availableBalance)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.blockRemainingSeconds, blockRemainingSeconds) || other.blockRemainingSeconds == blockRemainingSeconds)&&(identical(other.feePercent, feePercent) || other.feePercent == feePercent)&&(identical(other.feeDisplay, feeDisplay) || other.feeDisplay == feeDisplay)&&(identical(other.minimumWithdrawal, minimumWithdrawal) || other.minimumWithdrawal == minimumWithdrawal)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,availableBalance,blocked,blockRemainingSeconds,feePercent,minimumWithdrawal);
+int get hashCode => Object.hash(runtimeType,availableBalance,blocked,blockRemainingSeconds,feePercent,feeDisplay,minimumWithdrawal,currency);
 
 @override
 String toString() {
-  return 'WithdrawalBalanceModel(availableBalance: $availableBalance, blocked: $blocked, blockRemainingSeconds: $blockRemainingSeconds, feePercent: $feePercent, minimumWithdrawal: $minimumWithdrawal)';
+  return 'WithdrawalBalanceModel(availableBalance: $availableBalance, blocked: $blocked, blockRemainingSeconds: $blockRemainingSeconds, feePercent: $feePercent, feeDisplay: $feeDisplay, minimumWithdrawal: $minimumWithdrawal, currency: $currency)';
 }
 
 
@@ -256,7 +260,7 @@ abstract mixin class _$WithdrawalBalanceModelCopyWith<$Res> implements $Withdraw
   factory _$WithdrawalBalanceModelCopyWith(_WithdrawalBalanceModel value, $Res Function(_WithdrawalBalanceModel) _then) = __$WithdrawalBalanceModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double availableBalance,@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds,@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double feePercent,@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double minimumWithdrawal
+@JsonKey(name: 'available_balance', fromJson: doubleFromJson) double availableBalance,@JsonKey(fromJson: boolFromJson) bool blocked,@JsonKey(name: 'block_remaining_seconds', fromJson: nullableIntFromJson) int? blockRemainingSeconds,@JsonKey(name: 'fee_percent', fromJson: doubleFromJson) double feePercent,@JsonKey(name: 'fee_display') String? feeDisplay,@JsonKey(name: 'minimum_withdrawal', fromJson: doubleFromJson) double minimumWithdrawal,@JsonKey(name: 'currency') String? currency
 });
 
 
@@ -273,14 +277,16 @@ class __$WithdrawalBalanceModelCopyWithImpl<$Res>
 
 /// Create a copy of WithdrawalBalanceModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? availableBalance = null,Object? blocked = null,Object? blockRemainingSeconds = freezed,Object? feePercent = null,Object? minimumWithdrawal = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? availableBalance = null,Object? blocked = null,Object? blockRemainingSeconds = freezed,Object? feePercent = null,Object? feeDisplay = freezed,Object? minimumWithdrawal = null,Object? currency = freezed,}) {
   return _then(_WithdrawalBalanceModel(
 availableBalance: null == availableBalance ? _self.availableBalance : availableBalance // ignore: cast_nullable_to_non_nullable
 as double,blocked: null == blocked ? _self.blocked : blocked // ignore: cast_nullable_to_non_nullable
 as bool,blockRemainingSeconds: freezed == blockRemainingSeconds ? _self.blockRemainingSeconds : blockRemainingSeconds // ignore: cast_nullable_to_non_nullable
 as int?,feePercent: null == feePercent ? _self.feePercent : feePercent // ignore: cast_nullable_to_non_nullable
-as double,minimumWithdrawal: null == minimumWithdrawal ? _self.minimumWithdrawal : minimumWithdrawal // ignore: cast_nullable_to_non_nullable
-as double,
+as double,feeDisplay: freezed == feeDisplay ? _self.feeDisplay : feeDisplay // ignore: cast_nullable_to_non_nullable
+as String?,minimumWithdrawal: null == minimumWithdrawal ? _self.minimumWithdrawal : minimumWithdrawal // ignore: cast_nullable_to_non_nullable
+as double,currency: freezed == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

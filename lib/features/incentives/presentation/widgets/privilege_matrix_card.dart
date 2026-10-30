@@ -49,20 +49,6 @@ class PrivilegeMatrixCard extends StatelessWidget {
           ),
           const Divider(color: Color(0x1AFFFFFF), height: 20),
           _buildPerkRow(
-            icon: Icons.percent_rounded,
-            title: 'Reduced Platform Commission (10%)',
-            subtitle: 'Keep 90% of trip fares on every completed ride',
-            requiredTier: EliteTier.gold,
-          ),
-          const Divider(color: Color(0x1AFFFFFF), height: 20),
-          _buildPerkRow(
-            icon: Icons.flash_on_rounded,
-            title: 'Instant Fee-Free Payouts',
-            subtitle: 'Unlimited daily instant withdrawals to your bank',
-            requiredTier: EliteTier.platinum,
-          ),
-          const Divider(color: Color(0x1AFFFFFF), height: 20),
-          _buildPerkRow(
             icon: Icons.support_agent_rounded,
             title: 'Dedicated 24x7 VIP Support Line',
             subtitle: 'Direct queue-jump access to senior driver support',

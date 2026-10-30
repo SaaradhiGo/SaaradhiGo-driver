@@ -17,9 +17,11 @@ _WithdrawalBalanceModel _$WithdrawalBalanceModelFromJson(
   feePercent: json['fee_percent'] == null
       ? 0.0
       : doubleFromJson(json['fee_percent']),
+  feeDisplay: json['fee_display'] as String?,
   minimumWithdrawal: json['minimum_withdrawal'] == null
-      ? 500.0
+      ? 0.0
       : doubleFromJson(json['minimum_withdrawal']),
+  currency: json['currency'] as String?,
 );
 
 Map<String, dynamic> _$WithdrawalBalanceModelToJson(
@@ -29,5 +31,7 @@ Map<String, dynamic> _$WithdrawalBalanceModelToJson(
   'blocked': instance.blocked,
   'block_remaining_seconds': instance.blockRemainingSeconds,
   'fee_percent': instance.feePercent,
+  'fee_display': instance.feeDisplay,
   'minimum_withdrawal': instance.minimumWithdrawal,
+  'currency': instance.currency,
 };
