@@ -52,3 +52,31 @@ bool boolFromJson(dynamic value) {
   if (value is num) return value != 0;
   return value.toString().trim().toLowerCase() == 'true';
 }
+
+/// Coerces a JSON value to a nullable money string (`null` when absent or blank).
+///
+/// Unlike [moneyFromJson] this never invents `0.00`: a value the API did not
+/// send is a value the app must not show.
+String? nullableMoneyFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toStringAsFixed(2);
+  final trimmed = value.toString().trim();
+  return trimmed.isEmpty ? null : trimmed;
+}
+
+/// Coerces a JSON value to a nullable num (`null` when absent or unparseable).
+num? nullableNumFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value;
+  return num.tryParse(value.toString().trim());
+}
+
+/// Coerces a JSON value to a nullable bool (`null` when absent).
+bool? nullableBoolFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is bool) return value;
+  final s = value.toString().trim().toLowerCase();
+  if (s == 'true') return true;
+  if (s == 'false') return false;
+  return null;
+}
