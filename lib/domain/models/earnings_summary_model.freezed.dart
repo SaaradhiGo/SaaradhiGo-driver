@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EarningsSummaryModel {
 
-@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String get totalEarned;@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String get totalCommission;@JsonKey(name: 'total_trips', fromJson: intFromJson) int get totalTrips;@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String get todayEarned;@JsonKey(name: 'today_trips', fromJson: intFromJson) int get todayTrips;@JsonKey(name: 'commission_percent', fromJson: numFromJson) num get commissionPercent;
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String get totalEarned;@JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson) String? get totalCommission;@JsonKey(name: 'total_trips', fromJson: intFromJson) int get totalTrips;@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String get todayEarned;@JsonKey(name: 'today_trips', fromJson: intFromJson) int get todayTrips;@JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson) num? get commissionPercent;@JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson) bool? get commissionPercentMixed;
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $EarningsSummaryModelCopyWith<EarningsSummaryModel> get copyWith => _$EarningsSu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsSummaryModel&&(identical(other.totalEarned, totalEarned) || other.totalEarned == totalEarned)&&(identical(other.totalCommission, totalCommission) || other.totalCommission == totalCommission)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.todayEarned, todayEarned) || other.todayEarned == todayEarned)&&(identical(other.todayTrips, todayTrips) || other.todayTrips == todayTrips)&&(identical(other.commissionPercent, commissionPercent) || other.commissionPercent == commissionPercent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsSummaryModel&&(identical(other.totalEarned, totalEarned) || other.totalEarned == totalEarned)&&(identical(other.totalCommission, totalCommission) || other.totalCommission == totalCommission)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.todayEarned, todayEarned) || other.todayEarned == todayEarned)&&(identical(other.todayTrips, todayTrips) || other.todayTrips == todayTrips)&&(identical(other.commissionPercent, commissionPercent) || other.commissionPercent == commissionPercent)&&(identical(other.commissionPercentMixed, commissionPercentMixed) || other.commissionPercentMixed == commissionPercentMixed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,totalEarned,totalCommission,totalTrips,todayEarned,todayTrips,commissionPercent);
+int get hashCode => Object.hash(runtimeType,totalEarned,totalCommission,totalTrips,todayEarned,todayTrips,commissionPercent,commissionPercentMixed);
 
 @override
 String toString() {
-  return 'EarningsSummaryModel(totalEarned: $totalEarned, totalCommission: $totalCommission, totalTrips: $totalTrips, todayEarned: $todayEarned, todayTrips: $todayTrips, commissionPercent: $commissionPercent)';
+  return 'EarningsSummaryModel(totalEarned: $totalEarned, totalCommission: $totalCommission, totalTrips: $totalTrips, todayEarned: $todayEarned, todayTrips: $todayTrips, commissionPercent: $commissionPercent, commissionPercentMixed: $commissionPercentMixed)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $EarningsSummaryModelCopyWith<$Res>  {
   factory $EarningsSummaryModelCopyWith(EarningsSummaryModel value, $Res Function(EarningsSummaryModel) _then) = _$EarningsSummaryModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: numFromJson) num commissionPercent
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson) String? totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson) num? commissionPercent,@JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson) bool? commissionPercentMixed
 });
 
 
@@ -66,15 +66,16 @@ class _$EarningsSummaryModelCopyWithImpl<$Res>
 
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? totalEarned = null,Object? totalCommission = null,Object? totalTrips = null,Object? todayEarned = null,Object? todayTrips = null,Object? commissionPercent = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? totalEarned = null,Object? totalCommission = freezed,Object? totalTrips = null,Object? todayEarned = null,Object? todayTrips = null,Object? commissionPercent = freezed,Object? commissionPercentMixed = freezed,}) {
   return _then(EarningsSummaryModel(
 totalEarned: null == totalEarned ? _self.totalEarned : totalEarned // ignore: cast_nullable_to_non_nullable
-as String,totalCommission: null == totalCommission ? _self.totalCommission : totalCommission // ignore: cast_nullable_to_non_nullable
-as String,totalTrips: null == totalTrips ? _self.totalTrips : totalTrips // ignore: cast_nullable_to_non_nullable
+as String,totalCommission: freezed == totalCommission ? _self.totalCommission : totalCommission // ignore: cast_nullable_to_non_nullable
+as String?,totalTrips: null == totalTrips ? _self.totalTrips : totalTrips // ignore: cast_nullable_to_non_nullable
 as int,todayEarned: null == todayEarned ? _self.todayEarned : todayEarned // ignore: cast_nullable_to_non_nullable
 as String,todayTrips: null == todayTrips ? _self.todayTrips : todayTrips // ignore: cast_nullable_to_non_nullable
-as int,commissionPercent: null == commissionPercent ? _self.commissionPercent : commissionPercent // ignore: cast_nullable_to_non_nullable
-as num,
+as int,commissionPercent: freezed == commissionPercent ? _self.commissionPercent : commissionPercent // ignore: cast_nullable_to_non_nullable
+as num?,commissionPercentMixed: freezed == commissionPercentMixed ? _self.commissionPercentMixed : commissionPercentMixed // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson)  String? totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson)  num? commissionPercent, @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson)  bool? commissionPercentMixed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel() when $default != null:
-return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
+return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent,_that.commissionPercentMixed);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson)  String? totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson)  num? commissionPercent, @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson)  bool? commissionPercentMixed)  $default,) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel():
-return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
+return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent,_that.commissionPercentMixed);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: moneyFromJson)  String totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: numFromJson)  num commissionPercent)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'total_earned', fromJson: moneyFromJson)  String totalEarned, @JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson)  String? totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson)  int totalTrips, @JsonKey(name: 'today_earned', fromJson: moneyFromJson)  String todayEarned, @JsonKey(name: 'today_trips', fromJson: intFromJson)  int todayTrips, @JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson)  num? commissionPercent, @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson)  bool? commissionPercentMixed)?  $default,) {final _that = this;
 switch (_that) {
 case _EarningsSummaryModel() when $default != null:
-return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent);case _:
+return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.todayEarned,_that.todayTrips,_that.commissionPercent,_that.commissionPercentMixed);case _:
   return null;
 
 }
@@ -215,15 +216,16 @@ return $default(_that.totalEarned,_that.totalCommission,_that.totalTrips,_that.t
 @JsonSerializable()
 
 class _EarningsSummaryModel implements EarningsSummaryModel {
-  const _EarningsSummaryModel({@JsonKey(name: 'total_earned', fromJson: moneyFromJson) this.totalEarned = '0.00', @JsonKey(name: 'total_commission', fromJson: moneyFromJson) this.totalCommission = '0.00', @JsonKey(name: 'total_trips', fromJson: intFromJson) this.totalTrips = 0, @JsonKey(name: 'today_earned', fromJson: moneyFromJson) this.todayEarned = '0.00', @JsonKey(name: 'today_trips', fromJson: intFromJson) this.todayTrips = 0, @JsonKey(name: 'commission_percent', fromJson: numFromJson) this.commissionPercent = 10});
+  const _EarningsSummaryModel({@JsonKey(name: 'total_earned', fromJson: moneyFromJson) this.totalEarned = '0.00', @JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson) this.totalCommission, @JsonKey(name: 'total_trips', fromJson: intFromJson) this.totalTrips = 0, @JsonKey(name: 'today_earned', fromJson: moneyFromJson) this.todayEarned = '0.00', @JsonKey(name: 'today_trips', fromJson: intFromJson) this.todayTrips = 0, @JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson) this.commissionPercent, @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson) this.commissionPercentMixed});
   factory _EarningsSummaryModel.fromJson(Map<String, dynamic> json) => _$EarningsSummaryModelFromJson(json);
 
 @override@JsonKey(name: 'total_earned', fromJson: moneyFromJson) final  String totalEarned;
-@override@JsonKey(name: 'total_commission', fromJson: moneyFromJson) final  String totalCommission;
+@override@JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson) final  String? totalCommission;
 @override@JsonKey(name: 'total_trips', fromJson: intFromJson) final  int totalTrips;
 @override@JsonKey(name: 'today_earned', fromJson: moneyFromJson) final  String todayEarned;
 @override@JsonKey(name: 'today_trips', fromJson: intFromJson) final  int todayTrips;
-@override@JsonKey(name: 'commission_percent', fromJson: numFromJson) final  num commissionPercent;
+@override@JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson) final  num? commissionPercent;
+@override@JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson) final  bool? commissionPercentMixed;
 
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +240,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsSummaryModel&&(identical(other.totalEarned, totalEarned) || other.totalEarned == totalEarned)&&(identical(other.totalCommission, totalCommission) || other.totalCommission == totalCommission)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.todayEarned, todayEarned) || other.todayEarned == todayEarned)&&(identical(other.todayTrips, todayTrips) || other.todayTrips == todayTrips)&&(identical(other.commissionPercent, commissionPercent) || other.commissionPercent == commissionPercent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsSummaryModel&&(identical(other.totalEarned, totalEarned) || other.totalEarned == totalEarned)&&(identical(other.totalCommission, totalCommission) || other.totalCommission == totalCommission)&&(identical(other.totalTrips, totalTrips) || other.totalTrips == totalTrips)&&(identical(other.todayEarned, todayEarned) || other.todayEarned == todayEarned)&&(identical(other.todayTrips, todayTrips) || other.todayTrips == todayTrips)&&(identical(other.commissionPercent, commissionPercent) || other.commissionPercent == commissionPercent)&&(identical(other.commissionPercentMixed, commissionPercentMixed) || other.commissionPercentMixed == commissionPercentMixed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,totalEarned,totalCommission,totalTrips,todayEarned,todayTrips,commissionPercent);
+int get hashCode => Object.hash(runtimeType,totalEarned,totalCommission,totalTrips,todayEarned,todayTrips,commissionPercent,commissionPercentMixed);
 
 @override
 String toString() {
-  return 'EarningsSummaryModel(totalEarned: $totalEarned, totalCommission: $totalCommission, totalTrips: $totalTrips, todayEarned: $todayEarned, todayTrips: $todayTrips, commissionPercent: $commissionPercent)';
+  return 'EarningsSummaryModel(totalEarned: $totalEarned, totalCommission: $totalCommission, totalTrips: $totalTrips, todayEarned: $todayEarned, todayTrips: $todayTrips, commissionPercent: $commissionPercent, commissionPercentMixed: $commissionPercentMixed)';
 }
 
 
@@ -258,7 +260,7 @@ abstract mixin class _$EarningsSummaryModelCopyWith<$Res> implements $EarningsSu
   factory _$EarningsSummaryModelCopyWith(_EarningsSummaryModel value, $Res Function(_EarningsSummaryModel) _then) = __$EarningsSummaryModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: moneyFromJson) String totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: numFromJson) num commissionPercent
+@JsonKey(name: 'total_earned', fromJson: moneyFromJson) String totalEarned,@JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson) String? totalCommission,@JsonKey(name: 'total_trips', fromJson: intFromJson) int totalTrips,@JsonKey(name: 'today_earned', fromJson: moneyFromJson) String todayEarned,@JsonKey(name: 'today_trips', fromJson: intFromJson) int todayTrips,@JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson) num? commissionPercent,@JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson) bool? commissionPercentMixed
 });
 
 
@@ -275,15 +277,16 @@ class __$EarningsSummaryModelCopyWithImpl<$Res>
 
 /// Create a copy of EarningsSummaryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? totalEarned = null,Object? totalCommission = null,Object? totalTrips = null,Object? todayEarned = null,Object? todayTrips = null,Object? commissionPercent = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? totalEarned = null,Object? totalCommission = freezed,Object? totalTrips = null,Object? todayEarned = null,Object? todayTrips = null,Object? commissionPercent = freezed,Object? commissionPercentMixed = freezed,}) {
   return _then(_EarningsSummaryModel(
 totalEarned: null == totalEarned ? _self.totalEarned : totalEarned // ignore: cast_nullable_to_non_nullable
-as String,totalCommission: null == totalCommission ? _self.totalCommission : totalCommission // ignore: cast_nullable_to_non_nullable
-as String,totalTrips: null == totalTrips ? _self.totalTrips : totalTrips // ignore: cast_nullable_to_non_nullable
+as String,totalCommission: freezed == totalCommission ? _self.totalCommission : totalCommission // ignore: cast_nullable_to_non_nullable
+as String?,totalTrips: null == totalTrips ? _self.totalTrips : totalTrips // ignore: cast_nullable_to_non_nullable
 as int,todayEarned: null == todayEarned ? _self.todayEarned : todayEarned // ignore: cast_nullable_to_non_nullable
 as String,todayTrips: null == todayTrips ? _self.todayTrips : todayTrips // ignore: cast_nullable_to_non_nullable
-as int,commissionPercent: null == commissionPercent ? _self.commissionPercent : commissionPercent // ignore: cast_nullable_to_non_nullable
-as num,
+as int,commissionPercent: freezed == commissionPercent ? _self.commissionPercent : commissionPercent // ignore: cast_nullable_to_non_nullable
+as num?,commissionPercentMixed: freezed == commissionPercentMixed ? _self.commissionPercentMixed : commissionPercentMixed // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 

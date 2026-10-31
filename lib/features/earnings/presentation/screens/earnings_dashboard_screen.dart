@@ -18,6 +18,7 @@ import '../../../profile/presentation/providers/profile_providers.dart';
 import '../providers/earnings_providers.dart';
 import '../widgets/cash_collection_banner.dart';
 import '../widgets/earnings_breakdown_card.dart';
+import '../earnings_display.dart';
 import '../widgets/earnings_trend_chart.dart';
 import '../widgets/withdrawal_request_bottom_sheet.dart';
 
@@ -244,11 +245,16 @@ class _EarningsDashboardScreenState
 
     // Every figure below is derived from real EarningsSummaryModel fields:
     // net = gross fares − platform commission; avg/trip = net ÷ completed trips.
-    final gross = _parseMoney(summary?.totalEarned);
-    final commission = _parseMoney(summary?.totalCommission);
-    final net = gross - commission;
+    // Commission is shown exactly as the API returned it; a missing value hides
+    // its line (and the figures that depend on it) instead of showing a default.
+    final commission = summary?.totalCommission;
+    final net = netFromGrossAndCommission(summary?.totalEarned, commission);
     final trips = summary?.totalTrips ?? 0;
-    final avgPerTrip = trips > 0 ? net / trips : 0.0;
+    final avgPerTrip = averageNetPerTrip(net, trips);
+    final rateLabel = commissionRateLabel(
+      summary?.commissionPercent,
+      mixed: summary?.commissionPercentMixed,
+    );
 
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -366,34 +372,36 @@ class _EarningsDashboardScreenState
                             ],
                           ),
                         ),
-                        Container(
-                          width: 1,
-                          height: 32,
-                          color: AppColors.outlineVariant.withValues(
-                            alpha: 0.3,
+                        if (net != null) ...[
+                          Container(
+                            width: 1,
+                            height: 32,
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.3,
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                '₹${net.toStringAsFixed(2)}',
-                                style: AppTypography.dataMono.copyWith(
-                                  color: AppColors.primary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '₹$net',
+                                  style: AppTypography.dataMono.copyWith(
+                                    color: AppColors.primary,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Net Earnings',
-                                style: AppTypography.labelCaps.copyWith(
-                                  color: AppColors.onSurfaceVariant,
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Net Earnings',
+                                  style: AppTypography.labelCaps.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ],
@@ -484,25 +492,31 @@ class _EarningsDashboardScreenState
           // Quick Stats Grid — all backend-derived (no fabricated figures).
           Row(
             children: [
-              Expanded(
-                child: _buildStatBox(
-                  Icons.route,
-                  '₹${avgPerTrip.toStringAsFixed(0)}',
-                  'Avg / Trip',
+              if (avgPerTrip != null) ...[
+                Expanded(
+                  child: _buildStatBox(
+                    Icons.route,
+                    '₹$avgPerTrip',
+                    'Avg / Trip',
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.sm),
+              ],
               Expanded(
                 child: _buildStatBox(Icons.directions_car, '$trips', 'Trips'),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildStatBox(
-                  Icons.percent,
-                  '₹${commission.toStringAsFixed(0)}',
-                  'Commission',
+              if (commission != null) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: _buildStatBox(
+                    Icons.percent,
+                    '₹$commission',
+                    rateLabel == null
+                        ? 'Commission'
+                        : 'Commission ($rateLabel)',
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -593,8 +607,9 @@ class _EarningsDashboardScreenState
           // Breakdown Card
           EarningsBreakdownCard(
             grossFares: summary?.totalEarned ?? '0.00',
-            commission: summary?.totalCommission ?? '0.00',
-            netEarnings: net.toStringAsFixed(2),
+            commission: commission,
+            commissionRate: rateLabel,
+            netEarnings: net,
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -627,13 +642,6 @@ class _EarningsDashboardScreenState
         ],
       ),
     );
-  }
-
-  /// Safely parses a decimal-string money field (backend sends `"123.45"`,
-  /// occasionally with a stray `₹`) to a double; falls back to 0.
-  double _parseMoney(String? raw) {
-    if (raw == null) return 0;
-    return double.tryParse(raw.replaceAll('₹', '').trim()) ?? 0;
   }
 
   Widget _buildFilterChip(String label, int index, int currentIndex) {
@@ -746,7 +754,7 @@ class _EarningsDashboardScreenState
               ],
             ),
             Text(
-              '+₹${earning.netEarning}',
+              earning.netEarning == null ? '' : '+₹${earning.netEarning}',
               style: AppTypography.dataMono.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,

@@ -7,16 +7,18 @@ import '../../../../shared/widgets/glass_panel.dart';
 
 class EarningsBreakdownCard extends StatelessWidget {
   final String grossFares;
-  final String commission;
-  final String netEarnings;
+  final String? commission;
+  final String? commissionRate;
+  final String? netEarnings;
   final String tips;
   final String bonuses;
 
   const EarningsBreakdownCard({
     super.key,
     required this.grossFares,
-    required this.commission,
-    required this.netEarnings,
+    this.commission,
+    this.commissionRate,
+    this.netEarnings,
     this.tips = '₹0.00',
     this.bonuses = '₹0.00',
   });
@@ -58,41 +60,52 @@ class EarningsBreakdownCard extends StatelessWidget {
             amount: bonuses,
             color: AppColors.primary,
           ),
-          Divider(
-            color: AppColors.outlineVariant.withValues(alpha: 0.3),
-            height: 16,
+          // Commission and net are shown only when the API sent a commission.
+          if (commission != null) ...[
+            Divider(
+              color: AppColors.outlineVariant.withValues(alpha: 0.3),
+              height: 16,
+            ),
+            _buildRow(
+              icon: Icons.money_off,
+              label: commissionRate == null
+                  ? 'Platform Commission'
+                  : 'Platform Commission ($commissionRate)',
+              amount: '-₹$commission',
+              color: AppColors.error,
+            ),
+          ],
+          if (netEarnings != null) ...[
+            Divider(
+              color: AppColors.outlineVariant.withValues(alpha: 0.3),
+              height: 16,
+            ),
+            _buildNetRow(netEarnings!),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNetRow(String netEarnings) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Net Driver Earnings',
+            style: AppTypography.bodyLg.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          _buildRow(
-            icon: Icons.money_off,
-            label: 'Platform Commission',
-            amount: '-₹$commission',
-            color: AppColors.error,
-          ),
-          Divider(
-            color: AppColors.outlineVariant.withValues(alpha: 0.3),
-            height: 16,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Net Driver Earnings',
-                  style: AppTypography.bodyLg.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '₹$netEarnings',
-                  style: AppTypography.dataMono.copyWith(
-                    color: AppColors.primary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          Text(
+            '₹$netEarnings',
+            style: AppTypography.dataMono.copyWith(
+              color: AppColors.primary,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

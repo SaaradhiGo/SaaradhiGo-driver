@@ -12,9 +12,7 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   totalEarned: json['total_earned'] == null
       ? '0.00'
       : moneyFromJson(json['total_earned']),
-  totalCommission: json['total_commission'] == null
-      ? '0.00'
-      : moneyFromJson(json['total_commission']),
+  totalCommission: nullableMoneyFromJson(json['total_commission']),
   totalTrips: json['total_trips'] == null
       ? 0
       : intFromJson(json['total_trips']),
@@ -24,9 +22,10 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   todayTrips: json['today_trips'] == null
       ? 0
       : intFromJson(json['today_trips']),
-  commissionPercent: json['commission_percent'] == null
-      ? 10
-      : numFromJson(json['commission_percent']),
+  commissionPercent: nullableNumFromJson(json['commission_percent']),
+  commissionPercentMixed: nullableBoolFromJson(
+    json['commission_percent_mixed'],
+  ),
 );
 
 Map<String, dynamic> _$EarningsSummaryModelToJson(
@@ -38,4 +37,5 @@ Map<String, dynamic> _$EarningsSummaryModelToJson(
   'today_earned': instance.todayEarned,
   'today_trips': instance.todayTrips,
   'commission_percent': instance.commissionPercent,
+  'commission_percent_mixed': instance.commissionPercentMixed,
 };

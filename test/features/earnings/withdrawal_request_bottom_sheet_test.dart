@@ -111,10 +111,15 @@ void main() {
         ),
       );
       expect(find.textContaining('Transfer fee is 1.5%.'), findsOneWidget);
-      expect(find.textContaining('Minimum withdrawal is \u20B9500.'), findsOneWidget);
+      expect(
+        find.textContaining('Minimum withdrawal is \u20B9500.'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('shows no fee text at all when the fee is zero', (tester) async {
+    testWidgets('shows no fee text at all when the fee is zero', (
+      tester,
+    ) async {
       await pumpSheet(
         tester,
         const WithdrawalBalanceModel(
@@ -126,7 +131,10 @@ void main() {
       );
       expect(find.textContaining('fee'), findsNothing);
       expect(find.textContaining('Fee'), findsNothing);
-      expect(find.textContaining('Minimum withdrawal is \u20B9500.'), findsOneWidget);
+      expect(
+        find.textContaining('Minimum withdrawal is \u20B9500.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('speaks the currency the API returns, not a rupee sign', (

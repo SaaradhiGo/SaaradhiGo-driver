@@ -11,9 +11,10 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     @JsonKey(name: 'total_earned', fromJson: moneyFromJson)
     @Default('0.00')
     String totalEarned,
-    @JsonKey(name: 'total_commission', fromJson: moneyFromJson)
-    @Default('0.00')
-    String totalCommission,
+    // Commission fields are nullable on purpose: the app shows what the API
+    // returns and shows nothing for a line the API did not send. No default.
+    @JsonKey(name: 'total_commission', fromJson: nullableMoneyFromJson)
+    String? totalCommission,
     @JsonKey(name: 'total_trips', fromJson: intFromJson)
     @Default(0)
     int totalTrips,
@@ -23,9 +24,10 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     @JsonKey(name: 'today_trips', fromJson: intFromJson)
     @Default(0)
     int todayTrips,
-    @JsonKey(name: 'commission_percent', fromJson: numFromJson)
-    @Default(10)
-    num commissionPercent,
+    @JsonKey(name: 'commission_percent', fromJson: nullableNumFromJson)
+    num? commissionPercent,
+    @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson)
+    bool? commissionPercentMixed,
   }) = _EarningsSummaryModel;
 
   factory EarningsSummaryModel.fromJson(Map<String, dynamic> json) =>

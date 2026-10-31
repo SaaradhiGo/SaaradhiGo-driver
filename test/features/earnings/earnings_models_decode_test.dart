@@ -55,9 +55,29 @@ void main() {
       final summary = EarningsSummaryModel.fromJson(const <String, dynamic>{});
 
       expect(summary.totalEarned, '0.00');
-      expect(summary.totalCommission, '0.00');
       expect(summary.totalTrips, 0);
       expect(summary.todayTrips, 0);
+    });
+
+    test('never invents a commission when the API did not send one', () {
+      final summary = EarningsSummaryModel.fromJson(const <String, dynamic>{});
+
+      expect(summary.totalCommission, isNull);
+      expect(summary.commissionPercent, isNull);
+      expect(summary.commissionPercentMixed, isNull);
+    });
+
+    test('decodes the rate and the mixed flag exactly as sent', () {
+      final summary = EarningsSummaryModel.fromJson(const {
+        'total_earned': '1000.00',
+        'total_commission': '150.00',
+        'commission_percent': '15.00',
+        'commission_percent_mixed': true,
+      });
+
+      expect(summary.commissionPercent, 15);
+      expect(summary.commissionPercentMixed, isTrue);
+      expect(summary.totalCommission, '150.00');
     });
   });
 
@@ -93,6 +113,35 @@ void main() {
       expect(earning.amountCollected, '200.00');
       expect(earning.platformFee, '20.00');
       expect(earning.netEarning, '180.00');
+    });
+
+    test('reads the keys the settlements endpoint really sends', () {
+      final earning = EarningModel.fromJson(const {
+        'id': 7,
+        'trip_id_val': 55,
+        'amount': '200.00',
+        'commission': '30.00',
+        'net_amount': '170.00',
+        'commission_percent': '15.00',
+        'created_at': '2026-04-07T10:00:00Z',
+      });
+
+      expect(earning.tripId, 55);
+      expect(earning.amountCollected, '200.00');
+      expect(earning.platformFee, '30.00');
+      expect(earning.netEarning, '170.00');
+      expect(earning.commissionPercent, 15);
+    });
+
+    test('a row with no commission carries none, not 0.00', () {
+      final earning = EarningModel.fromJson(const {
+        'id': 8,
+        'commission': null,
+      });
+
+      expect(earning.platformFee, isNull);
+      expect(earning.netEarning, isNull);
+      expect(earning.commissionPercent, isNull);
     });
 
     test('does not throw when id is missing', () {
