@@ -9,9 +9,11 @@ import '../../../../core/market/market_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/validation/full_name.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/upload_progress_bar.dart';
 import '../../data/models/picked_document.dart';
+import '../providers/onboarding_notifier.dart';
 import '../providers/onboarding_providers.dart';
 import '../widgets/floating_text_field.dart';
 import '../widgets/onboarding_progress_indicator.dart';
@@ -52,11 +54,20 @@ class _OnboardingPersonalScreenState
   PickedDocument? _avatarDocument;
   final ImagePicker _picker = ImagePicker();
 
+  late final OnboardingNotifier _onboarding;
+
+  @override
+  void initState() {
+    super.initState();
+    // Held in a field: ref must not be read inside dispose().
+    _onboarding = ref.read(onboardingNotifierProvider.notifier);
+  }
+
   @override
   void dispose() {
     // Stop an in-flight S3 upload when the user leaves the screen; entered
     // form data is preserved so the submission can be retried.
-    ref.read(onboardingNotifierProvider.notifier).cancelUpload();
+    _onboarding.cancelUpload();
     _nameController.dispose();
     _emailController.dispose();
     super.dispose();
@@ -181,8 +192,7 @@ class _OnboardingPersonalScreenState
                       FloatingTextField(
                         label: 'Full Name',
                         controller: _nameController,
-                        validator: (value) =>
-                            value == null || value.isEmpty ? 'Required' : null,
+                        validator: validateFullName,
                       ),
                       const SizedBox(height: AppSpacing.md),
                       FloatingTextField(
