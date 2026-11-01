@@ -190,23 +190,25 @@ void main() {
       );
       expect(e.deductions.last.amount, '0.50');
       // Never recomputed: gross, commission and net are the API's.
-      expect((e.amountCollected, e.platformFee, e.netEarning), (
-        '20.00',
-        '5.00',
-        '15.00',
-      ));
+      expect(
+        (e.amountCollected, e.platformFee, e.netEarning),
+        ('20.00', '5.00', '15.00'),
+      );
     });
 
-    test('an India row and a pre-module-12 row carry none of the new fields', () {
-      for (final json in [indiaOnlineRow(), legacyRow()]) {
-        final e = _row(json);
-        expect(e.cashToCollect, isNull);
-        expect(e.promoPaidByPlatform, isNull);
-        expect(e.taxCollected, isNull);
-        expect(e.regulatoryFeeCollected, isNull);
-        expect(e.deductions, isEmpty);
-      }
-    });
+    test(
+      'an India row and a pre-module-12 row carry none of the new fields',
+      () {
+        for (final json in [indiaOnlineRow(), legacyRow()]) {
+          final e = _row(json);
+          expect(e.cashToCollect, isNull);
+          expect(e.promoPaidByPlatform, isNull);
+          expect(e.taxCollected, isNull);
+          expect(e.regulatoryFeeCollected, isNull);
+          expect(e.deductions, isEmpty);
+        }
+      },
+    );
 
     test('the summary reads promo, rewards, pass-through and the API net', () {
       final s = EarningsSummaryModel.fromJson(summaryWithPromoAndRewards());
@@ -222,46 +224,55 @@ void main() {
       expect(us.regulatoryFeesCollected, '1.00');
     });
 
-    test('a summary without the keys decodes to nulls, never invented zeros', () {
-      final s = EarningsSummaryModel.fromJson({
-        'total_earned': '100.00',
-        'total_trips': 1,
-      });
-      expect(s.totalNet, isNull);
-      expect(s.promoPaidByPlatform, isNull);
-      expect(s.incentiveRewards, isNull);
-      expect(s.taxCollected, isNull);
-    });
+    test(
+      'a summary without the keys decodes to nulls, never invented zeros',
+      () {
+        final s = EarningsSummaryModel.fromJson({
+          'total_earned': '100.00',
+          'total_trips': 1,
+        });
+        expect(s.totalNet, isNull);
+        expect(s.promoPaidByPlatform, isNull);
+        expect(s.incentiveRewards, isNull);
+        expect(s.taxCollected, isNull);
+      },
+    );
 
-    test('the trip detail carries the promo discount and what the rider pays', () {
-      final t = TripModel.fromJson(tripDetailCashPromo());
-      expect(t.promoDiscount, '50.00');
-      expect(t.riderPayable, '150.00');
-      expect(t.paymentMethod, 'cash');
-      final plain = TripModel.fromJson({'id': 1, 'status': 'completed'});
-      expect(plain.promoDiscount, isNull);
-      expect(plain.riderPayable, isNull);
-    });
+    test(
+      'the trip detail carries the promo discount and what the rider pays',
+      () {
+        final t = TripModel.fromJson(tripDetailCashPromo());
+        expect(t.promoDiscount, '50.00');
+        expect(t.riderPayable, '150.00');
+        expect(t.paymentMethod, 'cash');
+        final plain = TripModel.fromJson({'id': 1, 'status': 'completed'});
+        expect(plain.promoDiscount, isNull);
+        expect(plain.riderPayable, isNull);
+      },
+    );
   });
 
   // ------------------------------------------------------------- D1 tile
   group('D1 the earnings row', () {
-    testWidgets('a cash promo trip: Collect, Promo paid by SaaradhiGo, net unchanged', (
-      t,
-    ) async {
-      await t.pumpWidget(
-        _host(EarningTripTile(earning: _row(indiaCashPromoRow()))),
-      );
-      expect(find.text('+₹170.00'), findsOneWidget);
-      expect(find.text('Collect'), findsOneWidget);
-      expect(find.text('₹150.00'), findsOneWidget);
-      expect(find.text('Promo paid by SaaradhiGo'), findsOneWidget);
-      expect(find.text('₹50.00'), findsOneWidget);
-      expect(find.text('Credited to your wallet'), findsOneWidget);
-    });
+    testWidgets(
+      'a cash promo trip: Collect, Promo paid by SaaradhiGo, net unchanged',
+      (t) async {
+        await t.pumpWidget(
+          _host(EarningTripTile(earning: _row(indiaCashPromoRow()))),
+        );
+        expect(find.text('+₹170.00'), findsOneWidget);
+        expect(find.text('Collect'), findsOneWidget);
+        expect(find.text('₹150.00'), findsOneWidget);
+        expect(find.text('Promo paid by SaaradhiGo'), findsOneWidget);
+        expect(find.text('₹50.00'), findsOneWidget);
+        expect(find.text('Credited to your wallet'), findsOneWidget);
+      },
+    );
 
     testWidgets('an India online trip looks exactly as it did', (t) async {
-      await t.pumpWidget(_host(EarningTripTile(earning: _row(indiaOnlineRow()))));
+      await t.pumpWidget(
+        _host(EarningTripTile(earning: _row(indiaOnlineRow()))),
+      );
       expect(find.text('Trip #9002'), findsNothing);
       expect(find.text('Trip #9001'), findsOneWidget);
       expect(find.text('+₹170.00'), findsOneWidget);
@@ -401,26 +412,24 @@ void main() {
       expect(find.text('₹1062.50'), findsOneWidget);
     });
 
-    testWidgets('D2: incentive and referral rewards, no commission, tax not configured', (
-      t,
-    ) async {
-      await t.pumpWidget(_host(card(summaryWithPromoAndRewards())));
-      expect(find.text('Incentive rewards'), findsOneWidget);
-      expect(find.text('₹500.00'), findsOneWidget);
-      expect(find.text('Referral rewards'), findsOneWidget);
-      expect(
-        find.text(
-          'No commission · Tax: not configured · Paid in your weekly payout',
-        ),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      'D2: incentive and referral rewards, no commission, tax not configured',
+      (t) async {
+        await t.pumpWidget(_host(card(summaryWithPromoAndRewards())));
+        expect(find.text('Incentive rewards'), findsOneWidget);
+        expect(find.text('₹500.00'), findsOneWidget);
+        expect(find.text('Referral rewards'), findsOneWidget);
+        expect(
+          find.text(
+            'No commission · Tax: not configured · Paid in your weekly payout',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('D2: only the reward the API returned is shown', (t) async {
-      final json = {
-        ...summaryNothingNew(),
-        'referral_rewards': '100.00',
-      };
+      final json = {...summaryNothingNew(), 'referral_rewards': '100.00'};
       await t.pumpWidget(_host(card(json)));
       expect(find.text('Referral rewards'), findsOneWidget);
       expect(find.text('Incentive rewards'), findsNothing);
@@ -448,7 +457,8 @@ void main() {
   test('the earnings net is the API net when it sends one', () {
     final s = EarningsSummaryModel.fromJson(summaryNothingNew());
     final net =
-        s.totalNet ?? netFromGrossAndCommission(s.totalEarned, s.totalCommission);
+        s.totalNet ??
+        netFromGrossAndCommission(s.totalEarned, s.totalCommission);
     expect(net, '1062.50');
     final old = EarningsSummaryModel.fromJson({
       'total_earned': '1000.00',
@@ -492,50 +502,62 @@ void main() {
         isSupportEndMessage('Your ride was ended by SaaradhiGo support.'),
         isTrue,
       );
-      expect(isSupportCancelMessage('Your ride was cancelled by support.'), isTrue);
+      expect(
+        isSupportCancelMessage('Your ride was cancelled by support.'),
+        isTrue,
+      );
       expect(isSupportEndMessage('Trip completed'), isFalse);
       expect(isSupportEndMessage(null), isFalse);
       expect(isSupportCancelMessage('Rider cancelled the trip.'), isFalse);
     });
 
-    test('an ended trip is flagged, and its money is read back from the server', () async {
-      late _Consumer consumer;
-      final trips = _Trips(detail: TripModel.fromJson(tripDetailPlatformFunded()));
-      final c = container(trips: trips, capture: (x) => consumer = x);
-      c.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(
-        const TripModel(
-          id: 9003,
-          status: TripStatus.inProgress,
-          paymentMethod: 'cash',
-          estimatedFare: '200.00',
-        ),
-      );
-      consumer.events$.add(frame(supportEndedFrame()));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+    test(
+      'an ended trip is flagged, and its money is read back from the server',
+      () async {
+        late _Consumer consumer;
+        final trips = _Trips(
+          detail: TripModel.fromJson(tripDetailPlatformFunded()),
+        );
+        final c = container(trips: trips, capture: (x) => consumer = x);
+        c
+            .read(tripSessionNotifierProvider.notifier)
+            .resumeActiveTrip(
+              const TripModel(
+                id: 9003,
+                status: TripStatus.inProgress,
+                paymentMethod: 'cash',
+                estimatedFare: '200.00',
+              ),
+            );
+        consumer.events$.add(frame(supportEndedFrame()));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      final s = c.read(tripSessionNotifierProvider);
-      expect(s.status, TripStatus.completed);
-      expect(s.endedBySupport, isTrue);
-      expect(s.releasedBySupport, isFalse);
-      expect(trips.reads, 1);
-      expect(s.trip?.finalFare, '0.00');
-      expect(s.trip?.paymentStatus, 'waived');
-      // Nothing was charged, so there is no cash to collect or confirm.
-      expect(s.needsCashCollection, isFalse);
-    });
+        final s = c.read(tripSessionNotifierProvider);
+        expect(s.status, TripStatus.completed);
+        expect(s.endedBySupport, isTrue);
+        expect(s.releasedBySupport, isFalse);
+        expect(trips.reads, 1);
+        expect(s.trip?.finalFare, '0.00');
+        expect(s.trip?.paymentStatus, 'waived');
+        // Nothing was charged, so there is no cash to collect or confirm.
+        expect(s.needsCashCollection, isFalse);
+      },
+    );
 
     test('an ordinary cash completion still needs collection', () async {
       late _Consumer consumer;
       final trips = _Trips(detail: TripModel.fromJson(tripDetailCashPromo()));
       final c = container(trips: trips, capture: (x) => consumer = x);
-      c.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(
-        const TripModel(
-          id: 9002,
-          status: TripStatus.inProgress,
-          paymentMethod: 'cash',
-          estimatedFare: '200.00',
-        ),
-      );
+      c
+          .read(tripSessionNotifierProvider.notifier)
+          .resumeActiveTrip(
+            const TripModel(
+              id: 9002,
+              status: TripStatus.inProgress,
+              paymentMethod: 'cash',
+              estimatedFare: '200.00',
+            ),
+          );
       consumer.events$.add(
         const TripStatusChanged(
           status: TripStatus.completed,
@@ -556,14 +578,16 @@ void main() {
       late _Consumer consumer;
       final trips = _Trips(throws: true);
       final c = container(trips: trips, capture: (x) => consumer = x);
-      c.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(
-        const TripModel(
-          id: 9002,
-          status: TripStatus.inProgress,
-          paymentMethod: 'cash',
-          estimatedFare: '200.00',
-        ),
-      );
+      c
+          .read(tripSessionNotifierProvider.notifier)
+          .resumeActiveTrip(
+            const TripModel(
+              id: 9002,
+              status: TripStatus.inProgress,
+              paymentMethod: 'cash',
+              estimatedFare: '200.00',
+            ),
+          );
       consumer.events$.add(frame({...supportEndedFrame(), 'trip_id': 9002}));
       await Future<void>.delayed(const Duration(milliseconds: 50));
       final s = c.read(tripSessionNotifierProvider);
@@ -572,29 +596,32 @@ void main() {
       expect(s.trip?.riderPayable, isNull);
     });
 
-    test('a release by support is flagged; a rider cancellation is not', () async {
-      late _Consumer consumer;
-      final c = container(trips: _Trips(), capture: (x) => consumer = x);
-      final notifier = c.read(tripSessionNotifierProvider.notifier);
-      notifier.resumeActiveTrip(
-        const TripModel(id: 9004, status: TripStatus.accepted, driverId: 5),
-      );
-      consumer.events$.add(frame(supportReleasedFrame()));
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-      var s = c.read(tripSessionNotifierProvider);
-      expect(s.status, TripStatus.cancelled);
-      expect(s.releasedBySupport, isTrue);
+    test(
+      'a release by support is flagged; a rider cancellation is not',
+      () async {
+        late _Consumer consumer;
+        final c = container(trips: _Trips(), capture: (x) => consumer = x);
+        final notifier = c.read(tripSessionNotifierProvider.notifier);
+        notifier.resumeActiveTrip(
+          const TripModel(id: 9004, status: TripStatus.accepted, driverId: 5),
+        );
+        consumer.events$.add(frame(supportReleasedFrame()));
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+        var s = c.read(tripSessionNotifierProvider);
+        expect(s.status, TripStatus.cancelled);
+        expect(s.releasedBySupport, isTrue);
 
-      notifier.clear();
-      notifier.resumeActiveTrip(
-        const TripModel(id: 9005, status: TripStatus.accepted, driverId: 5),
-      );
-      consumer.events$.add(frame(riderCancelledFrame()));
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-      s = c.read(tripSessionNotifierProvider);
-      expect(s.status, TripStatus.cancelled);
-      expect(s.releasedBySupport, isFalse);
-    });
+        notifier.clear();
+        notifier.resumeActiveTrip(
+          const TripModel(id: 9005, status: TripStatus.accepted, driverId: 5),
+        );
+        consumer.events$.add(frame(riderCancelledFrame()));
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+        s = c.read(tripSessionNotifierProvider);
+        expect(s.status, TripStatus.cancelled);
+        expect(s.releasedBySupport, isFalse);
+      },
+    );
   });
 
   // ----------------------------------------------------- D1/D4: screens
@@ -622,31 +649,30 @@ void main() {
               _Notices(notices),
             ),
           ],
-          child: MaterialApp(
-            home: TripSummaryScreen(trip: session.trip!),
-          ),
+          child: MaterialApp(home: TripSummaryScreen(trip: session.trip!)),
         ),
       );
       await t.pump(const Duration(milliseconds: 100));
       await t.pump(const Duration(milliseconds: 100));
     }
 
-    testWidgets('a completed cash promo trip: collect what the rider pays, promo paid on its own line', (
-      t,
-    ) async {
-      final trip = TripModel.fromJson(tripDetailCashPromo());
-      await pumpSummary(
-        t,
-        session: TripSessionState(trip: trip, status: TripStatus.completed),
-      );
-      expect(find.text('Trip Completed'), findsOneWidget);
-      expect(find.byKey(const Key('summary_promo_paid')), findsOneWidget);
-      expect(find.text('Promo paid by SaaradhiGo'), findsOneWidget);
-      expect(find.text('₹50.00'), findsOneWidget);
-      // The cash prompt is for what the rider pays, not the full fare.
-      expect(find.textContaining('Collect ₹150.00 cash'), findsOneWidget);
-      expect(find.byKey(const Key('summary_support_earnings')), findsNothing);
-    });
+    testWidgets(
+      'a completed cash promo trip: collect what the rider pays, promo paid on its own line',
+      (t) async {
+        final trip = TripModel.fromJson(tripDetailCashPromo());
+        await pumpSummary(
+          t,
+          session: TripSessionState(trip: trip, status: TripStatus.completed),
+        );
+        expect(find.text('Trip Completed'), findsOneWidget);
+        expect(find.byKey(const Key('summary_promo_paid')), findsOneWidget);
+        expect(find.text('Promo paid by SaaradhiGo'), findsOneWidget);
+        expect(find.text('₹50.00'), findsOneWidget);
+        // The cash prompt is for what the rider pays, not the full fare.
+        expect(find.textContaining('Collect ₹150.00 cash'), findsOneWidget);
+        expect(find.byKey(const Key('summary_support_earnings')), findsNothing);
+      },
+    );
 
     testWidgets('a completed cash trip with no promo is what it always was', (
       t,
@@ -670,34 +696,37 @@ void main() {
       expect(find.textContaining('Collect ₹200.00 cash'), findsOneWidget);
     });
 
-    testWidgets('D4 platform-funded end: the title, the platform-paid line, no cash to confirm', (
-      t,
-    ) async {
-      final trip = TripModel.fromJson(tripDetailPlatformFunded());
-      await pumpSummary(
-        t,
-        session: TripSessionState(
-          trip: trip,
-          status: TripStatus.completed,
-          endedBySupport: true,
-        ),
-        notices: [
-          const NotificationModel(
-            id: 1,
-            title: 'Your trip was ended',
-            message: platformFundedNoticeText,
+    testWidgets(
+      'D4 platform-funded end: the title, the platform-paid line, no cash to confirm',
+      (t) async {
+        final trip = TripModel.fromJson(tripDetailPlatformFunded());
+        await pumpSummary(
+          t,
+          session: TripSessionState(
+            trip: trip,
+            status: TripStatus.completed,
+            endedBySupport: true,
           ),
-        ],
-      );
-      expect(find.text(kSupportEndedTitle), findsOneWidget);
-      expect(
-        find.text('Trip ended by SaaradhiGo: earnings paid by SaaradhiGo'),
-        findsOneWidget,
-      );
-      expect(find.text(platformFundedNoticeText), findsOneWidget);
-      expect(find.text('CONFIRM CASH COLLECTED'), findsNothing);
-      expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
-    });
+          notices: [
+            const NotificationModel(
+              id: 1,
+              title: 'Your trip was ended',
+              message: platformFundedNoticeText,
+            ),
+          ],
+        );
+        expect(find.text(kSupportEndedTitle), findsOneWidget);
+        expect(
+          find.text('Trip ended by SaaradhiGo: earnings paid by SaaradhiGo'),
+          findsOneWidget,
+        );
+        expect(find.text(platformFundedNoticeText), findsOneWidget);
+        // The rider's zero fare is not shown as if it were the driver's earning.
+        expect(find.byKey(const Key('summary_fare')), findsNothing);
+        expect(find.text('CONFIRM CASH COLLECTED'), findsNothing);
+        expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
+      },
+    );
 
     testWidgets('D4 standard end: the settled row says what was earned', (
       t,
@@ -717,7 +746,11 @@ void main() {
           endedBySupport: true,
         ),
         earnings: [
-          _row({...indiaOnlineRow(), 'trip_id_val': 9006, 'net_amount': '92.40'}),
+          _row({
+            ...indiaOnlineRow(),
+            'trip_id_val': 9006,
+            'net_amount': '92.40',
+          }),
         ],
       );
       expect(find.text(kSupportEndedTitle), findsOneWidget);
@@ -727,75 +760,80 @@ void main() {
         findsOneWidget,
       );
       expect(find.text(kSupportEndedPlatformPaid), findsNothing);
+      expect(find.byKey(const Key('summary_fare')), findsOneWidget);
     });
 
-    testWidgets('D4 with nothing readable the driver is pointed to the earnings list', (
-      t,
-    ) async {
-      final trip = TripModel.fromJson({
-        ...tripDetailPlatformFunded(),
-        'payment_status': 'completed',
-      });
-      await pumpSummary(
-        t,
-        session: TripSessionState(
-          trip: trip,
-          status: TripStatus.completed,
-          endedBySupport: true,
-        ),
-      );
-      expect(
-        find.text('Your earnings for this trip will show in your earnings list.'),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      'D4 with nothing readable the driver is pointed to the earnings list',
+      (t) async {
+        final trip = TripModel.fromJson({
+          ...tripDetailPlatformFunded(),
+          'payment_status': 'completed',
+        });
+        await pumpSummary(
+          t,
+          session: TripSessionState(
+            trip: trip,
+            status: TripStatus.completed,
+            endedBySupport: true,
+          ),
+        );
+        expect(
+          find.text(
+            'Your earnings for this trip will show in your earnings list.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('D4 a trip released before pickup leaves the trip screen with its reason', (
-      t,
-    ) async {
-      t.view.devicePixelRatio = 1.0;
-      await t.binding.setSurfaceSize(const Size(412, 915));
-      addTearDown(() {
-        t.binding.setSurfaceSize(null);
-        t.view.resetDevicePixelRatio();
-      });
-      const trip = TripModel(
-        id: 9004,
-        status: TripStatus.cancelled,
-        driverId: 5,
-      );
-      final router = GoRouter(
-        routes: [
-          GoRoute(path: '/', builder: (_, _) => const TripFlowScreen()),
-        ],
-      );
-      await t.pumpWidget(
-        ProviderScope(
-          overrides: [
-            tripSessionNotifierProvider.overrideWith(
-              () => _SeededSession(
-                const TripSessionState(
-                  trip: trip,
-                  status: TripStatus.cancelled,
-                  releasedBySupport: true,
-                  cancellationReason: 'Your ride was cancelled by support.',
+    testWidgets(
+      'D4 a trip released before pickup leaves the trip screen with its reason',
+      (t) async {
+        t.view.devicePixelRatio = 1.0;
+        await t.binding.setSurfaceSize(const Size(412, 915));
+        addTearDown(() {
+          t.binding.setSurfaceSize(null);
+          t.view.resetDevicePixelRatio();
+        });
+        const trip = TripModel(
+          id: 9004,
+          status: TripStatus.cancelled,
+          driverId: 5,
+        );
+        final router = GoRouter(
+          routes: [
+            GoRoute(path: '/', builder: (_, _) => const TripFlowScreen()),
+          ],
+        );
+        await t.pumpWidget(
+          ProviderScope(
+            overrides: [
+              tripSessionNotifierProvider.overrideWith(
+                () => _SeededSession(
+                  const TripSessionState(
+                    trip: trip,
+                    status: TripStatus.cancelled,
+                    releasedBySupport: true,
+                    cancellationReason: 'Your ride was cancelled by support.',
+                  ),
                 ),
               ),
-            ),
-          ],
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      );
-      await t.pump(const Duration(milliseconds: 100));
-      expect(find.text(kSupportReleasedTitle), findsOneWidget);
-      expect(
-        find.textContaining('SaaradhiGo support cancelled this trip'),
-        findsOneWidget,
-      );
-      // Not the rider-cancellation wording or sheet.
-      expect(find.text('Ride cancelled'), findsNothing);
-      expect(find.textContaining('by the passenger'), findsNothing);
-      expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
-    });
+            ],
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+        await t.pump(const Duration(milliseconds: 100));
+        expect(find.text(kSupportReleasedTitle), findsOneWidget);
+        expect(
+          find.textContaining('SaaradhiGo support cancelled this trip'),
+          findsOneWidget,
+        );
+        // Not the rider-cancellation wording or sheet.
+        expect(find.text('Ride cancelled'), findsNothing);
+        expect(find.textContaining('by the passenger'), findsNothing);
+        expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
+      },
+    );
   });
 }

@@ -1,5 +1,6 @@
 import '../../../../core/market/market_format.dart';
 import '../../../../core/market/market_config_store.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -144,14 +145,18 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
                   ),
                 ),
               const SizedBox(height: AppSpacing.sm),
-              Text(
-                _fare,
-                style: AppTypography.dataMono.copyWith(
-                  color: AppColors.primaryContainer,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 44,
+              // A platform-paid end: the rider's fare is zero and means nothing to
+              // the driver, whose earning is in the panel below. Never show ₹0.00.
+              if (!(endedBySupport && platformPaid))
+                Text(
+                  _fare,
+                  key: const Key('summary_fare'),
+                  style: AppTypography.dataMono.copyWith(
+                    color: AppColors.primaryContainer,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 44,
+                  ),
                 ),
-              ),
               const SizedBox(height: AppSpacing.lg),
               GlassPanel(
                 child: Row(
