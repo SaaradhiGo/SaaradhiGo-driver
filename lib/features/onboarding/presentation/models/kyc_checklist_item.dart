@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/validation/full_name.dart';
 import '../../../../domain/models/driver_profile_model.dart';
 
 enum KycItemStatus {
@@ -82,7 +83,17 @@ class KycChecklistItem {
     final hasUserDetails =
         (profile.user?.isUpdated ?? false) ||
         (profile.user?.fullName != null && profile.user!.fullName!.isNotEmpty);
-    final identityStatus = isGlobalApproved
+    // A driver whose profile shows no usable name is asked for it on this step.
+    // Only when the profile actually carries the user (the backend can omit it)
+    // and the driver is not already approved: a named driver, or one we cannot
+    // see the name of, is never re-prompted.
+    final nameMissing =
+        !isGlobalApproved &&
+        profile.user != null &&
+        !hasUsableName(profile.user!.fullName);
+    final identityStatus = nameMissing
+        ? KycItemStatus.actionRequired
+        : isGlobalApproved
         ? KycItemStatus.verified
         : (isGlobalRejected && !hasUserPhoto
               ? KycItemStatus.actionRequired
@@ -143,8 +154,10 @@ class KycChecklistItem {
         icon: Icons.badge,
         status: identityStatus,
         targetRoute: '/onboarding/personal',
-        rejectionReason:
-            (isGlobalRejected && identityStatus == KycItemStatus.actionRequired)
+        rejectionReason: nameMissing
+            ? 'Please add your full name.'
+            : (isGlobalRejected &&
+                  identityStatus == KycItemStatus.actionRequired)
             ? 'Profile photo unclear or identity details incomplete.'
             : null,
       ),

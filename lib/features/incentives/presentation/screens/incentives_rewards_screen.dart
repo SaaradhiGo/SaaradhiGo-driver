@@ -160,8 +160,6 @@ class _IncentivesRewardsScreenState
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            _buildEliteShortcutBanner(context),
-            const SizedBox(height: AppSpacing.lg),
             SecondaryButton(text: 'Refresh', onPressed: () => _refresh()),
           ],
         ),
@@ -178,10 +176,8 @@ class _IncentivesRewardsScreenState
           vertical: AppSpacing.md,
         ),
         children: [
-          // Elite Partner Cross-Navigation Banner
-          _buildEliteShortcutBanner(context),
-          const SizedBox(height: AppSpacing.lg),
-
+          // The "SaaradhiGo Elite Partner" banner (it opened /elite) is hidden:
+          // no API backs tier progression or privileges.
           // Live incentives from the promotions engine, exactly as the API
           // returns them.
           if (promo.items.isNotEmpty) ...[
@@ -282,60 +278,6 @@ class _IncentivesRewardsScreenState
             child: PromoIncentiveCard(incentive: i, now: now),
           ),
       ],
-    );
-  }
-
-  Widget _buildEliteShortcutBanner(BuildContext context) {
-    return InkWell(
-      onTap: () => context.push('/elite'),
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceContainer,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.military_tech_rounded,
-              color: AppColors.primary,
-              size: 24,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'SaaradhiGo Elite Partner',
-                    style: AppTypography.bodyMd.copyWith(
-                      color: AppColors.onBackground,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'View Tier Progression & Privileges',
-                    style: AppTypography.labelCaps.copyWith(
-                      color: AppColors.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: AppColors.onSurfaceVariant,
-              size: 14,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
