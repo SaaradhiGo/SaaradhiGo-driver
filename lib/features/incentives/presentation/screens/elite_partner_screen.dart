@@ -9,7 +9,6 @@ import '../../../../domain/models/elite_status_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/incentives_providers.dart';
-import '../widgets/privilege_matrix_card.dart';
 
 class ElitePartnerScreen extends ConsumerStatefulWidget {
   const ElitePartnerScreen({super.key});
@@ -120,9 +119,10 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           _buildQualityMetricsCard(elite),
           const SizedBox(height: AppSpacing.lg),
 
-          // Privilege & Perks Matrix
-          PrivilegeMatrixCard(currentTier: elite.tierEnum),
-          const SizedBox(height: AppSpacing.xl),
+          // No perks card: none of its five perks (airport dispatch, reduced
+          // commission, instant payouts, VIP line, fuel cashback) is wired to
+          // any backend logic, so none is claimed here.
+          const SizedBox(height: AppSpacing.md),
 
           // Action Button to Incentives
           PrimaryButton(
