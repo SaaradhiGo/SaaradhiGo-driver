@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/market/market_providers.dart';
 import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -824,6 +825,42 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               onTap: () => context.push('/safety'),
             ),
           ),
+          // Hidden unless a referral offer is live for drivers in this market
+          // (app-config `referrals_available`; a missing key is false).
+          if (ref.watch(marketConfigProvider).referralsAvailable) ...[
+            Divider(
+              height: 1,
+              color: AppColors.outlineVariant.withValues(alpha: 0.1),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                key: const Key('profile_refer_tile'),
+                leading: const Icon(
+                  Icons.group_add_rounded,
+                  color: AppColors.primaryContainer,
+                ),
+                title: Text(
+                  'Refer & Earn',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onBackground,
+                  ),
+                ),
+                subtitle: Text(
+                  'Refer drivers and earn rewards',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.onSurfaceVariant,
+                ),
+                onTap: () => context.push('/refer'),
+              ),
+            ),
+          ],
         ],
       ),
     );
