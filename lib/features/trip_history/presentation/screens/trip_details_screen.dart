@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -463,7 +464,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'No fare was charged to the rider. Net Earnings: ₹0',
+            'No fare was charged to the rider. Net Earnings: ${marketSymbol()}0',
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant,
             ),
@@ -501,11 +502,11 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
           const SizedBox(height: AppSpacing.md),
 
           if (isCancelled) ...[
-            _buildBreakdownRow('Trip Fare', '₹0'),
+            _buildBreakdownRow('Trip Fare', '${marketSymbol()}0'),
             const SizedBox(height: AppSpacing.sm),
             _buildBreakdownRow(
               'Cancellation Adjustment',
-              '-₹0',
+              '-${marketSymbol()}0',
               isDeduction: true,
             ),
           ] else if (breakdown != null && breakdown.isNotEmpty) ...[
@@ -514,7 +515,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   entry.key != 'net_earnings') ...[
                 _buildBreakdownRow(
                   _formatBreakdownKey(entry.key),
-                  '₹${entry.value}',
+                  '${marketSymbol()}${entry.value}',
                   isDeduction:
                       entry.key.contains('fee') ||
                       entry.key.contains('commission') ||
@@ -526,7 +527,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             // No breakdown from the server: show the fare only. A "Platform
             // Service Fee -0" line used to be drawn here, a fee nobody read
             // from anywhere.
-            _buildBreakdownRow('Trip Fare', '₹$fare'),
+            _buildBreakdownRow('Trip Fare', '${marketSymbol()}$fare'),
           ],
 
           const Divider(color: AppColors.outlineVariant, height: AppSpacing.lg),
@@ -542,7 +543,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 ),
               ),
               Text(
-                isCancelled ? '₹0' : '₹$fare',
+                isCancelled ? '${marketSymbol()}0' : '${marketSymbol()}$fare',
                 style: AppTypography.headlineMd.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.bold,

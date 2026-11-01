@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/buttons.dart';
+import '../../../core/market/market_providers.dart';
 import 'providers/auth_notifier.dart';
 import 'providers/auth_state.dart';
 
@@ -50,7 +51,10 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
 
   void _submitPhone() {
     if (_phoneFormKey.currentState?.validate() ?? false) {
-      final phone = '+91${_phoneController.text.trim()}';
+      // India still builds +91XXXXXXXXXX exactly as before; another market uses
+      // its own dialling code from app-config.
+      final phone =
+          '${ref.read(marketConfigProvider).dialPrefix}${_phoneController.text.trim()}';
       ref.read(authNotifierProvider.notifier).requestOtp(phone);
     }
   }
@@ -162,9 +166,9 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               maxLength: 10,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Mobile Number',
-                prefixText: '+91 ',
+                prefixText: '${ref.watch(marketConfigProvider).dialPrefix} ',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {

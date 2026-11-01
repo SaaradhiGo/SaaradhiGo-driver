@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/market/market_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -150,10 +151,14 @@ class SafetyCenterScreen extends ConsumerWidget {
                   _buildDivider(),
                   _buildHelpRow(
                     icon: Icons.local_police_rounded,
-                    title: 'Police (India)',
-                    subtitle: 'Dial 112 / 100',
+                    // From app-config; the built-in text is exactly what shipped.
+                    title: ref.watch(marketConfigProvider).emergencyTitle,
+                    subtitle: ref.watch(marketConfigProvider).emergencySubtitle,
                     color: AppColors.error,
-                    onTap: () => _showNumberSnack(context, '112'),
+                    onTap: () => _showNumberSnack(
+                      context,
+                      ref.read(marketConfigProvider).emergency.number,
+                    ),
                   ),
                 ],
               ),

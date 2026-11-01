@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -7,13 +8,14 @@ import '../../../../shared/widgets/glass_panel.dart';
 
 class EarningsTrendChart extends StatelessWidget {
   final String label;
-  final String value;
+  /// Null shows zero in the market's currency.
+  final String? value;
   final String sublabel;
 
   const EarningsTrendChart({
     super.key,
     this.label = 'Today',
-    this.value = '₹0.00',
+    this.value,
     this.sublabel = '0 Trips',
   });
 
@@ -80,7 +82,7 @@ class EarningsTrendChart extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          value,
+                          value ?? '${marketSymbol()}0.00',
                           style: AppTypography.dataMono.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,

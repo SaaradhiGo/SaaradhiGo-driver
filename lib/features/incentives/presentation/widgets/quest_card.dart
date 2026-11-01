@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -151,7 +152,7 @@ class QuestCard extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              '₹${quest.rewardAmount}',
+                              '${marketSymbol()}${quest.rewardAmount}',
                               style: AppTypography.dataMono.copyWith(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,

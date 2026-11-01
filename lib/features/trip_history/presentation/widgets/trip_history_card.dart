@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -48,8 +49,8 @@ class TripHistoryCard extends StatelessWidget {
     final isCompleted = trip.status == TripStatus.completed;
     final isCancelled = trip.status == TripStatus.cancelled;
     final fareText = isCancelled
-        ? '₹0'
-        : '₹${trip.finalFare ?? trip.estimatedFare ?? '0'}';
+        ? '${marketSymbol()}0'
+        : '${marketSymbol()}${trip.finalFare ?? trip.estimatedFare ?? '0'}';
 
     final paymentMethod = (trip.paymentMethod ?? 'DIGITAL').toUpperCase();
     final isCash = paymentMethod.contains('CASH');

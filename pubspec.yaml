@@ -37,6 +37,9 @@ dependencies:
   google_fonts: ^8.1.0
   flutter_secure_storage: ^9.2.4
   http: ^1.3.0
+  package_info_plus: ^9.0.0
+  # Opens the store link on the blocking "update required" screen.
+  url_launcher: ^6.3.0
   flutter_map: ^8.3.1
   latlong2: ^0.10.1
   provider: ^6.1.5+1

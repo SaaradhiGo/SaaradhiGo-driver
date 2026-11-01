@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/market/market_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -30,12 +31,19 @@ class _OnboardingPersonalScreenState
   final _emailController = TextEditingController();
   String? _selectedCity;
 
-  final List<String> _cities = [
+  /// The list shipped before app-config; used until the server names live cities.
+  static const List<String> _builtInCities = [
     'Mumbai',
     'New Delhi',
     'Bangalore',
     'Hyderabad',
   ];
+
+  /// Live cities from app-config, else the built-in list.
+  List<String> get _cities {
+    final live = ref.watch(marketConfigProvider).liveCityNames;
+    return live.isEmpty ? _builtInCities : live;
+  }
 
   static const List<String> _genders = ['Male', 'Female', 'Other'];
   String? _selectedGender;
@@ -264,7 +272,9 @@ class _OnboardingPersonalScreenState
           ),
           contentPadding: EdgeInsets.zero,
         ),
-        items: _cities.map((city) {
+        // A city already picked stays selectable even if the live list changes
+        // underneath (a dropdown whose value is not an item asserts).
+        items: {..._cities, ?_selectedCity}.map((city) {
           return DropdownMenuItem(value: city, child: Text(city));
         }).toList(),
         onChanged: (val) {
