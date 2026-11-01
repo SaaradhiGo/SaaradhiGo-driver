@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/network/environment_config.dart';
+import 'core/market/market_config_store.dart';
 import 'core/notifications/push_providers.dart';
 import 'core/utils/app_logger.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/providers/auth_notifier.dart';
+import 'features/auth/presentation/providers/auth_state.dart';
 import 'routing/app_router.dart';
 import 'shared/widgets/app_connectivity_host.dart';
+import 'shared/widgets/market_overlays.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +53,12 @@ void main() async {
     runApp(MisconfiguredApp(message: problem));
     return;
   }
+
+  // Market config: the cached copy is read before the first frame (local,
+  // fast); the fresh fetch is NOT awaited, so a slow or failed fetch never
+  // delays start-up. Built-in defaults equal today's India behaviour.
+  await MarketConfigStore.instance.restoreCached();
+  unawaited(MarketConfigStore.instance.refresh());
 
   // One container, so the push stack started here is the same one the widget
   // tree uses. Starting it before runApp matters for exactly one case: the
@@ -92,6 +104,15 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
 
+    // After sign-in, ask app-config about the signed-in driver's country.
+    ref.listen(authNotifierProvider, (previous, next) {
+      if (next is AuthAuthenticated && previous is! AuthAuthenticated) {
+        unawaited(
+          MarketConfigStore.instance.refreshForPhone(next.user?.phoneNumber),
+        );
+      }
+    });
+
     return MaterialApp.router(
       title: 'SaaradhiGo Driver',
       theme: AppTheme.darkTheme,
@@ -102,7 +123,9 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
       // so a test build on a driver's phone can never be mistaken for the
       // real thing during an acceptance pass.
       builder: (context, child) => _withEnvironmentBanner(
-        AppConnectivityHost(child: child ?? const SizedBox.shrink()),
+        MarketOverlays(
+          child: AppConnectivityHost(child: child ?? const SizedBox.shrink()),
+        ),
       ),
     );
   }

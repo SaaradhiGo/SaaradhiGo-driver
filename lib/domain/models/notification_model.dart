@@ -1,3 +1,4 @@
+import '../../core/market/market_format.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'json_type_converters.dart';
 
@@ -73,6 +74,7 @@ abstract class NotificationModel with _$NotificationModel {
     // Fallback based on title & message keywords
     final combined = '${title.toLowerCase()} ${message.toLowerCase()}';
     if (combined.contains('₹') ||
+        combined.contains(marketSymbol()) ||
         combined.contains('wallet') ||
         combined.contains('earning') ||
         combined.contains('bonus') ||

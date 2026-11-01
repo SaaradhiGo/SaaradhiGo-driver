@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -416,7 +417,7 @@ class _IncentivesRewardsScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '₹$formattedTotal',
+                    '${marketSymbol()}$formattedTotal',
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,

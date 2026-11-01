@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -335,7 +336,7 @@ class _EarningsDashboardScreenState
                         colors: [AppColors.primary, AppColors.primaryContainer],
                       ).createShader(bounds),
                       child: Text(
-                        '₹${summary?.totalEarned ?? '0.00'}',
+                        '${marketSymbol()}${summary?.totalEarned ?? '0.00'}',
                         style: AppTypography.displayLg.copyWith(
                           fontSize: 40,
                           color: Colors.white,
@@ -384,7 +385,7 @@ class _EarningsDashboardScreenState
                             child: Column(
                               children: [
                                 Text(
-                                  '₹$net',
+                                  '${marketSymbol()}$net',
                                   style: AppTypography.dataMono.copyWith(
                                     color: AppColors.primary,
                                     fontSize: 18,
@@ -440,7 +441,7 @@ class _EarningsDashboardScreenState
                         ),
                       ),
                       Text(
-                        '₹${balance?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
+                        '${symbolFor(balance?.currency)}${balance?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
                         style: AppTypography.headlineSm.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -484,7 +485,7 @@ class _EarningsDashboardScreenState
                 : state.selectedPeriodIndex == 1
                 ? 'This Week'
                 : 'This Month',
-            value: '₹${summary?.todayEarned ?? '0.00'}',
+            value: '${marketSymbol()}${summary?.todayEarned ?? '0.00'}',
             sublabel: '${summary?.todayTrips ?? 0} Trips',
           ),
           const SizedBox(height: AppSpacing.md),
@@ -496,7 +497,7 @@ class _EarningsDashboardScreenState
                 Expanded(
                   child: _buildStatBox(
                     Icons.route,
-                    '₹$avgPerTrip',
+                    '${marketSymbol()}$avgPerTrip',
                     'Avg / Trip',
                   ),
                 ),
@@ -510,7 +511,7 @@ class _EarningsDashboardScreenState
                 Expanded(
                   child: _buildStatBox(
                     Icons.percent,
-                    '₹$commission',
+                    '${marketSymbol()}$commission',
                     rateLabel == null
                         ? 'Commission'
                         : 'Commission ($rateLabel)',
@@ -754,7 +755,7 @@ class _EarningsDashboardScreenState
               ],
             ),
             Text(
-              earning.netEarning == null ? '' : '+₹${earning.netEarning}',
+              earning.netEarning == null ? '' : '+${marketSymbol()}${earning.netEarning}',
               style: AppTypography.dataMono.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,
@@ -817,7 +818,7 @@ class _EarningsDashboardScreenState
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '-₹${withdrawal.amount}',
+                  '-${marketSymbol()}${withdrawal.amount}',
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.bold,

@@ -5,6 +5,8 @@
 /// no fallback rate and no "0.00" stand-in.
 library;
 
+import '../../../core/market/market_config_store.dart';
+
 /// "15%" for a rate the API sent, or null when it did not.
 ///
 /// When the settlements in the period were charged at different rates the API
@@ -35,5 +37,5 @@ String? averageNetPerTrip(String? net, int trips) {
 
 double? _parse(String? raw) {
   if (raw == null) return null;
-  return double.tryParse(raw.replaceAll('₹', '').trim());
+  return double.tryParse(MarketConfigStore.instance.current.stripSymbol(raw));
 }

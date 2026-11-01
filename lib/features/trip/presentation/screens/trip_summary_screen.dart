@@ -1,3 +1,5 @@
+import '../../../../core/market/market_format.dart';
+import '../../../../core/market/market_config_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -48,16 +50,15 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
   /// Full client fare the rider pays in cash (driver collects the gross, not the
   /// net — the platform commission is settled from the driver wallet separately).
   double get _cashAmount {
-    final raw = (trip.finalFare ?? trip.estimatedFare ?? '0').replaceAll(
-      '₹',
-      '',
+    final raw = MarketConfigStore.instance.current.stripSymbol(
+      trip.finalFare ?? trip.estimatedFare ?? '0',
     );
-    return double.tryParse(raw.trim()) ?? 0;
+    return double.tryParse(raw) ?? 0;
   }
 
   String get _fare {
     final raw = trip.finalFare ?? trip.estimatedFare ?? '0';
-    return raw.startsWith('₹') ? raw : '₹$raw';
+    return MarketConfigStore.instance.current.withSymbol(raw);
   }
 
   void _confirmCash() =>
@@ -209,7 +210,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Collect ₹${_cashAmount.toStringAsFixed(2)} cash from the rider, '
+              'Collect ${marketSymbol()}${_cashAmount.toStringAsFixed(2)} cash from the rider, '
               'then confirm below.',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.onBackground,
