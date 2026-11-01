@@ -41,6 +41,13 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   referralRewards: nullableMoneyFromJson(json['referral_rewards']),
   incentiveCommission: json['incentive_commission'] as String?,
   incentiveTax: json['incentive_tax'] as String?,
+  rewardsPendingReview: nullableMoneyFromJson(json['rewards_pending_review']),
+  rewardsPendingReviewLabel: json['rewards_pending_review_label'] as String?,
+  rewardRecovery: nullableMoneyFromJson(json['reward_recovery']),
+  rewardRecoveryLabel: json['reward_recovery_label'] as String?,
+  rewardRecoveryRemaining: nullableMoneyFromJson(
+    json['reward_recovery_remaining'],
+  ),
 );
 
 Map<String, dynamic> _$EarningsSummaryModelToJson(
@@ -64,4 +71,9 @@ Map<String, dynamic> _$EarningsSummaryModelToJson(
   'referral_rewards': instance.referralRewards,
   'incentive_commission': instance.incentiveCommission,
   'incentive_tax': instance.incentiveTax,
+  'rewards_pending_review': instance.rewardsPendingReview,
+  'rewards_pending_review_label': instance.rewardsPendingReviewLabel,
+  'reward_recovery': instance.rewardRecovery,
+  'reward_recovery_label': instance.rewardRecoveryLabel,
+  'reward_recovery_remaining': instance.rewardRecoveryRemaining,
 };

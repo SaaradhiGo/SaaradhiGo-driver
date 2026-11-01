@@ -49,6 +49,7 @@ class PromoIncentive {
     this.endsAt,
     this.budgetUsedUp = false,
     this.rewardStatus,
+    this.rewardStatusLabel,
     this.commission = 'none',
     this.tax = 'not configured',
   });
@@ -73,6 +74,9 @@ class PromoIncentive {
 
   /// `pending_review` when the reward is held for review, else null.
   final String? rewardStatus;
+
+  /// The API's own words for that status ("Pending review"), else null.
+  final String? rewardStatusLabel;
   final String commission;
   final String tax;
 
@@ -90,6 +94,7 @@ class PromoIncentive {
     endsAt: _date(m['ends_at']),
     budgetUsedUp: m['budget_used_up'] == true,
     rewardStatus: _s(m['reward_status']),
+    rewardStatusLabel: _s(m['reward_status_label']),
     commission: _s(m['commission']) ?? 'none',
     tax: _s(m['tax']) ?? 'not configured',
   );
@@ -108,6 +113,17 @@ class PromoIncentive {
     final end = endsAt;
     if (end != null && !end.isAfter(now)) return PromoIncentiveState.expired;
     return PromoIncentiveState.inProgress;
+  }
+
+  /// The words for the badge: the API's label for a held reward, else the
+  /// state's own.
+  String labelAt(DateTime now) {
+    final state = stateAt(now);
+    if (state == PromoIncentiveState.pendingReview &&
+        rewardStatusLabel != null) {
+      return rewardStatusLabel!;
+    }
+    return state.label;
   }
 
   bool isActiveAt(DateTime now) =>

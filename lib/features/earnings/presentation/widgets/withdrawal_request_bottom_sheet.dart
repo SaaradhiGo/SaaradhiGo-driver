@@ -304,6 +304,7 @@ class _WithdrawalRequestBottomSheetState
                     ),
                   ),
                   errorText: _validationError ?? state.errorMessage,
+                  errorMaxLines: 3,
                   filled: true,
                   fillColor: AppColors.surfaceContainer,
                   border: OutlineInputBorder(

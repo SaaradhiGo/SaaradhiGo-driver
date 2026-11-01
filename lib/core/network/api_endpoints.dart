@@ -52,6 +52,10 @@ class ApiEndpoints {
       '/promotions/driver/incentives/';
   static const String promotionsReferralsMine = '/promotions/referrals/mine/';
 
+  // Notification preferences (module 11), servers/notifications/urls.py,
+  // served for riders and drivers alike.
+  static const String notificationPreferences = '/notifications/preferences/';
+
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';
   static const String driverWithdrawalBalance = '/driver/withdrawals/balance/';

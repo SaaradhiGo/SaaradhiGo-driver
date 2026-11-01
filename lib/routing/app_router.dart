@@ -20,6 +20,7 @@ import '../features/documents/presentation/screens/document_vault_screen.dart';
 import '../features/incentives/presentation/screens/elite_partner_screen.dart';
 import '../features/incentives/presentation/screens/incentives_rewards_screen.dart';
 import '../features/referrals/presentation/screens/referral_screen.dart';
+import '../features/notifications/presentation/screens/notification_preferences_screen.dart';
 import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/providers/profile_providers.dart';
 import '../features/profile/presentation/screens/driver_profile_screen.dart';
@@ -313,6 +314,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/notification-preferences',
+        builder: (context, state) => const NotificationPreferencesScreen(),
       ),
       GoRoute(
         path: '/incentives',

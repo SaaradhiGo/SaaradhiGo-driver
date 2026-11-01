@@ -52,6 +52,18 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     String? referralRewards,
     @JsonKey(name: 'incentive_commission') String? incentiveCommission,
     @JsonKey(name: 'incentive_tax') String? incentiveTax,
+    // A reward held for review and the recovery of a reward (AUDIT 27.57).
+    // Additive and neutral: the labels are the API's own words, and the app
+    // hides a line whose value is absent or zero.
+    @JsonKey(name: 'rewards_pending_review', fromJson: nullableMoneyFromJson)
+    String? rewardsPendingReview,
+    @JsonKey(name: 'rewards_pending_review_label')
+    String? rewardsPendingReviewLabel,
+    @JsonKey(name: 'reward_recovery', fromJson: nullableMoneyFromJson)
+    String? rewardRecovery,
+    @JsonKey(name: 'reward_recovery_label') String? rewardRecoveryLabel,
+    @JsonKey(name: 'reward_recovery_remaining', fromJson: nullableMoneyFromJson)
+    String? rewardRecoveryRemaining,
   }) = _EarningsSummaryModel;
 
   factory EarningsSummaryModel.fromJson(Map<String, dynamic> json) =>

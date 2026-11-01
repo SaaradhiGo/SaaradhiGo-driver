@@ -808,6 +808,31 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
+              key: const Key('profile_notification_preferences'),
+              leading: const Icon(
+                Icons.tune_rounded,
+                color: AppColors.primaryContainer,
+              ),
+              title: Text(
+                'Notification preferences',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/notification-preferences'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
               leading: const Icon(
                 Icons.security_rounded,
                 color: AppColors.primaryContainer,

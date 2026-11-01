@@ -69,7 +69,7 @@ class PromoIncentiveCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                 ),
                 child: Text(
-                  state.label,
+                  incentive.labelAt(at),
                   style: AppTypography.labelCaps.copyWith(
                     color: color,
                     fontSize: 10,

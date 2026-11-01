@@ -633,6 +633,11 @@ class _EarningsDashboardScreenState
             taxCollected: summary?.taxCollected,
             taxCollectedLabel: summary?.taxCollectedLabel,
             regulatoryFees: summary?.regulatoryFeesCollected,
+            rewardsPendingReview: summary?.rewardsPendingReview,
+            rewardsPendingReviewLabel: summary?.rewardsPendingReviewLabel,
+            rewardRecovery: summary?.rewardRecovery,
+            rewardRecoveryLabel: summary?.rewardRecoveryLabel,
+            rewardRecoveryRemaining: summary?.rewardRecoveryRemaining,
           ),
           const SizedBox(height: AppSpacing.md),
 
