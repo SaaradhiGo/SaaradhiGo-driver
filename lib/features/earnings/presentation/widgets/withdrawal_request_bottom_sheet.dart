@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../shared/widgets/bottom_sheet_container.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../providers/earnings_providers.dart';
@@ -44,7 +45,8 @@ class _WithdrawalRequestBottomSheetState
 
   void _validate(double? value) {
     final balanceState = ref.read(earningsNotifierProvider).withdrawalBalance;
-    final minAmount = balanceState?.minimumWithdrawal ?? 500.0;
+    final minAmount = balanceState?.minimumWithdrawal ?? 0.0;
+    final currency = balanceState?.currency;
     final availBalance = balanceState?.availableBalance ?? 0.0;
 
     final amt = value ?? double.tryParse(_amountController.text) ?? 0.0;
@@ -54,10 +56,10 @@ class _WithdrawalRequestBottomSheetState
         _validationError = 'Enter a valid withdrawal amount.';
       } else if (amt < minAmount) {
         _validationError =
-            'Minimum withdrawal amount is ₹${minAmount.toStringAsFixed(0)}';
+            'Minimum withdrawal amount is ${formatThreshold(minAmount, currency)}';
       } else if (amt > availBalance) {
         _validationError =
-            'Amount exceeds available balance of ₹${availBalance.toStringAsFixed(2)}';
+            'Amount exceeds available balance of ${formatMoney(availBalance, currency)}';
       } else {
         _validationError = null;
       }
@@ -91,7 +93,7 @@ class _WithdrawalRequestBottomSheetState
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            'Withdrawal request of ₹${amt.toStringAsFixed(2)} submitted!',
+            'Withdrawal request of ${formatMoney(amt, ref.read(earningsNotifierProvider).withdrawalBalance?.currency)} submitted!',
             style: AppTypography.bodyMd.copyWith(color: AppColors.darkText),
           ),
           backgroundColor: AppColors.primary,
@@ -105,8 +107,10 @@ class _WithdrawalRequestBottomSheetState
     final state = ref.watch(earningsNotifierProvider);
     final balance = state.withdrawalBalance;
     final availBalance = balance?.availableBalance ?? 0.0;
-    final minAmount = balance?.minimumWithdrawal ?? 500.0;
-    final feePercent = balance?.feePercent ?? 0.0;
+    final minAmount = balance?.minimumWithdrawal ?? 0.0;
+    final currency = balance?.currency;
+    // Shown ONLY when the server charges a fee, and exactly as the server says.
+    final feeDisplay = balance?.feeDisplay;
     final isBlocked = balance?.blocked ?? false;
 
     return BottomSheetContainer(
@@ -166,7 +170,7 @@ class _WithdrawalRequestBottomSheetState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '₹${availBalance.toStringAsFixed(2)}',
+                      formatMoney(availBalance, currency),
                       style: AppTypography.displayLg.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -219,7 +223,7 @@ class _WithdrawalRequestBottomSheetState
                       ),
                       onPressed: () => _onQuickAmountSelected(500),
                       child: Text(
-                        '₹500',
+                        formatMoney(500, currency, decimals: 0),
                         style: AppTypography.dataMono.copyWith(
                           color: AppColors.primary,
                         ),
@@ -238,7 +242,7 @@ class _WithdrawalRequestBottomSheetState
                       ),
                       onPressed: () => _onQuickAmountSelected(1000),
                       child: Text(
-                        '₹1,000',
+                        '${currencySymbol(currency)}1,000',
                         style: AppTypography.dataMono.copyWith(
                           color: AppColors.primary,
                         ),
@@ -283,13 +287,21 @@ class _WithdrawalRequestBottomSheetState
                 ),
                 onChanged: (_) => _validate(null),
                 decoration: InputDecoration(
-                  labelText: 'Withdrawal Amount (₹)',
+                  labelText: currency == null
+                      ? 'Withdrawal Amount'
+                      : 'Withdrawal Amount (${currencySymbol(currency).trim()})',
                   labelStyle: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
-                  prefixIcon: const Icon(
-                    Icons.currency_rupee,
-                    color: AppColors.primary,
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Text(
+                      currencySymbol(currency).trim(),
+                      style: AppTypography.bodyMd.copyWith(
+                        color: AppColors.primary,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                   errorText: _validationError ?? state.errorMessage,
                   filled: true,
@@ -302,7 +314,11 @@ class _WithdrawalRequestBottomSheetState
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Note: Minimum withdrawal is ₹${minAmount.toStringAsFixed(0)}. Transfer fee is ${feePercent.toStringAsFixed(1)}%.',
+                [
+                  if (minAmount > 0)
+                    'Minimum withdrawal is ${formatThreshold(minAmount, currency)}.',
+                  if (feeDisplay != null) 'Transfer fee is $feeDisplay.',
+                ].join(' '),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
                   fontSize: 11,

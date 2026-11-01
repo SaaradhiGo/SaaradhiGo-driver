@@ -523,13 +523,10 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 const SizedBox(height: AppSpacing.sm),
               ],
           ] else ...[
+            // No breakdown from the server: show the fare only. A "Platform
+            // Service Fee -0" line used to be drawn here, a fee nobody read
+            // from anywhere.
             _buildBreakdownRow('Trip Fare', '₹$fare'),
-            const SizedBox(height: AppSpacing.sm),
-            _buildBreakdownRow(
-              'Platform Service Fee',
-              '-₹0',
-              isDeduction: true,
-            ),
           ],
 
           const Divider(color: AppColors.outlineVariant, height: AppSpacing.lg),
