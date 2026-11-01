@@ -13,3 +13,8 @@ key.properties
 **/*.keystore
 **/*.jks
 .planning
+
+# Firebase config for a specific Android client. Issued per project by
+# the Firebase console, not a repository artifact. app/build.gradle.kts
+# applies the google-services plugin only when this file is present.
+app/google-services.json

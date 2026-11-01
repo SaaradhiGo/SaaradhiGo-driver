@@ -3,11 +3,28 @@ import 'package:dio/dio.dart';
 import '../storage/secure_storage_service.dart';
 import 'api_endpoints.dart';
 import 'auth_session_events.dart';
+import 'jwt_expiry.dart';
 import '../utils/app_logger.dart';
 
 class AuthInterceptor extends Interceptor {
   static const _refreshAttemptedExtra = 'auth_refresh_attempted';
   static const _skipRefreshExtra = 'auth_skip_refresh';
+
+  /// Endpoints where a 401 means "those credentials are wrong", not "your
+  /// session ended".
+  ///
+  /// Only `/auth/login/` was excluded. A rejected email login therefore ran
+  /// the refresh path: with no stored refresh token that clears the session
+  /// and emits sessionExpired, so a driver who mistyped their password was
+  /// told "Your session has expired. Please log in again." on the login
+  /// screen -- and, now that clearing sets a revocation tombstone, it would
+  /// also void a session they still had in another tab of the app.
+  static const _unauthenticatedPaths = <String>{
+    ApiEndpoints.login,
+    ApiEndpoints.emailLogin,
+    ApiEndpoints.requestOtp,
+    ApiEndpoints.passwordForgot,
+  };
 
   final Dio _dio;
   Future<_TokenPair?>? _refreshFuture;
@@ -44,7 +61,7 @@ class AuthInterceptor extends Interceptor {
         requestOptions.extra[_refreshAttemptedExtra] == true;
 
     if (statusCode != 401 ||
-        requestOptions.path == ApiEndpoints.login ||
+        _unauthenticatedPaths.contains(requestOptions.path) ||
         isRefreshRequest ||
         requestOptions.extra[_skipRefreshExtra] == true ||
         hasAlreadyRefreshed) {
@@ -84,6 +101,36 @@ class AuthInterceptor extends Interceptor {
     } on DioException catch (retryError) {
       handler.next(retryError);
     }
+  }
+
+  /// An access token that is actually usable right now.
+  ///
+  /// The WebSocket handshake puts the token in the query string and never goes
+  /// through Dio, so the 401 path above cannot help it: the server refuses the
+  /// upgrade and the client sees only `WebSocketChannelException`. Observed on
+  /// QA -- a driver app left open past the access-token lifetime could not go
+  /// online again at all. It retried six times, gave up ("Max reconnect
+  /// attempts reached"), and settled on "You're Offline" with no explanation,
+  /// while a freshly minted token for the same account connected first try.
+  ///
+  /// So the socket asks for a token it can rely on, and the expiry is read
+  /// from the token rather than discovered by being rejected. Refreshes are
+  /// deduplicated with the 401 path, so a REST call and a reconnect racing
+  /// each other still perform one refresh.
+  ///
+  /// Returns null only when there is no session left to refresh, in which case
+  /// `_refreshTokens` has already cleared it and emitted `sessionExpired`.
+  Future<String?> ensureFreshAccessToken() async {
+    final stored = await SecureStorageService.getAccessToken();
+    if (stored != null && stored.isNotEmpty && !isJwtExpired(stored)) {
+      return stored;
+    }
+    if (stored == null || stored.isEmpty) {
+      // Nothing to present and nothing to prove; let the refresh token decide.
+      return _getRefreshedAccessToken();
+    }
+    AppLogger.i('Access token expired; refreshing before connecting a socket');
+    return _getRefreshedAccessToken();
   }
 
   String? _bearerTokenFrom(Map<String, dynamic> headers) {

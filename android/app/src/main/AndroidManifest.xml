@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:label="saaradhigo_driver"
+        android:label="SaaradhiGo Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <service

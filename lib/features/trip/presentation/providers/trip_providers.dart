@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/dio_client.dart';
-import '../../../../core/storage/secure_storage_service.dart';
 import '../../data/data_sources/trip_remote_data_source.dart';
 import '../../data/data_sources/trip_status_consumer.dart';
 import '../../data/repositories/trip_repository_impl.dart';
 import '../../domain/repositories/trip_repository.dart';
 import 'trip_session_notifier.dart';
 import 'trip_session_state.dart';
+import '../../data/data_sources/rating_remote_data_source.dart';
 
 export 'trip_session_state.dart';
 
@@ -29,8 +29,15 @@ final tripStatusConsumerFactoryProvider = Provider<TripStatusConsumerFactory>((
 ) {
   return (tripId) => TripStatusConsumer(
     tripId: tripId,
-    tokenReader: SecureStorageService.getAccessToken,
+    // Refreshed if it has expired; an expired token here would silence trip
+    // updates mid-ride, on the socket that carries start/complete/cancel.
+    tokenReader: ref.read(socketAccessTokenProvider),
   );
+});
+
+/// Rating a passenger on a completed trip.
+final ratingRemoteDataSourceProvider = Provider<RatingRemoteDataSource>((ref) {
+  return RatingRemoteDataSourceImpl(ref.watch(dioClientProvider).dio);
 });
 
 final tripSessionNotifierProvider =

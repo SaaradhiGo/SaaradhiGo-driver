@@ -195,7 +195,7 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
   }
 
   AvailabilityState? _guardProfile(DriverProfileModel profile) {
-    if (!profile.approved) {
+    if (!profile.approved && !profile.dispatchEligible) {
       return const AvailabilityState.blocked(
         reason: AvailabilityBlockReason.notApproved,
         message:

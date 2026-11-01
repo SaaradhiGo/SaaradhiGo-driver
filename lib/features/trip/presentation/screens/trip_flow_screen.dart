@@ -110,6 +110,24 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       );
     }
 
+    // The accept was never confirmed -- the offer had already been cancelled,
+    // or the backend did not answer in time. Say so and get the driver off
+    // this screen; staying on it is what made them invisible to dispatch.
+    if (session.offerLost) {
+      // When the backend refused because of something about the DRIVER, the
+      // old title contradicted the message underneath it: "Ride no longer
+      // available" above "you have reached the 12-hour daily limit". The
+      // ride was available; the driver was locked out.
+      return _TripEndedView(
+        icon: Icons.timer_off_rounded,
+        title: session.refusedByBackend
+            ? 'You cannot take this ride'
+            : 'Ride no longer available',
+        message: session.errorMessage
+            ?? 'That ride is no longer available. You are back online.',
+      );
+    }
+
     final trip = session.trip;
     if (trip == null) {
       return Scaffold(

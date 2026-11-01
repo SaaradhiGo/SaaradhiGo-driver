@@ -10,7 +10,10 @@ final presignedUploadsFlagProvider = Provider<bool>((ref) {
 });
 
 bool _readBoolFlag(String key, {required bool defaultValue}) {
-  final raw = dotenv.maybeGet(key);
+  // dotenv may never have been initialised -- `.env` is not a bundled asset
+  // any more, so a device build has nothing to load. An uninitialised
+  // `maybeGet` throws, which would have taken out every flag read.
+  final raw = _rawFlag(key);
   if (raw == null || raw.trim().isEmpty) {
     return defaultValue;
   }
@@ -22,4 +25,13 @@ bool _readBoolFlag(String key, {required bool defaultValue}) {
     return false;
   }
   return defaultValue;
+}
+
+/// The raw flag value from dotenv, or null. Never throws.
+String? _rawFlag(String key) {
+  try {
+    return dotenv.isInitialized ? dotenv.maybeGet(key) : null;
+  } on Object {
+    return null;
+  }
 }

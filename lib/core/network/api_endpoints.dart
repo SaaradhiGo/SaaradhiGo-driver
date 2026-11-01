@@ -15,6 +15,11 @@ class ApiEndpoints {
   static const String getProfile = '/auth/profile/';
   static const String logout = '/auth/logout/';
 
+  // Email + password, alongside phone + OTP. Paths taken from the
+  // generated contract (test/contracts/auth_contracts.json), not guessed.
+  static const String emailLogin = '/auth/email/login/';
+  static const String passwordForgot = '/auth/password/forgot/';
+
   // Driver Profile & Vehicles
   static const String driverProfile = '/driver/driver/profile/';
   static const String driverUpdate = '/driver/driver/update/';
@@ -29,11 +34,16 @@ class ApiEndpoints {
   // Driver Earnings, Incentives & Elite Status
   static const String driverEarnings = '/driver/earnings/';
   static const String driverEarningsSummary = '/driver/earnings/summary/';
-  static const String driverIncentives = '/driver/incentives/';
-  static const String driverIncentivesFallback = '/driver/driver/incentives/';
-  static const String driverEliteStatus = '/driver/elite-status/';
-  static const String driverEliteStatusFallback =
-      '/driver/driver/elite-status/';
+  // The doubled `driver/` is correct and is not a typo: servers/driver/urls.py
+  // is included at `/driver/` and declares `path('driver/incentives/')`, so
+  // the full route is /api/v1/driver/driver/incentives/.
+  //
+  // These were a pair each -- a single-segment "primary" and a doubled
+  // "fallback" tried on 404. The primary never existed, so every incentives
+  // and elite-status read made one guaranteed-404 request before the real
+  // one. Collapsed to the route the server actually serves.
+  static const String driverIncentives = '/driver/driver/incentives/';
+  static const String driverEliteStatus = '/driver/driver/elite-status/';
 
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';
@@ -45,6 +55,11 @@ class ApiEndpoints {
 
   // Ride Execution
   static const String activeTrip = '/ride/active/';
+
+  // Rate a completed trip. Drivers rate riders, riders rate drivers; the
+  // server enforces one rating per user per trip. Live the whole time and
+  // called by neither app, so every average sat at its default.
+  static const String rateTrip = '/ride/rate-trip/';
   static const String tripHistory = '/ride/driver-history/';
   static String tripDetails(String tripId) => '/ride/trip/$tripId/';
   static String driverCancelTrip(String tripId) =>
@@ -66,6 +81,9 @@ class ApiEndpoints {
   static const String notifications = '/rider/notifications/';
   static String notificationRead(int id) => '/rider/notifications/$id/read/';
   static const String notificationsReadAll = '/rider/notifications/read-all/';
+
+  // Maps. The Google key stays on the server; these are proxy paths.
+  static const String mapsDirections = '/ride/maps/directions';
 
   // WebSockets (Relative to wsBaseUrl)
   static const String wsDriverLocation = 'ws/driver/location/';
