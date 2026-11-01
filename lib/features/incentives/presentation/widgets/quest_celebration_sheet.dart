@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -91,7 +92,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '+ ₹${quest.rewardAmount}',
+                    '+ ${marketSymbol()}${quest.rewardAmount}',
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primary,
                       fontFamily: 'JetBrains Mono',

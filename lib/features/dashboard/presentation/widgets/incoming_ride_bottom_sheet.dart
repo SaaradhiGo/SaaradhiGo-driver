@@ -1,3 +1,4 @@
+import '../../../../core/market/market_config_store.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,7 +83,7 @@ class _IncomingRideBottomSheetState extends State<IncomingRideBottomSheet> {
     final destinationAddress =
         payload['destination_address']?.toString() ?? 'Destination Address';
     final rawFare = payload['estimated_fare']?.toString() ?? '0.00';
-    final fare = rawFare.startsWith('₹') ? rawFare : '₹$rawFare';
+    final fare = MarketConfigStore.instance.current.withSymbol(rawFare);
     final distance = payload['distance_km'] != null
         ? '${payload['distance_km']} km'
         : '8.4 km';

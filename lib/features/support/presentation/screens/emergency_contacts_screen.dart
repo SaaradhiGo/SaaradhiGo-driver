@@ -1,3 +1,4 @@
+import '../../../../core/market/market_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -335,7 +336,10 @@ class _ContactSheetState extends ConsumerState<_ContactSheet> {
                   color: AppColors.onBackground,
                 ),
                 decoration: InputDecoration(
-                  hintText: '+91 98XXXXXXXX',
+                  // India keeps its sample number; another market gets its own prefix.
+                  hintText: ref.watch(marketConfigProvider).callingCode == '91'
+                      ? '+91 98XXXXXXXX'
+                      : '${ref.watch(marketConfigProvider).dialPrefix} XXXXXXXXXX',
                   hintStyle: AppTypography.bodyLg.copyWith(
                     color: AppColors.onSurfaceVariant.withValues(alpha: 0.5),
                   ),

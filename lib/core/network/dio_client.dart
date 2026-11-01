@@ -5,6 +5,7 @@ import 'auth_interceptor.dart';
 import 'logging_interceptor.dart';
 import '../errors/failures.dart';
 import '../utils/app_logger.dart';
+import '../market/app_headers_interceptor.dart';
 
 final dioClientProvider = Provider<DioClient>((ref) {
   return DioClient();
@@ -40,7 +41,13 @@ class DioClient {
     );
 
     _auth = AuthInterceptor(_dio);
-    _dio.interceptors.addAll([LoggingInterceptor(), _auth]);
+    _dio.interceptors.addAll([
+      // First, so the X-App-* headers are on every request (the refresh call
+      // and the retry included) and a 426 is seen whatever else fails.
+      AppHeadersInterceptor(),
+      LoggingInterceptor(),
+      _auth,
+    ]);
   }
 
   Dio get dio => _dio;

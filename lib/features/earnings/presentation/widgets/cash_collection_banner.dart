@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -53,7 +54,7 @@ class CashCollectionBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Collect ₹${amount.toStringAsFixed(2)} cash from rider',
+                  'Collect ${marketSymbol()}${amount.toStringAsFixed(2)} cash from rider',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.w600,

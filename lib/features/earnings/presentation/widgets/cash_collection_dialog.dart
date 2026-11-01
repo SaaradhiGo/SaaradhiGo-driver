@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -92,7 +93,7 @@ class CashCollectionDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '₹${amount.toStringAsFixed(2)}',
+                    '${marketSymbol()}${amount.toStringAsFixed(2)}',
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primary,
                       fontSize: 36,

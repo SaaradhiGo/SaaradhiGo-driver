@@ -1,3 +1,4 @@
+import '../../../../core/market/market_format.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -10,8 +11,9 @@ class EarningsBreakdownCard extends StatelessWidget {
   final String? commission;
   final String? commissionRate;
   final String? netEarnings;
-  final String tips;
-  final String bonuses;
+  /// Null means "none sent": shown as zero in the market's currency.
+  final String? tips;
+  final String? bonuses;
 
   const EarningsBreakdownCard({
     super.key,
@@ -19,8 +21,8 @@ class EarningsBreakdownCard extends StatelessWidget {
     this.commission,
     this.commissionRate,
     this.netEarnings,
-    this.tips = '₹0.00',
-    this.bonuses = '₹0.00',
+    this.tips,
+    this.bonuses,
   });
 
   @override
@@ -45,19 +47,19 @@ class EarningsBreakdownCard extends StatelessWidget {
           _buildRow(
             icon: Icons.route,
             label: 'Trip Fares (Gross)',
-            amount: '₹$grossFares',
+            amount: '${marketSymbol()}$grossFares',
             color: AppColors.onBackground,
           ),
           _buildRow(
             icon: Icons.volunteer_activism,
             label: 'Tips',
-            amount: tips,
+            amount: tips ?? '${marketSymbol()}0.00',
             color: AppColors.onBackground,
           ),
           _buildRow(
             icon: Icons.card_giftcard,
             label: 'Bonuses & Incentives',
-            amount: bonuses,
+            amount: bonuses ?? '${marketSymbol()}0.00',
             color: AppColors.primary,
           ),
           // Commission and net are shown only when the API sent a commission.
@@ -71,7 +73,7 @@ class EarningsBreakdownCard extends StatelessWidget {
               label: commissionRate == null
                   ? 'Platform Commission'
                   : 'Platform Commission ($commissionRate)',
-              amount: '-₹$commission',
+              amount: '-${marketSymbol()}$commission',
               color: AppColors.error,
             ),
           ],
@@ -101,7 +103,7 @@ class EarningsBreakdownCard extends StatelessWidget {
             ),
           ),
           Text(
-            '₹$netEarnings',
+            '${marketSymbol()}$netEarnings',
             style: AppTypography.dataMono.copyWith(
               color: AppColors.primary,
               fontSize: 18,
