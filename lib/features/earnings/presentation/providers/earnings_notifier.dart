@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/utils/app_logger.dart';
@@ -35,6 +36,22 @@ Future<_SectionResult<T>> _guardSection<T>(Future<T> Function() run) async {
     AppLogger.w('Earnings section failed to load', e);
     return _SectionFailed(e);
   }
+}
+
+/// The backend's stable code when a payout is on hold (`PAYOUT_ON_HOLD`,
+/// servers/driver/views.py). The driver is told it is being checked, and
+/// nothing about why: the API's own wording is not used.
+const String kPayoutOnHold = 'PAYOUT_ON_HOLD';
+
+const String kPayoutOnHoldMessage =
+    "Your payout is being checked. We'll let you know when it's released.";
+
+/// The `error.code` of a failed request, or null.
+String? apiErrorCode(Object error) {
+  if (error is! DioException) return null;
+  final data = error.response?.data;
+  final err = data is Map ? data['error'] : null;
+  return err is Map ? err['code']?.toString() : null;
 }
 
 class EarningsNotifier extends Notifier<EarningsState> {
@@ -264,7 +281,9 @@ class EarningsNotifier extends Notifier<EarningsState> {
     } catch (e) {
       state = state.copyWith(
         isSubmittingWithdrawal: false,
-        errorMessage: 'Withdrawal request failed: ${e.toString()}',
+        errorMessage: apiErrorCode(e) == kPayoutOnHold
+            ? kPayoutOnHoldMessage
+            : 'Withdrawal request failed: ${e.toString()}',
       );
       return false;
     }

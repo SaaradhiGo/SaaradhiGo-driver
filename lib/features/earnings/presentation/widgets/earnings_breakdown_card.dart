@@ -28,6 +28,15 @@ class EarningsBreakdownCard extends StatelessWidget {
   final String? taxCollectedLabel;
   final String? regulatoryFees;
 
+  /// A reward held for review, a recovery of a reward and what is still to be
+  /// recovered. Each is the API's amount and shown only when above zero; the
+  /// labels are the API's words (a neutral default is used when absent).
+  final String? rewardsPendingReview;
+  final String? rewardsPendingReviewLabel;
+  final String? rewardRecovery;
+  final String? rewardRecoveryLabel;
+  final String? rewardRecoveryRemaining;
+
   const EarningsBreakdownCard({
     super.key,
     required this.grossFares,
@@ -46,6 +55,11 @@ class EarningsBreakdownCard extends StatelessWidget {
     this.taxCollected,
     this.taxCollectedLabel,
     this.regulatoryFees,
+    this.rewardsPendingReview,
+    this.rewardsPendingReviewLabel,
+    this.rewardRecovery,
+    this.rewardRecoveryLabel,
+    this.rewardRecoveryRemaining,
   });
 
   @override
@@ -163,6 +177,45 @@ class EarningsBreakdownCard extends StatelessWidget {
               ),
             ),
           ],
+          // A reward held for review, and the recovery of a reward. Neutral
+          // wording only; the held amount is not part of what can be withdrawn.
+          if (isPositiveAmount(rewardsPendingReview) ||
+              isPositiveAmount(rewardRecovery) ||
+              isPositiveAmount(rewardRecoveryRemaining)) ...[
+            Divider(
+              color: AppColors.outlineVariant.withValues(alpha: 0.3),
+              height: 16,
+            ),
+            if (isPositiveAmount(rewardsPendingReview))
+              _buildRow(
+                key: const Key('breakdown_rewards_pending_review'),
+                icon: Icons.hourglass_top_rounded,
+                label: _labelOr(rewardsPendingReviewLabel, 'Pending review'),
+                amount: '${marketSymbol()}$rewardsPendingReview',
+                color: AppColors.onSurfaceVariant,
+                note: 'Not included in what you can withdraw yet',
+              ),
+            if (isPositiveAmount(rewardRecovery))
+              _buildRow(
+                key: const Key('breakdown_reward_recovery'),
+                icon: Icons.undo_rounded,
+                label: _labelOr(
+                  rewardRecoveryLabel,
+                  'Recovery of reward (reviewed)',
+                ),
+                amount: '-${marketSymbol()}$rewardRecovery',
+                color: AppColors.error,
+              ),
+            if (isPositiveAmount(rewardRecoveryRemaining))
+              _buildRow(
+                key: const Key('breakdown_reward_recovery_remaining'),
+                icon: Icons.hourglass_bottom_rounded,
+                label: 'Still to be recovered',
+                amount: '${marketSymbol()}$rewardRecoveryRemaining',
+                color: AppColors.onSurfaceVariant,
+                note: 'Taken from future payouts',
+              ),
+          ],
           // US pass-through: collected from riders and remitted by SaaradhiGo.
           // Not part of the fares, the commission or the net above.
           if (isPositiveAmount(taxCollected) ||
@@ -194,6 +247,9 @@ class EarningsBreakdownCard extends StatelessWidget {
       ),
     );
   }
+
+  static String _labelOr(String? label, String fallback) =>
+      (label?.trim().isNotEmpty ?? false) ? label!.trim() : fallback;
 
   Widget _buildNetRow(String netEarnings) {
     return Padding(
