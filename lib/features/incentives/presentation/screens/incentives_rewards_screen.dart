@@ -10,6 +10,8 @@ import '../../../../domain/models/incentive_quest_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/incentives_providers.dart';
+import '../providers/promo_incentives_provider.dart';
+import '../widgets/promo_incentive_card.dart';
 import '../widgets/circular_goal_ring.dart';
 import '../widgets/quest_card.dart';
 import '../widgets/quest_celebration_sheet.dart';
@@ -29,12 +31,21 @@ class _IncentivesRewardsScreenState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(incentivesNotifierProvider.notifier).fetchIncentives();
+      ref.read(promoIncentivesProvider.notifier).fetch();
     });
+  }
+
+  Future<void> _refresh() {
+    ref.read(promoIncentivesProvider.notifier).fetch();
+    return ref
+        .read(incentivesNotifierProvider.notifier)
+        .fetchIncentives(refresh: true);
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(incentivesNotifierProvider);
+    final promo = ref.watch(promoIncentivesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -51,18 +62,22 @@ class _IncentivesRewardsScreenState
         ),
         centerTitle: true,
       ),
-      body: SafeArea(child: _buildContent(context, state)),
+      body: SafeArea(child: _buildContent(context, state, promo)),
     );
   }
 
-  Widget _buildContent(BuildContext context, IncentivesState state) {
+  Widget _buildContent(
+    BuildContext context,
+    IncentivesState state,
+    PromoIncentivesState promo,
+  ) {
     if (state.isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: AppColors.primary),
       );
     }
 
-    if (state.hasError) {
+    if (state.hasError && promo.items.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.margin),
@@ -103,11 +118,9 @@ class _IncentivesRewardsScreenState
       );
     }
 
-    if (state.isEmpty) {
+    if (state.isEmpty && promo.items.isEmpty) {
       return RefreshIndicator(
-        onRefresh: () => ref
-            .read(incentivesNotifierProvider.notifier)
-            .fetchIncentives(refresh: true),
+        onRefresh: () => _refresh(),
         color: AppColors.primary,
         backgroundColor: AppColors.surface,
         child: ListView(
@@ -149,21 +162,14 @@ class _IncentivesRewardsScreenState
             const SizedBox(height: AppSpacing.xl),
             _buildEliteShortcutBanner(context),
             const SizedBox(height: AppSpacing.lg),
-            SecondaryButton(
-              text: 'Refresh',
-              onPressed: () => ref
-                  .read(incentivesNotifierProvider.notifier)
-                  .fetchIncentives(refresh: true),
-            ),
+            SecondaryButton(text: 'Refresh', onPressed: () => _refresh()),
           ],
         ),
       );
     }
 
     return RefreshIndicator(
-      onRefresh: () => ref
-          .read(incentivesNotifierProvider.notifier)
-          .fetchIncentives(refresh: true),
+      onRefresh: () => _refresh(),
       color: AppColors.primary,
       backgroundColor: AppColors.surface,
       child: ListView(
@@ -176,74 +182,106 @@ class _IncentivesRewardsScreenState
           _buildEliteShortcutBanner(context),
           const SizedBox(height: AppSpacing.lg),
 
-          // Active Targets (Circular Progress Rings)
-          _buildActiveTargetsSection(state),
-          const SizedBox(height: AppSpacing.xl),
+          // Live incentives from the promotions engine, exactly as the API
+          // returns them.
+          if (promo.items.isNotEmpty) ...[
+            _buildPromoSection(promo),
+            const SizedBox(height: AppSpacing.xl),
+          ],
 
-          // Available / Active Bonuses
-          Text(
-            'Available Bonuses',
-            style: AppTypography.headlineSm.copyWith(
-              color: AppColors.onBackground,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
+          if (state.quests.isNotEmpty) ...[
+            // Active Targets (Circular Progress Rings)
+            _buildActiveTargetsSection(state),
+            const SizedBox(height: AppSpacing.xl),
 
-          if (state.activeQuests.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              child: Text(
-                'All current quests completed! Great driving.',
-                style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
-              ),
-            )
-          else
-            ...state.activeQuests.map((quest) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: QuestCard(
-                  quest: quest,
-                  onTap: () {
-                    if (quest.isCompleted) {
-                      QuestCelebrationSheet.show(context, quest);
-                    }
-                  },
-                ),
-              );
-            }),
-
-          // Completed Quests Section
-          if (state.completedQuests.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.lg),
+            // Available / Active Bonuses
             Text(
-              'Completed Quests',
+              'Available Bonuses',
               style: AppTypography.headlineSm.copyWith(
                 color: AppColors.onBackground,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...state.completedQuests.map((quest) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: QuestCard(
-                  quest: quest,
-                  onTap: () => QuestCelebrationSheet.show(context, quest),
+
+            if (state.activeQuests.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                child: Text(
+                  'All current quests completed! Great driving.',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
-              );
-            }),
+              )
+            else
+              ...state.activeQuests.map((quest) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: QuestCard(
+                    quest: quest,
+                    onTap: () {
+                      if (quest.isCompleted) {
+                        QuestCelebrationSheet.show(context, quest);
+                      }
+                    },
+                  ),
+                );
+              }),
+
+            // Completed Quests Section
+            if (state.completedQuests.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                'Completed Quests',
+                style: AppTypography.headlineSm.copyWith(
+                  color: AppColors.onBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              ...state.completedQuests.map((quest) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: QuestCard(
+                    quest: quest,
+                    onTap: () => QuestCelebrationSheet.show(context, quest),
+                  ),
+                );
+              }),
+            ],
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // Weekly Summary Footer Card
+            _buildSummaryFooter(context, state),
           ],
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Weekly Summary Footer Card
-          _buildSummaryFooter(context, state),
           const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+
+  Widget _buildPromoSection(PromoIncentivesState promo) {
+    final now = DateTime.now();
+    return Column(
+      key: const Key('promo_incentives_section'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Your incentives',
+          style: AppTypography.headlineSm.copyWith(
+            color: AppColors.onBackground,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        for (final i in promo.items)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: PromoIncentiveCard(incentive: i, now: now),
+          ),
+      ],
     );
   }
 

@@ -16,6 +16,7 @@ import '../../../../domain/models/withdrawal_model.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
+import '../../../incentives/presentation/providers/promo_incentives_provider.dart';
 import '../providers/earnings_providers.dart';
 import '../widgets/cash_collection_banner.dart';
 import '../widgets/earning_trip_tile.dart';
@@ -41,6 +42,7 @@ class _EarningsDashboardScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(earningsNotifierProvider.notifier).loadInitialData();
       ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      ref.read(promoIncentivesProvider.notifier).fetch();
     });
   }
 
@@ -589,7 +591,12 @@ class _EarningsDashboardScreenState
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Complete ride milestones & unlock weekly cash bonuses',
+                          incentivesCardSummary(
+                                ref.watch(promoIncentivesProvider),
+                                DateTime.now(),
+                              ) ??
+                              'Complete ride milestones & unlock weekly cash bonuses',
+                          key: const Key('incentives_card_summary'),
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
                             fontSize: 11,

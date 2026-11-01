@@ -115,6 +115,7 @@ class MarketConfig {
     required this.emergency,
     required this.cities,
     this.notices = const [],
+    this.referralsAvailable = false,
     this.isBuiltIn = false,
   });
 
@@ -134,6 +135,12 @@ class MarketConfig {
   /// then falls back to the built-in Hyderabad polygon.
   final List<CityConfig> cities;
   final List<AppNotice> notices;
+
+  /// `referrals_available` from app-config (named with `app=driver`): true only
+  /// while a referral offer is live for drivers in this market. The referral
+  /// entry is hidden unless it is true; a document without the key reads as
+  /// false, which is how the app behaved before referrals existed.
+  final bool referralsAvailable;
   final bool isBuiltIn;
 
   /// `+91`, `+1`: what the phone field shows and E.164 numbers start with.
@@ -298,6 +305,7 @@ class MarketConfig {
       ),
       cities: cities,
       notices: notices,
+      referralsAvailable: data['referrals_available'] == true,
     );
   }
 }

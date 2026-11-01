@@ -45,6 +45,13 @@ class ApiEndpoints {
   static const String driverIncentives = '/driver/driver/incentives/';
   static const String driverEliteStatus = '/driver/driver/elite-status/';
 
+  // Promotions & Incentives (module 12), servers/promotions/urls.py, included
+  // at /promotions/. Live incentives with this driver's progress, and the
+  // referral code with the offer and the people referred.
+  static const String promotionsDriverIncentives =
+      '/promotions/driver/incentives/';
+  static const String promotionsReferralsMine = '/promotions/referrals/mine/';
+
   // Wallet & Withdrawals
   static const String walletBalance = '/rider/wallet/balance/';
   static const String driverWithdrawalBalance = '/driver/withdrawals/balance/';
