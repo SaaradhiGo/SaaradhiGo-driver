@@ -11,6 +11,9 @@ class TripRepositoryImpl implements TripRepository {
   Future<TripModel?> getActiveTrip() => _remote.getActiveTrip();
 
   @override
+  Future<TripModel?> getTrip(int tripId) => _remote.getTrip(tripId);
+
+  @override
   Future<void> driverCancel(
     int tripId, {
     required String reason,

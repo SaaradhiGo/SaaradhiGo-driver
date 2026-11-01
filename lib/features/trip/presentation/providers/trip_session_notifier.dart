@@ -10,6 +10,7 @@ import '../../../../core/utils/app_logger.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../dashboard/data/data_sources/driver_location_consumer.dart';
 import '../../data/data_sources/trip_status_consumer.dart';
+import '../../domain/support_end.dart';
 import 'trip_providers.dart';
 
 /// Owns the per-trip socket and drives the ride lifecycle state machine.
@@ -229,6 +230,10 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
         if (status == TripStatus.cancelled) {
           HapticFeedback.heavyImpact();
         }
+        final endedBySupport =
+            status == TripStatus.completed && isSupportEndMessage(message);
+        final releasedBySupport =
+            status == TripStatus.cancelled && isSupportCancelMessage(message);
         state = state.copyWith(
           status: status,
           trip: trip,
@@ -238,7 +243,16 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
           connecting: false,
           actionInProgress: false,
           otpError: null,
+          endedBySupport: endedBySupport,
+          releasedBySupport: releasedBySupport,
         );
+        // A completed cash trip, or one support ended, is read back from the
+        // server: its final fare, and `rider_payable` when a promo held on it
+        // (the cash to collect), are not on the socket.
+        if (status == TripStatus.completed &&
+            (endedBySupport || trip?.paymentMethod == 'cash')) {
+          unawaited(_refreshCompletedTrip(trip?.id));
+        }
         if (status == TripStatus.accepted) {
           final id = _consumer?.tripId;
           if (id != null) {
@@ -300,6 +314,30 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
       case TripStatusUnknownEvent(:final type):
         AppLogger.w('Unhandled trip event type: $type');
+    }
+  }
+
+  /// Reads the finished trip back and merges the money fields into the
+  /// session's trip. Best effort: on any failure the summary keeps what it had.
+  Future<void> _refreshCompletedTrip(int? tripId) async {
+    if (tripId == null) return;
+    try {
+      final fresh = await ref.read(tripRepositoryProvider).getTrip(tripId);
+      final current = state.trip;
+      if (fresh == null || current == null || current.id != tripId) return;
+      state = state.copyWith(
+        trip: current.copyWith(
+          finalFare: fresh.finalFare ?? current.finalFare,
+          paymentMethod: fresh.paymentMethod ?? current.paymentMethod,
+          paymentStatus: fresh.paymentStatus ?? current.paymentStatus,
+          distanceKm: fresh.distanceKm ?? current.distanceKm,
+          durationMin: fresh.durationMin ?? current.durationMin,
+          promoDiscount: fresh.promoDiscount,
+          riderPayable: fresh.riderPayable,
+        ),
+      );
+    } catch (error, stackTrace) {
+      AppLogger.w('Could not read the finished trip back', error, stackTrace);
     }
   }
 

@@ -11,6 +11,9 @@ import '../../../../domain/models/trip_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../earnings/presentation/widgets/cash_collection_dialog.dart';
+import '../../../earnings/presentation/earnings_display.dart';
+import '../../domain/support_end.dart';
+import '../providers/support_end_provider.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/rate_passenger_sheet.dart';
 
@@ -50,8 +53,10 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
   /// Full client fare the rider pays in cash (driver collects the gross, not the
   /// net — the platform commission is settled from the driver wallet separately).
   double get _cashAmount {
+    // `rider_payable` is what the rider pays when a promo held on the trip (the
+    // fare less the discount SaaradhiGo pays); otherwise the fare, as before.
     final raw = MarketConfigStore.instance.current.stripSymbol(
-      trip.finalFare ?? trip.estimatedFare ?? '0',
+      trip.riderPayable ?? trip.finalFare ?? trip.estimatedFare ?? '0',
     );
     return double.tryParse(raw) ?? 0;
   }
@@ -83,6 +88,8 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
   Widget build(BuildContext context) {
     final session = ref.watch(tripSessionNotifierProvider);
     final needsCash = session.needsCashCollection;
+    final endedBySupport = session.endedBySupport;
+    final platformPaid = trip.paymentStatus == 'waived';
     _maybePromptForCash();
 
     return Scaffold(
@@ -108,19 +115,34 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Trip Completed',
+                endedBySupport ? kSupportEndedTitle : 'Trip Completed',
+                key: const Key('summary_title'),
+                textAlign: TextAlign.center,
                 style: AppTypography.displayLg.copyWith(
                   color: AppColors.onBackground,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'You earned for this ride',
-                style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
+              if (endedBySupport && platformPaid)
+                Text(
+                  kSupportEndedPlatformPaid,
+                  key: const Key('summary_platform_paid'),
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+              else
+                Text(
+                  endedBySupport
+                      ? 'Fare for the distance driven'
+                      : 'You earned for this ride',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
-              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 _fare,
@@ -156,6 +178,14 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
                   ],
                 ),
               ),
+              if (isPositiveAmount(trip.promoDiscount)) ...[
+                const SizedBox(height: AppSpacing.md),
+                _promoPaidLine(),
+              ],
+              if (endedBySupport) ...[
+                const SizedBox(height: AppSpacing.md),
+                _supportEarnings(),
+              ],
               if (needsCash) ...[
                 const SizedBox(height: AppSpacing.md),
                 _cashReminder(),
@@ -189,6 +219,71 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// A rider promo SaaradhiGo paid on this trip: its own line, not the
+  /// driver's earnings and not something the rider owes in cash.
+  Widget _promoPaidLine() {
+    return GlassPanel(
+      key: const Key('summary_promo_paid'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              'Promo paid by SaaradhiGo',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onBackground,
+              ),
+            ),
+          ),
+          Text(
+            '${marketSymbol()}${trip.promoDiscount}',
+            style: AppTypography.dataMono.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// What the driver earned on a trip support ended, as the API says it.
+  Widget _supportEarnings() {
+    final info = ref.watch(supportEndInfoProvider(trip.id));
+    final data = info.asData?.value;
+    final earning = data?.earning;
+    final notice = data?.notice;
+    String body;
+    if (earning?.netEarning != null) {
+      body =
+          'You earned ${marketSymbol()}${earning!.netEarning} for the '
+          'distance driven.';
+    } else if (notice != null) {
+      body = notice;
+    } else if (info.isLoading) {
+      body = 'Working out what you earned...';
+    } else {
+      body = 'Your earnings for this trip will show in your earnings list.';
+    }
+    return GlassPanel(
+      key: const Key('summary_support_earnings'),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline, color: AppColors.primary, size: 22),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              body,
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.onBackground,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

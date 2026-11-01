@@ -13,6 +13,11 @@ abstract class TripRemoteDataSource {
   /// (backend replies `404 NO_ACTIVE_TRIP`).
   Future<TripModel?> getActiveTrip();
 
+  /// One trip by id (`GET /ride/trip/<id>/`, the rider's or the assigned
+  /// driver's own). Carries the final fare and, on a trip that held a rider
+  /// promo, `promo_discount` and `rider_payable`. Null when it cannot be read.
+  Future<TripModel?> getTrip(int tripId);
+
   /// Cancels an accepted/reached trip. `reason` is required by the backend;
   /// this endpoint does NOT emit a WebSocket broadcast.
   Future<void> driverCancel(int tripId, {required String reason, String? note});
@@ -48,6 +53,22 @@ class TripRemoteDataSourceImpl implements TripRemoteDataSource {
       return TripModel.fromJson(data);
     } on DioException catch (e) {
       // 404 is the documented "no active trip" signal, not a failure.
+      if (e.response?.statusCode == 404) return null;
+      rethrow;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<TripModel?> getTrip(int tripId) async {
+    try {
+      final response = await dio.get(ApiEndpoints.tripDetails('$tripId'));
+      final data = _extractData(response.data);
+      if (data.isEmpty) return null;
+      if (data['id'] == null && data['trip_id'] == null) return null;
+      return TripModel.fromJson(data);
+    } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;
       rethrow;
     } catch (e) {

@@ -28,6 +28,30 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     num? commissionPercent,
     @JsonKey(name: 'commission_percent_mixed', fromJson: nullableBoolFromJson)
     bool? commissionPercentMixed,
+    // The API's own net (sum of the trips' nets). Preferred over deriving it.
+    @JsonKey(name: 'total_net', fromJson: nullableMoneyFromJson)
+    String? totalNet,
+    // Module 12 / US pass-through / rewards. Additive: null when the API does
+    // not send them, and the screens hide a line whose value is absent or zero.
+    @JsonKey(name: 'promo_paid_by_platform', fromJson: nullableMoneyFromJson)
+    String? promoPaidByPlatform,
+    @JsonKey(
+      name: 'today_promo_paid_by_platform',
+      fromJson: nullableMoneyFromJson,
+    )
+    String? todayPromoPaidByPlatform,
+    @JsonKey(name: 'promo_paid_label') String? promoPaidLabel,
+    @JsonKey(name: 'tax_collected', fromJson: nullableMoneyFromJson)
+    String? taxCollected,
+    @JsonKey(name: 'regulatory_fees_collected', fromJson: nullableMoneyFromJson)
+    String? regulatoryFeesCollected,
+    @JsonKey(name: 'tax_collected_label') String? taxCollectedLabel,
+    @JsonKey(name: 'incentive_rewards', fromJson: nullableMoneyFromJson)
+    String? incentiveRewards,
+    @JsonKey(name: 'referral_rewards', fromJson: nullableMoneyFromJson)
+    String? referralRewards,
+    @JsonKey(name: 'incentive_commission') String? incentiveCommission,
+    @JsonKey(name: 'incentive_tax') String? incentiveTax,
   }) = _EarningsSummaryModel;
 
   factory EarningsSummaryModel.fromJson(Map<String, dynamic> json) =>

@@ -1,4 +1,5 @@
 import '../../../../core/market/market_format.dart';
+import '../../../earnings/presentation/earnings_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -528,6 +529,22 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             // Service Fee -0" line used to be drawn here, a fee nobody read
             // from anywhere.
             _buildBreakdownRow('Trip Fare', '${marketSymbol()}$fare'),
+          ],
+
+          // A rider promo SaaradhiGo paid on this trip. Its own lines; the
+          // fare above and the earnings below are not touched.
+          if (!isCancelled && isPositiveAmount(trip.promoDiscount)) ...[
+            _buildBreakdownRow(
+              'Promo paid by SaaradhiGo',
+              '${marketSymbol()}${trip.promoDiscount}',
+            ),
+            if (trip.riderPayable != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _buildBreakdownRow(
+                'Rider paid',
+                '${marketSymbol()}${trip.riderPayable}',
+              ),
+            ],
           ],
 
           const Divider(color: AppColors.outlineVariant, height: AppSpacing.lg),

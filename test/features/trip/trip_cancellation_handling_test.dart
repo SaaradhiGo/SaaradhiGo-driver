@@ -77,6 +77,9 @@ class _FakeTripRepository implements TripRepository {
   }
 
   @override
+  Future<TripModel?> getTrip(int tripId) async => null;
+
+  @override
   Future<void> driverCancel(int tripId, {required String reason, String? note}) async {}
 }
 
