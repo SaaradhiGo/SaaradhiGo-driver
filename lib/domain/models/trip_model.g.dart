@@ -40,6 +40,8 @@ _TripModel _$TripModelFromJson(Map<String, dynamic> json) => _TripModel(
       _readCancellationReason(json, 'cancellationReason') as String?,
   cancelledAt: json['cancelled_at'] as String?,
   surgeMultiplier: _readSurgeMultiplier(json, 'surgeMultiplier') as String?,
+  promoDiscount: _readPromoDiscount(json, 'promo_discount') as String?,
+  riderPayable: _readRiderPayable(json, 'rider_payable') as String?,
 );
 
 Map<String, dynamic> _$TripModelToJson(_TripModel instance) =>
@@ -71,6 +73,8 @@ Map<String, dynamic> _$TripModelToJson(_TripModel instance) =>
       'cancellationReason': instance.cancellationReason,
       'cancelled_at': instance.cancelledAt,
       'surgeMultiplier': instance.surgeMultiplier,
+      'promo_discount': instance.promoDiscount,
+      'rider_payable': instance.riderPayable,
     };
 
 const _$TripStatusEnumMap = {

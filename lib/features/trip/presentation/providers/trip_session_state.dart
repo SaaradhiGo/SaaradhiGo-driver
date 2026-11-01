@@ -54,6 +54,15 @@ abstract class TripSessionState with _$TripSessionState {
     /// available" is actively wrong when the ride is fine and the driver is
     /// the one who cannot take it.
     @Default(false) bool refusedByBackend,
+
+    /// Support (ops) ended this STARTED trip (`operator_end.py`): the socket
+    /// said `complete` with the support-end message. The driver is told it was
+    /// ended by SaaradhiGo and what was earned, not shown a plain "completed".
+    @Default(false) bool endedBySupport,
+
+    /// Support (ops) released this trip before pickup (`admin_trips.py`): the
+    /// socket said `cancel` with the support message.
+    @Default(false) bool releasedBySupport,
   }) = _TripSessionState;
 
   /// No trip is in flight.
@@ -74,5 +83,8 @@ abstract class TripSessionState with _$TripSessionState {
   bool get needsCashCollection =>
       status == TripStatus.completed &&
       trip?.paymentMethod == 'cash' &&
-      !cashConfirmed;
+      !cashConfirmed &&
+      // A trip the rider was not charged for (a platform-funded end) has
+      // nothing to collect, so the driver is not asked to confirm cash.
+      trip?.paymentStatus != 'waived';
 }

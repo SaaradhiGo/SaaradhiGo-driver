@@ -39,3 +39,27 @@ double? _parse(String? raw) {
   if (raw == null) return null;
   return double.tryParse(MarketConfigStore.instance.current.stripSymbol(raw));
 }
+
+/// True when the API sent an amount and it is above zero. The money-phase lines
+/// (promo paid by SaaradhiGo, rewards, tax and fees collected) are hidden for an
+/// absent or zero value, so a market or a period with none looks exactly as it
+/// did before they existed.
+bool isPositiveAmount(String? raw) {
+  final v = _parse(raw);
+  return v != null && v > 0;
+}
+
+/// The words under a reward line: no commission, tax not configured, paid in
+/// the weekly payout. The first two are the API's own values
+/// (`incentive_commission`, `incentive_tax`); the payout line is fixed policy.
+String rewardNote({String? commission, String? tax}) {
+  final parts = <String>[
+    if (commission != null && commission.trim().isNotEmpty)
+      commission.trim().toLowerCase() == 'none'
+          ? 'No commission'
+          : 'Commission: ${commission.trim()}',
+    if (tax != null && tax.trim().isNotEmpty) 'Tax: ${tax.trim()}',
+    'Paid in your weekly payout',
+  ];
+  return parts.join(' \u00b7 ');
+}

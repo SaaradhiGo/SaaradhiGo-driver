@@ -18,7 +18,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:saaradhigo_driver/core/location/geolocator_adapter.dart';
 import 'package:saaradhigo_driver/core/location/location_providers.dart';
-import 'package:saaradhigo_driver/core/location/location_state.dart';
 
 Position _position({double lat = 16.5062, double lng = 80.6480}) => Position(
   latitude: lat,

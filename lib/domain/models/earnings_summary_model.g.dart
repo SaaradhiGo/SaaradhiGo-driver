@@ -26,6 +26,21 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   commissionPercentMixed: nullableBoolFromJson(
     json['commission_percent_mixed'],
   ),
+  totalNet: nullableMoneyFromJson(json['total_net']),
+  promoPaidByPlatform: nullableMoneyFromJson(json['promo_paid_by_platform']),
+  todayPromoPaidByPlatform: nullableMoneyFromJson(
+    json['today_promo_paid_by_platform'],
+  ),
+  promoPaidLabel: json['promo_paid_label'] as String?,
+  taxCollected: nullableMoneyFromJson(json['tax_collected']),
+  regulatoryFeesCollected: nullableMoneyFromJson(
+    json['regulatory_fees_collected'],
+  ),
+  taxCollectedLabel: json['tax_collected_label'] as String?,
+  incentiveRewards: nullableMoneyFromJson(json['incentive_rewards']),
+  referralRewards: nullableMoneyFromJson(json['referral_rewards']),
+  incentiveCommission: json['incentive_commission'] as String?,
+  incentiveTax: json['incentive_tax'] as String?,
 );
 
 Map<String, dynamic> _$EarningsSummaryModelToJson(
@@ -38,4 +53,15 @@ Map<String, dynamic> _$EarningsSummaryModelToJson(
   'today_trips': instance.todayTrips,
   'commission_percent': instance.commissionPercent,
   'commission_percent_mixed': instance.commissionPercentMixed,
+  'total_net': instance.totalNet,
+  'promo_paid_by_platform': instance.promoPaidByPlatform,
+  'today_promo_paid_by_platform': instance.todayPromoPaidByPlatform,
+  'promo_paid_label': instance.promoPaidLabel,
+  'tax_collected': instance.taxCollected,
+  'regulatory_fees_collected': instance.regulatoryFeesCollected,
+  'tax_collected_label': instance.taxCollectedLabel,
+  'incentive_rewards': instance.incentiveRewards,
+  'referral_rewards': instance.referralRewards,
+  'incentive_commission': instance.incentiveCommission,
+  'incentive_tax': instance.incentiveTax,
 };

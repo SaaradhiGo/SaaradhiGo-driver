@@ -10,6 +10,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/ride_cancelled_bottom_sheet.dart';
+import '../../domain/support_end.dart';
 import 'accepted_ride_screen.dart';
 import 'active_trip_navigation_screen.dart';
 import 'arrived_at_pickup_screen.dart';
@@ -79,14 +80,16 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
   @override
   Widget build(BuildContext context) {
     ref.listen<TripSessionState>(tripSessionNotifierProvider, (previous, next) {
-      if (next.status == TripStatus.cancelled) {
+      if (next.status == TripStatus.cancelled && !next.releasedBySupport) {
         _showCancelledModal(next.cancellationReason);
       }
     });
 
     final session = ref.watch(tripSessionNotifierProvider);
 
-    if (session.status == TripStatus.cancelled && !_showingCancelledModal) {
+    if (session.status == TripStatus.cancelled &&
+        !session.releasedBySupport &&
+        !_showingCancelledModal) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showCancelledModal(session.cancellationReason);
       });
@@ -178,6 +181,15 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       case TripStatus.completed:
         return TripSummaryScreen(trip: trip);
       case TripStatus.cancelled:
+        if (session.releasedBySupport) {
+          return const _TripEndedView(
+            icon: Icons.support_agent_rounded,
+            title: kSupportReleasedTitle,
+            message:
+                'SaaradhiGo support cancelled this trip. You are free to take '
+                'new trips.',
+          );
+        }
         return _TripEndedView(
           icon: Icons.cancel_rounded,
           title: 'Ride cancelled',

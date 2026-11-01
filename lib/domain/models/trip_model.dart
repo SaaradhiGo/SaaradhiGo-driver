@@ -185,6 +185,14 @@ Object? _readDriverRating(Map json, String key) {
 Object? _readCancellationReason(Map json, String key) =>
     json['cancellation_reason'] ?? json['reason'] ?? json['cancel_reason'];
 
+// `GET /ride/trip/<id>/` (TripDetailSerializer): on a trip that holds a promo,
+// `promo_discount` is what SaaradhiGo pays and `rider_payable` is what the
+// rider pays, which is the cash a driver collects. Null on every other trip.
+Object? _readPromoDiscount(Map json, String key) =>
+    json['promo_discount']?.toString();
+Object? _readRiderPayable(Map json, String key) =>
+    json['rider_payable']?.toString();
+
 Object? _readSurgeMultiplier(Map json, String key) =>
     json['surge_multiplier']?.toString();
 
@@ -234,6 +242,10 @@ abstract class TripModel with _$TripModel {
     @JsonKey(readValue: _readCancellationReason) String? cancellationReason,
     @JsonKey(name: 'cancelled_at') String? cancelledAt,
     @JsonKey(readValue: _readSurgeMultiplier) String? surgeMultiplier,
+    @JsonKey(name: 'promo_discount', readValue: _readPromoDiscount)
+    String? promoDiscount,
+    @JsonKey(name: 'rider_payable', readValue: _readRiderPayable)
+    String? riderPayable,
   }) = _TripModel;
 
   factory TripModel.fromJson(Map<String, dynamic> json) =>

@@ -18,6 +18,7 @@ import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
 import '../providers/earnings_providers.dart';
 import '../widgets/cash_collection_banner.dart';
+import '../widgets/earning_trip_tile.dart';
 import '../widgets/earnings_breakdown_card.dart';
 import '../earnings_display.dart';
 import '../widgets/earnings_trend_chart.dart';
@@ -249,7 +250,11 @@ class _EarningsDashboardScreenState
     // Commission is shown exactly as the API returned it; a missing value hides
     // its line (and the figures that depend on it) instead of showing a default.
     final commission = summary?.totalCommission;
-    final net = netFromGrossAndCommission(summary?.totalEarned, commission);
+    // The API's own net when it sends one; otherwise gross minus commission,
+    // as before.
+    final net =
+        summary?.totalNet ??
+        netFromGrossAndCommission(summary?.totalEarned, commission);
     final trips = summary?.totalTrips ?? 0;
     final avgPerTrip = averageNetPerTrip(net, trips);
     final rateLabel = commissionRateLabel(
@@ -611,6 +616,16 @@ class _EarningsDashboardScreenState
             commission: commission,
             commissionRate: rateLabel,
             netEarnings: net,
+            promoPaid: summary?.promoPaidByPlatform,
+            promoPaidToday: summary?.todayPromoPaidByPlatform,
+            promoPaidLabel: summary?.promoPaidLabel,
+            incentiveRewards: summary?.incentiveRewards,
+            referralRewards: summary?.referralRewards,
+            incentiveCommission: summary?.incentiveCommission,
+            incentiveTax: summary?.incentiveTax,
+            taxCollected: summary?.taxCollected,
+            taxCollectedLabel: summary?.taxCollectedLabel,
+            regulatoryFees: summary?.regulatoryFeesCollected,
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -709,63 +724,10 @@ class _EarningsDashboardScreenState
     );
   }
 
-  Widget _buildEarningTile(EarningModel earning) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: GlassPanel(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: const BoxDecoration(
-                    color: AppColors.surfaceContainerHigh,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.directions_car,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Trip #${earning.tripId ?? earning.id}',
-                      style: AppTypography.bodyMd.copyWith(
-                        color: AppColors.onBackground,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _formatTimestamp(earning.createdAt) ?? 'Completed',
-                      style: AppTypography.labelCaps.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Text(
-              earning.netEarning == null ? '' : '+${marketSymbol()}${earning.netEarning}',
-              style: AppTypography.dataMono.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildEarningTile(EarningModel earning) => EarningTripTile(
+    earning: earning,
+    timestamp: _formatTimestamp(earning.createdAt),
+  );
 
   Widget _buildWithdrawalTile(WithdrawalModel withdrawal) {
     final isSuccess =

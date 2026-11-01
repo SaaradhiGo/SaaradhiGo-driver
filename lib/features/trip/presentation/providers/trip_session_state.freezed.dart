@@ -32,7 +32,12 @@ mixin _$TripSessionState {
 /// the ride. The two need different words on screen: "ride no longer
 /// available" is actively wrong when the ride is fine and the driver is
 /// the one who cannot take it.
- bool get refusedByBackend;
+ bool get refusedByBackend;/// Support (ops) ended this STARTED trip (`operator_end.py`): the socket
+/// said `complete` with the support-end message. The driver is told it was
+/// ended by SaaradhiGo and what was earned, not shown a plain "completed".
+ bool get endedBySupport;/// Support (ops) released this trip before pickup (`admin_trips.py`): the
+/// socket said `cancel` with the support message.
+ bool get releasedBySupport;
 /// Create a copy of TripSessionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -43,16 +48,16 @@ $TripSessionStateCopyWith<TripSessionState> get copyWith => _$TripSessionStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TripSessionState&&(identical(other.trip, trip) || other.trip == trip)&&(identical(other.status, status) || other.status == status)&&(identical(other.connecting, connecting) || other.connecting == connecting)&&(identical(other.actionInProgress, actionInProgress) || other.actionInProgress == actionInProgress)&&(identical(other.otpError, otpError) || other.otpError == otpError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancellationReason, cancellationReason) || other.cancellationReason == cancellationReason)&&(identical(other.takenByOther, takenByOther) || other.takenByOther == takenByOther)&&(identical(other.socketError, socketError) || other.socketError == socketError)&&(identical(other.cashConfirmed, cashConfirmed) || other.cashConfirmed == cashConfirmed)&&(identical(other.offerLost, offerLost) || other.offerLost == offerLost)&&(identical(other.refusedByBackend, refusedByBackend) || other.refusedByBackend == refusedByBackend));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TripSessionState&&(identical(other.trip, trip) || other.trip == trip)&&(identical(other.status, status) || other.status == status)&&(identical(other.connecting, connecting) || other.connecting == connecting)&&(identical(other.actionInProgress, actionInProgress) || other.actionInProgress == actionInProgress)&&(identical(other.otpError, otpError) || other.otpError == otpError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancellationReason, cancellationReason) || other.cancellationReason == cancellationReason)&&(identical(other.takenByOther, takenByOther) || other.takenByOther == takenByOther)&&(identical(other.socketError, socketError) || other.socketError == socketError)&&(identical(other.cashConfirmed, cashConfirmed) || other.cashConfirmed == cashConfirmed)&&(identical(other.offerLost, offerLost) || other.offerLost == offerLost)&&(identical(other.refusedByBackend, refusedByBackend) || other.refusedByBackend == refusedByBackend)&&(identical(other.endedBySupport, endedBySupport) || other.endedBySupport == endedBySupport)&&(identical(other.releasedBySupport, releasedBySupport) || other.releasedBySupport == releasedBySupport));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,trip,status,connecting,actionInProgress,otpError,errorMessage,cancellationReason,takenByOther,socketError,cashConfirmed,offerLost,refusedByBackend);
+int get hashCode => Object.hash(runtimeType,trip,status,connecting,actionInProgress,otpError,errorMessage,cancellationReason,takenByOther,socketError,cashConfirmed,offerLost,refusedByBackend,endedBySupport,releasedBySupport);
 
 @override
 String toString() {
-  return 'TripSessionState(trip: $trip, status: $status, connecting: $connecting, actionInProgress: $actionInProgress, otpError: $otpError, errorMessage: $errorMessage, cancellationReason: $cancellationReason, takenByOther: $takenByOther, socketError: $socketError, cashConfirmed: $cashConfirmed, offerLost: $offerLost, refusedByBackend: $refusedByBackend)';
+  return 'TripSessionState(trip: $trip, status: $status, connecting: $connecting, actionInProgress: $actionInProgress, otpError: $otpError, errorMessage: $errorMessage, cancellationReason: $cancellationReason, takenByOther: $takenByOther, socketError: $socketError, cashConfirmed: $cashConfirmed, offerLost: $offerLost, refusedByBackend: $refusedByBackend, endedBySupport: $endedBySupport, releasedBySupport: $releasedBySupport)';
 }
 
 
@@ -63,7 +68,7 @@ abstract mixin class $TripSessionStateCopyWith<$Res>  {
   factory $TripSessionStateCopyWith(TripSessionState value, $Res Function(TripSessionState) _then) = _$TripSessionStateCopyWithImpl;
 @useResult
 $Res call({
- TripModel? trip, TripStatus? status, bool connecting, bool actionInProgress, String? otpError, String? errorMessage, String? cancellationReason, bool takenByOther, bool socketError, bool cashConfirmed, bool offerLost, bool refusedByBackend
+ TripModel? trip, TripStatus? status, bool connecting, bool actionInProgress, String? otpError, String? errorMessage, String? cancellationReason, bool takenByOther, bool socketError, bool cashConfirmed, bool offerLost, bool refusedByBackend, bool endedBySupport, bool releasedBySupport
 });
 
 
@@ -80,7 +85,7 @@ class _$TripSessionStateCopyWithImpl<$Res>
 
 /// Create a copy of TripSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? trip = freezed,Object? status = freezed,Object? connecting = null,Object? actionInProgress = null,Object? otpError = freezed,Object? errorMessage = freezed,Object? cancellationReason = freezed,Object? takenByOther = null,Object? socketError = null,Object? cashConfirmed = null,Object? offerLost = null,Object? refusedByBackend = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? trip = freezed,Object? status = freezed,Object? connecting = null,Object? actionInProgress = null,Object? otpError = freezed,Object? errorMessage = freezed,Object? cancellationReason = freezed,Object? takenByOther = null,Object? socketError = null,Object? cashConfirmed = null,Object? offerLost = null,Object? refusedByBackend = null,Object? endedBySupport = null,Object? releasedBySupport = null,}) {
   return _then(TripSessionState(
 trip: freezed == trip ? _self.trip : trip // ignore: cast_nullable_to_non_nullable
 as TripModel?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -94,6 +99,8 @@ as bool,socketError: null == socketError ? _self.socketError : socketError // ig
 as bool,cashConfirmed: null == cashConfirmed ? _self.cashConfirmed : cashConfirmed // ignore: cast_nullable_to_non_nullable
 as bool,offerLost: null == offerLost ? _self.offerLost : offerLost // ignore: cast_nullable_to_non_nullable
 as bool,refusedByBackend: null == refusedByBackend ? _self.refusedByBackend : refusedByBackend // ignore: cast_nullable_to_non_nullable
+as bool,endedBySupport: null == endedBySupport ? _self.endedBySupport : endedBySupport // ignore: cast_nullable_to_non_nullable
+as bool,releasedBySupport: null == releasedBySupport ? _self.releasedBySupport : releasedBySupport // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -191,10 +198,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend,  bool endedBySupport,  bool releasedBySupport)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TripSessionState() when $default != null:
-return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend);case _:
+return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend,_that.endedBySupport,_that.releasedBySupport);case _:
   return orElse();
 
 }
@@ -212,10 +219,10 @@ return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend,  bool endedBySupport,  bool releasedBySupport)  $default,) {final _that = this;
 switch (_that) {
 case _TripSessionState():
-return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend);case _:
+return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend,_that.endedBySupport,_that.releasedBySupport);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -232,10 +239,10 @@ return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TripModel? trip,  TripStatus? status,  bool connecting,  bool actionInProgress,  String? otpError,  String? errorMessage,  String? cancellationReason,  bool takenByOther,  bool socketError,  bool cashConfirmed,  bool offerLost,  bool refusedByBackend,  bool endedBySupport,  bool releasedBySupport)?  $default,) {final _that = this;
 switch (_that) {
 case _TripSessionState() when $default != null:
-return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend);case _:
+return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,_that.otpError,_that.errorMessage,_that.cancellationReason,_that.takenByOther,_that.socketError,_that.cashConfirmed,_that.offerLost,_that.refusedByBackend,_that.endedBySupport,_that.releasedBySupport);case _:
   return null;
 
 }
@@ -247,7 +254,7 @@ return $default(_that.trip,_that.status,_that.connecting,_that.actionInProgress,
 
 
 class _TripSessionState extends TripSessionState {
-  const _TripSessionState({this.trip, this.status, this.connecting = false, this.actionInProgress = false, this.otpError, this.errorMessage, this.cancellationReason, this.takenByOther = false, this.socketError = false, this.cashConfirmed = false, this.offerLost = false, this.refusedByBackend = false}): super._();
+  const _TripSessionState({this.trip, this.status, this.connecting = false, this.actionInProgress = false, this.otpError, this.errorMessage, this.cancellationReason, this.takenByOther = false, this.socketError = false, this.cashConfirmed = false, this.offerLost = false, this.refusedByBackend = false, this.endedBySupport = false, this.releasedBySupport = false}): super._();
   
 
 @override final  TripModel? trip;
@@ -279,6 +286,13 @@ class _TripSessionState extends TripSessionState {
 /// available" is actively wrong when the ride is fine and the driver is
 /// the one who cannot take it.
 @override@JsonKey() final  bool refusedByBackend;
+/// Support (ops) ended this STARTED trip (`operator_end.py`): the socket
+/// said `complete` with the support-end message. The driver is told it was
+/// ended by SaaradhiGo and what was earned, not shown a plain "completed".
+@override@JsonKey() final  bool endedBySupport;
+/// Support (ops) released this trip before pickup (`admin_trips.py`): the
+/// socket said `cancel` with the support message.
+@override@JsonKey() final  bool releasedBySupport;
 
 /// Create a copy of TripSessionState
 /// with the given fields replaced by the non-null parameter values.
@@ -290,16 +304,16 @@ _$TripSessionStateCopyWith<_TripSessionState> get copyWith => __$TripSessionStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TripSessionState&&(identical(other.trip, trip) || other.trip == trip)&&(identical(other.status, status) || other.status == status)&&(identical(other.connecting, connecting) || other.connecting == connecting)&&(identical(other.actionInProgress, actionInProgress) || other.actionInProgress == actionInProgress)&&(identical(other.otpError, otpError) || other.otpError == otpError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancellationReason, cancellationReason) || other.cancellationReason == cancellationReason)&&(identical(other.takenByOther, takenByOther) || other.takenByOther == takenByOther)&&(identical(other.socketError, socketError) || other.socketError == socketError)&&(identical(other.cashConfirmed, cashConfirmed) || other.cashConfirmed == cashConfirmed)&&(identical(other.offerLost, offerLost) || other.offerLost == offerLost)&&(identical(other.refusedByBackend, refusedByBackend) || other.refusedByBackend == refusedByBackend));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TripSessionState&&(identical(other.trip, trip) || other.trip == trip)&&(identical(other.status, status) || other.status == status)&&(identical(other.connecting, connecting) || other.connecting == connecting)&&(identical(other.actionInProgress, actionInProgress) || other.actionInProgress == actionInProgress)&&(identical(other.otpError, otpError) || other.otpError == otpError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancellationReason, cancellationReason) || other.cancellationReason == cancellationReason)&&(identical(other.takenByOther, takenByOther) || other.takenByOther == takenByOther)&&(identical(other.socketError, socketError) || other.socketError == socketError)&&(identical(other.cashConfirmed, cashConfirmed) || other.cashConfirmed == cashConfirmed)&&(identical(other.offerLost, offerLost) || other.offerLost == offerLost)&&(identical(other.refusedByBackend, refusedByBackend) || other.refusedByBackend == refusedByBackend)&&(identical(other.endedBySupport, endedBySupport) || other.endedBySupport == endedBySupport)&&(identical(other.releasedBySupport, releasedBySupport) || other.releasedBySupport == releasedBySupport));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,trip,status,connecting,actionInProgress,otpError,errorMessage,cancellationReason,takenByOther,socketError,cashConfirmed,offerLost,refusedByBackend);
+int get hashCode => Object.hash(runtimeType,trip,status,connecting,actionInProgress,otpError,errorMessage,cancellationReason,takenByOther,socketError,cashConfirmed,offerLost,refusedByBackend,endedBySupport,releasedBySupport);
 
 @override
 String toString() {
-  return 'TripSessionState(trip: $trip, status: $status, connecting: $connecting, actionInProgress: $actionInProgress, otpError: $otpError, errorMessage: $errorMessage, cancellationReason: $cancellationReason, takenByOther: $takenByOther, socketError: $socketError, cashConfirmed: $cashConfirmed, offerLost: $offerLost, refusedByBackend: $refusedByBackend)';
+  return 'TripSessionState(trip: $trip, status: $status, connecting: $connecting, actionInProgress: $actionInProgress, otpError: $otpError, errorMessage: $errorMessage, cancellationReason: $cancellationReason, takenByOther: $takenByOther, socketError: $socketError, cashConfirmed: $cashConfirmed, offerLost: $offerLost, refusedByBackend: $refusedByBackend, endedBySupport: $endedBySupport, releasedBySupport: $releasedBySupport)';
 }
 
 
@@ -310,7 +324,7 @@ abstract mixin class _$TripSessionStateCopyWith<$Res> implements $TripSessionSta
   factory _$TripSessionStateCopyWith(_TripSessionState value, $Res Function(_TripSessionState) _then) = __$TripSessionStateCopyWithImpl;
 @override @useResult
 $Res call({
- TripModel? trip, TripStatus? status, bool connecting, bool actionInProgress, String? otpError, String? errorMessage, String? cancellationReason, bool takenByOther, bool socketError, bool cashConfirmed, bool offerLost, bool refusedByBackend
+ TripModel? trip, TripStatus? status, bool connecting, bool actionInProgress, String? otpError, String? errorMessage, String? cancellationReason, bool takenByOther, bool socketError, bool cashConfirmed, bool offerLost, bool refusedByBackend, bool endedBySupport, bool releasedBySupport
 });
 
 
@@ -327,7 +341,7 @@ class __$TripSessionStateCopyWithImpl<$Res>
 
 /// Create a copy of TripSessionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? trip = freezed,Object? status = freezed,Object? connecting = null,Object? actionInProgress = null,Object? otpError = freezed,Object? errorMessage = freezed,Object? cancellationReason = freezed,Object? takenByOther = null,Object? socketError = null,Object? cashConfirmed = null,Object? offerLost = null,Object? refusedByBackend = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? trip = freezed,Object? status = freezed,Object? connecting = null,Object? actionInProgress = null,Object? otpError = freezed,Object? errorMessage = freezed,Object? cancellationReason = freezed,Object? takenByOther = null,Object? socketError = null,Object? cashConfirmed = null,Object? offerLost = null,Object? refusedByBackend = null,Object? endedBySupport = null,Object? releasedBySupport = null,}) {
   return _then(_TripSessionState(
 trip: freezed == trip ? _self.trip : trip // ignore: cast_nullable_to_non_nullable
 as TripModel?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -341,6 +355,8 @@ as bool,socketError: null == socketError ? _self.socketError : socketError // ig
 as bool,cashConfirmed: null == cashConfirmed ? _self.cashConfirmed : cashConfirmed // ignore: cast_nullable_to_non_nullable
 as bool,offerLost: null == offerLost ? _self.offerLost : offerLost // ignore: cast_nullable_to_non_nullable
 as bool,refusedByBackend: null == refusedByBackend ? _self.refusedByBackend : refusedByBackend // ignore: cast_nullable_to_non_nullable
+as bool,endedBySupport: null == endedBySupport ? _self.endedBySupport : endedBySupport // ignore: cast_nullable_to_non_nullable
+as bool,releasedBySupport: null == releasedBySupport ? _self.releasedBySupport : releasedBySupport // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
