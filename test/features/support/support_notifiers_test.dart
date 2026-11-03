@@ -56,6 +56,8 @@ class StubSupportRepository implements SupportRepository {
   SosAlertModel alert = const SosAlertModel();
 
   String? lastSosTripId;
+  int? lastMistakeId;
+  bool failMistake = false;
   double? lastLatitude;
   double? lastLongitude;
   String? lastEmergencyContact;
@@ -64,6 +66,12 @@ class StubSupportRepository implements SupportRepository {
   Future<List<ChatMessageModel>> getTripChatHistory(String tripId) async {
     if (failHistory) throw Exception('Network error');
     return history;
+  }
+
+  @override
+  Future<void> reportSosMistake(int sosId) async {
+    if (failMistake) throw Exception('Network error');
+    lastMistakeId = sosId;
   }
 
   @override
@@ -300,6 +308,34 @@ void main() {
       expect(stub.lastLatitude, 17.385);
       expect(stub.lastLongitude, 78.486);
       expect(state.confirmationMessage, contains('Reference #88'));
+    });
+
+    test('after an alert, "this was a mistake" closes that alert (D4)', () async {
+      stub.alert = const SosAlertModel(id: 6, status: 'open');
+      final n = container.read(sosNotifierProvider.notifier);
+      await n.raiseSos(tripId: null, latitude: 17.385, longitude: 78.486);
+      expect(container.read(sosNotifierProvider).confirmationMessage,
+          startsWith('Alert sent.'));
+
+      await n.reportMistake();
+
+      final state = container.read(sosNotifierProvider);
+      expect(stub.lastMistakeId, 6);
+      expect(state.lastAlertMarkedMistake, isTrue);
+      expect(state.confirmationMessage, contains('Marked as a mistake'));
+    });
+
+    test('a mistake report that fails says so and can be retried', () async {
+      stub.alert = const SosAlertModel(id: 7, status: 'open');
+      stub.failMistake = true;
+      final n = container.read(sosNotifierProvider.notifier);
+      await n.raiseSos(tripId: null, latitude: 17.385, longitude: 78.486);
+      await n.reportMistake();
+
+      final state = container.read(sosNotifierProvider);
+      expect(state.lastAlertMarkedMistake, isFalse);
+      expect(state.errorMessage, isNotNull);
+      expect(state.lastAlertId, 7, reason: 'kept, so the driver can try again');
     });
 
     test('raiseSos surfaces a recoverable error on failure', () async {

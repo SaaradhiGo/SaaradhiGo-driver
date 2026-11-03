@@ -41,6 +41,7 @@ class SosNotifier extends Notifier<SosState> {
       state = SosState(
         confirmationMessage: _confirmationFor(alert),
         contactSavedMessage: null,
+        lastAlertId: alert.id > 0 ? alert.id : null,
       );
     } catch (e) {
       AppLogger.w('SOS raise failed', e);
@@ -99,12 +100,33 @@ class SosNotifier extends Notifier<SosState> {
     await ref.read(authNotifierProvider.notifier).updateUser(updated);
   }
 
+  /// "Tap if this was a mistake" (D4). Closes the last alert as a false
+  /// alarm; the server records who closed it and why.
+  Future<void> reportMistake() async {
+    final id = state.lastAlertId;
+    if (id == null || state.isReportingMistake) return;
+    state = state.copyWith(isReportingMistake: true, errorMessage: null);
+    try {
+      await _repository.reportSosMistake(id);
+      state = state.copyWith(
+        isReportingMistake: false,
+        lastAlertMarkedMistake: true,
+        confirmationMessage:
+            'Marked as a mistake. Our safety team has been told.',
+      );
+    } catch (e) {
+      AppLogger.w('SOS mistake report failed', e);
+      state = state.copyWith(
+        isReportingMistake: false,
+        errorMessage: 'That did not go through. Please try again, or call '
+            'our safety team.',
+      );
+    }
+  }
+
   String _confirmationFor(SosAlertModel alert) {
-    final alertId = alert.id > 0 ? '#${alert.id}' : '';
-    final base =
-        'Your alert was sent to our safety team. '
-        'Help is on the way.';
-    return alertId.isEmpty ? base : '$base (Reference $alertId)';
+    final alertId = alert.id > 0 ? ' Reference #${alert.id}.' : '';
+    return 'Alert sent. Our safety team has been alerted.$alertId';
   }
 
   void acknowledgeError() {

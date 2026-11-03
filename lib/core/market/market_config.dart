@@ -117,7 +117,12 @@ class MarketConfig {
     this.notices = const [],
     this.referralsAvailable = false,
     this.isBuiltIn = false,
+    this.supportPhone,
   });
+
+  /// `country.support.phone`: SaaradhiGo's support line, or null while none
+  /// is configured (the safety centre then hides the row).
+  final String? supportPhone;
 
   /// ISO country code, upper case ("IN", "US").
   final String countryCode;
@@ -306,6 +311,7 @@ class MarketConfig {
       cities: cities,
       notices: notices,
       referralsAvailable: data['referrals_available'] == true,
+      supportPhone: _str(_map(country['support'])['phone']),
     );
   }
 }

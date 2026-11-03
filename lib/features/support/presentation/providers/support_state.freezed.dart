@@ -604,7 +604,11 @@ mixin _$SosState {
  bool get isRaising;/// The last successful alert, shown as a confirmation.
  String? get confirmationMessage;/// Saving the emergency contact in flight.
  bool get isSavingContact; String? get errorMessage;/// Success feedback after saving the emergency contact.
- String? get contactSavedMessage;
+ String? get contactSavedMessage;/// The alert this driver sent last, so "Tap if this was a mistake" (D4)
+/// knows which one to close.
+ int? get lastAlertId;/// The last alert was marked a mistake (closed as a false alarm).
+ bool get lastAlertMarkedMistake;/// Reporting the mistake in flight.
+ bool get isReportingMistake;
 /// Create a copy of SosState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -615,16 +619,16 @@ $SosStateCopyWith<SosState> get copyWith => _$SosStateCopyWithImpl<SosState>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SosState&&(identical(other.isRaising, isRaising) || other.isRaising == isRaising)&&(identical(other.confirmationMessage, confirmationMessage) || other.confirmationMessage == confirmationMessage)&&(identical(other.isSavingContact, isSavingContact) || other.isSavingContact == isSavingContact)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.contactSavedMessage, contactSavedMessage) || other.contactSavedMessage == contactSavedMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SosState&&(identical(other.isRaising, isRaising) || other.isRaising == isRaising)&&(identical(other.confirmationMessage, confirmationMessage) || other.confirmationMessage == confirmationMessage)&&(identical(other.isSavingContact, isSavingContact) || other.isSavingContact == isSavingContact)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.contactSavedMessage, contactSavedMessage) || other.contactSavedMessage == contactSavedMessage)&&(identical(other.lastAlertId, lastAlertId) || other.lastAlertId == lastAlertId)&&(identical(other.lastAlertMarkedMistake, lastAlertMarkedMistake) || other.lastAlertMarkedMistake == lastAlertMarkedMistake)&&(identical(other.isReportingMistake, isReportingMistake) || other.isReportingMistake == isReportingMistake));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isRaising,confirmationMessage,isSavingContact,errorMessage,contactSavedMessage);
+int get hashCode => Object.hash(runtimeType,isRaising,confirmationMessage,isSavingContact,errorMessage,contactSavedMessage,lastAlertId,lastAlertMarkedMistake,isReportingMistake);
 
 @override
 String toString() {
-  return 'SosState(isRaising: $isRaising, confirmationMessage: $confirmationMessage, isSavingContact: $isSavingContact, errorMessage: $errorMessage, contactSavedMessage: $contactSavedMessage)';
+  return 'SosState(isRaising: $isRaising, confirmationMessage: $confirmationMessage, isSavingContact: $isSavingContact, errorMessage: $errorMessage, contactSavedMessage: $contactSavedMessage, lastAlertId: $lastAlertId, lastAlertMarkedMistake: $lastAlertMarkedMistake, isReportingMistake: $isReportingMistake)';
 }
 
 
@@ -635,7 +639,7 @@ abstract mixin class $SosStateCopyWith<$Res>  {
   factory $SosStateCopyWith(SosState value, $Res Function(SosState) _then) = _$SosStateCopyWithImpl;
 @useResult
 $Res call({
- bool isRaising, String? confirmationMessage, bool isSavingContact, String? errorMessage, String? contactSavedMessage
+ bool isRaising, String? confirmationMessage, bool isSavingContact, String? errorMessage, String? contactSavedMessage, int? lastAlertId, bool lastAlertMarkedMistake, bool isReportingMistake
 });
 
 
@@ -652,14 +656,17 @@ class _$SosStateCopyWithImpl<$Res>
 
 /// Create a copy of SosState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isRaising = null,Object? confirmationMessage = freezed,Object? isSavingContact = null,Object? errorMessage = freezed,Object? contactSavedMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isRaising = null,Object? confirmationMessage = freezed,Object? isSavingContact = null,Object? errorMessage = freezed,Object? contactSavedMessage = freezed,Object? lastAlertId = freezed,Object? lastAlertMarkedMistake = null,Object? isReportingMistake = null,}) {
   return _then(SosState(
 isRaising: null == isRaising ? _self.isRaising : isRaising // ignore: cast_nullable_to_non_nullable
 as bool,confirmationMessage: freezed == confirmationMessage ? _self.confirmationMessage : confirmationMessage // ignore: cast_nullable_to_non_nullable
 as String?,isSavingContact: null == isSavingContact ? _self.isSavingContact : isSavingContact // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,contactSavedMessage: freezed == contactSavedMessage ? _self.contactSavedMessage : contactSavedMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,lastAlertId: freezed == lastAlertId ? _self.lastAlertId : lastAlertId // ignore: cast_nullable_to_non_nullable
+as int?,lastAlertMarkedMistake: null == lastAlertMarkedMistake ? _self.lastAlertMarkedMistake : lastAlertMarkedMistake // ignore: cast_nullable_to_non_nullable
+as bool,isReportingMistake: null == isReportingMistake ? _self.isReportingMistake : isReportingMistake // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -744,10 +751,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage,  int? lastAlertId,  bool lastAlertMarkedMistake,  bool isReportingMistake)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SosState() when $default != null:
-return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage);case _:
+return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage,_that.lastAlertId,_that.lastAlertMarkedMistake,_that.isReportingMistake);case _:
   return orElse();
 
 }
@@ -765,10 +772,10 @@ return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage,  int? lastAlertId,  bool lastAlertMarkedMistake,  bool isReportingMistake)  $default,) {final _that = this;
 switch (_that) {
 case _SosState():
-return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage);case _:
+return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage,_that.lastAlertId,_that.lastAlertMarkedMistake,_that.isReportingMistake);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -785,10 +792,10 @@ return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isRaising,  String? confirmationMessage,  bool isSavingContact,  String? errorMessage,  String? contactSavedMessage,  int? lastAlertId,  bool lastAlertMarkedMistake,  bool isReportingMistake)?  $default,) {final _that = this;
 switch (_that) {
 case _SosState() when $default != null:
-return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage);case _:
+return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,_that.errorMessage,_that.contactSavedMessage,_that.lastAlertId,_that.lastAlertMarkedMistake,_that.isReportingMistake);case _:
   return null;
 
 }
@@ -800,7 +807,7 @@ return $default(_that.isRaising,_that.confirmationMessage,_that.isSavingContact,
 
 
 class _SosState extends SosState {
-  const _SosState({this.isRaising = false, this.confirmationMessage, this.isSavingContact = false, this.errorMessage, this.contactSavedMessage}): super._();
+  const _SosState({this.isRaising = false, this.confirmationMessage, this.isSavingContact = false, this.errorMessage, this.contactSavedMessage, this.lastAlertId, this.lastAlertMarkedMistake = false, this.isReportingMistake = false}): super._();
   
 
 /// Raising the SOS alert in flight.
@@ -812,6 +819,13 @@ class _SosState extends SosState {
 @override final  String? errorMessage;
 /// Success feedback after saving the emergency contact.
 @override final  String? contactSavedMessage;
+/// The alert this driver sent last, so "Tap if this was a mistake" (D4)
+/// knows which one to close.
+@override final  int? lastAlertId;
+/// The last alert was marked a mistake (closed as a false alarm).
+@override@JsonKey() final  bool lastAlertMarkedMistake;
+/// Reporting the mistake in flight.
+@override@JsonKey() final  bool isReportingMistake;
 
 /// Create a copy of SosState
 /// with the given fields replaced by the non-null parameter values.
@@ -823,16 +837,16 @@ _$SosStateCopyWith<_SosState> get copyWith => __$SosStateCopyWithImpl<_SosState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SosState&&(identical(other.isRaising, isRaising) || other.isRaising == isRaising)&&(identical(other.confirmationMessage, confirmationMessage) || other.confirmationMessage == confirmationMessage)&&(identical(other.isSavingContact, isSavingContact) || other.isSavingContact == isSavingContact)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.contactSavedMessage, contactSavedMessage) || other.contactSavedMessage == contactSavedMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SosState&&(identical(other.isRaising, isRaising) || other.isRaising == isRaising)&&(identical(other.confirmationMessage, confirmationMessage) || other.confirmationMessage == confirmationMessage)&&(identical(other.isSavingContact, isSavingContact) || other.isSavingContact == isSavingContact)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.contactSavedMessage, contactSavedMessage) || other.contactSavedMessage == contactSavedMessage)&&(identical(other.lastAlertId, lastAlertId) || other.lastAlertId == lastAlertId)&&(identical(other.lastAlertMarkedMistake, lastAlertMarkedMistake) || other.lastAlertMarkedMistake == lastAlertMarkedMistake)&&(identical(other.isReportingMistake, isReportingMistake) || other.isReportingMistake == isReportingMistake));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isRaising,confirmationMessage,isSavingContact,errorMessage,contactSavedMessage);
+int get hashCode => Object.hash(runtimeType,isRaising,confirmationMessage,isSavingContact,errorMessage,contactSavedMessage,lastAlertId,lastAlertMarkedMistake,isReportingMistake);
 
 @override
 String toString() {
-  return 'SosState(isRaising: $isRaising, confirmationMessage: $confirmationMessage, isSavingContact: $isSavingContact, errorMessage: $errorMessage, contactSavedMessage: $contactSavedMessage)';
+  return 'SosState(isRaising: $isRaising, confirmationMessage: $confirmationMessage, isSavingContact: $isSavingContact, errorMessage: $errorMessage, contactSavedMessage: $contactSavedMessage, lastAlertId: $lastAlertId, lastAlertMarkedMistake: $lastAlertMarkedMistake, isReportingMistake: $isReportingMistake)';
 }
 
 
@@ -843,7 +857,7 @@ abstract mixin class _$SosStateCopyWith<$Res> implements $SosStateCopyWith<$Res>
   factory _$SosStateCopyWith(_SosState value, $Res Function(_SosState) _then) = __$SosStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isRaising, String? confirmationMessage, bool isSavingContact, String? errorMessage, String? contactSavedMessage
+ bool isRaising, String? confirmationMessage, bool isSavingContact, String? errorMessage, String? contactSavedMessage, int? lastAlertId, bool lastAlertMarkedMistake, bool isReportingMistake
 });
 
 
@@ -860,14 +874,17 @@ class __$SosStateCopyWithImpl<$Res>
 
 /// Create a copy of SosState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isRaising = null,Object? confirmationMessage = freezed,Object? isSavingContact = null,Object? errorMessage = freezed,Object? contactSavedMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isRaising = null,Object? confirmationMessage = freezed,Object? isSavingContact = null,Object? errorMessage = freezed,Object? contactSavedMessage = freezed,Object? lastAlertId = freezed,Object? lastAlertMarkedMistake = null,Object? isReportingMistake = null,}) {
   return _then(_SosState(
 isRaising: null == isRaising ? _self.isRaising : isRaising // ignore: cast_nullable_to_non_nullable
 as bool,confirmationMessage: freezed == confirmationMessage ? _self.confirmationMessage : confirmationMessage // ignore: cast_nullable_to_non_nullable
 as String?,isSavingContact: null == isSavingContact ? _self.isSavingContact : isSavingContact // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,contactSavedMessage: freezed == contactSavedMessage ? _self.contactSavedMessage : contactSavedMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,lastAlertId: freezed == lastAlertId ? _self.lastAlertId : lastAlertId // ignore: cast_nullable_to_non_nullable
+as int?,lastAlertMarkedMistake: null == lastAlertMarkedMistake ? _self.lastAlertMarkedMistake : lastAlertMarkedMistake // ignore: cast_nullable_to_non_nullable
+as bool,isReportingMistake: null == isReportingMistake ? _self.isReportingMistake : isReportingMistake // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

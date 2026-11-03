@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/hold_to_send.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,13 +49,13 @@ class SafetyCenterScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.unit),
 
             // SOS Emergency Trigger Card.
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                onTap: sos.isRaising
-                    ? null
-                    : () => triggerSos(context, ref, tripId: tripId),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              child: HoldToSend(
+                key: const Key('safety_center_sos_hold'),
+                semanticLabel: 'Emergency SOS',
+                enabled: !sos.isRaising,
+                onConfirmed: () => triggerSos(context, ref, tripId: tripId),
                 child: Ink(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
@@ -110,8 +112,8 @@ class SafetyCenterScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Sends your live location to our 24x7 safety '
-                              'team for immediate help.',
+                              'Hold for 2 seconds. Sends your live location '
+                              'to our safety team.',
                               style: AppTypography.bodyMd.copyWith(
                                 color: AppColors.whiteText.withValues(
                                   alpha: 0.85,
@@ -141,21 +143,26 @@ class SafetyCenterScreen extends ConsumerWidget {
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  _buildHelpRow(
-                    icon: Icons.phone_in_talk_rounded,
-                    title: '24x7 Safety Helpline',
-                    subtitle: '1800-000-0000',
-                    color: AppColors.success,
-                    onTap: () => _showNumberSnack(context, '1800-000-0000'),
-                  ),
-                  _buildDivider(),
+                  // SaaradhiGo's own line, from app-config, hidden while none is
+                  // configured. It showed the placeholder 1800-000-0000.
+                  if (ref.watch(marketConfigProvider).supportPhone
+                      case final support?) ...[
+                    _buildHelpRow(
+                      icon: Icons.phone_in_talk_rounded,
+                      title: 'SaaradhiGo support',
+                      subtitle: support,
+                      color: AppColors.success,
+                      onTap: () => _dial(context, support),
+                    ),
+                    _buildDivider(),
+                  ],
                   _buildHelpRow(
                     icon: Icons.local_police_rounded,
                     // From app-config; the built-in text is exactly what shipped.
                     title: ref.watch(marketConfigProvider).emergencyTitle,
                     subtitle: ref.watch(marketConfigProvider).emergencySubtitle,
                     color: AppColors.error,
-                    onTap: () => _showNumberSnack(
+                    onTap: () => _dial(
                       context,
                       ref.read(marketConfigProvider).emergency.number,
                     ),
@@ -216,15 +223,16 @@ class SafetyCenterScreen extends ConsumerWidget {
     return trip.id;
   }
 
-  void _showNumberSnack(BuildContext context, String number) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Calling $number from your device dialler is not wired yet. '
-          'Please dial $number directly.',
-        ),
-      ),
+  Future<void> _dial(BuildContext context, String number) async {
+    final ok = await launchUrl(
+      Uri(scheme: 'tel', path: number),
+      mode: LaunchMode.externalApplication,
     );
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please dial $number from your phone.')),
+      );
+    }
   }
 
   Widget _buildHelpRow({

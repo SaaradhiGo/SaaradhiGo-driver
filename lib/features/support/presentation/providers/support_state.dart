@@ -71,5 +71,15 @@ abstract class SosState with _$SosState {
 
     /// Success feedback after saving the emergency contact.
     String? contactSavedMessage,
+
+    /// The alert this driver sent last, so "Tap if this was a mistake" (D4)
+    /// knows which one to close.
+    int? lastAlertId,
+
+    /// The last alert was marked a mistake (closed as a false alarm).
+    @Default(false) bool lastAlertMarkedMistake,
+
+    /// Reporting the mistake in flight.
+    @Default(false) bool isReportingMistake,
   }) = _SosState;
 }

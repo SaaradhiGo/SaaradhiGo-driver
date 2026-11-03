@@ -29,6 +29,10 @@ class SupportRepositoryImpl implements SupportRepository {
   }
 
   @override
+  Future<void> reportSosMistake(int sosId) =>
+      remoteDataSource.reportSosMistake(sosId);
+
+  @override
   Future<List<SupportTicketModel>> listTickets() async {
     return await remoteDataSource.listTickets();
   }

@@ -29,6 +29,11 @@ class FakeSupportRemoteDataSource implements SupportRemoteDataSource {
     return historyToReturn;
   }
 
+  int? lastMistakeId;
+
+  @override
+  Future<void> reportSosMistake(int sosId) async => lastMistakeId = sosId;
+
   @override
   Future<SosAlertModel> raiseSos({
     int? tripId,
