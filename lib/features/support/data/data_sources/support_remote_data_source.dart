@@ -20,6 +20,8 @@ abstract class SupportRemoteDataSource {
     required double longitude,
   });
 
+  Future<void> reportSosMistake(int sosId);
+
   Future<List<SupportTicketModel>> listTickets();
 
   Future<SupportTicketModel> createTicket({
@@ -106,6 +108,11 @@ class SupportRemoteDataSourceImpl implements SupportRemoteDataSource {
     );
     final dataMap = _extractData(response.data);
     return SosAlertModel.fromJson(dataMap);
+  }
+
+  @override
+  Future<void> reportSosMistake(int sosId) async {
+    await dio.post(ApiEndpoints.sosMistake(sosId), data: const <String, dynamic>{});
   }
 
   @override

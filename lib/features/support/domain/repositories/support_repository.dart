@@ -14,6 +14,9 @@ abstract class SupportRepository {
     required double longitude,
   });
 
+  /// Marks the driver's own alert [sosId] as a mistake (false alarm).
+  Future<void> reportSosMistake(int sosId);
+
   Future<List<SupportTicketModel>> listTickets();
 
   Future<SupportTicketModel> createTicket({

@@ -6,6 +6,7 @@ import '../../../../core/location/location_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../providers/support_providers.dart';
+import 'hold_to_send.dart';
 
 /// Raises an SOS alert at the driver's last known coordinates.
 ///
@@ -59,10 +60,22 @@ class SosFeedbackListener extends ConsumerWidget {
       final confirmation = next.confirmationMessage;
       if (confirmation != null &&
           confirmation != previous?.confirmationMessage) {
+        // Just sent: offer the way back (D4). Long enough to read and act on.
+        final canUndo =
+            next.lastAlertId != null && !next.lastAlertMarkedMistake;
         messenger.showSnackBar(
           SnackBar(
             content: Text(confirmation),
             backgroundColor: AppColors.successContainer,
+            duration: Duration(seconds: canUndo ? 30 : 4),
+            action: canUndo
+                ? SnackBarAction(
+                    label: 'Tap if this was a mistake',
+                    textColor: AppColors.whiteText,
+                    onPressed: () =>
+                        ref.read(sosNotifierProvider.notifier).reportMistake(),
+                  )
+                : null,
           ),
         );
         ref.read(sosNotifierProvider.notifier).clearConfirmation();
@@ -84,6 +97,7 @@ class SosFeedbackListener extends ConsumerWidget {
 }
 
 /// Compact circular SOS button used as a floating affordance on trip screens.
+/// Hold for 2 seconds to send (D4); a tap does nothing.
 class TripSosButton extends ConsumerWidget {
   const TripSosButton({super.key, this.tripId, this.size = 48});
 
@@ -98,14 +112,13 @@ class TripSosButton extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: state.isRaising
-                ? null
-                : () => triggerSos(context, ref, tripId: tripId),
-            child: Container(
+        HoldToSend(
+          key: const Key('trip_sos_hold'),
+          semanticLabel: 'SOS. Alert the safety team',
+          circular: true,
+          enabled: !state.isRaising,
+          onConfirmed: () => triggerSos(context, ref, tripId: tripId),
+          child: Container(
               width: size,
               height: size,
               decoration: BoxDecoration(
@@ -132,7 +145,6 @@ class TripSosButton extends ConsumerWidget {
                       ),
                     )
                   : const Icon(Icons.sos, color: AppColors.whiteText, size: 22),
-            ),
           ),
         ),
         const SosFeedbackListener(),

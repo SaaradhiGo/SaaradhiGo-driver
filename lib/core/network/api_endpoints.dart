@@ -79,6 +79,10 @@ class ApiEndpoints {
   // Ride Chat & Support, Safety
   static String tripChatHistory(String tripId) => '/ride/trip/$tripId/chat/';
   static const String sosRaise = '/sos/';
+
+  /// The raiser's "this was a mistake" (D4): closes their own alert as a
+  /// false alarm through the audited path ops use.
+  static String sosMistake(int id) => '/sos/$id/mistake/';
   static const String supportTickets = '/support/tickets/';
   static const String supportCreateTicket = '/support/tickets/create/';
   static String supportTicketDetail(String ticketId) =>
