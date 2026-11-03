@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../providers/route_providers.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/app_cached_tile_provider.dart';
+import '../../../../core/maps/sg_map.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
 /// Dark route map for the active-trip screens: driver, pickup and destination
 /// markers with the ROAD between them.
 ///
-/// Shares the charcoal tile treatment of the dashboard [DriverMap]. Still an
+/// Google Maps with the SaaradhiGo dark style, like the dashboard [DriverMap]. Still an
 /// overview map, not turn-by-turn navigation — navigation is handed to the
 /// device's own map app.
 ///
@@ -45,13 +44,6 @@ class TripRouteMap extends ConsumerWidget {
   /// then the driver, then the city fallback).
   final LatLng? focus;
 
-  static const List<double> _darkMatrix = <double>[
-    -0.68, -0.24, -0.08, 0, 232, //
-    -0.20, -0.72, -0.08, 0, 232, //
-    -0.20, -0.24, -0.56, 0, 232, //
-    0, 0, 0, 1, 0, //
-  ];
-
   /// The leg worth drawing for what this screen was given.
   ///
   /// Destination wins when there is one -- that is the active trip. Otherwise
@@ -80,62 +72,38 @@ class TripRouteMap extends ConsumerWidget {
               orElse: () => const <LatLng>[],
             );
 
-    final markers = <Marker>[
+    final markers = <SgMarker>[
       if (driver != null)
-        _pin(driver!, Icons.navigation_rounded, AppColors.primary),
+        _pin('driver', driver!, Icons.navigation_rounded, AppColors.primary),
       if (pickup != null)
-        _pin(pickup!, Icons.my_location_rounded, AppColors.primaryContainer),
+        _pin('pickup', pickup!, Icons.my_location_rounded, AppColors.primaryContainer),
       if (destination != null)
-        _pin(destination!, Icons.location_on_rounded, AppColors.error),
+        _pin('drop', destination!, Icons.location_on_rounded, AppColors.error),
     ];
 
-    return FlutterMap(
-      options: MapOptions(
-        initialCenter: center,
-        initialZoom: 14,
-        backgroundColor: AppColors.background,
-        interactionOptions: const InteractionOptions(
-          flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-        ),
-      ),
-      children: [
-        ColorFiltered(
-          colorFilter: const ColorFilter.matrix(_darkMatrix),
-          child: TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-            tileUpdateTransformer: TileUpdateTransformers.throttle(
-              const Duration(milliseconds: 100),
-            ),
-            tileProvider: AppCachedTileProvider(),
-          ),
-        ),
-        // Only a real road. While the lookup is in flight, or if it failed,
-        // the map shows markers and nothing between them.
+    return SgMap(
+      initialCenter: center,
+      initialZoom: 14,
+      markers: markers,
+      // Only a real road. While the lookup is in flight, or if it failed,
+      // the map shows markers and nothing between them.
+      polylines: [
         if (road.length > 1)
-          PolylineLayer(
-            polylines: [
-              Polyline(
-                points: road,
-                strokeWidth: 4,
-                color: AppColors.primary.withValues(alpha: 0.8),
-              ),
-            ],
+          SgPolyline(
+            id: 'road',
+            points: road,
+            color: AppColors.primary.withValues(alpha: 0.8),
           ),
-        MarkerLayer(markers: markers),
-        const RichAttributionWidget(
-          attributions: [TextSourceAttribution('OpenStreetMap contributors')],
-        ),
       ],
     );
   }
 
-  Marker _pin(LatLng point, IconData icon, Color color) {
-    return Marker(
+  SgMarker _pin(String id, LatLng point, IconData icon, Color color) {
+    return SgMarker(
+      id: id,
       point: point,
-      width: 40,
-      height: 40,
-      child: Icon(icon, color: color, size: 32),
+      icon: SgIconMarker(icon, color, size: 32),
+      anchor: const Offset(0.5, 0.5),
     );
   }
 }

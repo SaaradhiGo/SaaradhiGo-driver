@@ -1,7 +1,7 @@
+import '../../../core/maps/sg_map.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -43,7 +43,7 @@ class DriverDashboardScreen extends ConsumerStatefulWidget {
 
 class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     with WidgetsBindingObserver {
-  final MapController _mapController = MapController();
+  SgMapController? _mapController;
   bool _followDriver = true;
   bool _mapReady = false;
   StreamSubscription<DriverLocationRideRequest>? _rideRequestSub;
@@ -206,7 +206,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     _offerSub?.cancel();
     _expiredOfferSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
-    _mapController.dispose();
     super.dispose();
   }
 
@@ -231,12 +230,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final position = ref.read(driverPositionProvider);
     if (position == null || !_mapReady) return;
     setState(() => _followDriver = true);
-    _mapController.move(position, kDefaultMapZoom);
-  }
-
-  void _resetBearing() {
-    if (!_mapReady) return;
-    _mapController.rotate(0);
+    _mapController?.moveTo(position, zoom: kDefaultMapZoom);
   }
 
   @override
@@ -293,11 +287,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       children: [
         Positioned.fill(
           child: DriverMap(
-            controller: _mapController,
             position: position,
-            onMapReady: () => _mapReady = true,
-            onPositionChanged: (_, hasGesture) {
-              if (hasGesture && _followDriver && mounted) {
+            onMapCreated: (c) {
+              _mapController = c;
+              _mapReady = true;
+            },
+            onCameraMove: (camera) {
+              if (camera.byGesture && _followDriver && mounted) {
                 setState(() => _followDriver = false);
               }
             },
@@ -458,11 +454,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       child: Column(
         children: [
           MapControlButton(
-            icon: Icons.explore_outlined,
-            onPressed: _resetBearing,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          MapControlButton(
             icon: Icons.my_location,
             isActive: _followDriver,
             onPressed: position == null ? () {} : _recenter,
@@ -536,7 +527,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   void _listenForSideEffects() {
     ref.listen<LatLng?>(driverPositionProvider, (previous, next) {
       if (next == null || !_followDriver || !_mapReady) return;
-      _mapController.move(next, _mapController.camera.zoom);
+      _mapController?.moveTo(next);
     });
 
     ref.listen<AvailabilityState>(availabilityNotifierProvider, (

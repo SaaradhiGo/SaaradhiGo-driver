@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/maps/sg_map.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/app_cached_tile_provider.dart';
-import 'driver_location_marker.dart';
 
 /// Fallback centre used until the first fix lands (Hyderabad — the launch city
 /// used throughout the backend docs' sample payloads).
@@ -12,97 +10,64 @@ const LatLng kFallbackMapCenter = LatLng(17.3850, 78.4867);
 
 const double kDefaultMapZoom = 15.0;
 
-/// Full-bleed dark map with the driver puck.
+/// Full-bleed dark map with the driver marker.
 ///
-/// docs/10_LOCATION.md §3 specifies a charcoal map style. OpenStreetMap raster
-/// tiles are light, so they are pushed through a desaturate + invert-ish colour
-/// matrix to approximate the dark theme. This is an approximation: a true
-/// branded style needs a vector tile provider and an API key, which is a
-/// product/backend decision (see the phase doc).
+/// Google Maps with the SaaradhiGo dark style (owner decision D1). It used to
+/// push OpenStreetMap's light raster tiles through a colour matrix to fake a
+/// dark map, which the OSM tile usage policy does not allow for an app like
+/// this.
+///
+/// The marker points along [heading] (a flat, rotated navigation arrow) and
+/// greys out while the fix is stale. Google Maps draws markers as bitmaps, so
+/// the animated pulse ring the old widget had is not carried over.
 class DriverMap extends StatelessWidget {
   const DriverMap({
     super.key,
-    required this.controller,
     required this.position,
-    this.onPositionChanged,
-    this.onMapReady,
+    this.onMapCreated,
+    this.onCameraMove,
     this.heading,
     this.pulsing = true,
     this.weakSignal = false,
   });
 
-  final MapController controller;
-
   /// Null before the first fix — the map still renders, centred on
   /// [kFallbackMapCenter], without a driver marker.
   final LatLng? position;
 
-  /// Reports camera movement so the parent can distinguish a user's gesture
-  /// from a programmatic recenter.
-  final PositionCallback? onPositionChanged;
-  final VoidCallback? onMapReady;
+  final ValueChanged<SgMapController>? onMapCreated;
+
+  /// Reports camera movement so the parent can tell a driver's gesture from
+  /// a programmatic recentre.
+  final ValueChanged<SgCamera>? onCameraMove;
 
   final double? heading;
   final bool pulsing;
   final bool weakSignal;
 
-  /// Desaturate, darken and lift the black point so OSM tiles sit against
-  /// [AppColors.background] without glowing.
-  static const List<double> _darkMatrix = <double>[
-    -0.68, -0.24, -0.08, 0, 232, //
-    -0.20, -0.72, -0.08, 0, 232, //
-    -0.20, -0.24, -0.56, 0, 232, //
-    0, 0, 0, 1, 0, //
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final center = position ?? kFallbackMapCenter;
-
-    return FlutterMap(
-      mapController: controller,
-      options: MapOptions(
-        initialCenter: center,
-        initialZoom: kDefaultMapZoom,
-        backgroundColor: AppColors.background,
-        interactionOptions: const InteractionOptions(
-          flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-        ),
-        onPositionChanged: onPositionChanged,
-        onMapReady: onMapReady,
-      ),
-      children: [
-        ColorFiltered(
-          colorFilter: const ColorFilter.matrix(_darkMatrix),
-          child: TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            // Must match the real applicationId — the OSM tile usage policy
-            // requires an identifying User-Agent.
-            userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-            tileUpdateTransformer: TileUpdateTransformers.throttle(
-              const Duration(milliseconds: 100),
-            ),
-            tileProvider: AppCachedTileProvider(),
-          ),
-        ),
+    final h = heading;
+    final pointing = h != null && h.isFinite && h >= 0;
+    return SgMap(
+      initialCenter: position ?? kFallbackMapCenter,
+      initialZoom: kDefaultMapZoom,
+      onMapCreated: onMapCreated,
+      onCameraMove: onCameraMove,
+      markers: [
         if (position != null)
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: position!,
-                width: DriverLocationMarker.size,
-                height: DriverLocationMarker.size,
-                child: DriverLocationMarker(
-                  heading: heading,
-                  pulsing: pulsing,
-                  weakSignal: weakSignal,
-                ),
-              ),
-            ],
+          SgMarker(
+            id: 'me',
+            point: position!,
+            icon: SgIconMarker(
+              pointing ? Icons.navigation_rounded : Icons.circle,
+              weakSignal ? AppColors.outline : AppColors.primary,
+              size: pointing ? 36 : 20,
+            ),
+            anchor: const Offset(0.5, 0.5),
+            rotation: pointing ? h : 0,
+            label: 'You',
           ),
-        const RichAttributionWidget(
-          attributions: [TextSourceAttribution('OpenStreetMap contributors')],
-        ),
       ],
     );
   }

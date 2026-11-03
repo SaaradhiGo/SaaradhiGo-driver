@@ -40,7 +40,7 @@ dependencies:
   package_info_plus: ^9.0.0
   # Opens the store link on the blocking "update required" screen.
   url_launcher: ^6.3.0
-  flutter_map: ^8.3.1
+  google_maps_flutter: ^2.12.0
   latlong2: ^0.10.1
   provider: ^6.1.5+1
   geolocator: ^14.0.2

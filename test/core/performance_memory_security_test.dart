@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,7 +13,6 @@ import 'package:saaradhigo_driver/core/network/websocket_service.dart';
 import 'package:saaradhigo_driver/features/dashboard/data/data_sources/driver_location_consumer.dart';
 import 'package:saaradhigo_driver/features/support/data/data_sources/trip_chat_consumer.dart';
 import 'package:saaradhigo_driver/features/trip/data/data_sources/trip_status_consumer.dart';
-import 'package:saaradhigo_driver/shared/widgets/app_cached_tile_provider.dart';
 
 class _FakeWebSocketService implements WebSocketService {
   final messageController = StreamController<Map<String, dynamic>>.broadcast();
@@ -108,23 +105,6 @@ class _StubGeolocator implements GeolocatorAdapter {
 }
 
 void main() {
-  group('AppCachedTileProvider Performance Tests', () {
-    test('creates CachedNetworkImageProvider with valid tile URL', () {
-      final provider = AppCachedTileProvider(headers: {'X-Test': '123'});
-      const coords = TileCoordinates(10, 20, 5);
-      final options = TileLayer(
-        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      );
-
-      final image = provider.getImage(coords, options);
-
-      expect(image, isA<CachedNetworkImageProvider>());
-      final cachedImage = image as CachedNetworkImageProvider;
-      expect(cachedImage.url, 'https://tile.openstreetmap.org/5/10/20.png');
-      expect(cachedImage.headers?['X-Test'], '123');
-    });
-  });
-
   group('LoggingInterceptor Security & Sanitization Tests', () {
     test('redacts sensitive query parameters from URLs', () {
       final uri = Uri.parse(

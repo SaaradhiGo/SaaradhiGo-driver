@@ -157,6 +157,12 @@ android {
     }
 
     defaultConfig {
+        // ${MAPS_API_KEY} in AndroidManifest.xml (Google Maps, D1). Passed at
+        // build time, never committed:
+        //   flutter build apk --android-project-arg maps.apiKey=<key>
+        // Empty when not passed: the app builds and runs, the map has no tiles.
+        manifestPlaceholders["MAPS_API_KEY"] =
+            (project.findProperty("maps.apiKey") as String?) ?: ""
         // Settled before the first upload, which is the only moment it is
         // free: an applicationId can never be changed afterwards.
         //

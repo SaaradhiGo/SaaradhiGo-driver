@@ -12,6 +12,12 @@
         android:label="SaaradhiGo Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Google Maps SDK key (owner decision D1, 2026-11-02). Supplied at
+             build time (-Pmaps.apiKey, from the MAPS_API_KEY_ANDROID CI
+             secret) and restricted to this package and the QA signing SHA-1.
+             Never commit a literal key here. -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}"/>
         <service
             android:name="com.baseflow.geolocator.GeolocatorLocationService"
             android:enabled="true"
