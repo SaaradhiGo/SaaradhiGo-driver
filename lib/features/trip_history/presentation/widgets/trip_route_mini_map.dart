@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../shared/widgets/app_cached_tile_provider.dart';
+import '../../../../core/maps/sg_map.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
@@ -28,26 +27,7 @@ class TripRouteMiniMap extends StatefulWidget {
 }
 
 class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
-  late final MapController _mapController;
-
-  static const List<double> _darkMatrix = <double>[
-    -0.68, -0.24, -0.08, 0, 232, //
-    -0.20, -0.72, -0.08, 0, 232, //
-    -0.20, -0.24, -0.56, 0, 232, //
-    0, 0, 0, 1, 0, //
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _mapController = MapController();
-  }
-
-  @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
-  }
+  SgMapController? _mapController;
 
   LatLng? get _pickupPoint {
     if (widget.pickupLat != null && widget.pickupLng != null) {
@@ -68,23 +48,14 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
   }
 
   void _recenter() {
-    final pickup = _pickupPoint;
-    final dest = _destinationPoint;
-
-    if (pickup != null && dest != null) {
-      final bounds = LatLngBounds.fromPoints([pickup, dest]);
-      _mapController.fitCamera(
-        CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(AppSpacing.xl),
-        ),
-      );
-    } else if (pickup != null) {
-      _mapController.move(pickup, 15);
-    } else if (dest != null) {
-      _mapController.move(dest, 15);
+    final points = [?_pickupPoint, ?_destinationPoint];
+    if (points.isEmpty) {
+      _mapController?.moveTo(kFallbackMapCenter, zoom: 14);
     } else {
-      _mapController.move(kFallbackMapCenter, 14);
+      _mapController?.fitPoints(
+        points,
+        padding: const EdgeInsets.all(AppSpacing.xl),
+      );
     }
   }
 
@@ -157,47 +128,25 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
       );
     }
 
-    final markers = <Marker>[
+    final markers = <SgMarker>[
       if (pickup != null)
-        Marker(
+        SgMarker(
+          id: 'pickup',
           point: pickup,
-          width: 32,
-          height: 32,
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary, width: 3),
-            ),
-            child: Center(
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ),
+          icon: const SgIconMarker(Icons.trip_origin, AppColors.primary, size: 28),
+          anchor: const Offset(0.5, 0.5),
+          label: 'Pickup',
         ),
       if (dest != null)
-        Marker(
+        SgMarker(
+          id: 'drop',
           point: dest,
-          width: 32,
-          height: 32,
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.primaryContainer,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.background, width: 2),
-            ),
-            child: const Icon(
-              Icons.location_on,
-              size: 20,
-              color: AppColors.background,
-            ),
+          icon: const SgIconMarker(
+            Icons.location_on,
+            AppColors.primaryContainer,
+            size: 32,
           ),
+          label: 'Drop',
         ),
     ];
 
@@ -205,42 +154,22 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
       height: 230,
       child: Stack(
         children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: _initialCenter,
-              initialZoom: 14,
-              backgroundColor: AppColors.background,
-              interactionOptions: const InteractionOptions(
-                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-              ),
-              onMapReady: () {
-                if (pickup != null && dest != null) {
-                  _recenter();
-                }
-              },
-            ),
-            children: [
-              ColorFiltered(
-                colorFilter: const ColorFilter.matrix(_darkMatrix),
-                child: TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.saaradhigo.saaradhigo_driver',
-                  tileProvider: AppCachedTileProvider(),
-                ),
-              ),
+          SgMap(
+            initialCenter: _initialCenter,
+            initialZoom: 14,
+            markers: markers,
+            polylines: [
               if (pickup != null && dest != null)
-                PolylineLayer(
-                  polylines: [
-                    Polyline(
-                      points: [pickup, dest],
-                      strokeWidth: 4,
-                      color: AppColors.primary.withValues(alpha: 0.9),
-                    ),
-                  ],
+                SgPolyline(
+                  id: 'line',
+                  points: [pickup, dest],
+                  color: AppColors.primary.withValues(alpha: 0.9),
                 ),
-              MarkerLayer(markers: markers),
             ],
+            onMapCreated: (c) {
+              _mapController = c;
+              if (pickup != null && dest != null) _recenter();
+            },
           ),
           // Floating Controls: Recenter & Fullscreen
           Positioned(

@@ -128,9 +128,8 @@ void main() {
   test('no API key or password is committed in the manifest', () {
     final text = manifest.readAsStringSync();
     // The rider app shipped a literal AIza... Maps key in its manifest from
-    // its initial commit, which is why that key has to be rotated. This app
-    // renders maps with flutter_map over OSM tiles and needs no Google Maps
-    // key at all; this assertion keeps it that way.
+    // its initial commit, which is why that key had to be revoked. Since D1
+    // this app uses Google Maps too, with the key supplied at build time.
     expect(
       text,
       isNot(contains('AIza')),
@@ -138,10 +137,8 @@ void main() {
     );
     expect(
       text,
-      isNot(contains('com.google.android.geo.API_KEY')),
-      reason:
-          'this app uses flutter_map/OSM and must not acquire a '
-          'dependency on a Google Maps key',
+      contains(r'android:value="${MAPS_API_KEY}"'),
+      reason: 'the Maps key must come from the build, never a literal',
     );
     expect(
       text.toLowerCase(),
