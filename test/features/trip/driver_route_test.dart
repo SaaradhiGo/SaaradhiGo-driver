@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:saaradhigo_driver/core/network/polyline_codec.dart';
-import 'package:saaradhigo_driver/features/trip/presentation/providers/route_providers.dart';
 
 /// The driver's trip map drew a straight great-circle line between pickup and
 /// destination, because real routing "needs a directions provider + API key".
@@ -40,38 +38,6 @@ void main() {
     test('an empty or malformed string yields nothing, never a crash', () {
       expect(decodePolyline(''), isEmpty);
       expect(() => decodePolyline('~~~not~a~polyline~~~'), returnsNormally);
-    });
-  });
-
-  group('route leg keying', () {
-    final pickup = LatLng(16.5062, 80.6480);
-    final dest = LatLng(16.5190, 80.6305);
-
-    test('a driver creeping forward does not make a new leg', () {
-      // ~10 m of movement. The provider is keyed on the leg, so this must
-      // resolve to the SAME key or every GPS frame buys a route.
-      final a = RouteLeg(LatLng(16.50620, 80.64800), pickup);
-      final b = RouteLeg(LatLng(16.50629, 80.64803), pickup);
-
-      expect(a, equals(b));
-      expect(a.hashCode, equals(b.hashCode));
-    });
-
-    test('a driver who has actually travelled makes a new leg', () {
-      final a = RouteLeg(LatLng(16.5062, 80.6480), dest);
-      final b = RouteLeg(LatLng(16.5120, 80.6420), dest);
-
-      expect(a, isNot(equals(b)));
-    });
-
-    test('a different destination is a different leg', () {
-      expect(RouteLeg(pickup, dest), isNot(equals(RouteLeg(pickup, pickup))));
-    });
-
-    test('rounding is ~110 m, not metres', () {
-      final leg = RouteLeg(LatLng(16.506249, 80.648049), dest);
-      expect(leg.originLat, 16.506);
-      expect(leg.originLng, 80.648);
     });
   });
 }

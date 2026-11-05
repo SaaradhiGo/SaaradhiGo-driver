@@ -41,6 +41,7 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
               pickup: pickup,
               destination: destination,
               focus: destination,
+              plannedPolyline: trip.plannedRoutePolyline,
             ),
           ),
           // Passenger chat + SOS stay reachable during the whole active trip.
