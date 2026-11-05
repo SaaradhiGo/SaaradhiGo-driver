@@ -156,6 +156,23 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    // Local QA only: `qa.debugKeystore=<path>` and `qa.debugKeystorePassword=<pw>` in the
+    // untracked local.properties sign debug builds with that keystore (no password in git).
+    val qaProps = Properties().apply {
+        rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+    }
+    val qaDebugKeystore = qaProps.getProperty("qa.debugKeystore")?.trim()
+        ?.takeIf { it.isNotEmpty() && file(it).exists() }
+    val qaDebugPassword = qaProps.getProperty("qa.debugKeystorePassword")?.trim()?.takeIf { it.isNotEmpty() }
+    if (qaDebugKeystore != null && qaDebugPassword != null) {
+        signingConfigs.getByName("debug") {
+            storeFile = file(qaDebugKeystore)
+            storePassword = qaDebugPassword
+            keyAlias = "androiddebugkey"
+            keyPassword = qaDebugPassword
+        }
+    }
+
     defaultConfig {
         // ${MAPS_API_KEY} in AndroidManifest.xml (Google Maps, D1). Passed at
         // build time, never committed:

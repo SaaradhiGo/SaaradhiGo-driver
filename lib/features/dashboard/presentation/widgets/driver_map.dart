@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/maps/sg_map.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../ui/sg_tokens.dart';
 
 /// Fallback centre used until the first fix lands (Hyderabad — the launch city
 /// used throughout the backend docs' sample payloads).
@@ -10,7 +10,7 @@ const LatLng kFallbackMapCenter = LatLng(17.3850, 78.4867);
 
 const double kDefaultMapZoom = 15.0;
 
-/// Full-bleed dark map with the driver marker.
+/// Full-bleed dark map with the driver as a green circle.
 ///
 /// Google Maps with the SaaradhiGo dark style (owner decision D1). It used to
 /// push OpenStreetMap's light raster tiles through a colour matrix to fake a
@@ -61,7 +61,7 @@ class DriverMap extends StatelessWidget {
             point: position!,
             icon: SgIconMarker(
               pointing ? Icons.navigation_rounded : Icons.circle,
-              weakSignal ? AppColors.outline : AppColors.primary,
+              weakSignal ? SgColors.inkSubtle : SgColors.pickup,
               size: pointing ? 36 : 20,
             ),
             anchor: const Offset(0.5, 0.5),
