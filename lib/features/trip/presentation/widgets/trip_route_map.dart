@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/network/polyline_codec.dart';
+import '../../../../core/route_follow.dart';
 import '../providers/route_providers.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -27,13 +29,14 @@ import '../../../dashboard/presentation/widgets/driver_map.dart'
 /// trip gives pickup + destination. If no route comes back, NO line is drawn.
 /// A straight line between two points looks like a road that isn't there, and
 /// this app does not draw roads that do not exist.
-class TripRouteMap extends ConsumerWidget {
+class TripRouteMap extends ConsumerStatefulWidget {
   const TripRouteMap({
     super.key,
     this.driver,
     this.pickup,
     this.destination,
     this.focus,
+    this.plannedPolyline,
   });
 
   final LatLng? driver;
@@ -44,41 +47,118 @@ class TripRouteMap extends ConsumerWidget {
   /// then the driver, then the city fallback).
   final LatLng? focus;
 
-  /// The leg worth drawing for what this screen was given.
-  ///
-  /// Destination wins when there is one -- that is the active trip. Otherwise
-  /// driver -> pickup, which is the leg the driver is actually travelling
-  /// before collection.
-  RouteLeg? _leg() {
-    if (pickup != null && destination != null) {
-      return RouteLeg(pickup!, destination!);
-    }
-    if (driver != null && pickup != null) return RouteLeg(driver!, pickup!);
+  /// Encoded `planned_route_polyline` from the trip details. When present the
+  /// trip leg is drawn from it with no Routes request at all.
+  final String? plannedPolyline;
+
+  @override
+  ConsumerState<TripRouteMap> createState() => _TripRouteMapState();
+}
+
+class _TripRouteMapState extends ConsumerState<TripRouteMap> {
+  // The full line as fetched, and what is still ahead of the driver.
+  List<LatLng> _line = const [];
+  List<LatLng> _ahead = const [];
+  DateTime? _lastFetch;
+  String? _legKey;
+  bool _inFlight = false;
+
+  /// Where the current leg ends: destination on the active trip, else pickup.
+  LatLng? get _target => widget.destination ?? widget.pickup;
+
+  /// Identity of the leg, so a new leg (accept -> start) fetches once and a
+  /// moving driver never changes it.
+  String? _key() {
+    final p = widget.pickup, d = widget.destination;
+    if (p != null && d != null) return 'trip:$p>$d';
+    if (p != null) return 'arrival:$p';
     return null;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final center =
-        focus ?? pickup ?? destination ?? driver ?? kFallbackMapCenter;
+  void initState() {
+    super.initState();
+    _sync();
+  }
 
-    // Watching a leg-keyed provider means a GPS frame that does not move the
-    // driver ~110 m resolves to the same leg and no request is made.
-    final leg = _leg();
-    final road = leg == null
-        ? const <LatLng>[]
-        : ref.watch(routeForLegProvider(leg)).maybeWhen(
-              data: (points) => points,
-              orElse: () => const <LatLng>[],
-            );
+  @override
+  void didUpdateWidget(TripRouteMap old) {
+    super.didUpdateWidget(old);
+    _sync();
+  }
+
+  void _sync() {
+    final key = _key();
+    if (key != _legKey) {
+      _legKey = key;
+      _line = const [];
+      _ahead = const [];
+      _lastFetch = null;
+      final planned = widget.plannedPolyline;
+      if (widget.destination != null && planned != null && planned.isNotEmpty) {
+        _line = decodePolyline(planned);
+        _ahead = _line;
+        _lastFetch = DateTime.now();
+      } else if (widget.destination != null && widget.pickup != null) {
+        _fetch(widget.pickup!);
+      } else if (widget.driver != null) {
+        _fetch(widget.driver!);
+      }
+    }
+    final driver = widget.driver;
+    if (driver == null || _key() == null) return;
+    if (_line.length > 1) _ahead = RouteFollow.trim(driver, _line);
+    if (!_inFlight &&
+        RouteFollow.shouldRefetch(
+          driver: driver,
+          line: _line,
+          lastFetch: _lastFetch,
+          now: DateTime.now(),
+        )) {
+      _fetch(driver);
+    }
+  }
+
+  Future<void> _fetch(LatLng from) async {
+    final to = _target;
+    if (to == null) return;
+    final key = _legKey;
+    _inFlight = true;
+    _lastFetch = DateTime.now();
+    final points = await ref
+        .read(directionsDataSourceProvider)
+        .routeBetween(from, to);
+    _inFlight = false;
+    // Drop the answer if the leg changed or the screen went while it flew.
+    if (!mounted || key != _legKey || points.isEmpty) return;
+    setState(() {
+      _line = points;
+      _ahead = widget.driver == null
+          ? points
+          : RouteFollow.trim(widget.driver!, points);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final driver = widget.driver;
+    final pickup = widget.pickup;
+    final destination = widget.destination;
+    final center =
+        widget.focus ?? pickup ?? destination ?? driver ?? kFallbackMapCenter;
 
     final markers = <SgMarker>[
       if (driver != null)
-        _pin('driver', driver!, Icons.navigation_rounded, AppColors.primary),
+        _pin('driver', driver, Icons.navigation_rounded, AppColors.primary),
       if (pickup != null)
-        _pin('pickup', pickup!, Icons.my_location_rounded, AppColors.primaryContainer),
+        _pin(
+          'pickup',
+          pickup,
+          Icons.my_location_rounded,
+          AppColors.primaryContainer,
+        ),
       if (destination != null)
-        _pin('drop', destination!, Icons.location_on_rounded, AppColors.error),
+        _pin('drop', destination, Icons.location_on_rounded, AppColors.error),
     ];
 
     return SgMap(
@@ -88,10 +168,10 @@ class TripRouteMap extends ConsumerWidget {
       // Only a real road. While the lookup is in flight, or if it failed,
       // the map shows markers and nothing between them.
       polylines: [
-        if (road.length > 1)
+        if (_ahead.length > 1)
           SgPolyline(
             id: 'road',
-            points: road,
+            points: _ahead,
             color: AppColors.primary.withValues(alpha: 0.8),
           ),
       ],

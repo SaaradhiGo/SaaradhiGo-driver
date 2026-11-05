@@ -246,6 +246,8 @@ abstract class TripModel with _$TripModel {
     String? promoDiscount,
     @JsonKey(name: 'rider_payable', readValue: _readRiderPayable)
     String? riderPayable,
+    // Road drawn once per trip instead of a route per GPS ping (Maps M1).
+    @JsonKey(name: 'planned_route_polyline') String? plannedRoutePolyline,
   }) = _TripModel;
 
   factory TripModel.fromJson(Map<String, dynamic> json) =>
