@@ -200,7 +200,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         SgMarker(
           id: 'pickup',
           point: pickup,
-          icon: const SgIconMarker(Icons.circle, SgColors.pickup, size: 20),
+          icon: SgIconMarker(Icons.circle, SgColors.pickup, size: 20),
           anchor: const Offset(0.5, 0.5),
           label: 'Pickup',
         ),
@@ -208,7 +208,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         SgMarker(
           id: 'drop',
           point: drop,
-          icon: const SgIconMarker(
+          icon: SgIconMarker(
             Icons.square_rounded,
             SgColors.gold500,
             size: 20,
@@ -234,7 +234,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             ),
           ),
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: SgColors.bg100,
               borderRadius:
                   BorderRadius.vertical(top: Radius.circular(SgRadius.lg)),
@@ -305,7 +305,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
           marker: Container(
             width: 14,
             height: 14,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: SgColors.pickup,
             ),

@@ -1,0 +1,43 @@
+{
+  "@@locale": "en",
+  "appearanceTitle": "Appearance",
+  "@appearanceTitle": {
+    "description": "Profile row: light or dark theme"
+  },
+  "appearanceAutomatic": "Automatic",
+  "@appearanceAutomatic": {
+    "description": "Theme follows sunrise and sunset"
+  },
+  "appearanceAutomaticHint": "Light by day, dark after sunset",
+  "@appearanceAutomaticHint": {
+    "description": "Explains the automatic theme"
+  },
+  "appearanceDark": "Dark",
+  "@appearanceDark": {
+    "description": "Dark theme"
+  },
+  "appearanceLight": "Light",
+  "@appearanceLight": {
+    "description": "Light theme"
+  },
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "Profile row: app language"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Language name, in its own script"
+  },
+  "languageTelugu": "తెలుగు",
+  "@languageTelugu": {
+    "description": "Language name, in its own script"
+  },
+  "languageHindi": "हिन्दी",
+  "@languageHindi": {
+    "description": "Language name, in its own script"
+  },
+  "brandLogoLabel": "Saaradhi Go",
+  "@brandLogoLabel": {
+    "description": "Screen-reader label for the logo; brand name, not translated"
+  }
+}

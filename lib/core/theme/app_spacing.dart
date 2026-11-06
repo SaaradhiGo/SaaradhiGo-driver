@@ -11,8 +11,11 @@ class AppSpacing {
   static const double gutter = 12.0;
   static const double margin = 20.0;
 
-  static const double touchTarget = 48.0;
-  static const double primaryButtonHeight = 56.0;
+  /// Driver app: every touch target is at least 64 (Tier 1 spec).
+  static const double touchTarget = 64.0;
+
+  /// Primary driver actions are 72-80 tall.
+  static const double primaryButtonHeight = 72.0;
 
   static const double radiusMd = 14.0;
   static const double radiusLg = 16.0;

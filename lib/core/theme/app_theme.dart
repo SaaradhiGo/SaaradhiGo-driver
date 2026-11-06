@@ -2,17 +2,39 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
 import 'app_spacing.dart';
+import '../../ui/sg_text.dart';
+import '../../ui/sg_tokens.dart';
 
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get darkTheme {
+  /// The dark theme, whatever palette is active.
+  static ThemeData get darkTheme => of(SgPalette.dark);
+
+  /// The light theme, whatever palette is active.
+  static ThemeData get lightTheme => of(SgPalette.light);
+
+  /// The theme for [palette]. Every token below is read while [palette] is
+  /// the active one, then the previous palette is restored.
+  static ThemeData of(SgPalette palette) {
+    final previous = SgColors.palette;
+    SgColors.use(palette);
+    try {
+      return _build();
+    } finally {
+      SgColors.use(previous);
+    }
+  }
+
+  static ThemeData _build() {
+    final scheme = SgColors.isDark ? ColorScheme.dark : ColorScheme.light;
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Manrope',
-      brightness: Brightness.dark,
+      fontFamily: SgText.family,
+      fontFamilyFallback: SgText.fallback,
+      brightness: SgColors.palette.brightness,
       scaffoldBackgroundColor: AppColors.background,
-      colorScheme: const ColorScheme.dark(
+      colorScheme: scheme(
         primary: AppColors.primary,
         onPrimary: AppColors.darkText,
         secondary: AppColors.secondary,
@@ -20,7 +42,7 @@ class AppTheme {
         surface: AppColors.surface,
         onSurface: AppColors.onBackground,
         error: AppColors.error,
-        onError: AppColors.background,
+        onError: AppColors.onError,
       ),
       textTheme:
           TextTheme(
@@ -40,7 +62,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          side: const BorderSide(color: AppColors.outlineVariant),
+          side: BorderSide(color: AppColors.outlineVariant),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -56,7 +78,7 @@ class AppTheme {
           // unsized — surfacing later as "Cannot hit test a render box with no
           // size" / "RenderBox was not laid out". Buttons that want to stretch
           // opt in themselves (see PrimaryButton/SecondaryButton/GhostButton).
-          minimumSize: const Size(0, AppSpacing.primaryButtonHeight),
+          minimumSize: const Size(0, AppSpacing.touchTarget),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
@@ -72,7 +94,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          side: const BorderSide(color: AppColors.outline),
+          side: BorderSide(color: AppColors.outline),
           textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
@@ -95,7 +117,7 @@ class AppTheme {
         actionTextColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,
       ),
@@ -104,10 +126,10 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          side: const BorderSide(color: AppColors.outlineVariant),
+          side: BorderSide(color: AppColors.outlineVariant),
         ),
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.outlineVariant),
+      dividerTheme: DividerThemeData(color: AppColors.outlineVariant),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceContainer,
@@ -117,19 +139,19 @@ class AppTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.outlineVariant),
+          borderSide: BorderSide(color: AppColors.outlineVariant),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.outlineVariant),
+          borderSide: BorderSide(color: AppColors.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderSide: BorderSide(color: AppColors.error),
         ),
         labelStyle: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,

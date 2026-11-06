@@ -144,9 +144,9 @@ class NavigateButton extends StatelessWidget {
               color: SgColors.bg100,
               borderRadius: BorderRadius.circular(SgRadius.pill),
               border: Border.all(color: SgColors.goldLine),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
-                  color: Color(0x99000000),
+                  color: SgColors.scrim,
                   blurRadius: 24,
                   offset: Offset(0, 8),
                 ),
@@ -155,7 +155,7 @@ class NavigateButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SgIcon(
+                SgIcon(
                   '<path d="M3 11l18-8-8 18-2-8z"/>',
                   size: 18,
                   color: SgColors.goldText,
@@ -212,7 +212,7 @@ class RiderRow extends StatelessWidget {
             border: Border.all(color: SgColors.line),
           ),
           child: initials.isEmpty
-              ? const SgIcon(SgIcons.user, color: SgColors.ink)
+              ? SgIcon(SgIcons.user, color: SgColors.ink)
               : Text(initials, style: SgText.title),
         ),
         const SizedBox(width: SgSpace.s3),
@@ -230,7 +230,7 @@ class RiderRow extends StatelessWidget {
                 Row(
                   children: [
                     if (rated) ...[
-                      const SgIcon(kStarIcon, size: 14, color: SgColors.gold500),
+                      SgIcon(kStarIcon, size: 14, color: SgColors.gold500),
                       const SizedBox(width: SgSpace.s1),
                     ],
                     Flexible(
@@ -263,7 +263,7 @@ class RiderRow extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: SgColors.line),
                 ),
-                child: const SgIcon(SgIcons.message, color: SgColors.ink),
+                child: SgIcon(SgIcons.message, color: SgColors.ink),
               ),
             ),
           ),
@@ -784,7 +784,7 @@ class TripCompleteView extends StatelessWidget {
                           const SizedBox(height: SgSpace.s2),
                           Row(
                             children: [
-                              const SgIcon(
+                              SgIcon(
                                 SgIcons.check,
                                 size: 18,
                                 color: SgColors.pickup,
