@@ -5,6 +5,7 @@
 // `driver_earning` (the settlement's own number) to the trip's driver.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:saaradhigo_driver/domain/models/trip_model.dart';
 import 'package:saaradhigo_driver/ui/driver_trip_views.dart';
 
 import '../support/driver_ui_fixtures.dart';
@@ -37,5 +38,11 @@ void main() {
     )));
     expect(find.byKey(const Key('trip_fare')), findsOneWidget);
     expect(find.textContaining('Fare'), findsOneWidget);
+  });
+
+  test('the trip reads the earning from the REST trip or from the offer', () {
+    expect(TripModel.fromJson({'id': 1, 'driver_earning': '86.70'}).driverEarning, '86.70');
+    expect(TripModel.fromJson({'trip_id': 2, 'earning': '89.25'}).driverEarning, '89.25');
+    expect(TripModel.fromJson({'id': 3}).driverEarning, isNull);
   });
 }

@@ -151,6 +151,14 @@ Object? _readDurationMin(Map json, String key) => _readDoubleVal(
 
 // Fares arrive as strings over the socket but can be numeric over REST — coerce
 // so a numeric fare never throws a type error during parsing.
+/// What the driver keeps: `driver_earning` on the REST trip, or `earning` on
+/// the ride offer the session is built from (both are the backend's
+/// settlement arithmetic). Null when neither is sent.
+Object? _readDriverEarning(Map json, String key) {
+  final v = json['driver_earning'] ?? json['earning'];
+  return v?.toString();
+}
+
 Object? _readEstimatedFare(Map json, String key) =>
     json['estimated_fare']?.toString();
 Object? _readFinalFare(Map json, String key) => json['final_fare']?.toString();
@@ -229,7 +237,7 @@ abstract class TripModel with _$TripModel {
     @JsonKey(readValue: _readEstimatedFare) String? estimatedFare,
     // What this driver keeps on the trip, from the settlement's own arithmetic
     // (backend `driver_earning`, sent to the trip's driver only).
-    @JsonKey(name: 'driver_earning') String? driverEarning,
+    @JsonKey(readValue: _readDriverEarning) String? driverEarning,
     @JsonKey(readValue: _readFinalFare) String? finalFare,
     @JsonKey(name: 'payment_method') String? paymentMethod,
     @JsonKey(name: 'payment_status') String? paymentStatus,
