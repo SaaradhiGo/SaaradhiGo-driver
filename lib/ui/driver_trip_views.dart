@@ -927,6 +927,7 @@ class InTripSheet extends StatelessWidget {
     required this.riderName,
     this.leftLine,
     this.fare,
+    this.earning,
     this.payment,
     this.busy = false,
     this.onComplete,
@@ -938,6 +939,10 @@ class InTripSheet extends StatelessWidget {
   /// "6.2 km · 14 min".
   final String? leftLine;
   final String? fare;
+
+  /// What the driver keeps, from the backend's settlement arithmetic. When
+  /// present it replaces the fare as the big figure, labelled "You earn".
+  final String? earning;
   final String? payment;
   final bool busy;
   final VoidCallback? onComplete;
@@ -1007,15 +1012,21 @@ class InTripSheet extends StatelessWidget {
               )
             else
               const Spacer(),
-            // TODO(data): the driver's earning for this trip. The trip
-            // payload carries no `earning`, so the fare is shown, labelled.
-            if (fare != null)
+            // The driver's earning when the trip carries it (`driver_earning`),
+            // else the fare, labelled as such.
+            if (earning != null || fare != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(fare!, key: const Key('trip_fare'), style: SgText.fare),
                   Text(
-                    payment == null ? l.offerFare : '${l.offerFare} · $payment',
+                    earning ?? fare!,
+                    key: Key(earning != null ? 'trip_earning' : 'trip_fare'),
+                    style: SgText.fare,
+                  ),
+                  Text(
+                    earning != null
+                        ? (payment == null ? l.offerYouEarn : '${l.offerYouEarn} · $payment')
+                        : (payment == null ? l.offerFare : '${l.offerFare} · $payment'),
                     style: SgText.caption,
                   ),
                 ],

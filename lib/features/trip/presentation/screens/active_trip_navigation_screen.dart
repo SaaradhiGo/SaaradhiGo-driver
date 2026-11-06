@@ -70,6 +70,9 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
         riderName: trip.riderName,
         leftLine: distanceTimeLine(trip.distanceKm, trip.durationMin),
         fare: fare == null ? null : exactMoney(fare),
+        earning: trip.driverEarning == null
+            ? null
+            : exactMoney(trip.driverEarning),
         payment: paymentLabel(trip.paymentMethod),
         busy: session.isBusy,
         onComplete: () =>
