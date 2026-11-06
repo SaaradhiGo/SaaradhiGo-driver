@@ -12,11 +12,11 @@
   "@appearanceAutomaticHint": {
     "description": "needs native review"
   },
-  "appearanceDark": "ముదురు",
+  "appearanceDark": "డార్క్",
   "@appearanceDark": {
     "description": "needs native review"
   },
-  "appearanceLight": "లేత",
+  "appearanceLight": "లైట్",
   "@appearanceLight": {
     "description": "needs native review"
   },
