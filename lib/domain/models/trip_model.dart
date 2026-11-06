@@ -227,6 +227,9 @@ abstract class TripModel with _$TripModel {
     @JsonKey(name: 'pickup_address') String? pickupAddress,
     @JsonKey(name: 'destination_address') String? destinationAddress,
     @JsonKey(readValue: _readEstimatedFare) String? estimatedFare,
+    // What this driver keeps on the trip, from the settlement's own arithmetic
+    // (backend `driver_earning`, sent to the trip's driver only).
+    @JsonKey(name: 'driver_earning') String? driverEarning,
     @JsonKey(readValue: _readFinalFare) String? finalFare,
     @JsonKey(name: 'payment_method') String? paymentMethod,
     @JsonKey(name: 'payment_status') String? paymentStatus,
