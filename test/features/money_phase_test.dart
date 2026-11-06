@@ -64,7 +64,12 @@ class _Consumer implements TripStatusConsumer {
   }
 
   @override
-  void sendAction(String action, {String? otp, String? reason}) {}
+  void sendAction(
+    String action, {
+    String? otp,
+    String? reason,
+    String? commandId,
+  }) {}
   @override
   void updateNetworkStatus(bool isOnline) {}
 }

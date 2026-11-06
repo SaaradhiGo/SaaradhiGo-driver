@@ -28,6 +28,23 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   /// the queued action (accept) is sent exactly once the channel is ready.
   bool _pendingAccept = false;
 
+  /// The `command_id` of the accept for the current offer. Generated once per
+  /// accepted offer and reused, so the accept is one identifiable command
+  /// however the socket behaves.
+  String? _acceptCommandId;
+
+  /// Bumped whenever the session is replaced (accept, rejoin, clear,
+  /// release). A server answer requested under an older generation describes
+  /// a session that no longer exists and must not be applied to this one.
+  int _generation = 0;
+
+  /// True from the Accept tap until the server has answered for that trip.
+  bool get acceptAwaitingServer =>
+      _pendingAccept ||
+      (_acceptWatchdog != null &&
+          state.status != TripStatus.accepted &&
+          !state.isTerminal);
+
   /// Bounds the wait between accepting an offer and the backend confirming it.
   ///
   /// THE FAILURE THIS CLOSES (trip #79 on QA)
@@ -70,15 +87,27 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
       );
       return;
     }
-    if (state.trip != null && !state.isTerminal) return;
+    // A second tap, or a second channel delivering the same offer, must not
+    // open a second socket or send a second accept.
+    if (state.trip != null && !state.isTerminal) {
+      AppLogger.i(
+        'Accept for trip $tripId ignored: trip ${state.trip?.id} is already '
+        'in the session',
+      );
+      return;
+    }
 
     final initial = _tripFromPayload(request.payload, tripId);
+    _generation++;
     state = TripSessionState(
       trip: initial,
       status: TripStatus.requested,
       connecting: true,
     );
 
+    _acceptCommandId =
+        'accept-$tripId-${DateTime.now().microsecondsSinceEpoch}';
+    AppLogger.i('Accept queued for trip $tripId ($_acceptCommandId)');
     _pendingAccept = true;
     _attachConsumer(tripId);
     _consumer!.connect();
@@ -102,6 +131,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     AppLogger.i(
       'Resuming active trip ${trip.id} in state: ${effectiveStatus.name}',
     );
+    _generation++;
     state = TripSessionState(
       trip: effectiveTrip,
       status: effectiveStatus,
@@ -111,6 +141,35 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     _attachConsumer(trip.id);
     _consumer!.connect();
     unawaited(LocalStorageService.setActiveTripId(trip.id.toString()));
+  }
+
+  /// Home's crash recovery and resume check: asks the server for this
+  /// driver's in-flight trip and returns it when Home should rejoin it.
+  ///
+  /// THE FAILURE THIS CLOSES (quick accept on resume, QA 2026-11-06)
+  /// Resume fires this request. A driver who taps Accept while it is in
+  /// flight starts a session the request knows nothing about; its answer
+  /// ("no active trip", true when it was asked) then cleared that session
+  /// and tore the trip socket down before the accept was sent. So an answer
+  /// is applied only to the session it was asked about, and never to an
+  /// accept still waiting for the server -- the accept watchdog asks the
+  /// server again for that one.
+  Future<TripModel?> reconcileWithServer() async {
+    final generation = _generation;
+    final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
+    if (!ref.mounted) return null;
+    if (generation != _generation || acceptAwaitingServer) {
+      AppLogger.i(
+        'Active-trip answer (trip ${trip?.id}) ignored: the session changed '
+        'while it was in flight (accept pending: $acceptAwaitingServer)',
+      );
+      return null;
+    }
+    if (trip == null || trip.status.isTerminal) {
+      if (state.isActive) clear();
+      return null;
+    }
+    return trip;
   }
 
   /// Checks active trip on app resume (e.g. returning from Google Maps).
@@ -165,7 +224,9 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   void clear() {
     _cancelAcceptWatchdog();
     _teardown();
+    _generation++;
     _pendingAccept = false;
+    _acceptCommandId = null;
     state = const TripSessionState();
     unawaited(LocalStorageService.clearActiveTripId());
   }
@@ -199,7 +260,12 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     }
   }
 
-  void _sendAction(String action, {String? otp, String? reason}) {
+  void _sendAction(
+    String action, {
+    String? otp,
+    String? reason,
+    String? commandId,
+  }) {
     final consumer = _consumer;
     if (consumer == null) {
       state = state.copyWith(
@@ -207,8 +273,12 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
       );
       return;
     }
+    AppLogger.i(
+      'Sending $action for trip ${consumer.tripId}'
+      '${commandId == null ? '' : ' ($commandId)'}',
+    );
     state = state.copyWith(actionInProgress: true, errorMessage: null);
-    consumer.sendAction(action, otp: otp, reason: reason);
+    consumer.sendAction(action, otp: otp, reason: reason, commandId: commandId);
   }
 
   void _onEvent(TripStatusEvent event) {
@@ -217,7 +287,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
         state = state.copyWith(connecting: false);
         if (_pendingAccept) {
           _pendingAccept = false;
-          _sendAction('accept');
+          _sendAction('accept', commandId: _acceptCommandId);
         }
 
       case TripStatusChanged(:final status, :final message):
@@ -474,6 +544,8 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   void _releaseUnconfirmedRide(String message, {bool refused = false}) {
     _cancelAcceptWatchdog();
     _pendingAccept = false;
+    _acceptCommandId = null;
+    _generation++;
     _detachConsumer();
     unawaited(LocalStorageService.clearActiveTripId());
     state = TripSessionState(
