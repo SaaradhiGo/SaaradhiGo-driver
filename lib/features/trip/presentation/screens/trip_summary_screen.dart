@@ -5,13 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
-import '../../../../shared/widgets/buttons.dart';
-import '../../../../shared/widgets/glass_panel.dart';
-import '../../../earnings/presentation/widgets/cash_collection_dialog.dart';
+import '../../../../ui/driver_trip_views.dart';
 import '../../../earnings/presentation/earnings_display.dart';
 import '../../domain/support_end.dart';
 import '../providers/support_end_provider.dart';
@@ -31,7 +26,6 @@ class TripSummaryScreen extends ConsumerStatefulWidget {
 }
 
 class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
-  bool _promptShown = false;
   bool _rated = false;
 
   Future<void> _ratePassenger() async {
@@ -70,189 +64,60 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
   void _confirmCash() =>
       ref.read(tripSessionNotifierProvider.notifier).confirmCash();
 
-  void _maybePromptForCash() {
-    if (_promptShown) return;
-    final session = ref.read(tripSessionNotifierProvider);
-    if (!session.needsCashCollection) return;
-    _promptShown = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      CashCollectionDialog.show(
-        context,
-        amount: _cashAmount,
-        onConfirmed: _confirmCash,
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(tripSessionNotifierProvider);
     final needsCash = session.needsCashCollection;
     final endedBySupport = session.endedBySupport;
     final platformPaid = trip.paymentStatus == 'waived';
-    _maybePromptForCash();
+    final cash = (trip.paymentMethod ?? '').toLowerCase() == 'cash';
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.margin),
-          child: Column(
-            children: [
-              const Spacer(),
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryContainer.withValues(alpha: 0.15),
-                ),
-                child: const Icon(
-                  Icons.check_circle_rounded,
-                  color: AppColors.primaryContainer,
-                  size: 56,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                endedBySupport ? kSupportEndedTitle : 'Trip Completed',
-                key: const Key('summary_title'),
-                textAlign: TextAlign.center,
-                style: AppTypography.displayLg.copyWith(
-                  color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              if (endedBySupport && platformPaid)
-                Text(
-                  kSupportEndedPlatformPaid,
-                  key: const Key('summary_platform_paid'),
-                  textAlign: TextAlign.center,
-                  style: AppTypography.bodyMd.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )
-              else
-                Text(
-                  endedBySupport
-                      ? 'Fare for the distance driven'
-                      : 'You earned for this ride',
-                  style: AppTypography.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              const SizedBox(height: AppSpacing.sm),
-              // A platform-paid end: the rider's fare is zero and means nothing to
-              // the driver, whose earning is in the panel below. Never show ₹0.00.
-              if (!(endedBySupport && platformPaid))
-                Text(
-                  _fare,
-                  key: const Key('summary_fare'),
-                  style: AppTypography.dataMono.copyWith(
-                    color: AppColors.primaryContainer,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 44,
-                  ),
-                ),
-              const SizedBox(height: AppSpacing.lg),
-              GlassPanel(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _metric(
-                      'DISTANCE',
-                      trip.distanceKm != null
-                          ? '${trip.distanceKm!.toStringAsFixed(1)} km'
-                          : '—',
-                    ),
-                    _divider(),
-                    _metric(
-                      'DURATION',
-                      trip.durationMin != null
-                          ? '${trip.durationMin!.round()} min'
-                          : '—',
-                    ),
-                    _divider(),
-                    _metric(
-                      'PAYMENT',
-                      (trip.paymentMethod ?? 'Digital').toUpperCase(),
-                    ),
-                  ],
-                ),
-              ),
-              if (isPositiveAmount(trip.promoDiscount)) ...[
-                const SizedBox(height: AppSpacing.md),
-                _promoPaidLine(),
-              ],
-              if (endedBySupport) ...[
-                const SizedBox(height: AppSpacing.md),
-                _supportEarnings(),
-              ],
-              if (needsCash) ...[
-                const SizedBox(height: AppSpacing.md),
-                _cashReminder(),
-              ],
-              const Spacer(),
-              // Rating the passenger. The only record that a rider was
-              // abusive or kept the driver waiting, and the input an
-              // operator needs to act on a pattern. Offered as an action
-              // rather than a modal: a driver with the next ride waiting
-              // must not be held on this screen.
-              if (!_rated)
-                SecondaryButton(
-                  text: 'RATE PASSENGER',
-                  onPressed: _ratePassenger,
-                ),
-              if (!_rated) const SizedBox(height: AppSpacing.sm),
-              if (needsCash)
-                PrimaryButton(
-                  text: 'CONFIRM CASH COLLECTED',
-                  isLoading: session.actionInProgress,
-                  onPressed: session.actionInProgress ? null : _confirmCash,
-                )
-              else
-                PrimaryButton(
-                  text: 'BACK TO DASHBOARD',
-                  onPressed: () {
-                    ref.read(tripSessionNotifierProvider.notifier).clear();
-                    context.go('/');
-                  },
-                ),
-            ],
+    return TripCompleteView(
+      title: endedBySupport ? kSupportEndedTitle : 'Trip complete',
+      riderName: trip.riderName,
+      // A platform-paid end: the rider's fare is zero and means nothing to
+      // the driver, whose earning is in the panel below. Never show ₹0.
+      amount: endedBySupport && platformPaid ? null : exactMoney(_fare),
+      amountCaption: endedBySupport
+          ? (platformPaid ? null : 'Fare for the distance driven')
+          : 'Fare',
+      cashToCollect: needsCash ? exactMoney('$_cashAmount') : null,
+      paidLine: needsCash || platformPaid
+          ? null
+          : cash
+          ? 'Cash collected'
+          : 'Paid by ${paymentLabel(trip.paymentMethod)}',
+      facts: [
+        if (trip.distanceKm != null)
+          ('Distance', '${trip.distanceKm!.toStringAsFixed(1)} km'),
+        if (trip.durationMin != null)
+          ('Time', '${trip.durationMin!.round()} min'),
+        ('Payment', paymentLabel(trip.paymentMethod)),
+      ],
+      notes: [
+        if (endedBySupport && platformPaid)
+          TripNote(
+            key: const Key('summary_platform_paid'),
+            text: kSupportEndedPlatformPaid,
           ),
-        ),
-      ),
-    );
-  }
-
-  /// A rider promo SaaradhiGo paid on this trip: its own line, not the
-  /// driver's earnings and not something the rider owes in cash.
-  Widget _promoPaidLine() {
-    return GlassPanel(
-      key: const Key('summary_promo_paid'),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              'Promo paid by SaaradhiGo',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
-              ),
-            ),
+        if (isPositiveAmount(trip.promoDiscount))
+          TripNote(
+            key: const Key('summary_promo_paid'),
+            text: 'Promo paid by SaaradhiGo',
+            trailing: exactMoney(trip.promoDiscount),
           ),
-          Text(
-            '${marketSymbol()}${trip.promoDiscount}',
-            style: AppTypography.dataMono.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+        if (endedBySupport) _supportEarnings(),
+      ],
+      busy: session.actionInProgress,
+      onConfirmCash: _confirmCash,
+      // Rating the passenger: the only record that a rider was abusive or
+      // kept the driver waiting. An action, not a modal, so a driver with
+      // the next ride waiting is not held here.
+      onRate: _rated ? null : _ratePassenger,
+      onDone: () {
+        ref.read(tripSessionNotifierProvider.notifier).clear();
+        context.go('/');
+      },
     );
   }
 
@@ -274,79 +139,6 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
     } else {
       body = 'Your earnings for this trip will show in your earnings list.';
     }
-    return GlassPanel(
-      key: const Key('summary_support_earnings'),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline, color: AppColors.primary, size: 22),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              body,
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _cashReminder() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.primaryContainer.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-          color: AppColors.primaryContainer.withValues(alpha: 0.4),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.payments, color: AppColors.primary, size: 22),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              'Collect ${marketSymbol()}${_cashAmount.toStringAsFixed(2)} cash from the rider, '
-              'then confirm below.',
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onBackground,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _divider() => Container(
-    width: 1,
-    height: 36,
-    color: AppColors.outlineVariant.withValues(alpha: 0.2),
-  );
-
-  Widget _metric(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: AppTypography.labelCaps.copyWith(
-            color: AppColors.onSurfaceVariant,
-            fontSize: 10,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: AppTypography.bodyLg.copyWith(
-            color: AppColors.onBackground,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
+    return TripNote(key: const Key('summary_support_earnings'), text: body);
   }
 }

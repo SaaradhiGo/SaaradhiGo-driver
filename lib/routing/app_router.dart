@@ -8,7 +8,6 @@ import '../features/auth/presentation/providers/auth_notifier.dart';
 import '../features/auth/presentation/providers/auth_state.dart';
 import '../features/dashboard/presentation/driver_dashboard_screen.dart';
 import '../features/earnings/presentation/screens/earnings_dashboard_screen.dart';
-import '../features/dashboard/presentation/screens/messages_chat_screen.dart';
 import '../features/dashboard/presentation/screens/trip_history_screen.dart';
 import '../features/trip_history/presentation/screens/trip_details_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_licence_screen.dart';
@@ -213,14 +212,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/earnings',
                 builder: (context, state) => const EarningsDashboardScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/chat',
-                builder: (context, state) => const MessagesChatScreen(),
               ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:saaradhigo_driver/core/maps/placeholder_maps_provider.dart';
 import 'package:saaradhigo_driver/core/maps/sg_map.dart';
 import 'package:saaradhigo_driver/ui/driver_home_view.dart';
+import 'package:saaradhigo_driver/ui/driver_trip_views.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
@@ -84,3 +85,74 @@ const sampleOffer = <String, dynamic>{
   'vehicle_type': 'sedan',
   'payment_method': 'cash',
 };
+
+const _tripMap = SgMap(
+  provider: kPlaceholderMaps,
+  initialCenter: LatLng(17.44, 78.38),
+  markers: [
+    SgMarker(
+      id: 'me',
+      point: LatLng(17.44, 78.38),
+      icon: SgIconMarker(Icons.navigation_rounded, SgColors.gold500, size: 28),
+      anchor: Offset(0.5, 0.5),
+    ),
+  ],
+);
+
+/// Stand-in for the SOS hold button, which needs the app's providers.
+Widget sosStandIn() => const SizedBox(
+      width: 48,
+      height: 48,
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: SgColors.danger, shape: BoxShape.circle),
+        child: Center(child: Text('SOS')),
+      ),
+    );
+
+Widget toPickupFrame({VoidCallback? onArrived, VoidCallback? onCancel}) =>
+    DriverTripScaffold(
+      map: _tripMap,
+      topActions: sosStandIn(),
+      mapButton: NavigateButton(onTap: () {}),
+      sheet: ToPickupSheet(
+        riderName: 'Raja Kumar',
+        riderRating: 4.8,
+        pickupAddress: 'Ameerpet Metro Station, Gate 2',
+        awayLine: '1.2 km · 4 min',
+        onArrived: onArrived ?? () {},
+        onCancel: onCancel ?? () {},
+        onMessage: () {},
+      ),
+    );
+
+Widget inTripFrame({VoidCallback? onComplete}) => DriverTripScaffold(
+      map: _tripMap,
+      topActions: sosStandIn(),
+      mapButton: NavigateButton(onTap: () {}),
+      sheet: InTripSheet(
+        destination: 'Hitech City, Madhapur',
+        riderName: 'Raja Kumar',
+        leftLine: '8.4 km · 20 min',
+        fare: '₹248',
+        payment: 'Cash',
+        onComplete: onComplete ?? () {},
+      ),
+    );
+
+Widget completeFrame({bool cash = true, VoidCallback? onConfirmCash}) =>
+    TripCompleteView(
+      title: 'Trip complete',
+      riderName: 'Raja Kumar',
+      amount: '₹248',
+      amountCaption: 'Fare',
+      cashToCollect: cash ? '₹248' : null,
+      paidLine: cash ? null : 'Paid by UPI',
+      facts: [
+        ('Distance', '8.4 km'),
+        ('Time', '21 min'),
+        ('Payment', cash ? 'Cash' : 'UPI'),
+      ],
+      onConfirmCash: onConfirmCash ?? () {},
+      onDone: () {},
+      onRate: () {},
+    );

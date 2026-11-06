@@ -98,6 +98,56 @@ class SgSecondaryButton extends StatelessWidget {
       );
 }
 
+class InboxBell extends StatelessWidget {
+  const InboxBell({super.key, required this.unread, required this.onTap});
+
+  final int unread;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: unread > 0 ? 'Messages, $unread unread' : 'Messages',
+        child: GestureDetector(
+          key: const Key('home_inbox'),
+          onTap: onTap,
+          child: SizedBox(
+            width: kSgTouch,
+            height: kSgTouch,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: SgColors.bg100,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: SgColors.goldLine),
+                  ),
+                  child: const Center(
+                    child: SgIcon(SgIcons.bell, color: SgColors.ink),
+                  ),
+                ),
+                if (unread > 0)
+                  Positioned(
+                    top: 10,
+                    right: 11,
+                    child: Container(
+                      key: const Key('home_inbox_dot'),
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        color: SgColors.gold500,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: SgColors.bg100, width: 1.5),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
 class OnlinePill extends StatelessWidget {
   const OnlinePill({super.key, required this.label, required this.online});
 
@@ -144,6 +194,8 @@ class DriverHomeView extends StatelessWidget {
     required this.online,
     required this.statusLabel,
     required this.onMenu,
+    this.onInbox,
+    this.unread = 0,
     this.busy = false,
     this.earnings,
     this.trips,
@@ -161,6 +213,10 @@ class DriverHomeView extends StatelessWidget {
   final String statusLabel;
   final bool busy;
   final VoidCallback onMenu;
+
+  /// The bell: messages and notices (Messages left the tab bar in group E).
+  final VoidCallback? onInbox;
+  final int unread;
 
   /// Whole-rupee text, or null while it has not loaded.
   final String? earnings;
@@ -198,6 +254,10 @@ class DriverHomeView extends StatelessWidget {
                   ),
                 ),
               ),
+              if (onInbox != null) ...[
+                InboxBell(unread: unread, onTap: onInbox!),
+                const SizedBox(width: SgSpace.s2),
+              ],
               OnlinePill(label: statusLabel, online: online),
             ],
           ),

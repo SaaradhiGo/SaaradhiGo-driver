@@ -664,12 +664,12 @@ void main() {
           t,
           session: TripSessionState(trip: trip, status: TripStatus.completed),
         );
-        expect(find.text('Trip Completed'), findsOneWidget);
+        expect(find.text('Trip complete'), findsOneWidget);
         expect(find.byKey(const Key('summary_promo_paid')), findsOneWidget);
         expect(find.text('Promo paid by SaaradhiGo'), findsOneWidget);
-        expect(find.text('₹50.00'), findsOneWidget);
+        expect(find.text('₹50'), findsOneWidget);
         // The cash prompt is for what the rider pays, not the full fare.
-        expect(find.textContaining('Collect ₹150.00 cash'), findsOneWidget);
+        expect(find.textContaining('Collect ₹150 cash'), findsOneWidget);
         expect(find.byKey(const Key('summary_support_earnings')), findsNothing);
       },
     );
@@ -691,9 +691,9 @@ void main() {
           status: TripStatus.completed,
         ),
       );
-      expect(find.text('Trip Completed'), findsOneWidget);
+      expect(find.text('Trip complete'), findsOneWidget);
       expect(find.byKey(const Key('summary_promo_paid')), findsNothing);
-      expect(find.textContaining('Collect ₹200.00 cash'), findsOneWidget);
+      expect(find.textContaining('Collect ₹200 cash'), findsOneWidget);
     });
 
     testWidgets(
@@ -723,8 +723,8 @@ void main() {
         expect(find.text(platformFundedNoticeText), findsOneWidget);
         // The rider's zero fare is not shown as if it were the driver's earning.
         expect(find.byKey(const Key('summary_fare')), findsNothing);
-        expect(find.text('CONFIRM CASH COLLECTED'), findsNothing);
-        expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
+        expect(find.text('Cash collected'), findsNothing);
+        expect(find.text('Done'), findsOneWidget);
       },
     );
 
@@ -832,7 +832,7 @@ void main() {
         // Not the rider-cancellation wording or sheet.
         expect(find.text('Ride cancelled'), findsNothing);
         expect(find.textContaining('by the passenger'), findsNothing);
-        expect(find.text('BACK TO DASHBOARD'), findsOneWidget);
+        expect(find.text('Back to home'), findsOneWidget);
       },
     );
   });
