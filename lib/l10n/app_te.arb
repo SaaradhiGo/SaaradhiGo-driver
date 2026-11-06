@@ -219,5 +219,9 @@
   "pinTooMany": "చాలా ప్రయత్నాలు. {name} ని PIN మళ్లీ చదవమని అడగండి.",
   "@pinTooMany": {
     "description": "needs native review"
+  },
+  "homeJustStarted": "ఇప్పుడే మొదలైంది",
+  "@homeJustStarted": {
+    "description": "needs native review"
   }
 }

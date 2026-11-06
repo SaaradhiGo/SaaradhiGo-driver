@@ -23,10 +23,8 @@ String? wholeMoney(String? raw) {
   return '${value.round() < 0 ? '-' : ''}${market.currencySymbol}$grouped';
 }
 
-String _westernGroups(String d) => d.replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-      (_) => ',',
-    );
+String _westernGroups(String d) =>
+    d.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 
 String _indianGroups(String d) {
   if (d.length <= 3) return d;
@@ -40,11 +38,11 @@ String _indianGroups(String d) {
 }
 
 /// "1h 12m", "12m", "Just started".
-String onlineTimeLabel(Duration d) {
+String onlineTimeLabel(Duration d, {String justStarted = 'Just started'}) {
   final h = d.inHours, m = d.inMinutes % 60;
   if (h > 0) return '${h}h ${m}m';
   if (m > 0) return '${m}m';
-  return 'Just started';
+  return justStarted;
 }
 
 /// Why the driver cannot go online yet, with the one action that fixes it.
@@ -76,28 +74,28 @@ class SgSecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(SgRadius.md),
-        child: InkWell(
+    color: Colors.transparent,
+    borderRadius: BorderRadius.circular(SgRadius.md),
+    child: InkWell(
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      onTap: onPressed,
+      child: Container(
+        height: height,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s5),
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(SgRadius.md),
-          onTap: onPressed,
-          child: Container(
-            height: height,
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: SgSpace.s5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(SgRadius.md),
-              border: Border.all(color: SgColors.lineStrong),
-            ),
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: SgText.button.copyWith(color: SgColors.ink),
-            ),
-          ),
+          border: Border.all(color: SgColors.lineStrong),
         ),
-      );
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: SgText.button.copyWith(color: SgColors.ink),
+        ),
+      ),
+    ),
+  );
 }
 
 class InboxBell extends StatelessWidget {
@@ -114,46 +112,44 @@ class InboxBell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: unread > 0 ? '$label, $unread unread' : label,
-        child: GestureDetector(
-          key: const Key('home_inbox'),
-          onTap: onTap,
-          child: SizedBox(
-            width: kSgTouch,
-            height: kSgTouch,
-            child: Stack(
-              children: [
-                Container(
+    button: true,
+    label: unread > 0 ? '$label, $unread unread' : label,
+    child: GestureDetector(
+      key: const Key('home_inbox'),
+      onTap: onTap,
+      child: SizedBox(
+        width: kSgTouch,
+        height: kSgTouch,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: SgColors.bg100,
+                shape: BoxShape.circle,
+                border: Border.all(color: SgColors.goldLine),
+              ),
+              child: Center(child: SgIcon(SgIcons.bell, color: SgColors.ink)),
+            ),
+            if (unread > 0)
+              Positioned(
+                top: 10,
+                right: 11,
+                child: Container(
+                  key: const Key('home_inbox_dot'),
+                  width: 9,
+                  height: 9,
                   decoration: BoxDecoration(
-                    color: SgColors.bg100,
+                    color: SgColors.gold500,
                     shape: BoxShape.circle,
-                    border: Border.all(color: SgColors.goldLine),
-                  ),
-                  child: Center(
-                    child: SgIcon(SgIcons.bell, color: SgColors.ink),
+                    border: Border.all(color: SgColors.bg100, width: 1.5),
                   ),
                 ),
-                if (unread > 0)
-                  Positioned(
-                    top: 10,
-                    right: 11,
-                    child: Container(
-                      key: const Key('home_inbox_dot'),
-                      width: 9,
-                      height: 9,
-                      decoration: BoxDecoration(
-                        color: SgColors.gold500,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: SgColors.bg100, width: 1.5),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+              ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class OnlinePill extends StatelessWidget {
@@ -164,35 +160,35 @@ class OnlinePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: kSgTouch,
-        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
-        decoration: BoxDecoration(
-          color: SgColors.bg100,
-          borderRadius: BorderRadius.circular(SgRadius.pill),
-          border: Border.all(color: online ? SgColors.goldLine : SgColors.line),
+    height: kSgTouch,
+    padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
+    decoration: BoxDecoration(
+      color: SgColors.bg100,
+      borderRadius: BorderRadius.circular(SgRadius.pill),
+      border: Border.all(color: online ? SgColors.goldLine : SgColors.line),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: online ? SgColors.pickup : SgColors.lineStrong,
+          ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: online ? SgColors.pickup : SgColors.lineStrong,
-              ),
-            ),
-            const SizedBox(width: SgSpace.s2),
-            Text(
-              label,
-              style: SgText.body.copyWith(
-                fontWeight: FontWeight.w700,
-                color: online ? SgColors.ink : SgColors.inkMuted,
-              ),
-            ),
-          ],
+        const SizedBox(width: SgSpace.s2),
+        Text(
+          label,
+          style: SgText.body.copyWith(
+            fontWeight: FontWeight.w700,
+            color: online ? SgColors.ink : SgColors.inkMuted,
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 /// The driver home (Tier 3, screen 1): a noir earnings card at the top with
@@ -354,10 +350,9 @@ class DriverHomeView extends StatelessWidget {
                       TextSpan(text: statusLabel),
                       if (online && onlineFor != null)
                         TextSpan(
-                          text: '  · ${onlineTimeLabel(onlineFor!)}',
-                          style: SgText.body.copyWith(
-                            color: SgColors.inkMuted,
-                          ),
+                          text:
+                              '  · ${onlineTimeLabel(onlineFor!, justStarted: l.homeJustStarted)}',
+                          style: SgText.body.copyWith(color: SgColors.inkMuted),
                         ),
                     ],
                   ),
@@ -372,7 +367,11 @@ class DriverHomeView extends StatelessWidget {
                 ),
               ),
               if (onInbox != null)
-                InboxBell(unread: unread, onTap: onInbox!, label: l.homeMessages),
+                InboxBell(
+                  unread: unread,
+                  onTap: onInbox!,
+                  label: l.homeMessages,
+                ),
             ],
           ),
         ),
@@ -428,7 +427,10 @@ class GoldSymbolAmount extends StatelessWidget {
       TextSpan(
         children: [
           if (at > 0) TextSpan(text: amount.substring(0, at)),
-          TextSpan(text: symbol, style: TextStyle(color: symbolColor)),
+          TextSpan(
+            text: symbol,
+            style: TextStyle(color: symbolColor),
+          ),
           TextSpan(text: amount.substring(at + symbol.length)),
         ],
       ),
@@ -598,40 +600,40 @@ class _BlockerNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(SgSpace.s4),
-        decoration: BoxDecoration(
-          color: SgColors.bg200,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          border: Border.all(color: SgColors.line),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(blocker.title, style: SgText.title),
-            const SizedBox(height: SgSpace.s1),
-            Text(blocker.body, style: SgText.caption),
-            const SizedBox(height: SgSpace.s3),
-            InkWell(
-              onTap: blocker.onAction,
-              borderRadius: BorderRadius.circular(SgRadius.sm),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: kSgTouch),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    blocker.actionLabel,
-                    style: SgText.body.copyWith(
-                      color: SgColors.goldText,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+    padding: const EdgeInsets.all(SgSpace.s4),
+    decoration: BoxDecoration(
+      color: SgColors.bg200,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      border: Border.all(color: SgColors.line),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(blocker.title, style: SgText.title),
+        const SizedBox(height: SgSpace.s1),
+        Text(blocker.body, style: SgText.caption),
+        const SizedBox(height: SgSpace.s3),
+        InkWell(
+          onTap: blocker.onAction,
+          borderRadius: BorderRadius.circular(SgRadius.sm),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: kSgTouch),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                blocker.actionLabel,
+                style: SgText.body.copyWith(
+                  color: SgColors.goldText,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 /// A calm notice above the sheet (reconnecting, weak GPS), with an optional
@@ -645,45 +647,45 @@ class HomeNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(bottom: SgSpace.s2),
-        padding: const EdgeInsets.symmetric(
-          horizontal: SgSpace.s4,
-          vertical: SgSpace.s1,
+    margin: const EdgeInsets.only(bottom: SgSpace.s2),
+    padding: const EdgeInsets.symmetric(
+      horizontal: SgSpace.s4,
+      vertical: SgSpace.s1,
+    ),
+    constraints: const BoxConstraints(minHeight: kSgTouch),
+    decoration: BoxDecoration(
+      color: SgColors.bgGlass,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      border: Border.all(color: SgColors.line),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            text,
+            style: SgText.caption.copyWith(color: SgColors.ink),
+          ),
         ),
-        constraints: const BoxConstraints(minHeight: kSgTouch),
-        decoration: BoxDecoration(
-          color: SgColors.bgGlass,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          border: Border.all(color: SgColors.line),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                text,
-                style: SgText.caption.copyWith(color: SgColors.ink),
+        if (actionLabel != null)
+          InkWell(
+            onTap: onAction,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: kSgTouch,
+                minWidth: kSgTouch,
               ),
-            ),
-            if (actionLabel != null)
-              InkWell(
-                onTap: onAction,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: kSgTouch,
-                    minWidth: kSgTouch,
-                  ),
-                  child: Center(
-                    child: Text(
-                      actionLabel!,
-                      style: SgText.body.copyWith(
-                        color: SgColors.goldText,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+              child: Center(
+                child: Text(
+                  actionLabel!,
+                  style: SgText.body.copyWith(
+                    color: SgColors.goldText,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-          ],
-        ),
-      );
+            ),
+          ),
+      ],
+    ),
+  );
 }

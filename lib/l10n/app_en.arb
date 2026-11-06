@@ -278,5 +278,9 @@
         "type": "String"
       }
     }
+  },
+  "homeJustStarted": "Just started",
+  "@homeJustStarted": {
+    "description": "Online time under a minute"
   }
 }
