@@ -57,12 +57,6 @@ class AppBottomNav extends StatelessWidget {
       label: 'Earnings',
     ),
     AppBottomNavItemData(
-      route: '/chat',
-      icon: Icons.chat_bubble_outline_rounded,
-      activeIcon: Icons.chat_bubble_rounded,
-      label: 'Messages',
-    ),
-    AppBottomNavItemData(
       route: '/profile',
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,

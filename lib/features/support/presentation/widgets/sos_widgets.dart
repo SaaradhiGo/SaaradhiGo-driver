@@ -6,6 +6,8 @@ import '../../../../core/location/location_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../providers/support_providers.dart';
+import '../../../../ui/sg_tokens.dart';
+import '../../../../ui/sg_widgets.dart';
 import 'hold_to_send.dart';
 
 /// Raises an SOS alert at the driver's last known coordinates.
@@ -183,15 +185,11 @@ class TripChatButton extends ConsumerWidget {
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.surfaceContainerHigh.withValues(alpha: 0.9),
-            border: Border.all(
-              color: AppColors.primaryContainer.withValues(alpha: 0.5),
-            ),
+            color: SgColors.bg100,
+            border: Border.all(color: SgColors.goldLine),
           ),
-          child: Icon(
-            Icons.chat_bubble_rounded,
-            color: AppColors.primary,
-            size: iconSize,
+          child: Center(
+            child: SgIcon(SgIcons.message, size: iconSize, color: SgColors.ink),
           ),
         ),
       ),

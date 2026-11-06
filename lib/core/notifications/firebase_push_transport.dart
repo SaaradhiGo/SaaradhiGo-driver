@@ -11,6 +11,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../utils/app_logger.dart';
@@ -205,6 +206,10 @@ class FirebasePushTransport implements PushTransport {
             priority: Priority.high,
             category: AndroidNotificationCategory.call,
             ticker: 'New ride request',
+            // With the app open the offer card chimes itself; one sound.
+            silent:
+                WidgetsBinding.instance.lifecycleState ==
+                AppLifecycleState.resumed,
           ),
         ),
         payload: '${offer.tripId}',

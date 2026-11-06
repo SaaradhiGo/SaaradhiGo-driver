@@ -70,8 +70,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
       }
 
+      // Home is rebuilt on the way back from a trip, so today's figure is
+      // fetched again rather than kept from before the trip.
+      final earnings = ref.read(earningsNotifierProvider.notifier);
       if (ref.read(earningsNotifierProvider).summary == null) {
-        ref.read(earningsNotifierProvider.notifier).loadInitialData();
+        earnings.loadInitialData();
+      } else {
+        earnings.refresh();
       }
 
       _subscribeToRideRequests();
@@ -154,8 +159,10 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final request = DriverLocationRideRequest(offer.payload);
     final coordinator = ref.read(rideOfferCoordinatorProvider);
 
+    // The root navigator, so the card covers the tab bar as well.
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       enableDrag: false,
       backgroundColor: SgColors.bg000,
@@ -309,6 +316,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             const HomeNotice('Finding your location'),
         ],
         onMenu: _showMenu,
+        onInbox: () => context.push('/notifications'),
+        unread: ref.watch(unreadNotificationsCountProvider),
         onEarnings: () => context.push('/earnings'),
         onGoOnline: canStart ? () => _toggle(availability) : null,
         onGoOffline: () => _toggle(availability),
@@ -376,10 +385,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   }
 
   void _showMenu() {
-    final unread = ref.read(unreadNotificationsCountProvider);
+    // Notifications are the bell on Home now, not a menu row.
     final items = <(String, String, String?)>[
       ('Profile', '/profile', null),
-      ('Notifications', '/notifications', unread > 0 ? '$unread' : null),
       ('Vehicle', '/vehicle', null),
       ('Documents', '/documents', null),
       ('Rewards', '/incentives', null),

@@ -6,10 +6,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../core/maps/sg_map.dart';
+import '../core/notifications/offer_alert.dart';
 import '../core/market/market_config_store.dart';
 import '../domain/models/trip_model.dart';
 import 'driver_home_view.dart';
@@ -165,8 +165,8 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
     _total = math.max(1, until ?? widget.timeoutSeconds);
     _remaining = _total;
     if (widget.alert) {
-      SystemSound.play(SystemSoundType.alert);
-      HapticFeedback.heavyImpact();
+      // Sound and vibration as the phone's ringer and silent mode allow.
+      unawaited(const OfferAlert().play());
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) return;

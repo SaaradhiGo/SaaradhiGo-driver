@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
-import '../../../../shared/widgets/buttons.dart';
+import '../../../../ui/sg_text.dart';
+import '../../../../ui/sg_tokens.dart';
+import '../../../../ui/sg_widgets.dart';
 import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/ride_cancelled_bottom_sheet.dart';
@@ -107,7 +106,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
   ) {
     if (session.takenByOther) {
       return const _TripEndedView(
-        icon: Icons.directions_car_filled_rounded,
+        icon: SgIcons.pin,
         title: 'Ride taken',
         message: 'This ride was accepted by another driver.',
       );
@@ -122,7 +121,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       // available" above "you have reached the 12-hour daily limit". The
       // ride was available; the driver was locked out.
       return _TripEndedView(
-        icon: Icons.timer_off_rounded,
+        icon: SgIcons.clock,
         title: session.refusedByBackend
             ? 'You cannot take this ride'
             : 'Ride no longer available',
@@ -133,47 +132,10 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
 
     final trip = session.trip;
     if (trip == null) {
-      return Scaffold(
-        backgroundColor: AppColors.background,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.margin),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.check_circle_outline_rounded,
-                  color: AppColors.onSurfaceVariant,
-                  size: 64,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'No Active Trip',
-                  style: AppTypography.headlineSm.copyWith(
-                    color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'There is no active trip currently assigned.',
-                  style: AppTypography.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                PrimaryButton(
-                  text: 'BACK TO DASHBOARD',
-                  onPressed: () {
-                    ref.read(availabilityNotifierProvider.notifier).goOnline();
-                    context.go('/');
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+      return const _TripEndedView(
+        icon: SgIcons.check,
+        title: 'No active trip',
+        message: 'There is no trip assigned to you right now.',
       );
     }
 
@@ -183,7 +145,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       case TripStatus.cancelled:
         if (session.releasedBySupport) {
           return const _TripEndedView(
-            icon: Icons.support_agent_rounded,
+            icon: SgIcons.help,
             title: kSupportReleasedTitle,
             message:
                 'SaaradhiGo support cancelled this trip. You are free to take '
@@ -191,7 +153,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
           );
         }
         return _TripEndedView(
-          icon: Icons.cancel_rounded,
+          icon: SgIcons.close,
           title: 'Ride cancelled',
           message: 'This ride has been cancelled by the passenger.',
           reason: session.cancellationReason,
@@ -224,19 +186,21 @@ class _TripLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: SgColors.bg000,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(color: AppColors.primary),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              message,
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.onSurfaceVariant,
+            const SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                color: SgColors.gold500,
+                strokeWidth: 2,
               ),
             ),
+            const SizedBox(height: SgSpace.s4),
+            Text(message, style: SgText.body.copyWith(color: SgColors.inkMuted)),
           ],
         ),
       ),
@@ -252,7 +216,7 @@ class _TripEndedView extends ConsumerWidget {
     this.reason,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String message;
   final String? reason;
@@ -264,33 +228,39 @@ class _TripEndedView extends ConsumerWidget {
         : message;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: SgColors.bg000,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.margin),
+          padding: const EdgeInsets.all(SgSpace.s4),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(icon, color: AppColors.onSurfaceVariant, size: 64),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                title,
-                style: AppTypography.headlineMd.copyWith(
-                  color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
+              const Spacer(),
+              Center(
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: SgColors.bg100,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: SgColors.line),
+                  ),
+                  child: Center(
+                    child: SgIcon(icon, size: 30, color: SgColors.ink),
+                  ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: SgSpace.s5),
+              Text(title, textAlign: TextAlign.center, style: SgText.heading),
+              const SizedBox(height: SgSpace.s2),
               Text(
                 effectiveMsg,
                 textAlign: TextAlign.center,
-                style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
+                style: SgText.body.copyWith(color: SgColors.inkMuted),
               ),
-              const SizedBox(height: AppSpacing.lg),
-              PrimaryButton(
-                text: 'BACK TO DASHBOARD',
+              const Spacer(),
+              SgPrimaryButton(
+                label: 'Back to home',
                 onPressed: () {
                   ref.read(tripSessionNotifierProvider.notifier).clear();
                   ref.read(availabilityNotifierProvider.notifier).goOnline();

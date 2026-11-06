@@ -1,3 +1,4 @@
+import AudioToolbox
 import Flutter
 import GoogleMaps
 import UIKit
@@ -18,6 +19,19 @@ import UIKit
       GMSServices.provideAPIKey(key)
     }
     GeneratedPluginRegistrant.register(with: self)
+    // The offer chime. An alert sound follows the silent switch: it buzzes
+    // instead of playing when the phone is on silent.
+    if let controller = window?.rootViewController as? FlutterViewController {
+      FlutterMethodChannel(name: "saaradhigo/alert", binaryMessenger: controller.binaryMessenger)
+        .setMethodCallHandler { call, result in
+          if call.method == "offer" {
+            AudioServicesPlayAlertSound(SystemSoundID(1007))
+            result(nil)
+          } else {
+            result(FlutterMethodNotImplemented)
+          }
+        }
+    }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
