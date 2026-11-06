@@ -204,7 +204,7 @@ class _EarningsDashboardScreenState
                 ),
                 const SizedBox(height: AppSpacing.unit),
                 Text(
-                  ledgerMoney(summary?.totalEarned),
+                  summaryMoney(summary?.totalEarned),
                   style: AppTypography.displayLg.copyWith(
                     fontSize: 44,
                     height: 52 / 44,
@@ -218,7 +218,7 @@ class _EarningsDashboardScreenState
                     _figure('Trips', '${summary?.totalTrips ?? 0}'),
                     if (net != null) ...[
                       const SizedBox(width: AppSpacing.lg),
-                      _figure('After commission', ledgerMoney(net)),
+                      _figure('After commission', summaryMoney(net)),
                     ],
                   ],
                 ),
@@ -272,7 +272,7 @@ class _EarningsDashboardScreenState
                 Expanded(
                   child: _buildStatBox(
                     Icons.route,
-                    '${marketSymbol()}$avgPerTrip',
+                    summaryMoney(avgPerTrip),
                     'Avg / Trip',
                   ),
                 ),
@@ -286,7 +286,7 @@ class _EarningsDashboardScreenState
                 Expanded(
                   child: _buildStatBox(
                     Icons.percent,
-                    '${marketSymbol()}$commission',
+                    summaryMoney(commission),
                     rateLabel == null
                         ? 'Commission'
                         : 'Commission ($rateLabel)',

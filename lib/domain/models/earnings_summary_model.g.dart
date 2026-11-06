@@ -27,6 +27,8 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
     json['commission_percent_mixed'],
   ),
   totalNet: nullableMoneyFromJson(json['total_net']),
+  todayNet: nullableMoneyFromJson(json['today_net']),
+  todayCommission: nullableMoneyFromJson(json['today_commission']),
   promoPaidByPlatform: nullableMoneyFromJson(json['promo_paid_by_platform']),
   todayPromoPaidByPlatform: nullableMoneyFromJson(
     json['today_promo_paid_by_platform'],
@@ -61,6 +63,8 @@ Map<String, dynamic> _$EarningsSummaryModelToJson(
   'commission_percent': instance.commissionPercent,
   'commission_percent_mixed': instance.commissionPercentMixed,
   'total_net': instance.totalNet,
+  'today_net': instance.todayNet,
+  'today_commission': instance.todayCommission,
   'promo_paid_by_platform': instance.promoPaidByPlatform,
   'today_promo_paid_by_platform': instance.todayPromoPaidByPlatform,
   'promo_paid_label': instance.promoPaidLabel,

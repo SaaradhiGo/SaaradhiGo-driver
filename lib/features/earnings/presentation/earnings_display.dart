@@ -92,3 +92,14 @@ String _indian(String d) {
   );
   return '$groups,${d.substring(d.length - 3)}';
 }
+
+/// Summary figures are whole currency, rounded half up ("₹1,151"); paise
+/// stay on ledger and payout detail lines ([ledgerMoney]).
+String summaryMoney(String? raw, {String? symbol}) {
+  final value = double.tryParse(
+        (raw ?? '0').replaceAll(RegExp(r'[^0-9.\-]'), ''),
+      ) ??
+      0;
+  final whole = value < 0 ? -((-value) + 0.5).floor() : (value + 0.5).floor();
+  return ledgerMoney('$whole', symbol: symbol);
+}

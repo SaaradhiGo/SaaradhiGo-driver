@@ -296,7 +296,17 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           _ => 'Offline',
         },
         busy: availability is AvailabilityStateGoingOffline,
-        earnings: summary == null ? null : wholeMoney(summary.todayEarned),
+        // Net with commission beside it; gross only from an older API.
+        earnings: summary == null
+            ? null
+            : wholeMoney(
+                (summary.todayCommission == null ? null : summary.todayNet) ??
+                    summary.todayEarned,
+              ),
+        commission:
+            summary?.todayNet == null || summary?.todayCommission == null
+            ? null
+            : wholeMoney(summary!.todayCommission),
         trips: summary?.todayTrips,
         onlineFor: switch (availability) {
           AvailabilityStateOnline(:final since) =>
