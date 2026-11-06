@@ -39,5 +39,185 @@
   "brandLogoLabel": "Saaradhi Go",
   "@brandLogoLabel": {
     "description": "needs native review"
+  },
+  "commonPleaseWait": "దయచేసి ఆగండి",
+  "@commonPleaseWait": {
+    "description": "needs native review"
+  },
+  "commonMenu": "మెనూ",
+  "@commonMenu": {
+    "description": "needs native review"
+  },
+  "commonSafety": "భద్రత",
+  "@commonSafety": {
+    "description": "needs native review"
+  },
+  "commonMinutes": "{n} ని.",
+  "@commonMinutes": {
+    "description": "needs native review"
+  },
+  "riderFallback": "రైడర్",
+  "@riderFallback": {
+    "description": "needs native review"
+  },
+  "payCash": "నగదు",
+  "@payCash": {
+    "description": "needs native review"
+  },
+  "payOnline": "ఆన్‌లైన్",
+  "@payOnline": {
+    "description": "needs native review"
+  },
+  "homeTodayTrips": "{count, plural, other{ఈరోజు · {count} ట్రిప్‌లు}}",
+  "@homeTodayTrips": {
+    "description": "needs native review"
+  },
+  "homeToday": "ఈరోజు",
+  "@homeToday": {
+    "description": "needs native review"
+  },
+  "homeYouKeep": "మీకు మిగిలేది",
+  "@homeYouKeep": {
+    "description": "needs native review"
+  },
+  "homeTodaysEarnings": "ఈరోజు సంపాదన",
+  "@homeTodaysEarnings": {
+    "description": "needs native review"
+  },
+  "homeCommission": "కమీషన్",
+  "@homeCommission": {
+    "description": "needs native review"
+  },
+  "homeOpenEarnings": "సంపాదన తెరవండి",
+  "@homeOpenEarnings": {
+    "description": "needs native review"
+  },
+  "statusOnline": "ఆన్‌లైన్",
+  "@statusOnline": {
+    "description": "needs native review"
+  },
+  "statusOffline": "ఆఫ్‌లైన్",
+  "@statusOffline": {
+    "description": "needs native review"
+  },
+  "statusGoingOnline": "ఆన్‌లైన్ అవుతోంది",
+  "@statusGoingOnline": {
+    "description": "needs native review"
+  },
+  "statusGoingOffline": "ఆఫ్‌లైన్ అవుతోంది",
+  "@statusGoingOffline": {
+    "description": "needs native review"
+  },
+  "statusReconnecting": "మళ్లీ కనెక్ట్ అవుతోంది",
+  "@statusReconnecting": {
+    "description": "needs native review"
+  },
+  "homeLooking": "మీ దగ్గర రైడ్‌ల కోసం చూస్తోంది",
+  "@homeLooking": {
+    "description": "needs native review"
+  },
+  "homeGoOnline": "ఆన్‌లైన్‌కి వెళ్లండి",
+  "@homeGoOnline": {
+    "description": "needs native review"
+  },
+  "homeGoOffline": "ఆఫ్‌లైన్‌కి వెళ్లండి",
+  "@homeGoOffline": {
+    "description": "needs native review"
+  },
+  "homeCentreOnMe": "నా స్థానం చూపు",
+  "@homeCentreOnMe": {
+    "description": "needs native review"
+  },
+  "homeMessages": "సందేశాలు",
+  "@homeMessages": {
+    "description": "needs native review"
+  },
+  "offerSecondsLeft": "{seconds} సె. మిగిలింది",
+  "@offerSecondsLeft": {
+    "description": "needs native review"
+  },
+  "offerYouEarn": "మీ సంపాదన",
+  "@offerYouEarn": {
+    "description": "needs native review"
+  },
+  "offerFare": "ఛార్జీ",
+  "@offerFare": {
+    "description": "needs native review"
+  },
+  "offerFareLine": "ఛార్జీ {fare} − {percent}% కమీషన్ {commission}",
+  "@offerFareLine": {
+    "description": "needs native review"
+  },
+  "offerToPickup": "పికప్‌కి",
+  "@offerToPickup": {
+    "description": "needs native review"
+  },
+  "offerTrip": "ట్రిప్",
+  "@offerTrip": {
+    "description": "needs native review"
+  },
+  "offerRiderPays": "రైడర్ చెల్లింపు",
+  "@offerRiderPays": {
+    "description": "needs native review"
+  },
+  "offerPickup": "పికప్",
+  "@offerPickup": {
+    "description": "needs native review"
+  },
+  "offerDrop": "డ్రాప్",
+  "@offerDrop": {
+    "description": "needs native review"
+  },
+  "offerAccept": "అంగీకరించు",
+  "@offerAccept": {
+    "description": "needs native review"
+  },
+  "offerDecline": "తిరస్కరించు",
+  "@offerDecline": {
+    "description": "needs native review"
+  },
+  "offerExpired": "ఆఫర్ గడువు ముగిసింది",
+  "@offerExpired": {
+    "description": "needs native review"
+  },
+  "offerRiderRating": "రైడర్ {rating}",
+  "@offerRiderRating": {
+    "description": "needs native review"
+  },
+  "pinAtPickup": "పికప్ వద్ద",
+  "@pinAtPickup": {
+    "description": "needs native review"
+  },
+  "pinAsk": "{name} ని ట్రిప్ PIN అడగండి",
+  "@pinAsk": {
+    "description": "needs native review"
+  },
+  "pinStartTrip": "ట్రిప్ ప్రారంభించు",
+  "@pinStartTrip": {
+    "description": "needs native review"
+  },
+  "tripCancelRide": "రైడ్ రద్దు చేయి",
+  "@tripCancelRide": {
+    "description": "needs native review"
+  },
+  "pinMessage": "{name} కి మెసేజ్",
+  "@pinMessage": {
+    "description": "needs native review"
+  },
+  "pinDeleteDigit": "అంకె తొలగించు",
+  "@pinDeleteDigit": {
+    "description": "needs native review"
+  },
+  "pinDigits": "ట్రిప్ PIN, {length} లో {typed} అంకెలు",
+  "@pinDigits": {
+    "description": "needs native review"
+  },
+  "pinMismatch": "PIN సరిపోలలేదు. {name} ని మళ్లీ అడగండి.",
+  "@pinMismatch": {
+    "description": "needs native review"
+  },
+  "pinTooMany": "చాలా ప్రయత్నాలు. {name} ని PIN మళ్లీ చదవమని అడగండి.",
+  "@pinTooMany": {
+    "description": "needs native review"
   }
 }

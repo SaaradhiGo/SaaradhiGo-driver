@@ -39,5 +39,244 @@
   "brandLogoLabel": "Saaradhi Go",
   "@brandLogoLabel": {
     "description": "Screen-reader label for the logo; brand name, not translated"
+  },
+  "commonPleaseWait": "Please wait",
+  "@commonPleaseWait": {
+    "description": "Button label while a request runs"
+  },
+  "commonMenu": "Menu",
+  "@commonMenu": {
+    "description": "Screen-reader label for the menu button"
+  },
+  "commonSafety": "Safety",
+  "@commonSafety": {
+    "description": "Red Safety button on Home"
+  },
+  "commonMinutes": "{n} min",
+  "@commonMinutes": {
+    "description": "A duration in whole minutes",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "riderFallback": "the rider",
+  "@riderFallback": {
+    "description": "Stands in for the rider's name when it is unknown"
+  },
+  "payCash": "Cash",
+  "@payCash": {
+    "description": "Payment method: cash"
+  },
+  "payOnline": "Online",
+  "@payOnline": {
+    "description": "Payment method: paid in the app"
+  },
+  "homeTodayTrips": "{count, plural, =1{Today · 1 trip} other{Today · {count} trips}}",
+  "@homeTodayTrips": {
+    "description": "Earnings card heading",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeToday": "Today",
+  "@homeToday": {
+    "description": "Earnings card heading before trips load"
+  },
+  "homeYouKeep": "You keep",
+  "@homeYouKeep": {
+    "description": "Today's net earnings, after commission"
+  },
+  "homeTodaysEarnings": "Today's earnings",
+  "@homeTodaysEarnings": {
+    "description": "Today's gross earnings (older API)"
+  },
+  "homeCommission": "Commission",
+  "@homeCommission": {
+    "description": "Today's commission label"
+  },
+  "homeOpenEarnings": "Open earnings",
+  "@homeOpenEarnings": {
+    "description": "Screen-reader hint on the earnings card"
+  },
+  "statusOnline": "Online",
+  "@statusOnline": {
+    "description": "Driver status"
+  },
+  "statusOffline": "Offline",
+  "@statusOffline": {
+    "description": "Driver status"
+  },
+  "statusGoingOnline": "Going online",
+  "@statusGoingOnline": {
+    "description": "Driver status"
+  },
+  "statusGoingOffline": "Going offline",
+  "@statusGoingOffline": {
+    "description": "Driver status"
+  },
+  "statusReconnecting": "Reconnecting",
+  "@statusReconnecting": {
+    "description": "Driver status"
+  },
+  "homeLooking": "Looking for rides near you",
+  "@homeLooking": {
+    "description": "Calm line while online"
+  },
+  "homeGoOnline": "Go online",
+  "@homeGoOnline": {
+    "description": "Primary action on Home"
+  },
+  "homeGoOffline": "Go offline",
+  "@homeGoOffline": {
+    "description": "Action on Home while online"
+  },
+  "homeCentreOnMe": "Centre on me",
+  "@homeCentreOnMe": {
+    "description": "Map button"
+  },
+  "homeMessages": "Messages",
+  "@homeMessages": {
+    "description": "Screen-reader label for the bell"
+  },
+  "offerSecondsLeft": "{seconds}s left",
+  "@offerSecondsLeft": {
+    "description": "Offer countdown",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "offerYouEarn": "You earn",
+  "@offerYouEarn": {
+    "description": "The driver's earning on the offer"
+  },
+  "offerFare": "Fare",
+  "@offerFare": {
+    "description": "The trip fare"
+  },
+  "offerFareLine": "Fare {fare} − {percent}% commission {commission}",
+  "@offerFareLine": {
+    "description": "How the earning follows from the fare",
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "commission": {
+        "type": "String"
+      }
+    }
+  },
+  "offerToPickup": "To pickup",
+  "@offerToPickup": {
+    "description": "Offer tile: distance to the rider"
+  },
+  "offerTrip": "Trip",
+  "@offerTrip": {
+    "description": "Offer tile: the trip itself"
+  },
+  "offerRiderPays": "Rider pays",
+  "@offerRiderPays": {
+    "description": "Offer tile: payment method"
+  },
+  "offerPickup": "Pickup",
+  "@offerPickup": {
+    "description": "Pickup place label"
+  },
+  "offerDrop": "Drop",
+  "@offerDrop": {
+    "description": "Drop place label"
+  },
+  "offerAccept": "Accept",
+  "@offerAccept": {
+    "description": "Accept the ride"
+  },
+  "offerDecline": "Decline",
+  "@offerDecline": {
+    "description": "Decline the ride"
+  },
+  "offerExpired": "Offer expired",
+  "@offerExpired": {
+    "description": "The offer ran out"
+  },
+  "offerRiderRating": "Rider {rating}",
+  "@offerRiderRating": {
+    "description": "The rider's rating on the offer",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "pinAtPickup": "At pickup",
+  "@pinAtPickup": {
+    "description": "PIN screen status"
+  },
+  "pinAsk": "Ask {name} for the trip PIN",
+  "@pinAsk": {
+    "description": "PIN screen heading",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinStartTrip": "Start trip",
+  "@pinStartTrip": {
+    "description": "Start the trip once the PIN is in"
+  },
+  "tripCancelRide": "Cancel ride",
+  "@tripCancelRide": {
+    "description": "Quiet cancel link"
+  },
+  "pinMessage": "Message {name}",
+  "@pinMessage": {
+    "description": "Message button on the rider row",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinDeleteDigit": "Delete digit",
+  "@pinDeleteDigit": {
+    "description": "Keypad backspace"
+  },
+  "pinDigits": "Trip PIN, {typed} of {length} digits",
+  "@pinDigits": {
+    "description": "Screen-reader label for the PIN boxes",
+    "placeholders": {
+      "typed": {
+        "type": "int"
+      },
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "pinMismatch": "That PIN does not match. Ask {name} again.",
+  "@pinMismatch": {
+    "description": "Calm refusal of a wrong PIN",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinTooMany": "Too many tries. Ask {name} to read the PIN again.",
+  "@pinTooMany": {
+    "description": "Too many wrong PINs",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

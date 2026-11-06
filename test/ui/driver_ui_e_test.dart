@@ -85,11 +85,12 @@ void main() {
   });
 
   group('PIN check', () {
+    late TextEditingController c;
     Future<TextEditingController> pump(WidgetTester tester,
-        {String? error, VoidCallback? onStart}) async {
+        {String? error, VoidCallback? onStart, VoidCallback? onMessage}) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
-      final c = TextEditingController();
+      c = TextEditingController();
       addTearDown(c.dispose);
       await tester.pumpWidget(sgApp(StatefulBuilder(
         builder: (context, setState) => PinCheckView(
@@ -99,26 +100,49 @@ void main() {
           error: error,
           onStart: onStart ?? () {},
           onCancel: () {},
+          onMessage: onMessage,
           onChanged: (_) => setState(() {}),
         ),
       )));
       return c;
     }
 
-    testWidgets('Start stays off until all six digits are in', (tester) async {
+    testWidgets('Start stays off until all six digits are in',
+        (tester) async {
       var started = 0;
       await pump(tester, onStart: () => started++);
       expect(find.text('Ask Raja for the trip PIN'), findsOneWidget);
+      expect(find.text('At pickup'), findsOneWidget);
       expect(find.byKey(const Key('pin_box_5')), findsOneWidget);
-      await tester.enterText(find.byKey(const Key('trip_pin_field')), '1234');
+      expect(find.byKey(const Key('pin_box_6')), findsNothing);
+      expect(tester.getSize(find.byKey(const Key('pin_box_0'))).height, 72);
+      expect(tester.getSize(find.byKey(const Key('pin_key_1'))).height, 64);
+      expect(tester.getSize(find.byKey(const Key('trip_start'))).height, 72);
+      for (final d in '1234'.split('')) {
+        await tester.tap(find.byKey(Key('pin_key_$d')));
+      }
       await tester.pump();
       await tester.tap(find.text('Start trip'));
       expect(started, 0);
-      await tester.enterText(
-          find.byKey(const Key('trip_pin_field')), '123456');
+      await tester.tap(find.byKey(const Key('pin_key_5')));
+      await tester.tap(find.byKey(const Key('pin_key_delete')));
+      await tester.tap(find.byKey(const Key('pin_key_5')));
+      await tester.tap(find.byKey(const Key('pin_key_6')));
+      await tester.tap(find.byKey(const Key('pin_key_7')));
       await tester.pump();
+      expect(c.text, '123456');
       await tester.tap(find.text('Start trip'));
       expect(started, 1);
+    });
+
+    testWidgets('the rider row carries a 56px message button',
+        (tester) async {
+      var messaged = 0;
+      await pump(tester, onMessage: () => messaged++);
+      expect(tester.getSize(find.byKey(const Key('trip_message'))),
+          const Size(56, 56));
+      await tester.tap(find.byKey(const Key('trip_message')));
+      expect(messaged, 1);
     });
 
     testWidgets('a wrong PIN says so calmly', (tester) async {

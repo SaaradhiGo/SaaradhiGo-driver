@@ -14,6 +14,7 @@ import '../../../core/utils/app_logger.dart';
 import '../../../domain/models/trip_model.dart';
 import '../../../ui/driver_home_view.dart';
 import '../../../ui/incoming_offer_card.dart';
+import '../../../ui/sg_l10n.dart';
 import '../../../ui/sg_text.dart';
 import '../../../ui/sg_tokens.dart';
 import '../../../ui/sg_widgets.dart';
@@ -269,6 +270,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       _ => false,
     };
 
+    final l = sgL10n(context);
     return Scaffold(
       backgroundColor: SgColors.bg000,
       body: DriverHomeView(
@@ -289,11 +291,11 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         ),
         online: engaged,
         statusLabel: switch (availability) {
-          AvailabilityStateOnline() => 'Online',
-          AvailabilityStateGoingOnline() => 'Going online',
-          AvailabilityStateReconnecting() => 'Reconnecting',
-          AvailabilityStateGoingOffline() => 'Going offline',
-          _ => 'Offline',
+          AvailabilityStateOnline() => l.statusOnline,
+          AvailabilityStateGoingOnline() => l.statusGoingOnline,
+          AvailabilityStateReconnecting() => l.statusReconnecting,
+          AvailabilityStateGoingOffline() => l.statusGoingOffline,
+          _ => l.statusOffline,
         },
         busy: availability is AvailabilityStateGoingOffline,
         // Net with commission beside it; gross only from an older API.
@@ -326,6 +328,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             const HomeNotice('Finding your location'),
         ],
         onMenu: _showMenu,
+        onSafety: () => context.push('/safety'),
         onInbox: () => context.push('/notifications'),
         unread: ref.watch(unreadNotificationsCountProvider),
         onEarnings: () => context.push('/earnings'),
@@ -333,7 +336,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         onGoOffline: () => _toggle(availability),
         mapButton: SgMapButton(
           icon: SgIcons.pin,
-          label: 'Centre on me',
+          label: l.homeCentreOnMe,
           onTap: position == null ? () {} : _recenter,
         ),
       ),

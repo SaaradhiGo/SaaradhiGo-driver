@@ -67,6 +67,8 @@ Widget homeFrame({
       onlineFor: online ? const Duration(hours: 1, minutes: 12) : null,
       blocker: blocker,
       onMenu: () {},
+      onSafety: () {},
+      onInbox: () {},
       onEarnings: () {},
       onGoOnline: onGoOnline ?? () {},
       onGoOffline: onGoOffline ?? () {},
@@ -89,6 +91,15 @@ const sampleOffer = <String, dynamic>{
   'pickup_eta_min': 4,
   'vehicle_type': 'sedan',
   'payment_method': 'cash',
+};
+
+/// The offer as the backend sends it once it carries the driver's earning.
+const sampleOfferWithEarning = <String, dynamic>{
+  ...sampleOffer,
+  'earning': '198.24',
+  'commission_rate': '20.00',
+  'commission_amount': '49.56',
+  'rider_rating': 4.8,
 };
 
 final _tripMap = SgMap(

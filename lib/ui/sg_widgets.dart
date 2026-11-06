@@ -88,9 +88,17 @@ class SgMapButton extends StatelessWidget {
 
 /// The one gold button on a screen.
 class SgPrimaryButton extends StatelessWidget {
-  const SgPrimaryButton({super.key, required this.label, required this.onPressed});
+  const SgPrimaryButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.height = 56,
+  });
   final String label;
   final VoidCallback? onPressed;
+
+  /// 56 by default; the driver's primary actions are 72-80.
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +110,7 @@ class SgPrimaryButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(SgRadius.md),
         onTap: onPressed,
         child: Container(
-          height: 56,
+          height: height,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: SgSpace.s5),
           child: Text(
@@ -112,6 +120,8 @@ class SgPrimaryButton extends StatelessWidget {
             style: SgText.button.copyWith(
               color: on ? SgColors.onGold : SgColors.inkSubtle,
               letterSpacing: 0.3,
+              fontSize: height >= 72 ? 20 : null,
+              height: height >= 72 ? 24 / 20 : null,
             ),
           ),
         ),
