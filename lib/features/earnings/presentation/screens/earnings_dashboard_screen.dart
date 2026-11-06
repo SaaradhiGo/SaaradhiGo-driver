@@ -20,6 +20,10 @@ import '../widgets/earning_trip_tile.dart';
 import '../widgets/earnings_breakdown_card.dart';
 import '../earnings_display.dart';
 import '../widgets/withdrawal_request_bottom_sheet.dart';
+import '../providers/tier3_providers.dart';
+import '../../../../ui/driver_earnings_view.dart';
+import '../../../../ui/sg_l10n.dart';
+import '../../../../ui/sg_tokens.dart';
 
 /// Financials (Earnings & Wallet) Dashboard Screen (`/earnings`).
 class EarningsDashboardScreen extends ConsumerStatefulWidget {
@@ -65,8 +69,8 @@ class _EarningsDashboardScreenState
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Earnings')),
+      backgroundColor: SgColors.bg000,
+      appBar: AppBar(title: Text(sgL10n(context).earnTitle)),
       body: SafeArea(
         child: RefreshIndicator(
           color: AppColors.onBackground,
@@ -144,7 +148,7 @@ class _EarningsDashboardScreenState
         summary?.totalNet ??
         netFromGrossAndCommission(summary?.totalEarned, commission);
     final trips = summary?.totalTrips ?? 0;
-    final avgPerTrip = averageNetPerTrip(net, trips);
+    final l = sgL10n(context);
     final rateLabel = commissionRateLabel(
       summary?.commissionPercent,
       mixed: summary?.commissionPercentMixed,
@@ -172,128 +176,77 @@ class _EarningsDashboardScreenState
             const SizedBox(height: AppSpacing.md),
           ],
 
-          // Time Segmented Filter
-          GlassPanel(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              children: [
-                _buildFilterChip('Today', 0, state.selectedPeriodIndex),
-                _buildFilterChip('This week', 1, state.selectedPeriodIndex),
-                _buildFilterChip('This month', 2, state.selectedPeriodIndex),
-              ],
-            ),
+          EarningsPeriodTabs(
+            selected: state.selectedPeriodIndex,
+            onSelect: (i) =>
+                ref.read(earningsNotifierProvider.notifier).setPeriod(i),
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // The period's figure, in whole currency; net and trips beside it.
-          GlassPanel(
-            key: const Key('earnings_summary'),
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  state.selectedPeriodIndex == 0
-                      ? 'Earned today'
-                      : state.selectedPeriodIndex == 1
-                      ? 'Earned this week'
-                      : 'Earned this month',
-                  style: AppTypography.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.unit),
-                Text(
-                  summaryMoney(summary?.totalEarned),
-                  style: AppTypography.displayLg.copyWith(
-                    fontSize: 44,
-                    height: 52 / 44,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.onBackground,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    _figure('Trips', '${summary?.totalTrips ?? 0}'),
-                    if (net != null) ...[
-                      const SizedBox(width: AppSpacing.lg),
-                      _figure('After commission', summaryMoney(net)),
-                    ],
-                  ],
-                ),
-              ],
-            ),
+          // The period's figure on a noir panel: net when the API sends it.
+          EarningsNoirPanel(
+            periodLabel: [
+              l.earnPeriodToday,
+              l.earnPeriodWeek,
+              l.earnPeriodMonth,
+            ][state.selectedPeriodIndex.clamp(0, 2)],
+            trips: trips,
+            amount: summaryMoney(net ?? summary?.totalEarned),
+            isNet: net != null,
+            commission: commission == null ? null : summaryMoney(commission),
+            commissionRate: rateLabel,
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Payout: what can be withdrawn, and the one gold action.
-          GlassPanel(
-            key: const Key('earnings_payout'),
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Ready to withdraw',
-                        style: AppTypography.bodyMd.copyWith(
-                          color: AppColors.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      exactBalance(
-                        balance?.availableBalance,
-                        balance?.currency,
-                      ),
-                      style: AppTypography.dataMono.copyWith(fontSize: 20),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.md),
-                PrimaryButton(
-                  text: 'Withdraw',
-                  onPressed: (balance?.availableBalance ?? 0) > 0
-                      ? () => WithdrawalRequestBottomSheet.show(context)
-                      : null,
-                ),
-              ],
+          // The 7-day chart from the daily endpoint; hidden when it fails.
+          if (ref.watch(dailyEarningsProvider).value case final days?
+              when days.isNotEmpty) ...[
+            EarningsWeekChart(
+              days: days,
+              money: (v) => summaryMoney(v.toStringAsFixed(2)),
             ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // Breakdown Card
+          EarningsBreakdownCard(
+            grossFares: summary?.totalEarned ?? '0.00',
+            commission: commission,
+            commissionRate: rateLabel,
+            netEarnings: net,
+            promoPaid: summary?.promoPaidByPlatform,
+            promoPaidToday: summary?.todayPromoPaidByPlatform,
+            promoPaidLabel: summary?.promoPaidLabel,
+            incentiveRewards: summary?.incentiveRewards,
+            referralRewards: summary?.referralRewards,
+            incentiveCommission: summary?.incentiveCommission,
+            incentiveTax: summary?.incentiveTax,
+            taxCollected: summary?.taxCollected,
+            taxCollectedLabel: summary?.taxCollectedLabel,
+            regulatoryFees: summary?.regulatoryFeesCollected,
+            rewardsPendingReview: summary?.rewardsPendingReview,
+            rewardsPendingReviewLabel: summary?.rewardsPendingReviewLabel,
+            rewardRecovery: summary?.rewardRecovery,
+            rewardRecoveryLabel: summary?.rewardRecoveryLabel,
+            rewardRecoveryRemaining: summary?.rewardRecoveryRemaining,
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Quick Stats Grid — all backend-derived (no fabricated figures).
-          Row(
-            children: [
-              if (avgPerTrip != null) ...[
-                Expanded(
-                  child: _buildStatBox(
-                    Icons.route,
-                    summaryMoney(avgPerTrip),
-                    'Avg / Trip',
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-              ],
-              Expanded(
-                child: _buildStatBox(Icons.directions_car, '$trips', 'Trips'),
-              ),
-              if (commission != null) ...[
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _buildStatBox(
-                    Icons.percent,
-                    summaryMoney(commission),
-                    rateLabel == null
-                        ? 'Commission'
-                        : 'Commission ($rateLabel)',
-                  ),
-                ),
-              ],
-            ],
+
+          // TODO(data): cash in hand. The summary model carries no
+          // cash_collected yet, so the breakdown has no cash line.
+
+          // Withdrawable and the 64px Withdraw; blocked with its reason when
+          // payout details are missing.
+          WithdrawPanel(
+            balance: exactBalance(
+              balance?.availableBalance,
+              balance?.currency,
+            ),
+            canWithdraw: (balance?.availableBalance ?? 0) > 0,
+            payoutMissing: ref.watch(payoutDetailsOnFileProvider).value == false,
+            onWithdraw: () => WithdrawalRequestBottomSheet.show(context),
+            onAddPayout: () => context.push('/onboarding/photo-bank'),
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -385,30 +338,6 @@ class _EarningsDashboardScreenState
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Breakdown Card
-          EarningsBreakdownCard(
-            grossFares: summary?.totalEarned ?? '0.00',
-            commission: commission,
-            commissionRate: rateLabel,
-            netEarnings: net,
-            promoPaid: summary?.promoPaidByPlatform,
-            promoPaidToday: summary?.todayPromoPaidByPlatform,
-            promoPaidLabel: summary?.promoPaidLabel,
-            incentiveRewards: summary?.incentiveRewards,
-            referralRewards: summary?.referralRewards,
-            incentiveCommission: summary?.incentiveCommission,
-            incentiveTax: summary?.incentiveTax,
-            taxCollected: summary?.taxCollected,
-            taxCollectedLabel: summary?.taxCollectedLabel,
-            regulatoryFees: summary?.regulatoryFeesCollected,
-            rewardsPendingReview: summary?.rewardsPendingReview,
-            rewardsPendingReviewLabel: summary?.rewardsPendingReviewLabel,
-            rewardRecovery: summary?.rewardRecovery,
-            rewardRecoveryLabel: summary?.rewardRecoveryLabel,
-            rewardRecoveryRemaining: summary?.rewardRecoveryRemaining,
-          ),
-          const SizedBox(height: AppSpacing.md),
-
           // Recent Transactions & Withdrawals History
           Text(
             'Recent Transactions',
@@ -435,80 +364,6 @@ class _EarningsDashboardScreenState
           ],
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
-  }
-
-  Widget _figure(String label, String value) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: AppTypography.bodyMd.copyWith(
-          color: AppColors.onSurfaceVariant,
-          fontSize: 13,
-        ),
-      ),
-      Text(value, style: AppTypography.headlineSm.copyWith(fontSize: 18)),
-    ],
-  );
-
-  Widget _buildFilterChip(String label, int index, int currentIndex) {
-    final isSelected = index == currentIndex;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          ref.read(earningsNotifierProvider.notifier).setPeriod(index);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          constraints: const BoxConstraints(minHeight: 40),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.surfaceContainerHigh
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd - 4),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: AppTypography.bodyMd.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: isSelected
-                    ? AppColors.onBackground
-                    : AppColors.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatBox(IconData icon, String value, String label) {
-    return GlassPanel(
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.onSurfaceVariant, size: 20),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: AppTypography.dataMono.copyWith(
-              color: AppColors.onBackground,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: AppTypography.labelCaps.copyWith(
-              color: AppColors.onSurfaceVariant,
-              fontSize: 10,
-            ),
-          ),
         ],
       ),
     );

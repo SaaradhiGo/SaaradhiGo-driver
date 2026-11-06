@@ -223,5 +223,161 @@
   "homeJustStarted": "अभी शुरू हुआ",
   "@homeJustStarted": {
     "description": "needs native review"
+  },
+  "earnTitle": "कमाई",
+  "@earnTitle": {
+    "description": "needs native review"
+  },
+  "earnPeriodToday": "आज",
+  "@earnPeriodToday": {
+    "description": "needs native review"
+  },
+  "earnPeriodWeek": "इस हफ़्ते",
+  "@earnPeriodWeek": {
+    "description": "needs native review"
+  },
+  "earnPeriodMonth": "इस महीने",
+  "@earnPeriodMonth": {
+    "description": "needs native review"
+  },
+  "earnTrips": "{count, plural, other{{count} ट्रिप}}",
+  "@earnTrips": {
+    "description": "needs native review"
+  },
+  "earnEarned": "कमाया",
+  "@earnEarned": {
+    "description": "needs native review"
+  },
+  "earnLast7": "पिछले 7 दिन",
+  "@earnLast7": {
+    "description": "needs native review"
+  },
+  "earnBreakdown": "ब्योरा",
+  "@earnBreakdown": {
+    "description": "needs native review"
+  },
+  "earnTripFares": "ट्रिप किराया",
+  "@earnTripFares": {
+    "description": "needs native review"
+  },
+  "earnNet": "शुद्ध कमाई",
+  "@earnNet": {
+    "description": "needs native review"
+  },
+  "earnCashInHand": "हाथ में नकद",
+  "@earnCashInHand": {
+    "description": "needs native review"
+  },
+  "earnWithdrawable": "निकाल सकते हैं",
+  "@earnWithdrawable": {
+    "description": "needs native review"
+  },
+  "earnWithdraw": "{amount} निकालें",
+  "@earnWithdraw": {
+    "description": "needs native review"
+  },
+  "earnPayoutMissing": "निकालने के लिए अपना बैंक या UPI विवरण जोड़ें।",
+  "@earnPayoutMissing": {
+    "description": "needs native review"
+  },
+  "earnAddPayout": "भुगतान विवरण जोड़ें",
+  "@earnAddPayout": {
+    "description": "needs native review"
+  },
+  "earnRetry": "फिर कोशिश करें",
+  "@earnRetry": {
+    "description": "needs native review"
+  },
+  "earnLoadFailed": "आपकी कमाई लोड नहीं हुई",
+  "@earnLoadFailed": {
+    "description": "needs native review"
+  },
+  "docsTitle": "दस्तावेज़",
+  "@docsTitle": {
+    "description": "needs native review"
+  },
+  "docsProgress": "{total} में से {done} पूरे",
+  "@docsProgress": {
+    "description": "needs native review"
+  },
+  "docsApproved": "स्वीकृत",
+  "@docsApproved": {
+    "description": "needs native review"
+  },
+  "docsInReview": "जाँच में",
+  "@docsInReview": {
+    "description": "needs native review"
+  },
+  "docsUploaded": "अपलोड हुआ",
+  "@docsUploaded": {
+    "description": "needs native review"
+  },
+  "docsRejected": "अस्वीकृत",
+  "@docsRejected": {
+    "description": "needs native review"
+  },
+  "docsMissing": "अपलोड नहीं हुआ",
+  "@docsMissing": {
+    "description": "needs native review"
+  },
+  "docsNeedsAttention": "नई फ़ोटो चाहिए",
+  "@docsNeedsAttention": {
+    "description": "needs native review"
+  },
+  "docsFrameGuide": "पूरा दस्तावेज़ फ़्रेम के अंदर, सीधा और अच्छी रोशनी में रखें।",
+  "@docsFrameGuide": {
+    "description": "needs native review"
+  },
+  "docsOpenCamera": "कैमरा खोलें",
+  "@docsOpenCamera": {
+    "description": "needs native review"
+  },
+  "docsUploadedOk": "अपलोड हो गया। हम जाँच करेंगे।",
+  "@docsUploadedOk": {
+    "description": "needs native review"
+  },
+  "docsUploadFailed": "अपलोड नहीं हुआ। फिर कोशिश करें।",
+  "@docsUploadFailed": {
+    "description": "needs native review"
+  },
+  "docsPayoutTitle": "भुगतान विवरण नहीं है",
+  "@docsPayoutTitle": {
+    "description": "needs native review"
+  },
+  "docsCallSupport": "ड्राइवर सहायता को कॉल करें",
+  "@docsCallSupport": {
+    "description": "needs native review"
+  },
+  "docsLoadFailed": "आपके दस्तावेज़ लोड नहीं हुए",
+  "@docsLoadFailed": {
+    "description": "needs native review"
+  },
+  "tripOpenInMaps": "मैप्स में खोलें",
+  "@tripOpenInMaps": {
+    "description": "needs native review"
+  },
+  "tripNightMode": "सूर्यास्त से नाइट मोड",
+  "@tripNightMode": {
+    "description": "needs native review"
+  },
+  "tripDropping": "{name} को छोड़ रहे हैं",
+  "@tripDropping": {
+    "description": "needs native review"
+  },
+  "tripEndAtDrop": "ड्रॉप पर ट्रिप खत्म करें",
+  "@tripEndAtDrop": {
+    "description": "needs native review"
+  },
+  "breakdownTripFares": "ट्रिप किराया (कुल)",
+  "@breakdownTripFares": {
+    "description": "needs native review"
+  },
+  "breakdownCommission": "प्लेटफ़ॉर्म कमीशन",
+  "@breakdownCommission": {
+    "description": "needs native review"
+  },
+  "breakdownNet": "ड्राइवर की शुद्ध कमाई",
+  "@breakdownNet": {
+    "description": "needs native review"
   }
 }

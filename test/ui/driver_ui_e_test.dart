@@ -157,12 +157,25 @@ void main() {
     addTearDown(tester.view.reset);
     var done = 0;
     await tester.pumpWidget(sgApp(inTripFrame(onComplete: () => done++)));
-    expect(find.text('ON TRIP WITH RAJA'), findsOneWidget);
-    expect(find.text('Hitech City, Madhapur'), findsOneWidget);
+    expect(find.text('DROPPING RAJA'), findsOneWidget);
+    expect(find.text('Hitech City'), findsOneWidget);
+    expect(find.text('Madhapur, Hyderabad'), findsOneWidget);
     expect(find.text('8.4 km · 20 min'), findsOneWidget);
     expect(find.text('₹248'), findsOneWidget);
-    await tester.tap(find.text('Complete trip'));
+    expect(find.text('Open in Maps'), findsOneWidget);
+    expect(find.byKey(const Key('trip_night_chip')), findsNothing);
+    expect(tester.getSize(find.byKey(const Key('trip_complete'))).height, 72);
+    expect(
+        tester.getSize(find.byKey(const Key('trip_open_in_maps'))).height, 72);
+    await tester.tap(find.text('End trip at drop'));
     expect(done, 1);
+  });
+
+  testWidgets('in trip at night: the night chip shows', (tester) async {
+    setPhoneSurface(tester);
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(sgApp(inTripFrame(night: true)));
+    expect(find.text('Night mode since sunset'), findsOneWidget);
   });
 
   testWidgets('complete with cash: collect first, then Done', (tester) async {

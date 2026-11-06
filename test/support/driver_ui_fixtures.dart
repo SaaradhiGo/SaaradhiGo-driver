@@ -141,12 +141,24 @@ Widget toPickupFrame({VoidCallback? onArrived, VoidCallback? onCancel}) =>
       ),
     );
 
-Widget inTripFrame({VoidCallback? onComplete}) => DriverTripScaffold(
+Widget inTripFrame({VoidCallback? onComplete, bool night = false}) =>
+    DriverTripScaffold(
       map: _tripMap,
-      topActions: sosStandIn(),
-      mapButton: NavigateButton(onTap: () {}),
+      top: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: OpenInMapsBanner(onTap: () {})),
+              const SizedBox(width: 8),
+              sosStandIn(),
+            ],
+          ),
+          if (night) ...[const SizedBox(height: 8), const NightModeChip()],
+        ],
+      ),
       sheet: InTripSheet(
-        destination: 'Hitech City, Madhapur',
+        destination: 'Hitech City, Madhapur, Hyderabad',
         riderName: 'Raja Kumar',
         leftLine: '8.4 km · 20 min',
         fare: '₹248',
@@ -172,3 +184,32 @@ Widget completeFrame({bool cash = true, VoidCallback? onConfirmCash}) =>
       onDone: () {},
       onRate: () {},
     );
+
+const sampleDocsBody = <String, dynamic>{
+  'data': {
+    'doc_status': 'pending',
+    'doc_rejection_reason': 'The licence photo is blurred.',
+    'vehicle': {'id': 7},
+    'driver_documents': [
+      {'key': 'license_front', 'label': 'Driving licence (front)', 'required': true, 'present': true, 'status': 'rejected', 'reason': 'The photo is blurred.'},
+      {'key': 'license_back', 'label': 'Driving licence (back)', 'required': true, 'present': true, 'status': 'approved'},
+    ],
+    'vehicle_documents': [
+      {'key': 'rc', 'label': 'Registration (RC)', 'required': true, 'present': true, 'status': 'in_review'},
+      {'key': 'insurance', 'label': 'Insurance', 'required': true, 'present': false},
+      {'key': 'permit', 'label': 'Permit', 'required': true, 'present': true},
+    ],
+  },
+};
+
+const sampleDailyBody = <String, dynamic>{
+  'days': [
+    {'date': '2026-11-06', 'trips': 3, 'gross': '428.00', 'commission': '64.00', 'net': '364.00'},
+    {'date': '2026-10-31', 'trips': 5, 'gross': '700.00', 'commission': '105.00', 'net': '595.00'},
+    {'date': '2026-11-01', 'trips': 0, 'gross': '0', 'commission': '0', 'net': '0'},
+    {'date': '2026-11-02', 'trips': 2, 'gross': '300', 'commission': '45', 'net': '255'},
+    {'date': '2026-11-03', 'trips': 4, 'gross': '520', 'commission': '78', 'net': '442'},
+    {'date': '2026-11-04', 'trips': 6, 'gross': '900', 'commission': '135', 'net': '765'},
+    {'date': '2026-11-05', 'trips': 1, 'gross': '150', 'commission': '22.5', 'net': '127.5'},
+  ],
+};

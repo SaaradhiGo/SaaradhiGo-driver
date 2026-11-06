@@ -15,7 +15,7 @@ import '../features/onboarding/presentation/screens/onboarding_personal_screen.d
 import '../features/onboarding/presentation/screens/onboarding_photo_bank_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_vehicle_screen.dart';
 import '../features/onboarding/presentation/screens/verification_status_screen.dart';
-import '../features/documents/presentation/screens/document_vault_screen.dart';
+import '../features/documents/presentation/screens/documents_screen.dart';
 import '../features/incentives/presentation/screens/elite_partner_screen.dart';
 import '../features/incentives/presentation/screens/incentives_rewards_screen.dart';
 import '../features/referrals/presentation/screens/referral_screen.dart';
@@ -292,7 +292,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/documents',
-        builder: (context, state) => const DocumentVaultScreen(),
+        builder: (context, state) => const DocumentsScreen(),
       ),
       GoRoute(
         path: '/vehicle',

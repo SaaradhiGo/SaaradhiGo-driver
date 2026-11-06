@@ -1,3 +1,4 @@
+import '../../../../ui/sg_l10n.dart';
 import '../../../../core/market/market_format.dart';
 import '../earnings_display.dart';
 import 'package:flutter/material.dart';
@@ -64,13 +65,14 @@ class EarningsBreakdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = sgL10n(context);
     return GlassPanel(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Breakdown',
+            l.earnBreakdown,
             style: AppTypography.headlineSm.copyWith(
               color: AppColors.onBackground,
             ),
@@ -83,22 +85,26 @@ class EarningsBreakdownCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           _buildRow(
             icon: Icons.route,
-            label: 'Trip Fares (Gross)',
+            label: l.breakdownTripFares,
             amount: '${marketSymbol()}$grossFares',
             color: AppColors.onBackground,
           ),
-          _buildRow(
-            icon: Icons.volunteer_activism,
-            label: 'Tips',
-            amount: tips ?? '${marketSymbol()}0.00',
-            color: AppColors.onBackground,
-          ),
-          _buildRow(
-            icon: Icons.card_giftcard,
-            label: 'Bonuses & Incentives',
-            amount: bonuses ?? '${marketSymbol()}0.00',
-            color: AppColors.onBackground,
-          ),
+          // TODO(data): tips. The API sends no tips figure, so the line is
+          // hidden rather than shown as a made-up zero; the same for bonuses.
+          if (tips != null)
+            _buildRow(
+              icon: Icons.volunteer_activism,
+              label: 'Tips',
+              amount: tips!,
+              color: AppColors.onBackground,
+            ),
+          if (bonuses != null)
+            _buildRow(
+              icon: Icons.card_giftcard,
+              label: 'Bonuses & Incentives',
+              amount: bonuses!,
+              color: AppColors.onBackground,
+            ),
           // Commission and net are shown only when the API sent a commission.
           if (commission != null) ...[
             Divider(
@@ -108,8 +114,8 @@ class EarningsBreakdownCard extends StatelessWidget {
             _buildRow(
               icon: Icons.money_off,
               label: commissionRate == null
-                  ? 'Platform Commission'
-                  : 'Platform Commission ($commissionRate)',
+                  ? l.breakdownCommission
+                  : '${l.breakdownCommission} ($commissionRate)',
               amount: '-${marketSymbol()}$commission',
               color: AppColors.error,
             ),
@@ -119,7 +125,7 @@ class EarningsBreakdownCard extends StatelessWidget {
               color: AppColors.outlineVariant.withValues(alpha: 0.3),
               height: 16,
             ),
-            _buildNetRow(netEarnings!),
+            _buildNetRow(netEarnings!, l.breakdownNet),
           ],
           // Paid by SaaradhiGo, on top of the trips' net: a rider promo that a
           // cash driver did not collect, its own line.
@@ -251,14 +257,14 @@ class EarningsBreakdownCard extends StatelessWidget {
   static String _labelOr(String? label, String fallback) =>
       (label?.trim().isNotEmpty ?? false) ? label!.trim() : fallback;
 
-  Widget _buildNetRow(String netEarnings) {
+  Widget _buildNetRow(String netEarnings, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Net Driver Earnings',
+            label,
             style: AppTypography.bodyLg.copyWith(
               color: AppColors.onBackground,
               fontWeight: FontWeight.bold,

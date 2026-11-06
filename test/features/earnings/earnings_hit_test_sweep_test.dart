@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saaradhigo_driver/features/earnings/presentation/providers/tier3_providers.dart';
 import 'package:saaradhigo_driver/domain/models/driver_profile_model.dart';
 import 'package:saaradhigo_driver/domain/models/earning_model.dart';
 import 'package:saaradhigo_driver/domain/models/earnings_summary_model.dart';
@@ -107,6 +108,9 @@ Widget _shellHarness(EarningsState seed) {
   return ProviderScope(
     overrides: [
       earningsNotifierProvider.overrideWith(() => FakeEarningsNotifier(seed)),
+      dailyEarningsProvider.overrideWith((ref) async => null),
+    payoutDetailsOnFileProvider.overrideWith((ref) async => null),
+
       driverProfileNotifierProvider.overrideWith(
         () => FakeProfileNotifier(ProfileState.loaded(_profile)),
       ),
@@ -193,7 +197,12 @@ void main() {
       await tester.pumpWidget(_shellHarness(_seed()));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Withdraw'), warnIfMissed: false);
+      await tester.ensureVisible(find.byKey(const Key('earnings_withdraw')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('earnings_withdraw')),
+        warnIfMissed: false,
+      );
       await tester.pumpAndSettle();
       expect(find.byType(TextField), findsOneWidget);
 

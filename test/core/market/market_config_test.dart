@@ -421,7 +421,8 @@ void main() {
       expect(find.text('₹1450.50'), findsOneWidget);
       expect(find.text('-₹145.05'), findsOneWidget);
       expect(find.text('₹1305.45'), findsOneWidget);
-      expect(find.text('₹0.00'), findsNWidgets(2));
+      // Tips and bonuses: no figure from the API, so no made-up zero lines.
+      expect(find.text('₹0.00'), findsNothing);
     });
 
     testWidgets('US config: earnings render dollars', (tester) async {
@@ -429,7 +430,7 @@ void main() {
       await pumpBreakdown(tester);
       expect(find.text(r'$1450.50'), findsOneWidget);
       expect(find.text(r'-$145.05'), findsOneWidget);
-      expect(find.text(r'$0.00'), findsNWidgets(2));
+      expect(find.text(r'$0.00'), findsNothing);
       expect(find.textContaining('₹'), findsNothing);
     });
 

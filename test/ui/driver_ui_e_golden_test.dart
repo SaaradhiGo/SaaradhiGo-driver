@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:saaradhigo_driver/ui/driver_earnings_view.dart';
+import 'package:saaradhigo_driver/ui/driver_f_logic.dart';
 import 'package:saaradhigo_driver/ui/driver_trip_views.dart';
 
 import '../support/driver_ui_fixtures.dart';
@@ -61,6 +63,43 @@ void main() {
   });
 
   testWidgets('in trip', (t) => shoot(t, inTripFrame(), 'in_trip'));
+
+  testWidgets('in trip at night',
+      (t) => shoot(t, inTripFrame(night: true), 'in_trip_night'));
+
+  testWidgets('earnings', (t) async {
+    await shoot(
+      t,
+      ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const EarningsNoirPanel(
+            periodLabel: 'Today',
+            trips: 3,
+            amount: '₹364',
+            isNet: true,
+            commission: '₹64',
+            commissionRate: '15%',
+          ),
+          const SizedBox(height: 16),
+          EarningsWeekChart(
+            days: parseDailyEarnings(sampleDailyBody)!,
+            money: (v) => '₹${v.round()}',
+          ),
+          const SizedBox(height: 16),
+          WithdrawPanel(
+            balance: '₹1,240',
+            canWithdraw: true,
+            payoutMissing: true,
+            onWithdraw: () {},
+            onAddPayout: () {},
+          ),
+        ],
+      ),
+      'earnings_t3',
+    );
+  });
+
 
   testWidgets('complete, collect cash',
       (t) => shoot(t, completeFrame(), 'complete_cash'));

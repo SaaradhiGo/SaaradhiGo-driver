@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:saaradhigo_driver/features/earnings/presentation/providers/tier3_providers.dart';
 import 'package:saaradhigo_driver/core/market/market_config.dart';
 import 'package:saaradhigo_driver/core/market/market_config_store.dart';
 import 'package:saaradhigo_driver/core/network/api_endpoints.dart';
@@ -276,6 +277,8 @@ List<Override> _screenOverrides(PromoIncentivesService promo) => [
   authNotifierProvider.overrideWith(_FakeAuth.new),
   vehicleInfoNotifierProvider.overrideWith(_FakeVehicle.new),
   promoIncentivesServiceProvider.overrideWithValue(promo),
+  dailyEarningsProvider.overrideWith((ref) async => null),
+  payoutDetailsOnFileProvider.overrideWith((ref) async => null),
 ];
 
 // ---------------------------------------------------------------------------

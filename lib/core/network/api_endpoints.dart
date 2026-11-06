@@ -34,6 +34,12 @@ class ApiEndpoints {
   // Driver Earnings, Incentives & Elite Status
   static const String driverEarnings = '/driver/earnings/';
   static const String driverEarningsSummary = '/driver/earnings/summary/';
+
+  /// Per-day trips, gross, commission and net (`?days=7`).
+  static const String driverEarningsDaily = '/driver/earnings/daily/';
+
+  /// The driver's document checklist (driver_documents, vehicle_documents).
+  static const String driverOnboarding = '/driver/driver/onboarding/';
   // The doubled `driver/` is correct and is not a typo: servers/driver/urls.py
   // is included at `/driver/` and declares `path('driver/incentives/')`, so
   // the full route is /api/v1/driver/driver/incentives/.

@@ -4,7 +4,9 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/location/location_providers.dart';
 import '../../../../domain/models/trip_model.dart';
+import '../../../../core/theme/appearance_controller.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_tokens.dart';
 import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../trip_navigation.dart';
@@ -19,6 +21,7 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(tripSessionNotifierProvider);
+    final appearance = ref.watch(appearanceControllerProvider);
     final driver = ref.watch(driverPositionProvider);
     final pickup = (trip.pickupLat != null && trip.pickupLng != null)
         ? LatLng(trip.pickupLat!, trip.pickupLng!)
@@ -37,11 +40,31 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
         focus: destination,
         padding: kTripMapPadding,
       ),
-      // Passenger chat + SOS stay reachable during the whole active trip.
-      topActions: TripSafetyActions(tripId: trip.id, riderName: trip.riderName),
-      mapButton: destination == null
-          ? null
-          : NavigateButton(onTap: () => openNavigation(context, destination)),
+      // The light "Open in Maps" banner (no turn-by-turn data), with chat and
+      // SOS beside it; the night chip only when Automatic chose dark.
+      top: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: destination == null
+                    ? const SizedBox.shrink()
+                    : OpenInMapsBanner(
+                        onTap: () => openNavigation(context, destination),
+                      ),
+              ),
+              const SizedBox(width: SgSpace.s2),
+              TripSafetyActions(tripId: trip.id, riderName: trip.riderName),
+            ],
+          ),
+          if (appearance.mode == AppearanceMode.automatic &&
+              appearance.brightness == Brightness.dark) ...[
+            const SizedBox(height: SgSpace.s2),
+            const NightModeChip(),
+          ],
+        ],
+      ),
       sheet: InTripSheet(
         destination: trip.destinationAddress ?? 'Drop point on the map',
         riderName: trip.riderName,

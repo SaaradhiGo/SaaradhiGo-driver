@@ -223,5 +223,161 @@
   "homeJustStarted": "ఇప్పుడే మొదలైంది",
   "@homeJustStarted": {
     "description": "needs native review"
+  },
+  "earnTitle": "సంపాదన",
+  "@earnTitle": {
+    "description": "needs native review"
+  },
+  "earnPeriodToday": "ఈరోజు",
+  "@earnPeriodToday": {
+    "description": "needs native review"
+  },
+  "earnPeriodWeek": "ఈ వారం",
+  "@earnPeriodWeek": {
+    "description": "needs native review"
+  },
+  "earnPeriodMonth": "ఈ నెల",
+  "@earnPeriodMonth": {
+    "description": "needs native review"
+  },
+  "earnTrips": "{count, plural, other{{count} ట్రిప్‌లు}}",
+  "@earnTrips": {
+    "description": "needs native review"
+  },
+  "earnEarned": "సంపాదించారు",
+  "@earnEarned": {
+    "description": "needs native review"
+  },
+  "earnLast7": "గత 7 రోజులు",
+  "@earnLast7": {
+    "description": "needs native review"
+  },
+  "earnBreakdown": "వివరాలు",
+  "@earnBreakdown": {
+    "description": "needs native review"
+  },
+  "earnTripFares": "ట్రిప్ ఛార్జీలు",
+  "@earnTripFares": {
+    "description": "needs native review"
+  },
+  "earnNet": "నికర సంపాదన",
+  "@earnNet": {
+    "description": "needs native review"
+  },
+  "earnCashInHand": "చేతిలో నగదు",
+  "@earnCashInHand": {
+    "description": "needs native review"
+  },
+  "earnWithdrawable": "విత్‌డ్రా చేయగలది",
+  "@earnWithdrawable": {
+    "description": "needs native review"
+  },
+  "earnWithdraw": "{amount} విత్‌డ్రా",
+  "@earnWithdraw": {
+    "description": "needs native review"
+  },
+  "earnPayoutMissing": "విత్‌డ్రా చేయడానికి మీ బ్యాంక్ లేదా UPI వివరాలు జోడించండి.",
+  "@earnPayoutMissing": {
+    "description": "needs native review"
+  },
+  "earnAddPayout": "పేఅవుట్ వివరాలు జోడించండి",
+  "@earnAddPayout": {
+    "description": "needs native review"
+  },
+  "earnRetry": "మళ్లీ ప్రయత్నించండి",
+  "@earnRetry": {
+    "description": "needs native review"
+  },
+  "earnLoadFailed": "మీ సంపాదన లోడ్ కాలేదు",
+  "@earnLoadFailed": {
+    "description": "needs native review"
+  },
+  "docsTitle": "పత్రాలు",
+  "@docsTitle": {
+    "description": "needs native review"
+  },
+  "docsProgress": "{total} లో {done} పూర్తి",
+  "@docsProgress": {
+    "description": "needs native review"
+  },
+  "docsApproved": "ఆమోదించబడింది",
+  "@docsApproved": {
+    "description": "needs native review"
+  },
+  "docsInReview": "పరిశీలనలో ఉంది",
+  "@docsInReview": {
+    "description": "needs native review"
+  },
+  "docsUploaded": "అప్‌లోడ్ అయింది",
+  "@docsUploaded": {
+    "description": "needs native review"
+  },
+  "docsRejected": "తిరస్కరించబడింది",
+  "@docsRejected": {
+    "description": "needs native review"
+  },
+  "docsMissing": "అప్‌లోడ్ కాలేదు",
+  "@docsMissing": {
+    "description": "needs native review"
+  },
+  "docsNeedsAttention": "కొత్త ఫోటో కావాలి",
+  "@docsNeedsAttention": {
+    "description": "needs native review"
+  },
+  "docsFrameGuide": "పత్రం మొత్తం ఫ్రేమ్‌లో, చదునుగా, మంచి వెలుతురులో ఉంచండి.",
+  "@docsFrameGuide": {
+    "description": "needs native review"
+  },
+  "docsOpenCamera": "కెమెరా తెరవండి",
+  "@docsOpenCamera": {
+    "description": "needs native review"
+  },
+  "docsUploadedOk": "అప్‌లోడ్ అయింది. మేము పరిశీలిస్తాము.",
+  "@docsUploadedOk": {
+    "description": "needs native review"
+  },
+  "docsUploadFailed": "అప్‌లోడ్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.",
+  "@docsUploadFailed": {
+    "description": "needs native review"
+  },
+  "docsPayoutTitle": "పేఅవుట్ వివరాలు లేవు",
+  "@docsPayoutTitle": {
+    "description": "needs native review"
+  },
+  "docsCallSupport": "డ్రైవర్ సపోర్ట్‌కి కాల్ చేయండి",
+  "@docsCallSupport": {
+    "description": "needs native review"
+  },
+  "docsLoadFailed": "మీ పత్రాలు లోడ్ కాలేదు",
+  "@docsLoadFailed": {
+    "description": "needs native review"
+  },
+  "tripOpenInMaps": "మ్యాప్స్‌లో తెరవండి",
+  "@tripOpenInMaps": {
+    "description": "needs native review"
+  },
+  "tripNightMode": "సూర్యాస్తమయం నుండి నైట్ మోడ్",
+  "@tripNightMode": {
+    "description": "needs native review"
+  },
+  "tripDropping": "{name} ని దింపుతున్నారు",
+  "@tripDropping": {
+    "description": "needs native review"
+  },
+  "tripEndAtDrop": "డ్రాప్ వద్ద ట్రిప్ ముగించండి",
+  "@tripEndAtDrop": {
+    "description": "needs native review"
+  },
+  "breakdownTripFares": "ట్రిప్ ఛార్జీలు (మొత్తం)",
+  "@breakdownTripFares": {
+    "description": "needs native review"
+  },
+  "breakdownCommission": "ప్లాట్‌ఫామ్ కమీషన్",
+  "@breakdownCommission": {
+    "description": "needs native review"
+  },
+  "breakdownNet": "డ్రైవర్ నికర సంపాదన",
+  "@breakdownNet": {
+    "description": "needs native review"
   }
 }
