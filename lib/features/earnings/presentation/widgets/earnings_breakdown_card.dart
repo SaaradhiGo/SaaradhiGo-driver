@@ -87,18 +87,22 @@ class EarningsBreakdownCard extends StatelessWidget {
             amount: '${marketSymbol()}$grossFares',
             color: AppColors.onBackground,
           ),
-          _buildRow(
-            icon: Icons.volunteer_activism,
-            label: 'Tips',
-            amount: tips ?? '${marketSymbol()}0.00',
-            color: AppColors.onBackground,
-          ),
-          _buildRow(
-            icon: Icons.card_giftcard,
-            label: 'Bonuses & Incentives',
-            amount: bonuses ?? '${marketSymbol()}0.00',
-            color: AppColors.onBackground,
-          ),
+          // TODO(data): tips. The API sends no tips figure, so the line is
+          // hidden rather than shown as a made-up zero; the same for bonuses.
+          if (tips != null)
+            _buildRow(
+              icon: Icons.volunteer_activism,
+              label: 'Tips',
+              amount: tips!,
+              color: AppColors.onBackground,
+            ),
+          if (bonuses != null)
+            _buildRow(
+              icon: Icons.card_giftcard,
+              label: 'Bonuses & Incentives',
+              amount: bonuses!,
+              color: AppColors.onBackground,
+            ),
           // Commission and net are shown only when the API sent a commission.
           if (commission != null) ...[
             Divider(

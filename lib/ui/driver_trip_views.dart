@@ -67,12 +67,17 @@ class DriverTripScaffold extends StatelessWidget {
     required this.sheet,
     this.topActions,
     this.mapButton,
+    this.top,
   });
 
   final Widget map;
   final Widget sheet;
   final Widget? topActions;
   final Widget? mapButton;
+
+  /// A full-width block at the top (the on-trip banner); [topActions] is
+  /// ignored when it is set.
+  final Widget? top;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +87,14 @@ class DriverTripScaffold extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(child: map),
-          if (topActions != null)
+          if (top != null)
+            Positioned(
+              top: pad.top + SgSpace.s3,
+              left: SgSpace.s4,
+              right: SgSpace.s4,
+              child: top!,
+            )
+          else if (topActions != null)
             Positioned(
               top: pad.top + SgSpace.s3,
               right: SgSpace.s4,
@@ -806,7 +818,108 @@ class PinCheckView extends StatelessWidget {
   }
 }
 
-/// In progress: on the way to the drop.
+/// The large light banner over the trip map. There is no turn-by-turn data,
+/// so it is "Open in Maps" (the existing Navigate action), light in both
+/// themes so it reads at a glance.
+class OpenInMapsBanner extends StatelessWidget {
+  const OpenInMapsBanner({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = sgL10n(context);
+    const p = SgPalette.light;
+    return Semantics(
+      button: true,
+      label: l.tripOpenInMaps,
+      excludeSemantics: true,
+      child: Material(
+        color: p.bg100,
+        borderRadius: BorderRadius.circular(SgRadius.lg),
+        elevation: 0,
+        child: InkWell(
+          key: const Key('trip_open_in_maps'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(SgRadius.lg),
+          child: Container(
+            height: kSgPrimaryAction,
+            padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(SgRadius.lg),
+              border: Border.all(color: p.lineStrong),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: p.gold500,
+                    borderRadius: BorderRadius.circular(SgRadius.sm),
+                  ),
+                  child: SgIcon(
+                    '<path d="M3 11l18-8-8 18-2-8z"/>',
+                    size: 24,
+                    color: p.onGold,
+                  ),
+                ),
+                const SizedBox(width: SgSpace.s3),
+                Expanded(
+                  child: Text(
+                    l.tripOpenInMaps,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SgText.title.copyWith(fontSize: 20, color: p.ink),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Night mode since sunset": shown only when the automatic theme chose dark.
+class NightModeChip extends StatelessWidget {
+  const NightModeChip({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    key: const Key('trip_night_chip'),
+    height: 36,
+    padding: const EdgeInsets.symmetric(horizontal: SgSpace.s3),
+    decoration: BoxDecoration(
+      color: SgColors.bg100,
+      borderRadius: BorderRadius.circular(SgRadius.pill),
+      border: Border.all(color: SgColors.goldLine),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SgIcon(
+          '<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+          size: 16,
+          color: SgColors.goldText,
+        ),
+        const SizedBox(width: SgSpace.s2),
+        Text(
+          sgL10n(context).tripNightMode,
+          style: SgText.caption.copyWith(
+            color: SgColors.ink,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// In progress (Tier 3, screen 4): "Dropping {rider}", the destination area
+/// at 19px, time and distance, the fare, and a 72px "End trip at drop".
 class InTripSheet extends StatelessWidget {
   const InTripSheet({
     super.key,
@@ -831,53 +944,89 @@ class InTripSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = sgL10n(context);
     final first = firstNameOf(riderName);
+    final at = destination.indexOf(',');
+    final area = at > 0 ? destination.substring(0, at).trim() : destination;
+    final rest = at > 0 ? destination.substring(at + 1).trim() : '';
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          first.isEmpty ? 'ON TRIP' : 'ON TRIP WITH ${first.toUpperCase()}',
-          style: SgText.label,
+          l.tripDropping(first.isEmpty ? l.riderFallback : first).toUpperCase(),
+          key: const Key('trip_dropping'),
+          style: SgText.label.copyWith(color: SgColors.goldText),
         ),
         const SizedBox(height: SgSpace.s2),
-        PlaceLine(text: destination, drop: true, large: true),
-        if (leftLine != null) ...[
-          const SizedBox(height: SgSpace.s1),
-          Padding(
-            padding: const EdgeInsets.only(left: 22),
-            child: Text(leftLine!, style: SgText.caption),
-          ),
-        ],
-        if (fare != null) ...[
-          const SizedBox(height: SgSpace.s4),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SgSpace.s4,
-              vertical: SgSpace.s3,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 6, right: SgSpace.s3),
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: SgColors.gold500,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
             ),
-            decoration: BoxDecoration(
-              color: SgColors.bg200,
-              borderRadius: BorderRadius.circular(SgRadius.md),
-              border: Border.all(color: SgColors.line),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    area,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SgText.title.copyWith(fontSize: 19, height: 24 / 19),
+                  ),
+                  if (rest.isNotEmpty)
+                    Text(
+                      rest,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: SgText.caption,
+                    ),
+                ],
+              ),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Fare${payment == null ? '' : ' · $payment'}',
+          ],
+        ),
+        const SizedBox(height: SgSpace.s3),
+        Row(
+          children: [
+            if (leftLine != null)
+              Expanded(
+                child: Text(
+                  leftLine!,
+                  style: SgText.fare,
+                ),
+              )
+            else
+              const Spacer(),
+            // TODO(data): the driver's earning for this trip. The trip
+            // payload carries no `earning`, so the fare is shown, labelled.
+            if (fare != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(fare!, key: const Key('trip_fare'), style: SgText.fare),
+                  Text(
+                    payment == null ? l.offerFare : '${l.offerFare} · $payment',
                     style: SgText.caption,
                   ),
-                ),
-                Text(fare!, style: SgText.fare),
-              ],
-            ),
-          ),
-        ],
+                ],
+              ),
+          ],
+        ),
         const SizedBox(height: SgSpace.s4),
         SgPrimaryButton(
           key: const Key('trip_complete'),
-          label: busy ? 'Please wait' : 'Complete trip',
+          label: busy ? l.commonPleaseWait : l.tripEndAtDrop,
+          height: kSgPrimaryAction,
           onPressed: busy ? null : onComplete,
         ),
       ],

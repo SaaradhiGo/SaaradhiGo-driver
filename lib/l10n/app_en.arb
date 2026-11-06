@@ -282,5 +282,172 @@
   "homeJustStarted": "Just started",
   "@homeJustStarted": {
     "description": "Online time under a minute"
+  },
+  "earnTitle": "Earnings",
+  "@earnTitle": {
+    "description": "Earnings screen title"
+  },
+  "earnPeriodToday": "Today",
+  "@earnPeriodToday": {
+    "description": "Period tab"
+  },
+  "earnPeriodWeek": "This week",
+  "@earnPeriodWeek": {
+    "description": "Period tab"
+  },
+  "earnPeriodMonth": "This month",
+  "@earnPeriodMonth": {
+    "description": "Period tab"
+  },
+  "earnTrips": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@earnTrips": {
+    "description": "Trip count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnEarned": "Earned",
+  "@earnEarned": {
+    "description": "Gross earnings (older API)"
+  },
+  "earnLast7": "Last 7 days",
+  "@earnLast7": {
+    "description": "Bar chart heading"
+  },
+  "earnBreakdown": "Breakdown",
+  "@earnBreakdown": {
+    "description": "Breakdown card heading"
+  },
+  "earnTripFares": "Trip fares",
+  "@earnTripFares": {
+    "description": "Breakdown line: gross fares"
+  },
+  "earnNet": "Net earned",
+  "@earnNet": {
+    "description": "Breakdown line: net"
+  },
+  "earnCashInHand": "Cash in hand",
+  "@earnCashInHand": {
+    "description": "Breakdown line: cash collected"
+  },
+  "earnWithdrawable": "Withdrawable",
+  "@earnWithdrawable": {
+    "description": "Balance that can be withdrawn"
+  },
+  "earnWithdraw": "Withdraw {amount}",
+  "@earnWithdraw": {
+    "description": "Withdraw button",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPayoutMissing": "Add your bank or UPI details to withdraw.",
+  "@earnPayoutMissing": {
+    "description": "Why Withdraw is blocked"
+  },
+  "earnAddPayout": "Add payout details",
+  "@earnAddPayout": {
+    "description": "Opens the bank details step"
+  },
+  "earnRetry": "Try again",
+  "@earnRetry": {
+    "description": "Retry a failed load"
+  },
+  "earnLoadFailed": "Could not load your earnings",
+  "@earnLoadFailed": {
+    "description": "Load error"
+  },
+  "docsTitle": "Documents",
+  "@docsTitle": {
+    "description": "Documents screen title"
+  },
+  "docsProgress": "{done} of {total} done",
+  "@docsProgress": {
+    "description": "Documents progress",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "docsApproved": "Approved",
+  "@docsApproved": {
+    "description": "Document status"
+  },
+  "docsInReview": "In review",
+  "@docsInReview": {
+    "description": "Document status"
+  },
+  "docsUploaded": "Uploaded",
+  "@docsUploaded": {
+    "description": "Document status: present, not yet reviewed"
+  },
+  "docsRejected": "Rejected",
+  "@docsRejected": {
+    "description": "Document status"
+  },
+  "docsMissing": "Not uploaded",
+  "@docsMissing": {
+    "description": "Document status"
+  },
+  "docsNeedsAttention": "Needs a new photo",
+  "@docsNeedsAttention": {
+    "description": "Rejected card heading"
+  },
+  "docsFrameGuide": "Fit the whole document inside the frame, flat and in good light.",
+  "@docsFrameGuide": {
+    "description": "Camera framing guide"
+  },
+  "docsOpenCamera": "Open camera",
+  "@docsOpenCamera": {
+    "description": "Retake a rejected document"
+  },
+  "docsUploadedOk": "Uploaded. We will review it.",
+  "@docsUploadedOk": {
+    "description": "Upload success"
+  },
+  "docsUploadFailed": "Upload failed. Please try again.",
+  "@docsUploadFailed": {
+    "description": "Upload failure"
+  },
+  "docsPayoutTitle": "Payout details missing",
+  "@docsPayoutTitle": {
+    "description": "Missing payout card heading"
+  },
+  "docsCallSupport": "Call driver support",
+  "@docsCallSupport": {
+    "description": "Support call button"
+  },
+  "docsLoadFailed": "Could not load your documents",
+  "@docsLoadFailed": {
+    "description": "Load error"
+  },
+  "tripOpenInMaps": "Open in Maps",
+  "@tripOpenInMaps": {
+    "description": "Hands the route to the phone's map app"
+  },
+  "tripNightMode": "Night mode since sunset",
+  "@tripNightMode": {
+    "description": "Chip when the automatic theme picked dark"
+  },
+  "tripDropping": "Dropping {name}",
+  "@tripDropping": {
+    "description": "On-trip sheet heading",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEndAtDrop": "End trip at drop",
+  "@tripEndAtDrop": {
+    "description": "Complete the trip"
   }
 }
