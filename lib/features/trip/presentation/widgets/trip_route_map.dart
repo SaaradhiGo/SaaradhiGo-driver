@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../providers/route_providers.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../ui/sg_tokens.dart';
 import '../../../../core/maps/sg_map.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
@@ -34,7 +34,11 @@ class TripRouteMap extends ConsumerWidget {
     this.pickup,
     this.destination,
     this.focus,
+    this.padding = EdgeInsets.zero,
   });
+
+  /// Room the sheet and top buttons take, so pins are never under them.
+  final EdgeInsets padding;
 
   final LatLng? driver;
   final LatLng? pickup;
@@ -74,16 +78,17 @@ class TripRouteMap extends ConsumerWidget {
 
     final markers = <SgMarker>[
       if (driver != null)
-        _pin('driver', driver!, Icons.navigation_rounded, AppColors.primary),
+        _pin('driver', driver!, Icons.navigation_rounded, SgColors.gold500),
       if (pickup != null)
-        _pin('pickup', pickup!, Icons.my_location_rounded, AppColors.primaryContainer),
+        _pin('pickup', pickup!, Icons.circle, SgColors.pickup),
       if (destination != null)
-        _pin('drop', destination!, Icons.location_on_rounded, AppColors.error),
+        _pin('drop', destination!, Icons.square_rounded, SgColors.gold500),
     ];
 
     return SgMap(
       initialCenter: center,
       initialZoom: 14,
+      padding: padding,
       markers: markers,
       // Only a real road. While the lookup is in flight, or if it failed,
       // the map shows markers and nothing between them.
@@ -92,7 +97,7 @@ class TripRouteMap extends ConsumerWidget {
           SgPolyline(
             id: 'road',
             points: road,
-            color: AppColors.primary.withValues(alpha: 0.8),
+            color: SgColors.gold500.withValues(alpha: 0.85),
           ),
       ],
     );

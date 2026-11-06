@@ -35,6 +35,7 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
         pickup: pickup,
         destination: destination,
         focus: destination,
+        padding: kTripMapPadding,
       ),
       // Passenger chat + SOS stay reachable during the whole active trip.
       topActions: TripSafetyActions(tripId: trip.id, riderName: trip.riderName),

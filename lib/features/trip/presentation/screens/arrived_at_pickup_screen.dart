@@ -44,7 +44,7 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
       controller: _otpController,
       riderName: widget.trip.riderName,
       pickupAddress: widget.trip.pickupAddress,
-      error: session.otpError,
+      error: pinErrorText(session.otpError, widget.trip.riderName),
       busy: session.isBusy,
       onStart: _start,
       onCancel: () => showCancelTripSheet(context, ref),

@@ -55,6 +55,9 @@ String paymentLabel(String? method) => switch ((method ?? '').toLowerCase()) {
       _ => 'Online',
     };
 
+/// What the trip sheet and top buttons cover, for the map's padding.
+const kTripMapPadding = EdgeInsets.only(top: 90, bottom: 380);
+
 /// Map behind, chat and SOS top right, one sheet at the bottom.
 class DriverTripScaffold extends StatelessWidget {
   const DriverTripScaffold({
@@ -501,6 +504,20 @@ class _PinEntryState extends State<PinEntry> {
       ),
     );
   }
+}
+
+/// The backend's PIN refusals, in the app's voice. Null when there is none.
+String? pinErrorText(String? raw, String? riderName) {
+  if (raw == null) return null;
+  final first = firstNameOf(riderName);
+  final who = first.isEmpty ? 'the rider' : first;
+  if (raw.toLowerCase().contains('too many')) {
+    return 'Too many tries. Ask $who to read the PIN again.';
+  }
+  if (raw.toLowerCase().contains('invalid')) {
+    return 'That PIN does not match. Ask $who again.';
+  }
+  return raw;
 }
 
 /// Reached: the PIN check.

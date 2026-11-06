@@ -35,7 +35,9 @@ class AcceptedRideScreen extends ConsumerWidget {
         : null;
 
     return DriverTripScaffold(
-      map: TripRouteMap(driver: driver, pickup: pickup, focus: pickup),
+      map: TripRouteMap(driver: driver, pickup: pickup, focus: pickup,
+        padding: kTripMapPadding,
+      ),
       // SOS stays reachable; chat is the message button on the rider row.
       topActions: TripSosButton(tripId: trip.id),
       mapButton: pickup == null

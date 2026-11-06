@@ -70,8 +70,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
       }
 
+      // Home is rebuilt on the way back from a trip, so today's figure is
+      // fetched again rather than kept from before the trip.
+      final earnings = ref.read(earningsNotifierProvider.notifier);
       if (ref.read(earningsNotifierProvider).summary == null) {
-        ref.read(earningsNotifierProvider.notifier).loadInitialData();
+        earnings.loadInitialData();
+      } else {
+        earnings.refresh();
       }
 
       _subscribeToRideRequests();

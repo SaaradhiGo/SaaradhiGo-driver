@@ -57,6 +57,16 @@ void main() {
     );
   });
 
+  test('PIN refusals read calmly', () {
+    expect(pinErrorText('Invalid OTP provided', 'Raja Kumar'),
+        'That PIN does not match. Ask Raja again.');
+    expect(
+        pinErrorText('Too many invalid OTP attempts. Ask the rider for the '
+            'OTP again.', null),
+        'Too many tries. Ask the rider to read the PIN again.');
+    expect(pinErrorText(null, 'Raja'), isNull);
+  });
+
   testWidgets('to pickup: first name, rating, distance, one gold action',
       (tester) async {
     setPhoneSurface(tester);
