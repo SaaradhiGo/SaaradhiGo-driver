@@ -4,7 +4,7 @@
   "@appearanceTitle": {
     "description": "needs native review"
   },
-  "appearanceAutomatic": "स्वचालित",
+  "appearanceAutomatic": "ऑटोमैटिक",
   "@appearanceAutomatic": {
     "description": "needs native review"
   },
@@ -12,11 +12,11 @@
   "@appearanceAutomaticHint": {
     "description": "needs native review"
   },
-  "appearanceDark": "गहरा",
+  "appearanceDark": "डार्क",
   "@appearanceDark": {
     "description": "needs native review"
   },
-  "appearanceLight": "हल्का",
+  "appearanceLight": "लाइट",
   "@appearanceLight": {
     "description": "needs native review"
   },
