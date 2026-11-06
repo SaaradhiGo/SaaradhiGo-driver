@@ -813,5 +813,21 @@
         "type": "String"
       }
     }
+  },
+  "cancelWhyTooLong": "बहुत देर इंतज़ार किया",
+  "@cancelWhyTooLong": {
+    "description": "needs native review"
+  },
+  "cancelWhyWrongLocation": "गलत पिकअप स्थान",
+  "@cancelWhyWrongLocation": {
+    "description": "needs native review"
+  },
+  "cancelWhyDriverNoShow": "ड्राइवर नहीं पहुँचा",
+  "@cancelWhyDriverNoShow": {
+    "description": "needs native review"
+  },
+  "cancelWhyNoDriver": "समय पर किसी ड्राइवर ने स्वीकार नहीं किया",
+  "@cancelWhyNoDriver": {
+    "description": "needs native review"
   }
 }

@@ -17,6 +17,26 @@ String cancelledTitle(AppLocalizations l, CancelActor actor) => switch (actor) {
   CancelActor.unknown => l.tripCancelledNeutral,
 };
 
+/// The cancel reason in the app's words, from the server's reason CODE
+/// (`too_long`, `no_driver_accepted`, ...). Null for a missing, unknown or
+/// uninformative code ('other'): the screen then shows no reason line, and
+/// never the server's generic message.
+String? cancelReasonText(
+  AppLocalizations l,
+  String? code,
+  CancelActor actor,
+) => switch ((code ?? '').trim().toLowerCase()) {
+  'too_long' => l.cancelWhyTooLong,
+  'wrong_location' => l.cancelWhyWrongLocation,
+  'no_show' =>
+    actor == CancelActor.rider ? l.cancelWhyDriverNoShow : l.cancelReasonNoShow,
+  'safety' => l.cancelReasonSafety,
+  'vehicle_issue' => l.cancelReasonVehicle,
+  'personal' => l.cancelReasonPersonal,
+  'no_driver_accepted' => l.cancelWhyNoDriver,
+  _ => null,
+};
+
 /// Modal bottom sheet shown when an in-flight ride is cancelled.
 ///
 /// Names who cancelled from the trip's cancel actor, shows the reason the
@@ -30,7 +50,7 @@ class RideCancelledBottomSheet extends StatefulWidget {
     this.autoDismissSeconds = 10,
   });
 
-  /// Optional cancellation message/reason received from the backend.
+  /// The server's cancel reason code; shown only when it maps to text.
   final String? reason;
 
   /// Who cancelled, from the server's `cancelled_by`.
@@ -90,7 +110,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final l = sgL10n(context);
-    final reason = widget.reason?.trim();
+    final reason = cancelReasonText(l, widget.reason, widget.actor);
     final maxHeight = MediaQuery.sizeOf(context).height * 0.9;
 
     return PopScope(
@@ -135,7 +155,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
                     style: SgText.screenTitle,
                     textAlign: TextAlign.center,
                   ),
-                  if (reason != null && reason.isNotEmpty) ...[
+                  if (reason != null) ...[
                     const SizedBox(height: SgSpace.s2),
                     Text(
                       l.tripCancelReason(reason),

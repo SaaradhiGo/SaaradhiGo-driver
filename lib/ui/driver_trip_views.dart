@@ -414,11 +414,15 @@ class PinBoxes extends StatelessWidget {
     required this.digits,
     this.length = kTripPinLength,
     this.error = false,
+    this.height = 72,
   });
 
   final String digits;
   final int length;
   final bool error;
+
+  /// 72 by default; 56 on a short screen.
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -433,7 +437,7 @@ class PinBoxes extends StatelessWidget {
             Expanded(
               child: Container(
                 key: Key('pin_box_$i'),
-                height: 72,
+                height: height,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: SgColors.bg200,
@@ -638,177 +642,189 @@ class PinCheckView extends StatelessWidget {
           tablet: tablet,
           cardKey: const Key('pin_tablet_card'),
           child: LayoutBuilder(
-            builder: (context, box) => SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                SgSpace.s4,
-                SgSpace.s2,
-                SgSpace.s4,
-                SgSpace.s3,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(
-                        height: kSgTouch,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: SgColors.success,
-                                shape: BoxShape.circle,
-                              ),
-                              child: SgIcon(
-                                SgIcons.check,
-                                size: 20,
-                                color: SgColors.bg000,
-                              ),
-                            ),
-                            const SizedBox(width: SgSpace.s2),
-                            Expanded(
-                              child: Text(
-                                l.pinAtPickup,
-                                key: const Key('pin_at_pickup'),
-                                style: SgText.sectionTitle.copyWith(
-                                  color: SgColors.success,
-                                ),
-                              ),
-                            ),
-                            ?topActions,
-                          ],
+            builder: (context, box) {
+              // A short window (a 360x640 phone, a landscape phone, a large
+              // text size): fold the rider row into the header and tighten
+              // the gaps so Start trip stays on screen without a scroll.
+              final short = box.maxHeight < 700;
+              final Widget? message = onMessage == null
+                  ? null
+                  : Semantics(
+                      button: true,
+                      label: l.pinMessage(who),
+                      excludeSemantics: true,
+                      child: Material(
+                        color: SgColors.bg200,
+                        shape: CircleBorder(
+                          side: BorderSide(color: SgColors.lineStrong),
                         ),
-                      ),
-                      const SizedBox(height: SgSpace.s2),
-                      Row(
-                        children: [
-                          Container(
+                        child: InkWell(
+                          key: const Key('trip_message'),
+                          customBorder: const CircleBorder(),
+                          onTap: onMessage,
+                          child: SizedBox(
                             width: 56,
                             height: 56,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: SgColors.bg300,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: SgColors.line),
+                            child: Center(
+                              child: SgIcon(
+                                SgIcons.message,
+                                size: 24,
+                                color: SgColors.ink,
+                              ),
                             ),
-                            child: initials.isEmpty
-                                ? SgIcon(SgIcons.user, color: SgColors.ink)
-                                : Text(initials, style: SgText.title),
                           ),
-                          const SizedBox(width: SgSpace.s3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  first.isEmpty ? l.riderFallback : first,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: SgText.sectionTitle,
+                        ),
+                      ),
+                    );
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(
+                  SgSpace.s4,
+                  SgSpace.s2,
+                  SgSpace.s4,
+                  SgSpace.s3,
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: kSgTouch,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 32,
+                                height: 32,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: SgColors.success,
+                                  shape: BoxShape.circle,
                                 ),
-                                if (rated)
-                                  Row(
-                                    children: [
-                                      SgIcon(
-                                        kStarIcon,
-                                        size: 14,
-                                        color: SgColors.goldText,
-                                      ),
-                                      const SizedBox(width: SgSpace.s1),
-                                      Text(
-                                        riderRating!.toStringAsFixed(1),
-                                        style: SgText.caption,
-                                      ),
-                                    ],
+                                child: SgIcon(
+                                  SgIcons.check,
+                                  size: 20,
+                                  color: SgColors.bg000,
+                                ),
+                              ),
+                              const SizedBox(width: SgSpace.s2),
+                              Expanded(
+                                child: Text(
+                                  l.pinAtPickup,
+                                  key: const Key('pin_at_pickup'),
+                                  style: SgText.sectionTitle.copyWith(
+                                    color: SgColors.success,
                                   ),
-                              ],
-                            ),
-                          ),
-                          if (onMessage != null)
-                            Semantics(
-                              button: true,
-                              label: l.pinMessage(who),
-                              excludeSemantics: true,
-                              child: Material(
-                                color: SgColors.bg200,
-                                shape: CircleBorder(
-                                  side: BorderSide(color: SgColors.lineStrong),
                                 ),
-                                child: InkWell(
-                                  key: const Key('trip_message'),
-                                  customBorder: const CircleBorder(),
-                                  onTap: onMessage,
-                                  child: SizedBox(
-                                    width: 56,
-                                    height: 56,
-                                    child: Center(
-                                      child: SgIcon(
-                                        SgIcons.message,
-                                        size: 24,
-                                        color: SgColors.ink,
+                              ),
+                              if (short) ?message,
+                              if (short) const SizedBox(width: SgSpace.s2),
+                              ?topActions,
+                            ],
+                          ),
+                        ),
+                        if (!short) const SizedBox(height: SgSpace.s2),
+                        if (!short)
+                          Row(
+                            children: [
+                              Container(
+                                width: 56,
+                                height: 56,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: SgColors.bg300,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: SgColors.line),
+                                ),
+                                child: initials.isEmpty
+                                    ? SgIcon(SgIcons.user, color: SgColors.ink)
+                                    : Text(initials, style: SgText.title),
+                              ),
+                              const SizedBox(width: SgSpace.s3),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      first.isEmpty ? l.riderFallback : first,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: SgText.sectionTitle,
+                                    ),
+                                    if (rated)
+                                      Row(
+                                        children: [
+                                          SgIcon(
+                                            kStarIcon,
+                                            size: 14,
+                                            color: SgColors.goldText,
+                                          ),
+                                          const SizedBox(width: SgSpace.s1),
+                                          Text(
+                                            riderRating!.toStringAsFixed(1),
+                                            style: SgText.caption,
+                                          ),
+                                        ],
                                       ),
+                                  ],
+                                ),
+                              ),
+                              if (!short) ?message,
+                            ],
+                          ),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s4),
+                        Text(l.pinAsk(who), style: SgText.heading),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
+                        PinBoxes(
+                          digits: controller.text,
+                          length: length,
+                          error: error != null,
+                          height: short ? 56 : 72,
+                        ),
+                        SizedBox(
+                          height: short ? 32 : 48,
+                          child: error == null
+                              ? null
+                              : Center(
+                                  child: Text(
+                                    error!,
+                                    key: const Key('trip_pin_error'),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: SgText.body.copyWith(
+                                      color: SgColors.danger,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: SgSpace.s4),
-                      Text(l.pinAsk(who), style: SgText.heading),
-                      const SizedBox(height: SgSpace.s3),
-                      PinBoxes(
-                        digits: controller.text,
-                        length: length,
-                        error: error != null,
-                      ),
-                      SizedBox(
-                        height: 48,
-                        child: error == null
-                            ? null
-                            : Center(
-                                child: Text(
-                                  error!,
-                                  key: const Key('trip_pin_error'),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: SgText.body.copyWith(
-                                    color: SgColors.danger,
-                                  ),
-                                ),
-                              ),
-                      ),
-                      PinKeypad(
-                        controller: controller,
-                        length: length,
-                        enabled: !busy,
-                        onChanged: onChanged,
-                      ),
-                      const Spacer(),
-                      const SizedBox(height: SgSpace.s3),
-                      SgPrimaryButton(
-                        key: const Key('trip_start'),
-                        label: busy ? l.commonPleaseWait : l.pinStartTrip,
-                        height: kSgPrimaryAction,
-                        onPressed: busy || !ready ? null : onStart,
-                      ),
-                      _QuietLink(
-                        key: const Key('trip_cancel'),
-                        label: l.tripCancelRide,
-                        onTap: busy ? null : onCancel,
-                      ),
-                    ],
+                        ),
+                        PinKeypad(
+                          controller: controller,
+                          length: length,
+                          enabled: !busy,
+                          onChanged: onChanged,
+                        ),
+                        const Spacer(),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
+                        SgPrimaryButton(
+                          key: const Key('trip_start'),
+                          label: busy ? l.commonPleaseWait : l.pinStartTrip,
+                          height: kSgPrimaryAction,
+                          onPressed: busy || !ready ? null : onStart,
+                        ),
+                        _QuietLink(
+                          key: const Key('trip_cancel'),
+                          label: l.tripCancelRide,
+                          onTap: busy ? null : onCancel,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

@@ -23,6 +23,14 @@ import 'trip_providers.dart';
 /// cancel→cancelled. On success the backend does NOT reply directly — it
 /// group-sends a `trip_status_update`; on failure it sends `{type:error}`.
 class TripSessionNotifier extends Notifier<TripSessionState> {
+  static String? _reasonCode(Map<String, dynamic> raw) {
+    for (final k in const ['cancellation_reason', 'reason', 'cancel_reason']) {
+      final v = raw[k]?.toString().trim();
+      if (v != null && v.isNotEmpty) return v;
+    }
+    return null;
+  }
+
   /// Messages this notifier puts on screen, in the app's language.
   AppLocalizations get _l =>
       lookupAppLocalizations(Locale(SgText.languageCode));
@@ -349,8 +357,10 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
         state = state.copyWith(
           status: status,
           trip: trip,
+          // The reason CODE the frame carries, never its generic message:
+          // the screen shows a reason only for a code it can translate.
           cancellationReason: (status == TripStatus.cancelled)
-              ? (message ?? state.cancellationReason)
+              ? (_reasonCode(raw) ?? state.cancellationReason)
               : state.cancellationReason,
           connecting: false,
           actionInProgress: false,

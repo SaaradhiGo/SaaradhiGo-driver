@@ -813,5 +813,21 @@
         "type": "String"
       }
     }
+  },
+  "cancelWhyTooLong": "చాలా సేపు వేచి ఉన్నారు",
+  "@cancelWhyTooLong": {
+    "description": "needs native review"
+  },
+  "cancelWhyWrongLocation": "పికప్ స్థలం తప్పు",
+  "@cancelWhyWrongLocation": {
+    "description": "needs native review"
+  },
+  "cancelWhyDriverNoShow": "డ్రైవర్ రాలేదు",
+  "@cancelWhyDriverNoShow": {
+    "description": "needs native review"
+  },
+  "cancelWhyNoDriver": "సమయానికి ఏ డ్రైవర్ అంగీకరించలేదు",
+  "@cancelWhyNoDriver": {
+    "description": "needs native review"
   }
 }

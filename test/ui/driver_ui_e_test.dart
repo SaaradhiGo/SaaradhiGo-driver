@@ -184,7 +184,7 @@ void main() {
     var confirmed = 0;
     await tester.pumpWidget(
         sgApp(completeFrame(onConfirmCash: () => confirmed++)));
-    expect(find.text('COLLECT IN CASH'), findsOneWidget);
+    expect(find.text('Collect in cash'), findsOneWidget);
     expect(find.textContaining('Collect ₹248 cash from Raja'), findsOneWidget);
     expect(find.text('Done'), findsNothing);
     await tester.tap(find.text('Cash collected'));
@@ -199,6 +199,6 @@ void main() {
     await tester.pumpWidget(sgApp(completeFrame(cash: false)));
     expect(find.text('Paid by UPI'), findsOneWidget);
     expect(find.text('Done'), findsOneWidget);
-    expect(find.text('COLLECT IN CASH'), findsNothing);
+    expect(find.text('Collect in cash'), findsNothing);
   });
 }

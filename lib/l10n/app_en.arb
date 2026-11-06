@@ -720,9 +720,9 @@
       }
     }
   },
-  "tripCollectInCash": "COLLECT IN CASH",
+  "tripCollectInCash": "Collect in cash",
   "@tripCollectInCash": {
-    "description": "Summary label on a cash trip"
+    "description": "Label over the cash amount to collect"
   },
   "tripCollectBody": "Collect {amount} cash from {name}, then confirm below.",
   "@tripCollectBody": {
@@ -928,5 +928,21 @@
         "type": "String"
       }
     }
+  },
+  "cancelWhyTooLong": "Waited too long",
+  "@cancelWhyTooLong": {
+    "description": "Cancel reason code too_long (rider)"
+  },
+  "cancelWhyWrongLocation": "Wrong pickup location",
+  "@cancelWhyWrongLocation": {
+    "description": "Cancel reason code wrong_location (rider)"
+  },
+  "cancelWhyDriverNoShow": "The driver did not arrive",
+  "@cancelWhyDriverNoShow": {
+    "description": "Cancel reason code no_show when the rider cancelled"
+  },
+  "cancelWhyNoDriver": "No driver accepted in time",
+  "@cancelWhyNoDriver": {
+    "description": "Cancel reason code no_driver_accepted"
   }
 }

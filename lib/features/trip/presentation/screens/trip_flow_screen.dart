@@ -153,7 +153,11 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
           icon: SgIcons.close,
           title: cancelledTitle(l, CancelActor.fromServer(trip.cancelledBy)),
           message: l.tripCancelledNext,
-          reason: session.cancellationReason,
+          reason: cancelReasonText(
+            l,
+            session.cancellationReason,
+            CancelActor.fromServer(trip.cancelledBy),
+          ),
         );
       case TripStatus.reached:
         return ArrivedAtPickupScreen(trip: trip);

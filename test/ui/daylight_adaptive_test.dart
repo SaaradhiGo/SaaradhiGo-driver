@@ -10,6 +10,7 @@ import 'package:saaradhigo_driver/ui/driver_earnings_view.dart';
 import 'package:saaradhigo_driver/ui/driver_f_logic.dart';
 import 'package:saaradhigo_driver/ui/driver_trip_views.dart';
 import 'package:saaradhigo_driver/ui/incoming_offer_card.dart';
+import 'package:saaradhigo_driver/l10n/app_localizations.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -219,6 +220,43 @@ void main() {
         expect(find.text(title), findsOneWidget);
       });
     }
+  });
+
+  group('cancel reason (Tier 4)', () {
+    test('only a known code becomes a reason line', () {
+      final l = lookupAppLocalizations(const Locale('en'));
+      expect(cancelReasonText(l, 'too_long', CancelActor.rider),
+          'Waited too long');
+      expect(cancelReasonText(l, 'no_driver_accepted', CancelActor.unknown),
+          'No driver accepted in time');
+      expect(cancelReasonText(l, 'no_show', CancelActor.rider),
+          'The driver did not arrive');
+      expect(cancelReasonText(l, 'no_show', CancelActor.you),
+          'Rider is a no-show');
+      for (final c in [null, '', 'other', 'Your ride has been cancelled.']) {
+        expect(cancelReasonText(l, c, CancelActor.rider), isNull);
+      }
+    });
+
+    testWidgets('the generic server message is never shown as a reason',
+        (tester) async {
+      await tester.pumpWidget(sgApp(RideCancelledBottomSheet(
+        reason: 'Your ride has been cancelled.',
+        actor: CancelActor.rider,
+        autoDismissSeconds: 0,
+        onDismiss: () {},
+      )));
+      expect(find.textContaining('Reason'), findsNothing);
+    });
+  });
+
+  testWidgets('PIN at 360x640: Start trip is on screen without a scroll',
+      (tester) async {
+    SgColors.use(SgPalette.light);
+    await _pump(tester, _pin(), logical: const Size(360, 640));
+    final start = tester.getRect(find.byKey(const Key('trip_start')));
+    expect(start.bottom, lessThanOrEqualTo(640));
+    expect(find.byKey(const Key('trip_message')), findsOneWidget);
   });
 
   group('active trip (Tier 4)', () {

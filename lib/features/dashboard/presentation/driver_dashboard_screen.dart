@@ -179,6 +179,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       // the barrier covers the lower screen where Accept is about to be,
       // and a tap there dismissed the offer silently.
       isDismissible: false,
+      // Full width on a tablet too; the offer centres its own 480 card.
+      constraints: const BoxConstraints(maxWidth: double.infinity),
       backgroundColor: SgColors.bg000,
       builder: (modalCtx) {
         return SizedBox(

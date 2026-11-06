@@ -187,16 +187,22 @@ void main() {
       // Emit cancellation event over socket
       consumer.emitEvent(const TripStatusChanged(
         status: TripStatus.cancelled,
-        message: 'Rider cancelled due to delay',
-        raw: {'type': 'trip_status_update', 'status': 'cancelled'},
+        message: 'Your ride has been cancelled.',
+        raw: {
+          'type': 'trip_status_update',
+          'status': 'cancelled',
+          'reason': 'too_long',
+          'cancelled_by': 'rider',
+        },
       ));
       await Future<void>.delayed(Duration.zero);
 
       state = container.read(tripSessionNotifierProvider);
       // Status is cancelled
       expect(state.status, equals(TripStatus.cancelled));
-      // Reason captured
-      expect(state.cancellationReason, equals('Rider cancelled due to delay'));
+      // The reason CODE and the actor, never the generic message.
+      expect(state.cancellationReason, equals('too_long'));
+      expect(state.trip?.cancelledBy, equals('rider'));
       // Route guard flags
       expect(state.isTerminal, isTrue);
       expect(state.isActive, isFalse);
@@ -261,7 +267,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: RideCancelledBottomSheet(
-              reason: 'Customer changed plans',
+              reason: 'too_long',
               autoDismissSeconds: 0, // disable countdown during tap test
               onDismiss: () {
                 dismissed = true;
@@ -273,7 +279,7 @@ void main() {
 
       // No actor from the server: a neutral title, never a guess.
       expect(find.text('Trip cancelled'), findsOneWidget);
-      expect(find.text('Reason: Customer changed plans'), findsOneWidget);
+      expect(find.text('Reason: Waited too long'), findsOneWidget);
       expect(find.text('Back to home'), findsOneWidget);
 
       await tester.tap(find.text('Back to home'));
