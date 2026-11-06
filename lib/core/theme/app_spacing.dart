@@ -14,7 +14,7 @@ class AppSpacing {
   static const double touchTarget = 48.0;
   static const double primaryButtonHeight = 56.0;
 
-  static const double radiusMd = 12.0;
+  static const double radiusMd = 14.0;
   static const double radiusLg = 16.0;
   static const double radiusPill = 9999.0;
 }

@@ -35,7 +35,6 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         elevation: 0,
         title: Text(
           'Vehicle & Assets',

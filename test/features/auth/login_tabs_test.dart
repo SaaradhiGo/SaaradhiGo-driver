@@ -94,11 +94,11 @@ void main() {
   testWidgets('the mobile tab is the original screen', (tester) async {
     await pumpLogin(tester);
 
-    expect(find.text('Mobile Number'), findsOneWidget);
-    expect(find.text('Send OTP'), findsOneWidget);
+    expect(find.text('Mobile number'), findsOneWidget);
+    expect(find.text('Send code'), findsOneWidget);
 
     await tester.enterText(find.byType(TextFormField).first, '9876543210');
-    await tester.tap(find.text('Send OTP'));
+    await tester.tap(find.text('Send code'));
     await tester.pump();
 
     expect(repository.otpRequests, [
@@ -110,7 +110,7 @@ void main() {
     await pumpLogin(tester);
 
     await tester.enterText(find.byType(TextFormField).first, '98765');
-    await tester.tap(find.text('Send OTP'));
+    await tester.tap(find.text('Send code'));
     await tester.pump();
 
     expect(find.text('Please enter a valid 10-digit number'), findsOneWidget);

@@ -193,7 +193,7 @@ void main() {
       await tester.pumpWidget(_shellHarness(_seed()));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('WITHDRAW'), warnIfMissed: false);
+      await tester.tap(find.text('Withdraw'), warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(find.byType(TextField), findsOneWidget);
 

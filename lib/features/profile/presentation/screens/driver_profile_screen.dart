@@ -58,9 +58,8 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         title: Text(
-          'Account Suite',
+          'Profile',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
           ),
@@ -178,61 +177,17 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               color: AppColors.onBackground,
             ),
           ),
-          const SizedBox(height: AppSpacing.unit),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () => context.push('/elite'),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm + 2,
-                    vertical: AppSpacing.unit,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryContainer.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                    border: Border.all(
-                      color: AppColors.primaryContainer.withValues(alpha: 0.4),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.workspace_premium_rounded,
-                        size: 16,
-                        color: AppColors.primaryContainer,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'ELITE PARTNER',
-                        style: AppTypography.labelCaps.copyWith(
-                          color: AppColors.primaryContainer,
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 2),
-                      const Icon(
-                        Icons.chevron_right_rounded,
-                        size: 14,
-                        color: AppColors.primaryContainer,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // No tier pill here: every driver showed "Elite Partner" whether
+          // or not they were. The Elite Tier row below says what is true.
         ],
       ),
     );
   }
 
   Widget _buildMetricsRow(DriverProfileModel profile) {
-    final rating = profile.ratings?.toStringAsFixed(1) ?? '4.8';
+    // A driver with no ratings yet is "New", never an invented score.
+    final r = profile.ratings;
+    final rating = (r == null || r <= 0) ? 'New' : r.toStringAsFixed(1);
     final trips = profile.totalTrips?.toString() ?? '0';
 
     return Row(

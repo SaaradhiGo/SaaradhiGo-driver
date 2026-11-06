@@ -9,6 +9,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'Manrope',
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.dark(
@@ -39,10 +40,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          side: const BorderSide(
-            color: Color(0x1AFFFFFF), // 10% white inner border simulation
-            width: 1,
-          ),
+          side: const BorderSide(color: AppColors.outlineVariant),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -60,9 +58,9 @@ class AppTheme {
           // opt in themselves (see PrimaryButton/SecondaryButton/GhostButton).
           minimumSize: const Size(0, AppSpacing.primaryButtonHeight),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w700),
           elevation: 0,
         ),
       ),
@@ -74,34 +72,63 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          side: const BorderSide(
-            color: Color(0x66FFFFFF),
-            width: 1,
-          ), // 40% white
+          side: const BorderSide(color: AppColors.outline),
           textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.background,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: AppColors.onBackground,
+        elevation: 0,
+        centerTitle: false,
+        titleTextStyle: AppTypography.headlineSm.copyWith(
+          fontSize: 18,
+          color: AppColors.onBackground,
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.surfaceContainer,
+        contentTextStyle: AppTypography.bodyMd.copyWith(
+          color: AppColors.onBackground,
+        ),
+        actionTextColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          side: const BorderSide(color: AppColors.outlineVariant),
+        ),
+      ),
+      dividerTheme: const DividerThemeData(color: AppColors.outlineVariant),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surfaceContainerHigh,
+        fillColor: AppColors.surfaceContainer,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
-          borderSide: const BorderSide(color: AppColors.outline),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderSide: const BorderSide(color: AppColors.outlineVariant),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
-          borderSide: const BorderSide(color: AppColors.outline),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderSide: const BorderSide(color: AppColors.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           borderSide: const BorderSide(color: AppColors.primary),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           borderSide: const BorderSide(color: AppColors.error),
         ),
         labelStyle: AppTypography.bodyMd.copyWith(

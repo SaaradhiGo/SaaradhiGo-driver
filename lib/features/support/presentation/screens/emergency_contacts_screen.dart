@@ -35,7 +35,6 @@ class _EmergencyContactsScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         title: Text(
           'Emergency Contacts',
           style: AppTypography.headlineSm.copyWith(

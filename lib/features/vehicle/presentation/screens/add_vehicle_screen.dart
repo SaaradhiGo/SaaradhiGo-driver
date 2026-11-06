@@ -316,7 +316,6 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
-          backgroundColor: AppColors.surfaceContainer,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(

@@ -82,11 +82,9 @@ class AppBottomNav extends StatelessWidget {
             right: AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            color: AppColors.surface.withValues(alpha: 0.88),
-            border: Border(
-              top: BorderSide(
-                color: AppColors.outlineVariant.withValues(alpha: 0.15),
-              ),
+            color: AppColors.surface,
+            border: const Border(
+              top: BorderSide(color: AppColors.outlineVariant),
             ),
             boxShadow: [
               BoxShadow(
@@ -193,7 +191,8 @@ class _BottomNavItemState extends State<_BottomNavItem> {
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
                 style: AppTypography.labelCaps.copyWith(
-                  fontSize: 10,
+                  fontSize: 12,
+                  letterSpacing: 0,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive
                       ? AppColors.primaryContainer

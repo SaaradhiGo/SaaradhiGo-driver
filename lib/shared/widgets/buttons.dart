@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_typography.dart';
 
+/// The one gold button on a screen: flat gold, black label (design system).
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -17,72 +19,45 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEnabled = onPressed != null && !isLoading;
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: isEnabled
-            ? const [
-                BoxShadow(
-                  color: AppColors.shadowGlow,
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                  offset: Offset(0, 4),
-                ),
-              ]
-            : const [],
-        gradient: isEnabled
-            ? const LinearGradient(
-                colors: [AppColors.gradientStart, AppColors.gradientEnd],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : const LinearGradient(
-                colors: [
-                  AppColors.surfaceContainerHigh,
-                  AppColors.surfaceContainer,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-      ),
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          disabledForegroundColor: AppColors.onSurfaceVariant.withValues(
-            alpha: 0.6,
-          ),
-          disabledBackgroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          ),
-          minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
+    return ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.darkText,
+        disabledBackgroundColor: AppColors.surfaceContainerHigh,
+        disabledForegroundColor: AppColors.secondaryGray,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
-        child: isLoading
-            ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  color: AppColors.darkText,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                text,
-                style: isEnabled
-                    ? null
-                    : const TextStyle(
-                        color: AppColors.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-              ),
+        minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
+        textStyle: AppTypography.bodyMd.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
       ),
+      child: isLoading
+          ? const SizedBox(
+              height: 22,
+              width: 22,
+              child: CircularProgressIndicator(
+                color: AppColors.secondaryGray,
+                strokeWidth: 2,
+              ),
+            )
+          : Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: isEnabled ? AppColors.darkText : AppColors.secondaryGray,
+              ),
+            ),
     );
   }
 }
 
+/// A quiet outlined action beside the gold one.
 class SecondaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -98,16 +73,18 @@ class SecondaryButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: AppColors.surface,
-        side: const BorderSide(color: AppColors.primaryContainer, width: 1),
+        foregroundColor: AppColors.onBackground,
+        side: const BorderSide(color: AppColors.outline),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
-        minimumSize: const Size.fromHeight(
-          AppSpacing.touchTarget,
-        ), // Note: Spec says 48px or 56px, assuming 48px for secondary
+        minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
+        textStyle: AppTypography.bodyMd.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
       ),
-      child: Text(text),
+      child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis),
     );
   }
 }
@@ -120,15 +97,12 @@ class GhostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
+    return TextButton(
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.whiteText,
-        side: const BorderSide(color: Color(0x66FFFFFF), width: 1), // 40% White
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        ),
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.onSurfaceVariant,
         minimumSize: const Size.fromHeight(AppSpacing.touchTarget),
+        textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w700),
       ),
       child: Text(text),
     );

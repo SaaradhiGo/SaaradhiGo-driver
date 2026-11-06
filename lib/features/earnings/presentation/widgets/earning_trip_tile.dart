@@ -54,7 +54,7 @@ class EarningTripTile extends StatelessWidget {
               ? earning.promoPaidLabel!.trim()
               : kPromoPaidLabel,
           value: '$symbol${earning.promoPaidByPlatform}',
-          color: AppColors.primary,
+          color: AppColors.onBackground,
           note: earning.promoCreditedToWallet == true
               ? 'Credited to your wallet'
               : null,
@@ -117,7 +117,7 @@ class EarningTripTile extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.directions_car,
-                        color: AppColors.primary,
+                        color: AppColors.onBackground,
                         size: 20,
                       ),
                     ),
@@ -149,7 +149,7 @@ class EarningTripTile extends StatelessWidget {
                       ? ''
                       : '+$symbol${earning.netEarning}',
                   style: AppTypography.dataMono.copyWith(
-                    color: AppColors.primary,
+                    color: AppColors.onBackground,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

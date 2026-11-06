@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -35,40 +33,16 @@ class GlassPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A flat panel on the design system; blur and glow are kept as
+    // parameters for callers but no longer drawn.
     final radius = borderRadius ?? BorderRadius.circular(AppSpacing.radiusLg);
-    final glow = glowColor;
-
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: AppColors.surface,
         borderRadius: radius,
-        boxShadow: glow == null
-            ? const [
-                BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 12,
-                  offset: Offset(0, 4),
-                ),
-              ]
-            : [BoxShadow(color: glow, blurRadius: 18, spreadRadius: 1)],
+        border: Border.all(color: borderColor ?? AppColors.outlineVariant),
       ),
-      child: ClipRRect(
-        borderRadius: radius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: AppColors.glassOverlay,
-              borderRadius: radius,
-              border: Border.all(
-                color:
-                    borderColor ??
-                    AppColors.outlineVariant.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Padding(padding: padding, child: child),
-          ),
-        ),
-      ),
+      child: Padding(padding: padding, child: child),
     );
   }
 }
