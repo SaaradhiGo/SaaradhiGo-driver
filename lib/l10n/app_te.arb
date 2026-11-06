@@ -367,5 +367,17 @@
   "tripEndAtDrop": "డ్రాప్ వద్ద ట్రిప్ ముగించండి",
   "@tripEndAtDrop": {
     "description": "needs native review"
+  },
+  "breakdownTripFares": "ట్రిప్ ఛార్జీలు (మొత్తం)",
+  "@breakdownTripFares": {
+    "description": "needs native review"
+  },
+  "breakdownCommission": "ప్లాట్‌ఫామ్ కమీషన్",
+  "@breakdownCommission": {
+    "description": "needs native review"
+  },
+  "breakdownNet": "డ్రైవర్ నికర సంపాదన",
+  "@breakdownNet": {
+    "description": "needs native review"
   }
 }

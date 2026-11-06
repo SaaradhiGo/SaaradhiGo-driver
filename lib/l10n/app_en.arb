@@ -449,5 +449,17 @@
   "tripEndAtDrop": "End trip at drop",
   "@tripEndAtDrop": {
     "description": "Complete the trip"
+  },
+  "breakdownTripFares": "Trip Fares (Gross)",
+  "@breakdownTripFares": {
+    "description": "Breakdown line: gross fares"
+  },
+  "breakdownCommission": "Platform Commission",
+  "@breakdownCommission": {
+    "description": "Breakdown line: commission"
+  },
+  "breakdownNet": "Net Driver Earnings",
+  "@breakdownNet": {
+    "description": "Breakdown line: net"
   }
 }

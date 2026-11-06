@@ -367,5 +367,17 @@
   "tripEndAtDrop": "ड्रॉप पर ट्रिप खत्म करें",
   "@tripEndAtDrop": {
     "description": "needs native review"
+  },
+  "breakdownTripFares": "ट्रिप किराया (कुल)",
+  "@breakdownTripFares": {
+    "description": "needs native review"
+  },
+  "breakdownCommission": "प्लेटफ़ॉर्म कमीशन",
+  "@breakdownCommission": {
+    "description": "needs native review"
+  },
+  "breakdownNet": "ड्राइवर की शुद्ध कमाई",
+  "@breakdownNet": {
+    "description": "needs native review"
   }
 }
