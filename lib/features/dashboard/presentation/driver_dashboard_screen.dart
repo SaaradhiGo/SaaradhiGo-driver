@@ -143,7 +143,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       if (!mounted) return;
       // A push said a ride was coming and the socket never described it: a
       // later wave took it, or the rider cancelled.
-      _snack('That ride is no longer available.');
+      _snack(sgL10n(context).homeOfferGone);
     });
 
     // The terminated-app path: main() read the launch notification before any
@@ -197,7 +197,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
               Navigator.pop(modalCtx);
               _showingRideModal = false;
               coordinator.markSettled(offer.tripId);
-              _snack('Ride request declined.');
+              _snack(sgL10n(context).homeOfferDeclined);
             },
             onExpired: () {
               Navigator.pop(modalCtx);
@@ -342,14 +342,14 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         blocker: blocker,
         notices: [
           if (availability is AvailabilityStateReconnecting)
-            const HomeNotice('Reconnecting to dispatch'),
-          if (weakSignal) const HomeNotice('Weak GPS signal'),
+            HomeNotice(l.homeNoticeReconnecting),
+          if (weakSignal) HomeNotice(l.homeNoticeWeakGps),
           if (availability.isOnline &&
               locationState is LocationStateTracking &&
               !locationState.hasBackgroundAccess)
             const LimitedBackgroundBanner(),
           if (position == null && blocker == null && !engaged)
-            const HomeNotice('Finding your location'),
+            HomeNotice(l.homeNoticeFindingLocation),
         ],
         onMenu: _showMenu,
         onSafety: () => context.push('/safety'),
@@ -387,13 +387,14 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   /// fixes it. Mirrors the checks goOnline() makes, so the button never
   /// invites a tap that is certain to be refused.
   HomeBlocker? _blocker(ProfileState profileState, LocationState location) {
+    final l = sgL10n(context);
     if (profileState is ProfileStateLoaded) {
       final profile = profileState.profile;
       if (!profile.approved && !profile.dispatchEligible) {
         return HomeBlocker(
-          title: 'Verification in progress',
-          body: 'You can go online once your documents are approved.',
-          actionLabel: 'Check status',
+          title: l.blockerVerifyTitle,
+          body: l.blockerVerifyBody,
+          actionLabel: l.blockerVerifyAction,
           onAction: () => context.push('/verification-status'),
         );
       }
@@ -401,9 +402,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           profile.activeVehicle != null || profile.activeVehicleDetails != null;
       if (!hasVehicle) {
         return HomeBlocker(
-          title: 'Add your vehicle',
-          body: 'Add the vehicle you will drive to go online.',
-          actionLabel: 'Add vehicle',
+          title: l.blockerVehicleTitle,
+          body: l.blockerVehicleBody,
+          actionLabel: l.blockerVehicleAction,
           onAction: () => context.push('/vehicle/add'),
         );
       }
@@ -411,17 +412,17 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final notifier = ref.read(locationNotifierProvider.notifier);
     return switch (location) {
       LocationStateServiceDisabled() => HomeBlocker(
-        title: 'Location is off',
-        body: 'Turn on location to receive ride requests.',
-        actionLabel: 'Turn on location',
+        title: l.blockerLocationOffTitle,
+        body: l.blockerLocationOffBody,
+        actionLabel: l.blockerLocationOffAction,
         onAction: notifier.openLocationSettings,
       ),
       LocationStatePermissionDenied(:final permanent) => HomeBlocker(
-        title: 'Location access needed',
+        title: l.blockerLocationAccessTitle,
         body: permanent
-            ? 'Location permission is blocked. Allow it in Settings to go online.'
-            : 'SaaradhiGo needs your location to receive ride requests.',
-        actionLabel: permanent ? 'Open settings' : 'Allow location',
+            ? l.blockerLocationBlockedBody
+            : l.blockerLocationNeededBody,
+        actionLabel: permanent ? l.blockerOpenSettings : l.blockerAllowLocation,
         onAction: permanent ? notifier.openAppSettings : notifier.retry,
       ),
       _ => null,
@@ -430,14 +431,15 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
   void _showMenu() {
     // Notifications are the bell on Home now, not a menu row.
+    final l = sgL10n(context);
     final items = <(String, String, String?)>[
-      ('Profile', '/profile', null),
-      ('Vehicle', '/vehicle', null),
-      ('Documents', '/documents', null),
-      ('Rewards', '/incentives', null),
-      ('Refer a driver', '/refer', null),
-      ('Safety', '/safety', null),
-      ('Help and support', '/support', null),
+      (l.menuProfile, '/profile', null),
+      (l.menuVehicle, '/vehicle', null),
+      (l.menuDocuments, '/documents', null),
+      (l.menuRewards, '/incentives', null),
+      (l.menuReferDriver, '/refer', null),
+      (l.commonSafety, '/safety', null),
+      (l.menuHelp, '/support', null),
     ];
     final profile = switch (ref.read(driverProfileNotifierProvider)) {
       ProfileStateLoaded(:final profile) => profile,
@@ -469,7 +471,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name == null || name.isEmpty ? 'Driver' : name,
+                      name == null || name.isEmpty ? l.menuDriverFallback : name,
                       style: SgText.title,
                     ),
                     if (facts.isNotEmpty) Text(facts, style: SgText.caption),
@@ -531,7 +533,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             backgroundColor: SgColors.bg200,
             action: isNoVehicle
                 ? SnackBarAction(
-                    label: 'Add vehicle',
+                    label: sgL10n(context).blockerVehicleAction,
                     textColor: SgColors.goldText,
                     onPressed: () => context.push('/vehicle/add'),
                   )

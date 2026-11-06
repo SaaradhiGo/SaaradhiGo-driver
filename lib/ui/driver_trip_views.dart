@@ -48,13 +48,17 @@ String? distanceTimeLine(double? km, double? minutes) {
   return parts.isEmpty ? null : parts.join(' · ');
 }
 
-String paymentLabel(String? method) => switch ((method ?? '').toLowerCase()) {
-      'cash' => 'Cash',
-      'upi' => 'UPI',
-      'card' => 'Card',
-      'wallet' => 'Wallet',
-      _ => 'Online',
-    };
+/// The payment method as the driver reads it. English when [l] is absent.
+String paymentLabel(String? method, [AppLocalizations? l]) {
+  final s = l ?? lookupAppLocalizations(const Locale('en'));
+  return switch ((method ?? '').toLowerCase()) {
+    'cash' => s.payCash,
+    'upi' => s.payUpi,
+    'card' => s.payCard,
+    'wallet' => s.payWallet,
+    _ => s.payOnline,
+  };
+}
 
 /// What the trip sheet and top buttons cover, for the map's padding.
 const kTripMapPadding = EdgeInsets.only(top: 90, bottom: 380);
@@ -146,7 +150,7 @@ class NavigateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
-        label: 'Navigate',
+        label: sgL10n(context).tripNavigate,
         child: GestureDetector(
           key: const Key('trip_navigate'),
           onTap: onTap,
@@ -175,7 +179,7 @@ class NavigateButton extends StatelessWidget {
                 ),
                 const SizedBox(width: SgSpace.s2),
                 Text(
-                  'Navigate',
+                  sgL10n(context).tripNavigate,
                   style: SgText.body.copyWith(fontWeight: FontWeight.w700),
                 ),
               ],
@@ -234,7 +238,7 @@ class RiderRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                first.isEmpty ? 'Rider' : first,
+                first.isEmpty ? sgL10n(context).tripRiderFallback : first,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: SgText.title,
@@ -401,12 +405,14 @@ class ToPickupSheet extends StatelessWidget {
           const SizedBox(height: SgSpace.s4),
           SgPrimaryButton(
             key: const Key('trip_arrived'),
-            label: busy ? 'Please wait' : 'I\'ve arrived',
+            label: busy
+                ? sgL10n(context).commonPleaseWait
+                : sgL10n(context).tripArrived,
             onPressed: busy ? null : onArrived,
           ),
           _QuietLink(
             key: const Key('trip_cancel'),
-            label: 'Cancel ride',
+            label: sgL10n(context).tripCancelRide,
             onTap: busy ? null : onCancel,
           ),
         ],
@@ -1160,19 +1166,23 @@ class TripCompleteView extends StatelessWidget {
               if (collecting)
                 SgPrimaryButton(
                   key: const Key('trip_cash_collected'),
-                  label: busy ? 'Please wait' : 'Cash collected',
+                  label: busy
+                      ? sgL10n(context).commonPleaseWait
+                      : sgL10n(context).tripCashCollected,
                   onPressed: busy ? null : onConfirmCash,
                 )
               else
                 SgPrimaryButton(
                   key: const Key('trip_done'),
-                  label: 'Done',
+                  label: sgL10n(context).tripDone,
                   onPressed: onDone,
                 ),
               if (onRate != null)
                 _QuietLink(
                   key: const Key('trip_rate'),
-                  label: first.isEmpty ? 'Rate the rider' : 'Rate $first',
+                  label: first.isEmpty
+                      ? sgL10n(context).tripRateRider
+                      : sgL10n(context).tripRateName(first),
                   onTap: onRate,
                 ),
             ],
@@ -1201,7 +1211,7 @@ class _CollectPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('COLLECT IN CASH', style: SgText.label),
+            Text(sgL10n(context).tripCollectInCash, style: SgText.label),
             const SizedBox(height: SgSpace.s2),
             Text(
               amount,
@@ -1210,8 +1220,10 @@ class _CollectPanel extends StatelessWidget {
             ),
             const SizedBox(height: SgSpace.s2),
             Text(
-              'Collect $amount cash from ${name.isEmpty ? 'the rider' : name}, '
-              'then confirm below.',
+              sgL10n(context).tripCollectBody(
+                amount,
+                name.isEmpty ? sgL10n(context).riderFallback : name,
+              ),
               style: SgText.body.copyWith(color: SgColors.inkMuted),
             ),
           ],

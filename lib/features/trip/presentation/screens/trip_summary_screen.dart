@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../../../earnings/presentation/earnings_display.dart';
 import '../../domain/support_end.dart';
 import '../providers/support_end_provider.dart';
@@ -39,7 +40,9 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
       setState(() => _rated = true);
       ScaffoldMessenger.maybeOf(
         context,
-      )?.showSnackBar(const SnackBar(content: Text('Thanks — rating saved.')));
+      )?.showSnackBar(
+        SnackBar(content: Text(sgL10n(context).summaryRatingSaved)),
+      );
     }
   }
 
@@ -71,28 +74,30 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
     final endedBySupport = session.endedBySupport;
     final platformPaid = trip.paymentStatus == 'waived';
     final cash = (trip.paymentMethod ?? '').toLowerCase() == 'cash';
+    final l = sgL10n(context);
+    final payment = paymentLabel(trip.paymentMethod, l);
 
     return TripCompleteView(
-      title: endedBySupport ? kSupportEndedTitle : 'Trip complete',
+      title: endedBySupport ? kSupportEndedTitle : l.summaryTripComplete,
       riderName: trip.riderName,
       // A platform-paid end: the rider's fare is zero and means nothing to
       // the driver, whose earning is in the panel below. Never show ₹0.
       amount: endedBySupport && platformPaid ? null : exactMoney(_fare),
       amountCaption: endedBySupport
-          ? (platformPaid ? null : 'Fare for the distance driven')
-          : 'Fare',
+          ? (platformPaid ? null : l.summaryFareDistance)
+          : l.summaryFare,
       cashToCollect: needsCash ? exactMoney('$_cashAmount') : null,
       paidLine: needsCash || platformPaid
           ? null
           : cash
-          ? 'Cash collected'
-          : 'Paid by ${paymentLabel(trip.paymentMethod)}',
+          ? l.summaryCashCollected
+          : l.summaryPaidBy(payment),
       facts: [
         if (trip.distanceKm != null)
-          ('Distance', '${trip.distanceKm!.toStringAsFixed(1)} km'),
+          (l.summaryDistance, '${trip.distanceKm!.toStringAsFixed(1)} km'),
         if (trip.durationMin != null)
-          ('Time', '${trip.durationMin!.round()} min'),
-        ('Payment', paymentLabel(trip.paymentMethod)),
+          (l.summaryTime, '${trip.durationMin!.round()} min'),
+        (l.summaryPayment, payment),
       ],
       notes: [
         if (endedBySupport && platformPaid)
@@ -103,7 +108,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
         if (isPositiveAmount(trip.promoDiscount))
           TripNote(
             key: const Key('summary_promo_paid'),
-            text: 'Promo paid by SaaradhiGo',
+            text: l.summaryPromoPaid,
             trailing: exactMoney(trip.promoDiscount),
           ),
         if (endedBySupport) _supportEarnings(),
@@ -127,17 +132,16 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
     final data = info.asData?.value;
     final earning = data?.earning;
     final notice = data?.notice;
+    final l = sgL10n(context);
     String body;
     if (earning?.netEarning != null) {
-      body =
-          'You earned ${marketSymbol()}${earning!.netEarning} for the '
-          'distance driven.';
+      body = l.summarySupportEarned('${marketSymbol()}${earning!.netEarning}');
     } else if (notice != null) {
       body = notice;
     } else if (info.isLoading) {
-      body = 'Working out what you earned...';
+      body = l.summaryWorkingOut;
     } else {
-      body = 'Your earnings for this trip will show in your earnings list.';
+      body = l.summaryEarningsLater;
     }
     return TripNote(key: const Key('summary_support_earnings'), text: body);
   }

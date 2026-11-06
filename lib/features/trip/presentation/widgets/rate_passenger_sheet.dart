@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../providers/trip_providers.dart';
 
 /// Rate the passenger on a trip that just ended.
@@ -54,7 +55,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
 
   Future<void> _submit() async {
     if (_score == 0) {
-      setState(() => _error = 'Tap a star to rate the passenger.');
+      setState(() => _error = sgL10n(context).rateTapStar);
       return;
     }
     setState(() {
@@ -78,7 +79,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
     }
     setState(() {
       _submitting = false;
-      _error = result.message ?? 'Could not save your rating.';
+      _error = result.message ?? sgL10n(context).rateSaveFailed;
     });
   }
 
@@ -101,8 +102,8 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
           children: [
             Text(
               who != null && who.isNotEmpty
-                  ? 'How was your trip with $who?'
-                  : 'How was your passenger?',
+                  ? sgL10n(context).rateHowWasTripWith(who)
+                  : sgL10n(context).rateHowWasPassenger,
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -134,8 +135,8 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
               enabled: !_submitting,
               maxLines: 3,
               maxLength: 500,
-              decoration: const InputDecoration(
-                hintText: 'Anything the team should know? (optional)',
+              decoration: InputDecoration(
+                hintText: sgL10n(context).rateHint,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -149,7 +150,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
             ],
             const SizedBox(height: AppSpacing.md),
             PrimaryButton(
-              text: 'SUBMIT RATING',
+              text: sgL10n(context).rateSubmit,
               isLoading: _submitting,
               onPressed: _submitting ? null : _submit,
             ),
@@ -157,7 +158,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
               onPressed: _submitting
                   ? null
                   : () => Navigator.of(context).pop(false),
-              child: const Text('Not now'),
+              child: Text(sgL10n(context).rateNotNow),
             ),
           ],
         ),

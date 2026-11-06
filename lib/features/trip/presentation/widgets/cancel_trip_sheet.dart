@@ -4,17 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../providers/trip_providers.dart';
 
 /// Driver-cancellation reasons accepted by the backend
 /// (`POST /ride/trip/<id>/driver-cancel/` and the socket `cancel` action):
 /// `no_show | vehicle_issue | safety | personal | other`.
-const _cancelReasons = <(String, String)>[
-  ('no_show', 'Rider is a no-show'),
-  ('vehicle_issue', 'Vehicle issue'),
-  ('safety', 'Safety concern'),
-  ('personal', 'Personal emergency'),
-  ('other', 'Other'),
+List<(String, String)> _cancelReasons(AppLocalizations l) => [
+  ('no_show', l.cancelReasonNoShow),
+  ('vehicle_issue', l.cancelReasonVehicle),
+  ('safety', l.cancelReasonSafety),
+  ('personal', l.cancelReasonPersonal),
+  ('other', l.cancelReasonOther),
 ];
 
 /// Presents the cancellation reason picker and, on selection, cancels the trip
@@ -40,7 +41,7 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Cancel this ride?',
+                sgL10n(sheetCtx).cancelSheetTitle,
                 style: AppTypography.headlineSm.copyWith(
                   color: AppColors.onBackground,
                   fontWeight: FontWeight.bold,
@@ -48,14 +49,14 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
               ),
               const SizedBox(height: 4),
               Text(
-                'Select a reason. Frequent cancellations can affect your rating.',
+                sgL10n(sheetCtx).cancelSheetBody,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
                   fontSize: 13,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              for (final (code, label) in _cancelReasons)
+              for (final (code, label) in _cancelReasons(sgL10n(sheetCtx)))
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
