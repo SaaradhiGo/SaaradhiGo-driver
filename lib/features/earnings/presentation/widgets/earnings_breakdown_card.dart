@@ -97,7 +97,7 @@ class EarningsBreakdownCard extends StatelessWidget {
             icon: Icons.card_giftcard,
             label: 'Bonuses & Incentives',
             amount: bonuses ?? '${marketSymbol()}0.00',
-            color: AppColors.primary,
+            color: AppColors.onBackground,
           ),
           // Commission and net are shown only when the API sent a commission.
           if (commission != null) ...[
@@ -135,7 +135,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                   ? promoPaidLabel!.trim()
                   : 'Promo paid by SaaradhiGo',
               amount: '${marketSymbol()}$promoPaid',
-              color: AppColors.primary,
+              color: AppColors.onBackground,
               note: isPositiveAmount(promoPaidToday)
                   ? 'Today ${marketSymbol()}$promoPaidToday'
                   : null,
@@ -155,7 +155,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                 icon: Icons.emoji_events,
                 label: 'Incentive rewards',
                 amount: '${marketSymbol()}$incentiveRewards',
-                color: AppColors.primary,
+                color: AppColors.onBackground,
               ),
             if (isPositiveAmount(referralRewards))
               _buildRow(
@@ -163,7 +163,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                 icon: Icons.group_add,
                 label: 'Referral rewards',
                 amount: '${marketSymbol()}$referralRewards',
-                color: AppColors.primary,
+                color: AppColors.onBackground,
               ),
             Padding(
               key: const Key('breakdown_reward_note'),
@@ -260,14 +260,14 @@ class EarningsBreakdownCard extends StatelessWidget {
           Text(
             'Net Driver Earnings',
             style: AppTypography.bodyLg.copyWith(
-              color: AppColors.primary,
+              color: AppColors.onBackground,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             '${marketSymbol()}$netEarnings',
             style: AppTypography.dataMono.copyWith(
-              color: AppColors.primary,
+              color: AppColors.onBackground,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),

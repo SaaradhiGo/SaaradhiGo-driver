@@ -37,10 +37,9 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         elevation: 0,
         title: Text(
-          'Compliance Hub',
+          'Documents',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
           ),
@@ -162,15 +161,15 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
       children: [
         // Subtitle
         Text(
-          'Document Management Vault',
+          'Your documents',
           style: AppTypography.headlineSm.copyWith(
-            color: AppColors.primary,
+            color: AppColors.onBackground,
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 4),
         Text(
-          'Manage your official regulatory certificates and verification records.',
+          'Licence, vehicle papers and insurance. Tap one to see it.',
           style: AppTypography.bodyMd.copyWith(
             color: AppColors.onSurfaceVariant,
           ),
@@ -228,7 +227,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'VERIFIED',
+                  'Verified',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
                     letterSpacing: 1.2,
@@ -265,7 +264,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'ACTION REQ',
+                  'To do',
                   style: AppTypography.labelCaps.copyWith(
                     color: actionReq > 0
                         ? AppColors.error
@@ -360,8 +359,8 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
 
     final hasFile = doc.fileUrl != null && doc.fileUrl!.trim().isNotEmpty;
     final expiryFormatted = doc.expiryDate != null
-        ? 'Exp: ${doc.expiryDate!.day}/${doc.expiryDate!.month}/${doc.expiryDate!.year}'
-        : 'No Expiry Date';
+        ? 'Expires ${doc.expiryDate!.day}/${doc.expiryDate!.month}/${doc.expiryDate!.year}'
+        : 'No expiry';
 
     return Container(
       decoration: BoxDecoration(
@@ -470,7 +469,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                         tooltip: 'View Document',
                         icon: const Icon(
                           Icons.visibility_outlined,
-                          color: AppColors.primary,
+                          color: AppColors.onSurfaceVariant,
                         ),
                         onPressed: () => _showDocumentPreview(context, doc),
                       ),

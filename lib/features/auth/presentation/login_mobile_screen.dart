@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../../core/theme/app_spacing.dart';
+import '../../../ui/sg_text.dart';
+import '../../../ui/sg_tokens.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../core/market/market_providers.dart';
 import 'providers/auth_notifier.dart';
@@ -121,22 +125,56 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Mobile', icon: Icon(Icons.smartphone)),
-            Tab(text: 'Email', icon: Icon(Icons.alternate_email)),
-          ],
-        ),
-      ),
       body: SafeArea(
-        child: TabBarView(
-          controller: _tabController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _mobileTab(isLoading: isRequestingOtp),
-            _emailTab(isLoading: isSigningIn),
+            const SizedBox(height: SgSpace.s6),
+            Center(
+              child: SvgPicture.asset(
+                'assets/brand/saaradhigo-emblem-gold.svg',
+                height: 56,
+                semanticsLabel: 'SaaradhiGo',
+              ),
+            ),
+            const SizedBox(height: SgSpace.s5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: SgColors.bg100,
+                  borderRadius: BorderRadius.circular(SgRadius.md),
+                  border: Border.all(color: SgColors.line),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  dividerColor: Colors.transparent,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicator: BoxDecoration(
+                    color: SgColors.bg300,
+                    borderRadius: BorderRadius.circular(SgRadius.md - 3),
+                  ),
+                  labelColor: SgColors.ink,
+                  unselectedLabelColor: SgColors.inkMuted,
+                  labelStyle: SgText.body.copyWith(fontWeight: FontWeight.w700),
+                  tabs: const [
+                    Tab(text: 'Mobile'),
+                    Tab(text: 'Email'),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _mobileTab(isLoading: isRequestingOtp),
+                  _emailTab(isLoading: isSigningIn),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -153,12 +191,12 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
           children: [
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Welcome to SaaradhiGo',
+              'Drive with SaaradhiGo',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Enter your mobile number to log in or register.',
+              'Enter your mobile number. We will text you a code.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -167,7 +205,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
               keyboardType: TextInputType.phone,
               maxLength: 10,
               decoration: InputDecoration(
-                labelText: 'Mobile Number',
+                labelText: 'Mobile number',
                 prefixText: '${ref.watch(marketConfigProvider).dialPrefix} ',
                 border: OutlineInputBorder(),
               ),
@@ -183,7 +221,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
             ),
             const SizedBox(height: AppSpacing.lg),
             PrimaryButton(
-              text: 'Send OTP',
+              text: 'Send code',
               isLoading: isLoading,
               onPressed: isLoading ? () {} : _submitPhone,
             ),

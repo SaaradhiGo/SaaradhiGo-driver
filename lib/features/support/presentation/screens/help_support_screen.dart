@@ -57,7 +57,6 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         title: Text(
           'Help & Support',
           style: AppTypography.headlineSm.copyWith(

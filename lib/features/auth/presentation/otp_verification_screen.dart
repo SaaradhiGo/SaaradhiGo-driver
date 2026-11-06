@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/buttons.dart';
 import 'providers/auth_notifier.dart';
 import 'providers/auth_state.dart';
@@ -87,7 +89,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify OTP')),
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.margin),
@@ -96,15 +98,16 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'Enter OTP',
+                  'Enter the code',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'We have sent a 6-digit code to\n${widget.phoneNumber}',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  'We sent a 6-digit code to ${maskedPhone(widget.phoneNumber)}.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 TextFormField(
@@ -112,24 +115,26 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   keyboardType: TextInputType.number,
                   maxLength: 6,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(letterSpacing: 8, fontSize: 24),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  autofocus: true,
+                  style: AppTypography.dataMono.copyWith(
+                    fontSize: 28,
+                    letterSpacing: 14,
                   ),
+                  decoration: const InputDecoration(counterText: ''),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter OTP';
+                      return 'Enter the code we sent';
                     }
                     if (value.length != 6 ||
                         !RegExp(r'^\d+$').hasMatch(value)) {
-                      return 'Enter a valid 6-digit OTP';
+                      return 'The code is 6 digits';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 PrimaryButton(
-                  text: 'Verify & Login',
+                  text: 'Continue',
                   isLoading: isLoading,
                   onPressed: isLoading ? () {} : _submit,
                 ),
@@ -137,11 +142,14 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 TextButton(
                   onPressed: _canResend && !isLoading ? _resend : null,
                   child: Text(
-                    _canResend ? 'Resend OTP' : 'Resend OTP in ${_countdown}s',
-                    style: TextStyle(
+                    _canResend
+                        ? 'Send a new code'
+                        : 'New code in ${_countdown}s',
+                    style: AppTypography.bodyMd.copyWith(
+                      fontWeight: FontWeight.w700,
                       color: _canResend
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey,
+                          ? AppColors.onBackground
+                          : AppColors.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -152,4 +160,15 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       ),
     );
   }
+}
+
+/// "+91 ••••• •5176": enough to recognise the number, not to read it out.
+String maskedPhone(String phone) {
+  final digits = phone.replaceAll(RegExp(r'\D'), '');
+  if (digits.length < 4) return phone;
+  final last = digits.substring(digits.length - 4);
+  final prefix = phone.startsWith('+') && digits.length > 10
+      ? '+${digits.substring(0, digits.length - 10)} '
+      : '';
+  return '$prefix••••• •$last';
 }

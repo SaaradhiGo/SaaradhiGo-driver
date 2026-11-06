@@ -1,56 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// The older screens' type scale, in Manrope (bundled) since group F.
 class AppTypography {
   AppTypography._();
 
-  static TextStyle displayLg = GoogleFonts.inter(
-    fontSize: 32,
-    fontWeight: FontWeight.w700,
-    height: 40 / 32,
-    letterSpacing: -0.02,
+  static TextStyle _m(
+    double size,
+    double line,
+    FontWeight w, {
+    double spacing = 0,
+    bool figures = false,
+  }) => TextStyle(
+    fontFamily: 'Manrope',
+    fontSize: size,
+    height: line / size,
+    fontWeight: w,
+    fontVariations: [FontVariation('wght', w.value.toDouble())],
+    letterSpacing: spacing,
+    fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
   );
 
-  static TextStyle headlineLgMobile = GoogleFonts.inter(
-    fontSize: 28,
-    fontWeight: FontWeight.w700,
-    height: 34 / 28,
-  );
-
-  static TextStyle headlineMd = GoogleFonts.inter(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    height: 32 / 24,
-  );
-
-  static TextStyle headlineSm = GoogleFonts.inter(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    height: 28 / 20,
-  );
-
-  static TextStyle bodyLg = GoogleFonts.inter(
-    fontSize: 18,
-    fontWeight: FontWeight.w400,
-    height: 26 / 18,
-  );
-
-  static TextStyle bodyMd = GoogleFonts.inter(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    height: 24 / 16,
-  );
-
-  static TextStyle labelCaps = GoogleFonts.inter(
-    fontSize: 12,
-    fontWeight: FontWeight.w700,
-    height: 16 / 12,
-    letterSpacing: 0.05,
-  );
-
-  static TextStyle dataMono = GoogleFonts.jetBrainsMono(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    height: 20 / 14,
-  );
+  static TextStyle displayLg = _m(32, 40, FontWeight.w700, spacing: -0.3);
+  static TextStyle headlineLgMobile = _m(28, 34, FontWeight.w700);
+  static TextStyle headlineMd = _m(24, 32, FontWeight.w700);
+  static TextStyle headlineSm = _m(20, 28, FontWeight.w700);
+  static TextStyle bodyLg = _m(17, 26, FontWeight.w500);
+  static TextStyle bodyMd = _m(15, 22, FontWeight.w500);
+  static TextStyle labelCaps = _m(12, 16, FontWeight.w700, spacing: 0.4);
+  static TextStyle dataMono = _m(15, 20, FontWeight.w700, figures: true);
 }

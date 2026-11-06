@@ -31,7 +31,6 @@ class SafetyCenterScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         title: Text(
           'Safety Center',
           style: AppTypography.headlineSm.copyWith(

@@ -63,3 +63,32 @@ String rewardNote({String? commission, String? tax}) {
   ];
   return parts.join(' \u00b7 ');
 }
+
+/// A ledger amount as the driver reads it: grouped, with paise only when
+/// there are any. "₹1,151.29", "₹979", "₹12.40".
+String ledgerMoney(String? raw, {String? symbol}) {
+  final sym = symbol ?? MarketConfigStore.instance.current.currencySymbol;
+  final value = double.tryParse(
+        (raw ?? '0').replaceAll(RegExp(r'[^0-9.\-]'), ''),
+      ) ??
+      0;
+  final negative = value < 0;
+  final abs = value.abs();
+  final whole = abs.truncate().toString();
+  final grouped = sym == '₹'
+      ? _indian(whole)
+      : whole.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
+  final cents = ((abs - abs.truncate()) * 100).round();
+  final tail = cents == 0 ? '' : '.${cents.toString().padLeft(2, '0')}';
+  return '${negative ? '-' : ''}$sym$grouped$tail';
+}
+
+String _indian(String d) {
+  if (d.length <= 3) return d;
+  final head = d.substring(0, d.length - 3);
+  final groups = head.replaceAllMapped(
+    RegExp(r'\B(?=(\d{2})+(?!\d))'),
+    (_) => ',',
+  );
+  return '$groups,${d.substring(d.length - 3)}';
+}

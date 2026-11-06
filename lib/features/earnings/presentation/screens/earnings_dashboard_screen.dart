@@ -8,13 +8,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/buttons.dart';
-import '../../../../shared/widgets/driver_avatar.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../../shared/widgets/status_badge.dart';
 import '../../../../domain/models/earning_model.dart';
 import '../../../../domain/models/withdrawal_model.dart';
-import '../../../auth/presentation/providers/auth_notifier.dart';
-import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
 import '../../../incentives/presentation/providers/promo_incentives_provider.dart';
 import '../providers/earnings_providers.dart';
@@ -22,7 +19,6 @@ import '../widgets/cash_collection_banner.dart';
 import '../widgets/earning_trip_tile.dart';
 import '../widgets/earnings_breakdown_card.dart';
 import '../earnings_display.dart';
-import '../widgets/earnings_trend_chart.dart';
 import '../widgets/withdrawal_request_bottom_sheet.dart';
 
 /// Financials (Earnings & Wallet) Dashboard Screen (`/earnings`).
@@ -49,7 +45,6 @@ class _EarningsDashboardScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(earningsNotifierProvider);
-    final profileState = ref.watch(driverProfileNotifierProvider);
 
     // Auto-retry a failed/stale load when connectivity returns
     // (docs/14_ERROR_HANDLING.md:11 "Auto-retry queued HTTP requests"). Only
@@ -69,121 +64,12 @@ class _EarningsDashboardScreenState
       }
     });
 
-    final authState = ref.watch(authNotifierProvider);
-    final authUser = authState is AuthAuthenticated ? authState.user : null;
-
-    final profile = profileState.maybeWhen(
-      loaded: (profile) => profile,
-      orElse: () => null,
-    );
-    final avatarUrl = profile?.user?.avatar ?? authUser?.avatar;
-    final driverName =
-        profile?.user?.fullName?.trim() ?? authUser?.fullName?.trim();
-    final displayName = (driverName == null || driverName.isEmpty)
-        ? 'Driver Partner'
-        : driverName;
-    final rating = profile?.ratings;
-    final isVerified = profile?.approved ?? false;
-
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer.withValues(alpha: 0.8),
-        elevation: 0,
-        centerTitle: false,
-        title: InkWell(
-          onTap: () => context.push('/profile'),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DriverAvatar(
-                  url: avatarUrl,
-                  fallbackName: displayName,
-                  size: 38,
-                  isVerified: isVerified,
-                  onTap: () => context.push('/profile'),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Earnings',
-                          style: AppTypography.headlineMd.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        if (rating != null) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryContainer.withValues(
-                                alpha: 0.15,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  rating.toStringAsFixed(1),
-                                  style: AppTypography.dataMono.copyWith(
-                                    color: AppColors.primaryContainer,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                                const SizedBox(width: 2),
-                                const Icon(
-                                  Icons.star,
-                                  size: 11,
-                                  color: AppColors.primaryContainer,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    Text(
-                      displayName,
-                      style: AppTypography.bodyMd.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.notifications_none,
-              color: AppColors.onSurfaceVariant,
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Earnings')),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AppColors.onBackground,
           backgroundColor: AppColors.surfaceContainer,
           onRefresh: () async {
             await Future.wait([
@@ -200,7 +86,7 @@ class _EarningsDashboardScreenState
   Widget _buildBody(EarningsState state) {
     if (state.isLoading && state.summary == null) {
       return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+        child: CircularProgressIndicator(color: AppColors.onBackground),
       );
     }
 
@@ -292,126 +178,48 @@ class _EarningsDashboardScreenState
             child: Row(
               children: [
                 _buildFilterChip('Today', 0, state.selectedPeriodIndex),
-                _buildFilterChip('This Week', 1, state.selectedPeriodIndex),
-                _buildFilterChip('This Month', 2, state.selectedPeriodIndex),
+                _buildFilterChip('This week', 1, state.selectedPeriodIndex),
+                _buildFilterChip('This month', 2, state.selectedPeriodIndex),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Main Earnings Summary Card
+          // The period's figure, in whole currency; net and trips beside it.
           GlassPanel(
+            key: const Key('earnings_summary'),
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Stack(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  right: -20,
-                  top: -20,
-                  // Purely decorative accent that overflows the card bounds;
-                  // keep it out of the semantics tree, otherwise the clipped,
-                  // out-of-bounds node dirties parent data during the semantics
-                  // pass when the async earnings load relayouts the card
-                  // (triggers `!semantics.parentDataDirty`).
-                  child: ExcludeSemantics(
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primaryContainer.withValues(
-                          alpha: 0.15,
-                        ),
-                      ),
-                    ),
+                Text(
+                  state.selectedPeriodIndex == 0
+                      ? 'Earned today'
+                      : state.selectedPeriodIndex == 1
+                      ? 'Earned this week'
+                      : 'Earned this month',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
                   ),
                 ),
-                Column(
+                const SizedBox(height: AppSpacing.unit),
+                Text(
+                  ledgerMoney(summary?.totalEarned),
+                  style: AppTypography.displayLg.copyWith(
+                    fontSize: 44,
+                    height: 52 / 44,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.onBackground,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Row(
                   children: [
-                    Text(
-                      state.selectedPeriodIndex == 0
-                          ? 'Total Earnings (Today)'
-                          : state.selectedPeriodIndex == 1
-                          ? 'Total Earnings (This Week)'
-                          : 'Total Earnings (This Month)',
-                      style: AppTypography.bodyMd.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [AppColors.primary, AppColors.primaryContainer],
-                      ).createShader(bounds),
-                      child: Text(
-                        '${marketSymbol()}${summary?.totalEarned ?? '0.00'}',
-                        style: AppTypography.displayLg.copyWith(
-                          fontSize: 40,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Divider(
-                      color: AppColors.outlineVariant.withValues(alpha: 0.3),
-                      height: 1,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                '${summary?.totalTrips ?? 0}',
-                                style: AppTypography.dataMono.copyWith(
-                                  color: AppColors.primary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Completed Trips',
-                                style: AppTypography.labelCaps.copyWith(
-                                  color: AppColors.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (net != null) ...[
-                          Container(
-                            width: 1,
-                            height: 32,
-                            color: AppColors.outlineVariant.withValues(
-                              alpha: 0.3,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${marketSymbol()}$net',
-                                  style: AppTypography.dataMono.copyWith(
-                                    color: AppColors.primary,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Net Earnings',
-                                  style: AppTypography.labelCaps.copyWith(
-                                    color: AppColors.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                    _figure('Trips', '${summary?.totalTrips ?? 0}'),
+                    if (net != null) ...[
+                      const SizedBox(width: AppSpacing.lg),
+                      _figure('After commission', ledgerMoney(net)),
+                    ],
                   ],
                 ),
               ],
@@ -419,81 +227,41 @@ class _EarningsDashboardScreenState
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Payout Wallet & Withdrawal CTA Card
+          // Payout: what can be withdrawn, and the one gold action.
           GlassPanel(
+            key: const Key('earnings_payout'),
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryContainer.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  ),
-                  child: const Icon(
-                    Icons.account_balance_wallet,
-                    color: AppColors.primary,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Withdrawable Balance',
-                        style: AppTypography.labelCaps.copyWith(
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Ready to withdraw',
+                        style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onSurfaceVariant,
                         ),
                       ),
-                      Text(
-                        '${symbolFor(balance?.currency)}${balance?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
-                        style: AppTypography.headlineSm.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    Text(
+                      exactBalance(
+                        balance?.availableBalance,
+                        balance?.currency,
                       ),
-                    ],
-                  ),
+                      style: AppTypography.dataMono.copyWith(fontSize: 20),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryContainer,
-                    foregroundColor: AppColors.darkText,
-                    // Compact, content-width button: this one sits inside a
-                    // Row, so it must not inherit a full-width minimum.
-                    minimumSize: const Size(0, AppSpacing.touchTarget),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                  ),
-                  onPressed: () => WithdrawalRequestBottomSheet.show(context),
-                  child: Text(
-                    'WITHDRAW',
-                    style: AppTypography.labelCaps.copyWith(
-                      color: AppColors.darkText,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                const SizedBox(height: AppSpacing.md),
+                PrimaryButton(
+                  text: 'Withdraw',
+                  onPressed: (balance?.availableBalance ?? 0) > 0
+                      ? () => WithdrawalRequestBottomSheet.show(context)
+                      : null,
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Earnings Trend Line Chart
-          EarningsTrendChart(
-            label: state.selectedPeriodIndex == 0
-                ? 'Today'
-                : state.selectedPeriodIndex == 1
-                ? 'This Week'
-                : 'This Month',
-            value: '${marketSymbol()}${summary?.todayEarned ?? '0.00'}',
-            sublabel: '${summary?.todayTrips ?? 0} Trips',
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -546,7 +314,7 @@ class _EarningsDashboardScreenState
                     ),
                     child: const Icon(
                       Icons.emoji_events_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.onBackground,
                       size: 26,
                     ),
                   ),
@@ -581,7 +349,7 @@ class _EarningsDashboardScreenState
                               child: Text(
                                 'BONUS',
                                 style: AppTypography.labelCaps.copyWith(
-                                  color: AppColors.primary,
+                                  color: AppColors.onBackground,
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -672,6 +440,20 @@ class _EarningsDashboardScreenState
     );
   }
 
+  Widget _figure(String label, String value) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: AppTypography.bodyMd.copyWith(
+          color: AppColors.onSurfaceVariant,
+          fontSize: 13,
+        ),
+      ),
+      Text(value, style: AppTypography.headlineSm.copyWith(fontSize: 18)),
+    ],
+  );
+
   Widget _buildFilterChip(String label, int index, int currentIndex) {
     final isSelected = index == currentIndex;
     return Expanded(
@@ -681,26 +463,22 @@ class _EarningsDashboardScreenState
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          constraints: const BoxConstraints(minHeight: 40),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primaryContainer.withValues(alpha: 0.2)
+                ? AppColors.surfaceContainerHigh
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: isSelected
-                ? Border.all(
-                    color: AppColors.primaryContainer.withValues(alpha: 0.5),
-                  )
-                : null,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd - 4),
           ),
           child: Center(
             child: Text(
               label,
-              style: AppTypography.labelCaps.copyWith(
+              style: AppTypography.bodyMd.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
                 color: isSelected
-                    ? AppColors.primary
+                    ? AppColors.onBackground
                     : AppColors.onSurfaceVariant,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ),
@@ -719,7 +497,7 @@ class _EarningsDashboardScreenState
           Text(
             value,
             style: AppTypography.dataMono.copyWith(
-              color: AppColors.primary,
+              color: AppColors.onBackground,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -840,3 +618,7 @@ class _EarningsDashboardScreenState
     return '$day $month, $hh:$mm';
   }
 }
+
+/// Money the driver can take out is shown exactly: "₹1,240" or "₹12.40".
+String exactBalance(double? amount, String? currency) =>
+    ledgerMoney('${amount ?? 0}', symbol: symbolFor(currency));

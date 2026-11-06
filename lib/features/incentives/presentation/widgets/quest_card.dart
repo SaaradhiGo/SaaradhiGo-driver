@@ -210,21 +210,27 @@ class QuestCard extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${quest.progressTrips} of ${quest.targetTrips} trips',
-                              style: AppTypography.labelCaps.copyWith(
-                                color: AppColors.onSurfaceVariant,
-                                fontSize: 11,
+                            Flexible(
+                              child: Text(
+                                '${quest.progressTrips} of ${quest.targetTrips} trips',
+                                style: AppTypography.labelCaps.copyWith(
+                                  color: AppColors.onSurfaceVariant,
+                                  fontSize: 11,
+                                ),
                               ),
                             ),
-                            Text(
-                              quest.remainingTrips == 0
-                                  ? 'Goal achieved'
-                                  : '${quest.remainingTrips} more to unlock',
-                              style: AppTypography.labelCaps.copyWith(
-                                color: accent,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                quest.remainingTrips == 0
+                                    ? 'Goal achieved'
+                                    : '${quest.remainingTrips} more to unlock',
+                                style: AppTypography.labelCaps.copyWith(
+                                  color: accent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                                textAlign: TextAlign.end,
                               ),
                             ),
                           ],

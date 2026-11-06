@@ -108,7 +108,6 @@ class _SupportTicketDetailScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         title: Text(
           'Ticket #${widget.ticketId}',
           style: AppTypography.headlineSm.copyWith(

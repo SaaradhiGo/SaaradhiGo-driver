@@ -66,7 +66,6 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
         builder: (context) => Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.surfaceContainer,
             title: Text(
               'Route Map',
               style: AppTypography.headlineSm.copyWith(

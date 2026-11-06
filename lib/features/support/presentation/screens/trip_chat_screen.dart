@@ -84,7 +84,6 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainer,
         elevation: 0,
         centerTitle: false,
         titleSpacing: 0,

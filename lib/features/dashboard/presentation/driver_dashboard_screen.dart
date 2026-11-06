@@ -402,7 +402,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final name = profile?.user?.fullName?.trim();
     final vehicle = profile?.activeVehicleDetails;
     final facts = [
-      if (profile?.ratings != null) profile!.ratings!.toStringAsFixed(1),
+      if ((profile?.ratings ?? 0) > 0) profile!.ratings!.toStringAsFixed(1),
       if (vehicle != null)
         [
           '${vehicle['brand'] ?? ''} ${vehicle['model'] ?? ''}'.trim(),
@@ -411,6 +411,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     ].where((s) => s.isNotEmpty).join(' \u00b7 ');
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (sheetCtx) => SgSheetSurface(
