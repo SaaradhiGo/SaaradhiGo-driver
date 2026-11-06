@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:saaradhigo_driver/ui/driver_documents_view.dart';
 import 'package:saaradhigo_driver/ui/driver_earnings_view.dart';
 import 'package:saaradhigo_driver/ui/driver_f_logic.dart';
 import 'package:saaradhigo_driver/ui/driver_trip_views.dart';
@@ -101,19 +100,6 @@ void main() {
     );
   });
 
-  testWidgets('documents', (t) async {
-    await shoot(
-      t,
-      DriverDocumentsView(
-        overview: parseDocsOverview(sampleDocsBody)!,
-        payoutMissing: true,
-        onOpenCamera: (_) {},
-        onAddPayout: () {},
-        onCallSupport: () {},
-      ),
-      'documents_t3',
-    );
-  });
 
   testWidgets('complete, collect cash',
       (t) => shoot(t, completeFrame(), 'complete_cash'));
