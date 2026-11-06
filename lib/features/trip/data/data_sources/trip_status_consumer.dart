@@ -277,10 +277,20 @@ class TripStatusConsumer {
 
   /// Sends a driver action frame. The wire format is `{"action": <verb>}` with
   /// `otp` on `start` and an optional `reason` on `cancel`.
-  void sendAction(String action, {String? otp, String? reason}) {
+  ///
+  /// [commandId] is the protocol's optional client-generated correlation id
+  /// (`servers/consumers.py` echoes it on `command_ack`). The same command
+  /// keeps the same id, so a repeat is recognisably the same intent.
+  void sendAction(
+    String action, {
+    String? otp,
+    String? reason,
+    String? commandId,
+  }) {
     final message = <String, dynamic>{'action': action};
     if (otp != null) message['otp'] = otp;
     if (reason != null) message['reason'] = reason;
+    if (commandId != null) message['command_id'] = commandId;
     _service.sendMessage(message);
   }
 

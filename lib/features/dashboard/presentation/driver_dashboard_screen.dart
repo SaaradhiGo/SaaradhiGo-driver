@@ -11,7 +11,6 @@ import '../../../core/network/connectivity_provider.dart';
 import '../../../core/notifications/push_providers.dart';
 import '../../../core/notifications/ride_offer_coordinator.dart';
 import '../../../core/utils/app_logger.dart';
-import '../../../domain/models/trip_model.dart';
 import '../../../ui/driver_home_view.dart';
 import '../../../ui/incoming_offer_card.dart';
 import '../../../ui/sg_l10n.dart';
@@ -47,6 +46,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   StreamSubscription<PresentableOffer>? _offerSub;
   StreamSubscription<int>? _expiredOfferSub;
   bool _showingRideModal = false;
+
+  /// When the offer sheet last closed. Accept on the sheet and "Go offline"
+  /// on Home sit at the same spot, so a tap meant for Accept that lands just
+  /// after the sheet closed (it expired, or was taken) would otherwise take
+  /// the driver offline.
+  DateTime? _offerSheetClosedAt;
+  static const Duration _offlineTapGuard = Duration(milliseconds: 1500);
   Timer? _clock;
 
   @override
@@ -87,21 +93,21 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
   /// Crash recovery: on entry, ask the backend for an in-flight trip and rejoin
   /// it. Best-effort: a failure here must not block the home.
+  ///
+  /// Also runs on every resume, which is exactly when a driver taps Accept
+  /// on an offer that arrived in the background. The session notifier
+  /// decides whether the answer still applies, so a stale "no active trip"
+  /// can no longer clear an accept that started after it was asked.
   Future<void> _checkForActiveTrip() async {
     try {
-      final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
-      if (!mounted) return;
-      if (trip == null || trip.status.isTerminal) {
-        if (ref.read(tripSessionNotifierProvider).isActive) {
-          ref.read(tripSessionNotifierProvider.notifier).clear();
-        }
-        return;
-      }
+      final session = ref.read(tripSessionNotifierProvider.notifier);
+      final trip = await session.reconcileWithServer();
+      if (!mounted || trip == null) return;
       AppLogger.i(
         'Active trip detected: id=${trip.id}, status=${trip.status.name}. Rejoining /ride...',
       );
-      ref.read(tripSessionNotifierProvider.notifier).resumeActiveTrip(trip);
-      if (mounted) context.go('/ride');
+      session.resumeActiveTrip(trip);
+      context.go('/ride');
     } catch (e, st) {
       AppLogger.w('Failed checking for active trip: $e\n$st');
     }
@@ -166,6 +172,12 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       useRootNavigator: true,
       isScrollControlled: true,
       enableDrag: false,
+      // A ride is lost only by the driver's own choice. While the sheet is
+      // still sliding in -- which is what a resume looks like, because an
+      // offer that arrived in the background had no frames to animate in --
+      // the barrier covers the lower screen where Accept is about to be,
+      // and a tap there dismissed the offer silently.
+      isDismissible: false,
       backgroundColor: SgColors.bg000,
       builder: (modalCtx) {
         return SizedBox(
@@ -197,6 +209,18 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       },
     ).then((_) {
       _showingRideModal = false;
+      _offerSheetClosedAt = DateTime.now();
+      // Home went away under the sheet (a redirect or rebuild during
+      // resume): the driver did not choose anything, so the offer stays
+      // pending and the next Home presents it again.
+      if (!mounted) {
+        if (coordinator.pendingOffer?.tripId == offer.tripId) {
+          AppLogger.i(
+            'Offer ${offer.tripId} closed by navigation; kept for re-display',
+          );
+        }
+        return;
+      }
       // Dismissed with the back button: the driver has seen and ignored it,
       // so it must not be re-presented by the other channel.
       coordinator.markSettled(offer.tripId);
@@ -344,6 +368,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   }
 
   void _toggle(AvailabilityState availability) {
+    final closedAt = _offerSheetClosedAt;
+    if (availability.isEngaged &&
+        closedAt != null &&
+        DateTime.now().difference(closedAt) < _offlineTapGuard) {
+      AppLogger.i('Go offline ignored: the offer sheet has just closed');
+      return;
+    }
     final notifier = ref.read(availabilityNotifierProvider.notifier);
     if (availability is AvailabilityStateBlocked ||
         availability is AvailabilityStateError) {

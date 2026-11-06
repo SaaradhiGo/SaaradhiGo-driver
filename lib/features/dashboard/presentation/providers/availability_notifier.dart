@@ -360,29 +360,42 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
   // Location streaming
   // ---------------------------------------------------------------------------
 
+  /// How long a lost location must stay lost before an online driver is
+  /// taken offline.
+  ///
+  /// Resume re-reads the permission and, when location was off, restarts the
+  /// stream; either can report a loss for a moment and then recover. Going
+  /// offline on that blip closed the dispatch socket under a driver who was
+  /// accepting a ride. A real loss still takes them offline, a few seconds
+  /// later.
+  static const Duration locationLossGrace = Duration(seconds: 4);
+
+  Timer? _locationLossTimer;
+
   void _onLocationChanged(LocationState locationState) {
-    if (!_intendsOnline) return;
+    if (!_intendsOnline) {
+      _cancelLocationLoss();
+      return;
+    }
 
     switch (locationState) {
       case LocationStateServiceDisabled():
-        AppLogger.w('Location services disabled while online — going offline');
-        unawaited(
-          _goOfflineBecause(
-            AvailabilityBlockReason.locationServiceDisabled,
-            'Location services were turned off. You are now offline.',
-          ),
+        _confirmLocationLoss(
+          AvailabilityBlockReason.locationServiceDisabled,
+          'Location services were turned off. You are now offline.',
         );
 
       case LocationStatePermissionDenied():
-        AppLogger.w('Location permission revoked while online — going offline');
-        unawaited(
-          _goOfflineBecause(
-            AvailabilityBlockReason.locationPermissionDenied,
-            'Location permission was revoked. You are now offline.',
-          ),
+        _confirmLocationLoss(
+          AvailabilityBlockReason.locationPermissionDenied,
+          'Location permission was revoked. You are now offline.',
         );
 
       case LocationStateTracking(:final position):
+        if (_locationLossTimer != null) {
+          AppLogger.i('Location recovered within the grace; staying online');
+        }
+        _cancelLocationLoss();
         _maybeSend(position);
 
       case LocationStateInitial():
@@ -391,6 +404,29 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
       case LocationStateError():
         break;
     }
+  }
+
+  /// Goes offline for [reason] only if location is still lost after
+  /// [locationLossGrace].
+  void _confirmLocationLoss(AvailabilityBlockReason reason, String message) {
+    if (_locationLossTimer != null) return;
+    AppLogger.w('Location lost while online ($reason); confirming');
+    _locationLossTimer = Timer(locationLossGrace, () {
+      _locationLossTimer = null;
+      if (!ref.mounted || !_intendsOnline) return;
+      final now = ref.read(locationNotifierProvider);
+      final stillLost =
+          now is LocationStateServiceDisabled ||
+          now is LocationStatePermissionDenied;
+      if (!stillLost) return;
+      AppLogger.w('Location still lost after the grace; going offline');
+      unawaited(_goOfflineBecause(reason, message));
+    });
+  }
+
+  void _cancelLocationLoss() {
+    _locationLossTimer?.cancel();
+    _locationLossTimer = null;
   }
 
   Future<void> _goOfflineBecause(
@@ -404,8 +440,10 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
           .read(locationNotifierProvider.notifier)
           .setForegroundNotification(enabled: false),
     );
-    await _detachConsumer();
+    // Say so before the socket teardown, which can take a while: the driver
+    // is offline from this moment and must not see "Online" meanwhile.
     state = AvailabilityState.blocked(reason: reason, message: message);
+    await _detachConsumer();
   }
 
   void _startHeartbeat() {
@@ -441,6 +479,7 @@ class AvailabilityNotifier extends Notifier<AvailabilityState> {
   // ---------------------------------------------------------------------------
 
   void _teardown() {
+    _cancelLocationLoss();
     _stopHeartbeat();
     _eventSubscription?.cancel();
     _connectionSubscription?.cancel();

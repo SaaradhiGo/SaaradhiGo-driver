@@ -52,7 +52,12 @@ class _FakeTripStatusConsumer implements TripStatusConsumer {
   }
 
   @override
-  void sendAction(String action, {String? otp, String? reason}) {
+  void sendAction(
+    String action, {
+    String? otp,
+    String? reason,
+    String? commandId,
+  }) {
     sentActions.add(action);
   }
 
