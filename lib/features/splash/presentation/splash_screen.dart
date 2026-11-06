@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../routing/app_router.dart';
+import '../../../ui/sg_brand.dart';
+import '../../../ui/sg_tokens.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -32,22 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Placeholder for logo
-            Icon(
-              Icons.local_taxi,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'SaaradhiGo Driver',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            const SgFullLogo(height: 160),
             const SizedBox(height: 48),
-            const CircularProgressIndicator(),
+            CircularProgressIndicator(color: SgColors.goldText),
           ],
         ),
       ),

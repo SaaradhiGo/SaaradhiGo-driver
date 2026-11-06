@@ -61,7 +61,7 @@ class OnboardingProgressIndicator extends StatelessWidget {
         Text(
           title,
           style: AppTypography.labelCaps.copyWith(
-            color: isActive ? AppColors.primary : AppColors.onSurfaceVariant,
+            color: isActive ? AppColors.primaryText : AppColors.onSurfaceVariant,
           ),
         ),
       ],

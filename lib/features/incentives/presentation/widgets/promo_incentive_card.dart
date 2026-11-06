@@ -19,11 +19,11 @@ class PromoIncentiveCard extends StatelessWidget {
   Color _stateColor(PromoIncentiveState s) {
     switch (s) {
       case PromoIncentiveState.earned:
-        return AppColors.primary;
+        return AppColors.primaryText;
       case PromoIncentiveState.pendingReview:
-        return AppColors.secondary;
+        return AppColors.primaryText;
       case PromoIncentiveState.inProgress:
-        return AppColors.primary;
+        return AppColors.primaryText;
       default:
         return AppColors.onSurfaceVariant;
     }
@@ -105,7 +105,7 @@ class PromoIncentiveCard extends StatelessWidget {
                 'Reward ${incentive.rewardText}',
                 key: Key('promo_incentive_reward_${incentive.id}'),
                 style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                 ),
               ),

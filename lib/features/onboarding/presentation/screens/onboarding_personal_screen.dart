@@ -153,7 +153,7 @@ class _OnboardingPersonalScreenState
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.onBackground),
+          icon: Icon(Icons.arrow_back, color: AppColors.onBackground),
           onPressed: () => context.pop(),
         ),
       ),
@@ -254,7 +254,7 @@ class _OnboardingPersonalScreenState
 
   Widget _buildCityDropdown() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
@@ -267,10 +267,10 @@ class _OnboardingPersonalScreenState
             color: AppColors.onSurfaceVariant,
           ),
         ),
-        icon: const Icon(Icons.expand_more, color: AppColors.onSurfaceVariant),
+        icon: Icon(Icons.expand_more, color: AppColors.onSurfaceVariant),
         dropdownColor: AppColors.surfaceContainer,
         style: AppTypography.bodyLg.copyWith(color: AppColors.onBackground),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           border: UnderlineInputBorder(
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
@@ -278,7 +278,7 @@ class _OnboardingPersonalScreenState
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.primaryText, width: 2),
           ),
           contentPadding: EdgeInsets.zero,
         ),
@@ -306,7 +306,7 @@ class _OnboardingPersonalScreenState
             shape: BoxShape.circle,
             border: Border.all(
               color: _avatarPath != null
-                  ? AppColors.primary
+                  ? AppColors.primaryText
                   : AppColors.outlineVariant,
               width: 2,
             ),
@@ -323,7 +323,7 @@ class _OnboardingPersonalScreenState
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.add_a_photo,
                       color: AppColors.onSurfaceVariant,
                       size: 32,
@@ -375,7 +375,7 @@ class _OnboardingPersonalScreenState
                   ? AppColors.darkText
                   : AppColors.onSurfaceVariant,
             ),
-            side: const WidgetStatePropertyAll(
+            side: WidgetStatePropertyAll(
               BorderSide(color: AppColors.outlineVariant),
             ),
             shape: WidgetStatePropertyAll(

@@ -53,7 +53,7 @@ class _EmergencyContactsScreenState
             Text(
               'Trusted Contact',
               style: AppTypography.headlineSm.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
             ),
             const SizedBox(height: 4),
@@ -124,7 +124,7 @@ class _SavedBanner extends ConsumerWidget {
           borderColor: AppColors.error.withValues(alpha: 0.4),
           child: Row(
             children: [
-              const Icon(Icons.error_outline_rounded, color: AppColors.error),
+              Icon(Icons.error_outline_rounded, color: AppColors.error),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -152,7 +152,7 @@ class _NoContactCard extends StatelessWidget {
     return GlassPanel(
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.person_add_alt_1_rounded,
             size: 40,
             color: AppColors.onSurfaceVariant,
@@ -196,11 +196,11 @@ class _ContactCard extends StatelessWidget {
           Container(
             width: 48,
             height: 48,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.surfaceContainerHigh,
             ),
-            child: const Icon(Icons.person_rounded, color: AppColors.primary),
+            child: Icon(Icons.person_rounded, color: AppColors.primaryText),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -226,9 +226,9 @@ class _ContactCard extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Edit contact',
-            icon: const Icon(
+            icon: Icon(
               Icons.edit_rounded,
-              color: AppColors.primaryContainer,
+              color: AppColors.primaryText,
             ),
             onPressed: onEdit,
           ),
@@ -288,7 +288,7 @@ class _ContactSheetState extends ConsumerState<_ContactSheet> {
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.surfaceContainer,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppSpacing.radiusLg),
@@ -345,9 +345,9 @@ class _ContactSheetState extends ConsumerState<_ContactSheet> {
                   errorText: _validationError.isEmpty ? null : _validationError,
                   filled: true,
                   fillColor: AppColors.surfaceContainerHigh,
-                  prefixIcon: const Icon(
+                  prefixIcon: Icon(
                     Icons.phone_rounded,
-                    color: AppColors.primaryContainer,
+                    color: AppColors.primaryText,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),

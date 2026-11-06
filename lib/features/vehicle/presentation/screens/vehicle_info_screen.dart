@@ -46,30 +46,30 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
         actions: [
           if (state.allVehicles.length > 1)
             TextButton.icon(
-              icon: const Icon(
+              icon: Icon(
                 Icons.swap_horiz_rounded,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 20,
               ),
               label: Text(
                 'Fleet (${state.allVehicles.length})',
                 style: AppTypography.labelCaps.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onPressed: () => _showFleetSelectorSheet(context, state),
             ),
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.add_circle_outline_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryText,
             ),
             tooltip: 'Add Vehicle',
             onPressed: () => context.push('/vehicle/add'),
           ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
+            icon: Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
             onPressed: () => ref
                 .read(vehicleInfoNotifierProvider.notifier)
                 .fetchVehicleInfo(refresh: true),
@@ -78,7 +78,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AppColors.primaryText,
           backgroundColor: AppColors.surfaceContainer,
           onRefresh: () => ref
               .read(vehicleInfoNotifierProvider.notifier)
@@ -91,8 +91,8 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
 
   Widget _buildBody(BuildContext context, VehicleInfoState state) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -103,7 +103,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 54,
@@ -144,7 +144,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.directions_car_outlined,
                 color: AppColors.onSurfaceVariant,
                 size: 64,
@@ -192,7 +192,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
         Text(
           'Active Fleet Vehicle',
           style: AppTypography.headlineSm.copyWith(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -230,9 +230,9 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
         if (state.allVehicles.length > 1) ...[
           const SizedBox(height: AppSpacing.md),
           TextButton.icon(
-            icon: const Icon(
+            icon: Icon(
               Icons.swap_horiz_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryText,
             ),
             label: const Text('Switch Active Fleet Vehicle'),
             onPressed: () => _showFleetSelectorSheet(context, state),
@@ -263,7 +263,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
               Container(
                 height: 200,
                 width: double.infinity,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.surfaceContainerHigh,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(AppSpacing.radiusLg),
@@ -305,25 +305,25 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4ADE80).withValues(alpha: 0.2),
+                    color: AppColors.success.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: const Color(0xFF4ADE80).withValues(alpha: 0.6),
+                      color: AppColors.success.withValues(alpha: 0.6),
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_circle,
-                        color: Color(0xFF4ADE80),
+                        color: AppColors.success,
                         size: 14,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         'ACTIVE VEHICLE',
                         style: AppTypography.labelCaps.copyWith(
-                          color: const Color(0xFF4ADE80),
+                          color: AppColors.success,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -353,7 +353,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 Text(
                   vehicle.vehicleType.toUpperCase(),
                   style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     letterSpacing: 1.2,
                   ),
                 ),
@@ -421,9 +421,9 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                     color: AppColors.primaryContainer.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.health_and_safety_outlined,
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     size: 20,
                   ),
                 ),
@@ -461,9 +461,9 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                     color: AppColors.primaryContainer.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.car_repair_outlined,
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     size: 20,
                   ),
                 ),
@@ -479,7 +479,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 Text(
                   'Verified Compliant',
                   style: AppTypography.labelCaps.copyWith(
-                    color: const Color(0xFF4ADE80),
+                    color: AppColors.success,
                     fontSize: 10,
                   ),
                 ),
@@ -606,13 +606,13 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                         : AppColors.surfaceContainer,
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     border: v.id == state.activeVehicle?.id
-                        ? Border.all(color: AppColors.primary)
+                        ? Border.all(color: AppColors.primaryText)
                         : null,
                   ),
                   child: ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.directions_car_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                     ),
                     title: Text(
                       '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
@@ -628,9 +628,9 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                       ),
                     ),
                     trailing: v.id == state.activeVehicle?.id
-                        ? const Icon(
+                        ? Icon(
                             Icons.check_circle,
-                            color: AppColors.primary,
+                            color: AppColors.primaryText,
                           )
                         : TextButton(
                             child: const Text('Activate'),
@@ -654,11 +654,11 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
               ],
               const SizedBox(height: AppSpacing.sm),
               OutlinedButton.icon(
-                icon: const Icon(Icons.add_rounded, color: AppColors.primary),
+                icon: Icon(Icons.add_rounded, color: AppColors.primaryText),
                 label: const Text('Add New Vehicle'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
+                  foregroundColor: AppColors.primaryText,
+                  side: BorderSide(color: AppColors.primaryText),
                   minimumSize: const Size.fromHeight(48),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -738,14 +738,14 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
             children: [
               Icon(
                 passed ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                color: passed ? const Color(0xFF4ADE80) : AppColors.error,
+                color: passed ? AppColors.success : AppColors.error,
                 size: 16,
               ),
               const SizedBox(width: 4),
               Text(
                 status,
                 style: AppTypography.labelCaps.copyWith(
-                  color: passed ? const Color(0xFF4ADE80) : AppColors.error,
+                  color: passed ? AppColors.success : AppColors.error,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -30,11 +30,11 @@ class CashCollectionBanner extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.primaryContainer,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.payments,
               color: AppColors.darkText,
               size: 20,
@@ -48,7 +48,7 @@ class CashCollectionBanner extends StatelessWidget {
                 Text(
                   'CASH COLLECTION REQUIRED',
                   style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -65,7 +65,7 @@ class CashCollectionBanner extends StatelessWidget {
           ),
           if (onDismiss != null)
             IconButton(
-              icon: const Icon(Icons.close, color: AppColors.onSurfaceVariant),
+              icon: Icon(Icons.close, color: AppColors.onSurfaceVariant),
               onPressed: onDismiss,
             ),
         ],

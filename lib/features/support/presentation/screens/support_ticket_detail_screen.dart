@@ -134,8 +134,8 @@ class _SupportTicketDetailScreenState
 
   Widget _buildBody(SupportTicketDetailState state, String? error) {
     if (state.isLoading && state.ticket == null) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -146,7 +146,7 @@ class _SupportTicketDetailScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 48,
@@ -183,7 +183,7 @@ class _SupportTicketDetailScreenState
       children: [
         Expanded(
           child: RefreshIndicator(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             backgroundColor: AppColors.surfaceContainer,
             onRefresh: () async {
               await ref
@@ -218,8 +218,8 @@ class _SupportTicketDetailScreenState
                 ],
                 const SizedBox(height: AppSpacing.lg),
                 if (state.isClosing)
-                  const Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
+                  Center(
+                    child: CircularProgressIndicator(color: AppColors.primaryText),
                   ),
                 const SizedBox(height: AppSpacing.lg),
               ],
@@ -299,7 +299,7 @@ class _StatusHeader extends StatelessWidget {
                   Text(
                     category.toUpperCase(),
                     style: AppTypography.labelCaps.copyWith(
-                      color: AppColors.primaryContainer,
+                      color: AppColors.primaryText,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -460,7 +460,7 @@ class _ThreadBubble extends StatelessWidget {
                     style: AppTypography.labelCaps.copyWith(
                       color: isMine
                           ? AppColors.darkText.withValues(alpha: 0.7)
-                          : AppColors.primary,
+                          : AppColors.primaryText,
                       fontSize: 11,
                     ),
                   ),
@@ -538,7 +538,7 @@ class _ReplyComposer extends ConsumerWidget {
         AppSpacing.margin,
         MediaQuery.paddingOf(context).bottom + AppSpacing.sm,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         border: Border(
           top: BorderSide(color: AppColors.outlineVariant, width: 0.4),
@@ -592,14 +592,14 @@ class _ReplyComposer extends ConsumerWidget {
                 ],
               ),
               child: isSending
-                  ? const Padding(
+                  ? Padding(
                       padding: EdgeInsets.all(15),
                       child: CircularProgressIndicator(
                         color: AppColors.darkText,
                         strokeWidth: 2,
                       ),
                     )
-                  : const Icon(
+                  : Icon(
                       Icons.send_rounded,
                       color: AppColors.darkText,
                       size: 22,

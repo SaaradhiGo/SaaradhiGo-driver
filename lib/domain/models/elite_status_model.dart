@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'json_type_converters.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 part 'elite_status_model.freezed.dart';
 part 'elite_status_model.g.dart';
@@ -27,13 +28,13 @@ enum EliteTier {
   Color get accentColor {
     switch (this) {
       case EliteTier.silver:
-        return const Color(0xFFC0C0C0);
+        return SgColors.inkMuted;
       case EliteTier.gold:
-        return const Color(0xFFD4AF37);
+        return SgColors.goldText;
       case EliteTier.platinum:
-        return const Color(0xFFE5E4E2);
+        return SgColors.ink;
       case EliteTier.diamond:
-        return const Color(0xFF70D6FF);
+        return SgColors.classBike;
     }
   }
 

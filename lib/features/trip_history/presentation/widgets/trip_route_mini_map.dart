@@ -73,7 +73,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
               ),
             ),
             leading: IconButton(
-              icon: const Icon(Icons.close, color: AppColors.onBackground),
+              icon: Icon(Icons.close, color: AppColors.onBackground),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -132,7 +132,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
         SgMarker(
           id: 'pickup',
           point: pickup,
-          icon: const SgIconMarker(Icons.trip_origin, AppColors.primary, size: 28),
+          icon: SgIconMarker(Icons.trip_origin, AppColors.primary, size: 28),
           anchor: const Offset(0.5, 0.5),
           label: 'Pickup',
         ),
@@ -140,7 +140,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
         SgMarker(
           id: 'drop',
           point: dest,
-          icon: const SgIconMarker(
+          icon: SgIconMarker(
             Icons.location_on,
             AppColors.primaryContainer,
             size: 32,
@@ -193,7 +193,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
                   backgroundColor: AppColors.surfaceContainer.withValues(
                     alpha: 0.9,
                   ),
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: AppColors.primaryText,
                   elevation: 2,
                   onPressed: _recenter,
                   child: const Icon(Icons.my_location, size: 18),

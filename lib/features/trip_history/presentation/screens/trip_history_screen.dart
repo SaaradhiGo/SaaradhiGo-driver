@@ -100,14 +100,14 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: AppColors.onSurfaceVariant),
+            icon: Icon(Icons.search, color: AppColors.onSurfaceVariant),
             onPressed: () => _openDateFilter(context, state),
           ),
           IconButton(
             icon: Stack(
               clipBehavior: Clip.none,
               children: [
-                const Icon(
+                Icon(
                   Icons.notifications_outlined,
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -118,7 +118,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
@@ -198,7 +198,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                   }
 
                   return RefreshIndicator(
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     backgroundColor: AppColors.surfaceContainer,
                     onRefresh: () => notifier.fetchTrips(refresh: true),
                     child: ListView.separated(
@@ -213,13 +213,13 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                           const SizedBox(height: AppSpacing.md),
                       itemBuilder: (context, index) {
                         if (index == state.trips.length) {
-                          return const Center(
+                          return Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                 vertical: AppSpacing.md,
                               ),
                               child: CircularProgressIndicator(
-                                color: AppColors.primary,
+                                color: AppColors.primaryText,
                                 strokeWidth: 2.5,
                               ),
                             ),
@@ -264,7 +264,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
           border: Border.all(
             color: isActive
-                ? AppColors.primary
+                ? AppColors.primaryText
                 : AppColors.outlineVariant.withValues(alpha: 0.6),
             width: isActive ? 1.5 : 1,
           ),
@@ -277,7 +277,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                 icon,
                 size: 16,
                 color: isActive
-                    ? AppColors.primary
+                    ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 6),
@@ -286,7 +286,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
               label,
               style: AppTypography.bodyMd.copyWith(
                 color: isActive
-                    ? AppColors.primary
+                    ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
                 fontSize: 14,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
@@ -371,7 +371,7 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.cloud_off_outlined,
               size: 56,
               color: AppColors.error,
@@ -420,10 +420,10 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.route_rounded,
               size: 56,
-              color: AppColors.primaryContainer,
+              color: AppColors.primaryText,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(

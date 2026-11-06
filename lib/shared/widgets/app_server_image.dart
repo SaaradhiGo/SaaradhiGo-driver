@@ -32,13 +32,13 @@ class AppServerImage extends StatelessWidget {
       fit: fit,
       placeholder:
           placeholder ??
-          (context, url) => const ColoredBox(
+          (context, url) => ColoredBox(
             color: AppColors.surfaceContainerHigh,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
       errorWidget:
           errorWidget ??
-          (context, url, error) => const ColoredBox(
+          (context, url, error) => ColoredBox(
             color: AppColors.surfaceContainerHigh,
             child: Icon(
               Icons.broken_image_outlined,

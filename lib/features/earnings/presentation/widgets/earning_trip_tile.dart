@@ -111,11 +111,11 @@ class EarningTripTile extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.surfaceContainerHigh,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.directions_car,
                         color: AppColors.onBackground,
                         size: 20,

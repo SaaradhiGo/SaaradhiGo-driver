@@ -52,12 +52,12 @@ class _IncentivesRewardsScreenState
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Incentives',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
         ),
         centerTitle: true,
       ),
@@ -71,8 +71,8 @@ class _IncentivesRewardsScreenState
     PromoIncentivesState promo,
   ) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -83,7 +83,7 @@ class _IncentivesRewardsScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 48,
@@ -120,7 +120,7 @@ class _IncentivesRewardsScreenState
     if (state.isEmpty && promo.items.isEmpty) {
       return RefreshIndicator(
         onRefresh: () => _refresh(),
-        color: AppColors.primary,
+        color: AppColors.primaryText,
         backgroundColor: AppColors.surface,
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.margin),
@@ -134,9 +134,9 @@ class _IncentivesRewardsScreenState
                   color: AppColors.primaryContainer.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.card_giftcard_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   size: 40,
                 ),
               ),
@@ -167,7 +167,7 @@ class _IncentivesRewardsScreenState
 
     return RefreshIndicator(
       onRefresh: () => _refresh(),
-      color: AppColors.primary,
+      color: AppColors.primaryText,
       backgroundColor: AppColors.surface,
       child: ListView(
         padding: const EdgeInsets.symmetric(
@@ -322,7 +322,7 @@ class _IncentivesRewardsScreenState
                 title: 'Daily Goal',
                 valueText: '${daily.progressTrips}/${daily.targetTrips}',
                 progress: daily.progressFraction,
-                accentColor: AppColors.primary,
+                accentColor: AppColors.primaryText,
                 onTap: () {
                   if (daily.isCompleted) {
                     QuestCelebrationSheet.show(context, daily);
@@ -336,7 +336,7 @@ class _IncentivesRewardsScreenState
                 title: 'Weekly Milestone',
                 valueText: '${weekly.progressTrips}/${weekly.targetTrips}',
                 progress: weekly.progressFraction,
-                accentColor: AppColors.secondary,
+                accentColor: AppColors.primaryText,
                 onTap: () {
                   if (weekly.isCompleted) {
                     QuestCelebrationSheet.show(context, weekly);
@@ -398,15 +398,15 @@ class _IncentivesRewardsScreenState
                   Text(
                     '${marketSymbol()}$formattedTotal',
                     style: AppTypography.dataMono.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(
+                  Icon(
                     Icons.arrow_forward_rounded,
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     size: 16,
                   ),
                 ],

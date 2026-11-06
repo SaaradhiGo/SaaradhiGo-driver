@@ -70,13 +70,13 @@ class _OnboardingPhotoBankScreenState
         backgroundColor: AppColors.background.withValues(alpha: 0.9),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'SaaradhiGo',
           style: AppTypography.headlineSm.copyWith(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -103,7 +103,7 @@ class _OnboardingPhotoBankScreenState
                           Text(
                             'STEP 3 OF 4',
                             style: AppTypography.labelCaps.copyWith(
-                              color: AppColors.primary,
+                              color: AppColors.primaryText,
                             ),
                           ),
                           Text(
@@ -153,9 +153,9 @@ class _OnboardingPhotoBankScreenState
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: const Color(0x15FFFFFF),
+                          color: AppColors.outlineVariant,
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.1),
+                            color: AppColors.onBackground.withValues(alpha: 0.1),
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -164,15 +164,15 @@ class _OnboardingPhotoBankScreenState
                           children: [
                             Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.account_balance,
-                                  color: AppColors.primary,
+                                  color: AppColors.primaryText,
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Bank Information',
                                   style: AppTypography.headlineSm.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                               ],
@@ -184,7 +184,7 @@ class _OnboardingPhotoBankScreenState
                                 color: AppColors.onBackground,
                               ),
                               textCapitalization: TextCapitalization.words,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Bank Name',
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -193,7 +193,7 @@ class _OnboardingPhotoBankScreenState
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                               ),
@@ -209,7 +209,7 @@ class _OnboardingPhotoBankScreenState
                               style: AppTypography.bodyMd.copyWith(
                                 color: AppColors.onBackground,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Account Number',
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -218,7 +218,7 @@ class _OnboardingPhotoBankScreenState
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                               ),
@@ -234,7 +234,7 @@ class _OnboardingPhotoBankScreenState
                                 color: AppColors.onBackground,
                               ),
                               textCapitalization: TextCapitalization.characters,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'IFSC Code',
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -243,7 +243,7 @@ class _OnboardingPhotoBankScreenState
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                               ),
@@ -255,7 +255,7 @@ class _OnboardingPhotoBankScreenState
                             const SizedBox(height: AppSpacing.md),
                             Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Divider(
                                     color: AppColors.outlineVariant,
                                   ),
@@ -271,7 +271,7 @@ class _OnboardingPhotoBankScreenState
                                     ),
                                   ),
                                 ),
-                                const Expanded(
+                                Expanded(
                                   child: Divider(
                                     color: AppColors.outlineVariant,
                                   ),
@@ -284,7 +284,7 @@ class _OnboardingPhotoBankScreenState
                               style: AppTypography.bodyMd.copyWith(
                                 color: AppColors.onBackground,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'UPI ID (Optional)',
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -293,7 +293,7 @@ class _OnboardingPhotoBankScreenState
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                               ),

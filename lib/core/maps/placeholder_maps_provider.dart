@@ -1,5 +1,5 @@
 /// The map drawn when there is no Google Maps key: pure black, a faint street
-/// grid in the map-* tokens, the emblem, and the app's own route and pins.
+/// grid in the map-* tokens, the badge, and the app's own route and pins.
 /// It makes no claim to be a real map.
 library;
 
@@ -11,6 +11,7 @@ import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../ui/sg_tokens.dart';
 import 'sg_map.dart';
+import 'package:saaradhigo_driver/ui/sg_brand.dart';
 
 class PlaceholderMapsProvider extends MapsProvider {
   const PlaceholderMapsProvider();
@@ -56,7 +57,7 @@ class _PlaceholderMapState extends State<_PlaceholderMap> {
               child: Opacity(
                 opacity: 0.05,
                 child: SvgPicture.asset(
-                  'assets/brand/saaradhigo-emblem-gold.svg',
+                  SgBrandAssets.badgeSmall,
                   width: 190,
                 ),
               ),
@@ -89,7 +90,7 @@ class _GroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = SgColors.bg000);
+    canvas.drawRect(Offset.zero & size, Paint()..color = SgColors.mapGround);
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
     canvas.rotate(-0.14);
@@ -264,7 +265,7 @@ class _OverlayPainter extends CustomPainter {
         c,
         9,
         Paint()
-          ..color = SgColors.bg000
+          ..color = SgColors.mapGround
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );

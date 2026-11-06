@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../ui/sg_text.dart';
@@ -10,6 +9,7 @@ import '../../../shared/widgets/buttons.dart';
 import '../../../core/market/market_providers.dart';
 import 'providers/auth_notifier.dart';
 import 'providers/auth_state.dart';
+import 'package:saaradhigo_driver/ui/sg_brand.dart';
 
 /// The login screen: phone + OTP, or email + password.
 ///
@@ -130,13 +130,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: SgSpace.s6),
-            Center(
-              child: SvgPicture.asset(
-                'assets/brand/saaradhigo-emblem-gold.svg',
-                height: 56,
-                semanticsLabel: 'SaaradhiGo',
-              ),
-            ),
+            const Center(child: SgFullLogo(height: 112)),
             const SizedBox(height: SgSpace.s5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),

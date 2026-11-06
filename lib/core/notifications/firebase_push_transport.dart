@@ -106,7 +106,7 @@ class FirebasePushTransport implements PushTransport {
       // v22 takes named parameters.
       await _local.initialize(
         settings: const InitializationSettings(
-          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+          android: AndroidInitializationSettings('@drawable/ic_stat_notify'),
         ),
       );
 

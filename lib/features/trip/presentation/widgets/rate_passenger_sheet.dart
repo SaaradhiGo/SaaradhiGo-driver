@@ -90,7 +90,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.surfaceContainerHigh,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -124,7 +124,7 @@ class _RatePassengerSheetState extends ConsumerState<RatePassengerSheet> {
                           }),
                     icon: Icon(
                       star <= _score ? Icons.star : Icons.star_border,
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                     ),
                   ),
               ],

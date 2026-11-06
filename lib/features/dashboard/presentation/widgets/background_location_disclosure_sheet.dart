@@ -101,9 +101,9 @@ class BackgroundLocationDisclosureSheet extends ConsumerWidget {
                               ),
                             ],
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.location_on,
-                            color: AppColors.primary,
+                            color: AppColors.primaryText,
                             size: 36,
                           ),
                         ),
@@ -204,7 +204,7 @@ class BackgroundLocationDisclosureSheet extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: AppColors.primary, size: 20),
+        Icon(icon, color: AppColors.primaryText, size: 20),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(

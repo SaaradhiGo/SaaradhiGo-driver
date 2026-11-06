@@ -67,7 +67,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AppColors.primaryText,
           backgroundColor: AppColors.surfaceContainer,
           onRefresh: () =>
               ref.read(supportTicketsNotifierProvider.notifier).refresh(),
@@ -80,7 +80,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
               Text(
                 'My Support Tickets',
                 style: AppTypography.headlineSm.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                 ),
               ),
               const SizedBox(height: AppSpacing.unit),
@@ -115,7 +115,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
         borderColor: AppColors.error.withValues(alpha: 0.4),
         child: Column(
           children: [
-            const Icon(
+            Icon(
               Icons.cloud_off_rounded,
               color: AppColors.error,
               size: 40,
@@ -143,10 +143,10 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     }
 
     if (state.isLoading && state.tickets.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
         child: Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: AppColors.primaryText),
         ),
       );
     }
@@ -155,7 +155,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
       return GlassPanel(
         child: Column(
           children: [
-            const Icon(
+            Icon(
               Icons.confirmation_number_outlined,
               color: AppColors.onSurfaceVariant,
               size: 40,
@@ -204,10 +204,10 @@ class _SupportBanner extends StatelessWidget {
     return GlassPanel(
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.support_agent_rounded,
             size: 40,
-            color: AppColors.primary,
+            color: AppColors.primaryText,
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -283,9 +283,9 @@ class _TicketCard extends ConsumerWidget {
                     shape: BoxShape.circle,
                     color: AppColors.surfaceContainerHigh,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.confirmation_number_rounded,
-                    color: AppColors.primaryContainer,
+                    color: AppColors.primaryText,
                     size: 20,
                   ),
                 ),
@@ -327,11 +327,11 @@ class _TicketCard extends ConsumerWidget {
                 ),
                 if (isRefreshing) ...[
                   const SizedBox(width: AppSpacing.sm),
-                  const SizedBox(
+                  SizedBox(
                     width: 14,
                     height: 14,
                     child: CircularProgressIndicator(
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                       strokeWidth: 2,
                     ),
                   ),

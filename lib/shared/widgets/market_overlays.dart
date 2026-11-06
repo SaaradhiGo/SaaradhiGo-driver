@@ -5,6 +5,7 @@ import '../../core/market/app_headers_interceptor.dart';
 import '../../core/market/market_config.dart';
 import '../../core/market/market_config_store.dart';
 import '../../core/theme/app_colors.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 /// Blocking screen for 426 APP_UPDATE_REQUIRED. Shown instead of the app; the
 /// only way forward is the store link from the response body.
@@ -26,13 +27,13 @@ class UpdateRequiredScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.system_update, color: AppColors.primary, size: 56),
+                Icon(Icons.system_update, color: AppColors.primaryText, size: 56),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Update required',
                   key: Key('update_required_title'),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.onBackground,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -42,7 +43,7 @@ class UpdateRequiredScreen extends StatelessWidget {
                   info.message ?? 'Please update the app to continue.',
                   key: const Key('update_required_message'),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.secondaryGray,
                     fontSize: 16,
                   ),
@@ -55,7 +56,7 @@ class UpdateRequiredScreen extends StatelessWidget {
                       key: const Key('update_required_button'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.black,
+                        foregroundColor: AppColors.darkText,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: () async {
@@ -112,8 +113,8 @@ class _NoticeBannerState extends State<NoticeBanner> {
           Material(
             key: Key('notice_${n.id}'),
             color: n.severity == 'warning'
-                ? const Color(0xFFB45309)
-                : const Color(0xFF334155),
+                ? SgColors.gold500
+                : SgColors.bg300,
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
@@ -127,22 +128,22 @@ class _NoticeBannerState extends State<NoticeBanner> {
                     n.severity == 'warning'
                         ? Icons.warning_amber_rounded
                         : Icons.info_outline,
-                    color: Colors.white,
+                    color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink,
                     size: 20,
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       n.message,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: TextStyle(color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink, fontSize: 13),
                     ),
                   ),
                   if (!n.blocking)
                     IconButton(
                       key: Key('notice_dismiss_${n.id}'),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink,
                         size: 18,
                       ),
                       onPressed: () => setState(() => _dismissed.add(n.id)),

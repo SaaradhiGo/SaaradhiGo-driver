@@ -102,7 +102,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
             child: Text(
               'Keep Editing',
               style: AppTypography.bodyMd.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -269,13 +269,13 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
         SnackBar(
           content: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.check_circle_rounded,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Vehicle successfully registered and set as active.',
                   style: TextStyle(color: AppColors.onBackground),
@@ -287,7 +287,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            side: const BorderSide(color: AppColors.primary),
+            side: BorderSide(color: AppColors.primaryText),
           ),
           duration: const Duration(seconds: 4),
         ),
@@ -318,7 +318,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
         appBar: AppBar(
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_rounded,
               color: AppColors.onBackground,
             ),
@@ -344,7 +344,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                   Text(
                     'Vehicle Details',
                     style: AppTypography.headlineSm.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -371,7 +371,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.error_outline_rounded,
                             color: AppColors.error,
                             size: 20,
@@ -409,7 +409,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                           type.toUpperCase(),
                           style: AppTypography.labelCaps.copyWith(
                             color: isSelected
-                                ? AppColors.primary
+                                ? AppColors.primaryText
                                 : AppColors.onSurfaceVariant,
                             fontWeight: isSelected
                                 ? FontWeight.bold
@@ -423,7 +423,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                         backgroundColor: AppColors.surfaceContainerHigh,
                         side: BorderSide(
                           color: isSelected
-                              ? AppColors.primary
+                              ? AppColors.primaryText
                               : AppColors.outlineVariant.withValues(alpha: 0.2),
                         ),
                         shape: RoundedRectangleBorder(
@@ -643,14 +643,14 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(
-                color: AppColors.primary,
+              borderSide: BorderSide(
+                color: AppColors.primaryText,
                 width: 1.5,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderSide: BorderSide(color: AppColors.error),
             ),
           ),
         ),
@@ -679,7 +679,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                 hasDoc
                     ? Icons.check_circle_rounded
                     : Icons.file_upload_outlined,
-                color: hasDoc ? const Color(0xFF4ADE80) : AppColors.primary,
+                color: hasDoc ? AppColors.success : AppColors.primaryText,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -712,7 +712,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                   isRequired ? 'Required' : 'Optional',
                   style: AppTypography.labelCaps.copyWith(
                     color: isRequired
-                        ? AppColors.primary
+                        ? AppColors.primaryText
                         : AppColors.onSurfaceVariant,
                     fontSize: 10,
                   ),
@@ -744,9 +744,9 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.attachment_rounded,
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     size: 18,
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -762,7 +762,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                   ),
                   if (!_isSubmitting)
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close_rounded,
                         color: AppColors.error,
                         size: 18,
@@ -778,7 +778,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
               icon: const Icon(Icons.upload_file_rounded, size: 18),
               label: Text(isRequired ? 'Upload Document' : 'Upload Photo'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
+                foregroundColor: AppColors.primaryText,
                 side: BorderSide(
                   color: AppColors.primary.withValues(alpha: 0.6),
                 ),

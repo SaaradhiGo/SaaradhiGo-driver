@@ -38,12 +38,12 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Trip Details',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
         ),
         centerTitle: true,
       ),
@@ -51,8 +51,8 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
         child: Builder(
           builder: (context) {
             if (state.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.primaryText),
               );
             }
 
@@ -63,7 +63,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
                         size: 48,
                         color: AppColors.error,
@@ -145,8 +145,8 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                       // Support Help Action
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primary,
-                          side: const BorderSide(color: AppColors.primary),
+                          foregroundColor: AppColors.primaryText,
+                          side: BorderSide(color: AppColors.primaryText),
                           padding: const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                           ),
@@ -160,7 +160,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                         label: Text(
                           'Need Help with this Trip?',
                           style: AppTypography.bodyMd.copyWith(
-                            color: AppColors.primary,
+                            color: AppColors.primaryText,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -226,7 +226,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 const SizedBox(height: AppSpacing.unit),
                 Row(
                   children: [
-                    const Icon(Icons.star, size: 16, color: AppColors.primary),
+                    Icon(Icons.star, size: 16, color: AppColors.primaryText),
                     const SizedBox(width: 4),
                     Text(
                       riderRating,
@@ -268,24 +268,24 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primary, width: 3),
+                  border: Border.all(color: AppColors.primaryText, width: 3),
                 ),
               ),
               Container(
                 width: 2,
                 height: 48,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [AppColors.primary, AppColors.outlineVariant],
+                    colors: [AppColors.primaryText, AppColors.outlineVariant],
                   ),
                 ),
               ),
               Container(
                 width: 12,
                 height: 12,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.primaryContainer,
                   shape: BoxShape.circle,
                 ),
@@ -398,7 +398,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
         children: [
           Icon(
             icon,
-            color: isPrimaryIcon ? AppColors.primary : AppColors.outline,
+            color: isPrimaryIcon ? AppColors.primaryText : AppColors.outline,
             size: 20,
           ),
           const SizedBox(height: 4),
@@ -438,7 +438,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.cancel_outlined,
                 color: AppColors.error,
                 size: 20,
@@ -498,7 +498,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          const Divider(color: AppColors.outlineVariant, height: 1),
+          Divider(color: AppColors.outlineVariant, height: 1),
           const SizedBox(height: AppSpacing.md),
 
           if (isCancelled) ...[
@@ -546,7 +546,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             ],
           ],
 
-          const Divider(color: AppColors.outlineVariant, height: AppSpacing.lg),
+          Divider(color: AppColors.outlineVariant, height: AppSpacing.lg),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -561,7 +561,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
               Text(
                 isCancelled ? '${marketSymbol()}0' : '${marketSymbol()}$fare',
                 style: AppTypography.headlineMd.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -635,9 +635,9 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               5,
-              (index) => const Padding(
+              (index) => Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(Icons.star, size: 28, color: AppColors.primary),
+                child: Icon(Icons.star, size: 28, color: AppColors.primaryText),
               ),
             ),
           ),
