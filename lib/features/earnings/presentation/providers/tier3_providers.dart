@@ -8,7 +8,8 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../ui/driver_f_logic.dart';
 
-/// `GET /driver/earnings/daily/?days=7`. Null when the call fails or the body
+/// `GET /driver/earnings/daily/?days=31` (the chart shows the last 7; week and
+/// month sum them). Null when the call fails or the body
 /// is not the expected shape, and the chart is hidden.
 final dailyEarningsProvider = FutureProvider.autoDispose<List<DailyEarning>?>((
   ref,
@@ -17,7 +18,7 @@ final dailyEarningsProvider = FutureProvider.autoDispose<List<DailyEarning>?>((
     final dio = ref.watch(dioClientProvider).dio;
     final res = await dio.get(
       ApiEndpoints.driverEarningsDaily,
-      queryParameters: {'days': 7},
+      queryParameters: {'days': 31},
     );
     return parseDailyEarnings(res.data);
   } catch (_) {

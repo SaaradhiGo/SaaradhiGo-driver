@@ -21,6 +21,7 @@ import '../widgets/earnings_breakdown_card.dart';
 import '../earnings_display.dart';
 import '../widgets/withdrawal_request_bottom_sheet.dart';
 import '../providers/tier3_providers.dart';
+import '../../../../ui/driver_f_logic.dart';
 import '../../../../ui/driver_earnings_view.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_tokens.dart';
@@ -141,13 +142,22 @@ class _EarningsDashboardScreenState
     // net = gross fares − platform commission; avg/trip = net ÷ completed trips.
     // Commission is shown exactly as the API returned it; a missing value hides
     // its line (and the figures that depend on it) instead of showing a default.
-    final commission = summary?.totalCommission;
-    // The API's own net when it sends one; otherwise gross minus commission,
-    // as before.
+    // The selected tab's own figures: today from the summary's today_* fields,
+    // week and month summed from the daily series. Never the all-time totals
+    // under a period label (the Today tab showed every trip ever).
+    final days = ref.watch(dailyEarningsProvider).value;
+    final period = periodFigures(
+      state.selectedPeriodIndex,
+      todayTrips: summary?.todayTrips,
+      todayNet: summary?.todayNet,
+      todayCommission: summary?.todayCommission,
+      todayGross: summary?.todayEarned,
+      days: days,
+    );
+    final commission = period?.commission;
     final net =
-        summary?.totalNet ??
-        netFromGrossAndCommission(summary?.totalEarned, commission);
-    final trips = summary?.totalTrips ?? 0;
+        period?.net ?? netFromGrossAndCommission(period?.gross, commission);
+    final trips = period?.trips ?? 0;
     final l = sgL10n(context);
     final rateLabel = commissionRateLabel(
       summary?.commissionPercent,
@@ -191,7 +201,7 @@ class _EarningsDashboardScreenState
               l.earnPeriodMonth,
             ][state.selectedPeriodIndex.clamp(0, 2)],
             trips: trips,
-            amount: summaryMoney(net ?? summary?.totalEarned),
+            amount: summaryMoney(net ?? period?.gross),
             isNet: net != null,
             commission: commission == null ? null : summaryMoney(commission),
             commissionRate: rateLabel,
@@ -199,10 +209,9 @@ class _EarningsDashboardScreenState
           const SizedBox(height: AppSpacing.md),
 
           // The 7-day chart from the daily endpoint; hidden when it fails.
-          if (ref.watch(dailyEarningsProvider).value case final days?
-              when days.isNotEmpty) ...[
+          if (days != null && days.isNotEmpty) ...[
             EarningsWeekChart(
-              days: days,
+              days: days.length > 7 ? days.sublist(days.length - 7) : days,
               money: (v) => summaryMoney(v.toStringAsFixed(2)),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -210,7 +219,7 @@ class _EarningsDashboardScreenState
 
           // Breakdown Card
           EarningsBreakdownCard(
-            grossFares: summary?.totalEarned ?? '0.00',
+            grossFares: period?.gross ?? '0.00',
             commission: commission,
             commissionRate: rateLabel,
             netEarnings: net,
