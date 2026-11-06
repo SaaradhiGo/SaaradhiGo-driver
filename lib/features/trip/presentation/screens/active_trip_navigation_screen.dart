@@ -6,6 +6,7 @@ import '../../../../core/location/location_providers.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../core/theme/appearance_controller.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_tokens.dart';
 import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
@@ -73,7 +74,7 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
         earning: trip.driverEarning == null
             ? null
             : exactMoney(trip.driverEarning),
-        payment: paymentLabel(trip.paymentMethod),
+        payment: paymentLabel(trip.paymentMethod, sgL10n(context)),
         busy: session.isBusy,
         onComplete: () =>
             ref.read(tripSessionNotifierProvider.notifier).completeRide(),

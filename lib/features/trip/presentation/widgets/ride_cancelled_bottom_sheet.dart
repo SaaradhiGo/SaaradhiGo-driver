@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/buttons.dart';
+import '../../../../ui/sg_l10n.dart';
 
 /// Modal bottom sheet presented when a passenger cancels an in-flight ride.
 ///
@@ -79,7 +80,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
     final effectiveReason = (widget.reason != null &&
             widget.reason!.trim().isNotEmpty)
         ? widget.reason!.trim()
-        : 'The passenger has cancelled this ride request.';
+        : sgL10n(context).tripCancelledDefaultReason;
 
     return PopScope(
       canPop: false,
@@ -139,7 +140,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
 
               // Title
               Text(
-                'Ride Cancelled by Passenger',
+                sgL10n(context).tripCancelledByPassenger,
                 style: AppTypography.headlineSm.copyWith(
                   color: AppColors.onBackground,
                   fontWeight: FontWeight.bold,
@@ -182,7 +183,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      'Returning online in ${_remainingSeconds}s',
+                      sgL10n(context).tripReturningOnline(_remainingSeconds),
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
                         fontWeight: FontWeight.w600,

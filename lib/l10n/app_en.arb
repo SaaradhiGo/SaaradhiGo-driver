@@ -461,5 +461,386 @@
   "breakdownNet": "Net Driver Earnings",
   "@breakdownNet": {
     "description": "Breakdown line: net"
+  },
+  "homeOfferGone": "That ride is no longer available.",
+  "@homeOfferGone": {
+    "description": "Snackbar: a pushed offer was never described by dispatch"
+  },
+  "homeOfferDeclined": "Ride request declined.",
+  "@homeOfferDeclined": {
+    "description": "Snackbar after Decline"
+  },
+  "homeNoticeReconnecting": "Reconnecting to dispatch",
+  "@homeNoticeReconnecting": {
+    "description": "Home notice while the dispatch socket reconnects"
+  },
+  "homeNoticeWeakGps": "Weak GPS signal",
+  "@homeNoticeWeakGps": {
+    "description": "Home notice"
+  },
+  "homeNoticeFindingLocation": "Finding your location",
+  "@homeNoticeFindingLocation": {
+    "description": "Home notice before the first GPS fix"
+  },
+  "homeNoticeLimitedBackground": "Keep the app open to receive rides, or allow background location.",
+  "@homeNoticeLimitedBackground": {
+    "description": "Home notice: location only while the app is open"
+  },
+  "homeNoticeUpgrade": "Upgrade",
+  "@homeNoticeUpgrade": {
+    "description": "Action on the limited-background notice"
+  },
+  "blockerVerifyTitle": "Verification in progress",
+  "@blockerVerifyTitle": {
+    "description": "Home blocker: documents not yet approved"
+  },
+  "blockerVerifyBody": "You can go online once your documents are approved.",
+  "@blockerVerifyBody": {
+    "description": "Home blocker body"
+  },
+  "blockerVerifyAction": "Check status",
+  "@blockerVerifyAction": {
+    "description": "Home blocker action"
+  },
+  "blockerVehicleTitle": "Add your vehicle",
+  "@blockerVehicleTitle": {
+    "description": "Home blocker: no active vehicle"
+  },
+  "blockerVehicleBody": "Add the vehicle you will drive to go online.",
+  "@blockerVehicleBody": {
+    "description": "Home blocker body"
+  },
+  "blockerVehicleAction": "Add vehicle",
+  "@blockerVehicleAction": {
+    "description": "Home blocker action and snackbar action"
+  },
+  "blockerLocationOffTitle": "Location is off",
+  "@blockerLocationOffTitle": {
+    "description": "Home blocker: location services off"
+  },
+  "blockerLocationOffBody": "Turn on location to receive ride requests.",
+  "@blockerLocationOffBody": {
+    "description": "Home blocker body"
+  },
+  "blockerLocationOffAction": "Turn on location",
+  "@blockerLocationOffAction": {
+    "description": "Home blocker action"
+  },
+  "blockerLocationAccessTitle": "Location access needed",
+  "@blockerLocationAccessTitle": {
+    "description": "Home blocker: permission missing"
+  },
+  "blockerLocationBlockedBody": "Location permission is blocked. Allow it in Settings to go online.",
+  "@blockerLocationBlockedBody": {
+    "description": "Home blocker body: permanently denied"
+  },
+  "blockerLocationNeededBody": "SaaradhiGo needs your location to receive ride requests.",
+  "@blockerLocationNeededBody": {
+    "description": "Home blocker body: not yet granted"
+  },
+  "blockerOpenSettings": "Open settings",
+  "@blockerOpenSettings": {
+    "description": "Home blocker action"
+  },
+  "blockerAllowLocation": "Allow location",
+  "@blockerAllowLocation": {
+    "description": "Home blocker action"
+  },
+  "menuProfile": "Profile",
+  "@menuProfile": {
+    "description": "Home menu row"
+  },
+  "menuVehicle": "Vehicle",
+  "@menuVehicle": {
+    "description": "Home menu row"
+  },
+  "menuDocuments": "Documents",
+  "@menuDocuments": {
+    "description": "Home menu row"
+  },
+  "menuRewards": "Rewards",
+  "@menuRewards": {
+    "description": "Home menu row"
+  },
+  "menuReferDriver": "Refer a driver",
+  "@menuReferDriver": {
+    "description": "Home menu row"
+  },
+  "menuHelp": "Help and support",
+  "@menuHelp": {
+    "description": "Home menu row"
+  },
+  "menuDriverFallback": "Driver",
+  "@menuDriverFallback": {
+    "description": "Home menu header when the name is unknown"
+  },
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom tab"
+  },
+  "navTrips": "Trips",
+  "@navTrips": {
+    "description": "Bottom tab"
+  },
+  "navEarnings": "Earnings",
+  "@navEarnings": {
+    "description": "Bottom tab"
+  },
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Bottom tab"
+  },
+  "tripTakenTitle": "Ride taken",
+  "@tripTakenTitle": {
+    "description": "Trip screen: another driver accepted"
+  },
+  "tripTakenBody": "This ride was accepted by another driver.",
+  "@tripTakenBody": {
+    "description": "Trip screen body"
+  },
+  "tripRefusedTitle": "You cannot take this ride",
+  "@tripRefusedTitle": {
+    "description": "Trip screen: the server refused the accept for a reason about the driver"
+  },
+  "tripGoneTitle": "Ride no longer available",
+  "@tripGoneTitle": {
+    "description": "Trip screen: accept never confirmed"
+  },
+  "tripGoneBody": "That ride is no longer available. You are back online.",
+  "@tripGoneBody": {
+    "description": "Trip screen body"
+  },
+  "tripNoneTitle": "No active trip",
+  "@tripNoneTitle": {
+    "description": "Trip screen with no session"
+  },
+  "tripNoneBody": "There is no trip assigned to you right now.",
+  "@tripNoneBody": {
+    "description": "Trip screen body"
+  },
+  "tripSupportReleasedBody": "SaaradhiGo support cancelled this trip. You are free to take new trips.",
+  "@tripSupportReleasedBody": {
+    "description": "Trip screen: support released the driver"
+  },
+  "tripCancelledTitle": "Ride cancelled",
+  "@tripCancelledTitle": {
+    "description": "Trip screen: cancelled"
+  },
+  "tripCancelledBody": "This ride has been cancelled by the passenger.",
+  "@tripCancelledBody": {
+    "description": "Trip screen body"
+  },
+  "tripConnecting": "Connecting to the trip…",
+  "@tripConnecting": {
+    "description": "Trip loading"
+  },
+  "tripPreparing": "Preparing ride…",
+  "@tripPreparing": {
+    "description": "Trip loading"
+  },
+  "tripBackHome": "Back to home",
+  "@tripBackHome": {
+    "description": "Trip ended button"
+  },
+  "tripCancelledByPassenger": "Ride Cancelled by Passenger",
+  "@tripCancelledByPassenger": {
+    "description": "Cancelled sheet title"
+  },
+  "tripCancelledDefaultReason": "The passenger has cancelled this ride request.",
+  "@tripCancelledDefaultReason": {
+    "description": "Cancelled sheet body when the server gave no reason"
+  },
+  "tripReturningOnline": "Returning online in {seconds}s",
+  "@tripReturningOnline": {
+    "description": "Cancelled sheet countdown",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "cancelSheetTitle": "Cancel this ride?",
+  "@cancelSheetTitle": {
+    "description": "Driver cancel sheet title"
+  },
+  "cancelSheetBody": "Select a reason. Frequent cancellations can affect your rating.",
+  "@cancelSheetBody": {
+    "description": "Driver cancel sheet body"
+  },
+  "cancelReasonNoShow": "Rider is a no-show",
+  "@cancelReasonNoShow": {
+    "description": "Cancel reason no_show"
+  },
+  "cancelReasonVehicle": "Vehicle issue",
+  "@cancelReasonVehicle": {
+    "description": "Cancel reason vehicle_issue"
+  },
+  "cancelReasonSafety": "Safety concern",
+  "@cancelReasonSafety": {
+    "description": "Cancel reason safety"
+  },
+  "cancelReasonPersonal": "Personal emergency",
+  "@cancelReasonPersonal": {
+    "description": "Cancel reason personal"
+  },
+  "cancelReasonOther": "Other",
+  "@cancelReasonOther": {
+    "description": "Cancel reason other"
+  },
+  "tripNavigate": "Navigate",
+  "@tripNavigate": {
+    "description": "Pill that opens the map app"
+  },
+  "tripRiderFallback": "Rider",
+  "@tripRiderFallback": {
+    "description": "Rider row when the name is unknown"
+  },
+  "tripArrived": "I've arrived",
+  "@tripArrived": {
+    "description": "Button at pickup"
+  },
+  "tripCashCollected": "Cash collected",
+  "@tripCashCollected": {
+    "description": "Summary button on a cash trip"
+  },
+  "tripDone": "Done",
+  "@tripDone": {
+    "description": "Summary button"
+  },
+  "tripRateRider": "Rate the rider",
+  "@tripRateRider": {
+    "description": "Summary link"
+  },
+  "tripRateName": "Rate {name}",
+  "@tripRateName": {
+    "description": "Summary link with the rider's first name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripCollectInCash": "COLLECT IN CASH",
+  "@tripCollectInCash": {
+    "description": "Summary label on a cash trip"
+  },
+  "tripCollectBody": "Collect {amount} cash from {name}, then confirm below.",
+  "@tripCollectBody": {
+    "description": "Summary body on a cash trip",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryRatingSaved": "Thanks — rating saved.",
+  "@summaryRatingSaved": {
+    "description": "Snackbar after rating the passenger"
+  },
+  "summaryTripComplete": "Trip complete",
+  "@summaryTripComplete": {
+    "description": "Trip summary title"
+  },
+  "summaryFareDistance": "Fare for the distance driven",
+  "@summaryFareDistance": {
+    "description": "Trip summary caption when support ended the trip"
+  },
+  "summaryFare": "Fare",
+  "@summaryFare": {
+    "description": "Trip summary caption"
+  },
+  "summaryCashCollected": "Cash collected",
+  "@summaryCashCollected": {
+    "description": "Trip summary paid line on a cash trip"
+  },
+  "summaryPaidBy": "Paid by {method}",
+  "@summaryPaidBy": {
+    "description": "Trip summary paid line",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryDistance": "Distance",
+  "@summaryDistance": {
+    "description": "Trip summary fact"
+  },
+  "summaryTime": "Time",
+  "@summaryTime": {
+    "description": "Trip summary fact"
+  },
+  "summaryPayment": "Payment",
+  "@summaryPayment": {
+    "description": "Trip summary fact"
+  },
+  "summaryPromoPaid": "Promo paid by SaaradhiGo",
+  "@summaryPromoPaid": {
+    "description": "Trip summary note"
+  },
+  "summarySupportEarned": "You earned {amount} for the distance driven.",
+  "@summarySupportEarned": {
+    "description": "Trip summary note when support ended the trip",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryWorkingOut": "Working out what you earned...",
+  "@summaryWorkingOut": {
+    "description": "Trip summary note while loading"
+  },
+  "summaryEarningsLater": "Your earnings for this trip will show in your earnings list.",
+  "@summaryEarningsLater": {
+    "description": "Trip summary note fallback"
+  },
+  "payUpi": "UPI",
+  "@payUpi": {
+    "description": "Payment method"
+  },
+  "payCard": "Card",
+  "@payCard": {
+    "description": "Payment method"
+  },
+  "payWallet": "Wallet",
+  "@payWallet": {
+    "description": "Payment method"
+  },
+  "rateTapStar": "Tap a star to rate the passenger.",
+  "@rateTapStar": {
+    "description": "Rate sheet error"
+  },
+  "rateSaveFailed": "Could not save your rating.",
+  "@rateSaveFailed": {
+    "description": "Rate sheet error"
+  },
+  "rateHowWasTripWith": "How was your trip with {name}?",
+  "@rateHowWasTripWith": {
+    "description": "Rate sheet title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rateHowWasPassenger": "How was your passenger?",
+  "@rateHowWasPassenger": {
+    "description": "Rate sheet title without a name"
+  },
+  "rateHint": "Anything the team should know? (optional)",
+  "@rateHint": {
+    "description": "Rate sheet comment hint"
+  },
+  "rateSubmit": "SUBMIT RATING",
+  "@rateSubmit": {
+    "description": "Rate sheet button"
+  },
+  "rateNotNow": "Not now",
+  "@rateNotNow": {
+    "description": "Rate sheet dismiss"
   }
 }

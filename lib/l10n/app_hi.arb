@@ -379,5 +379,353 @@
   "breakdownNet": "ड्राइवर की शुद्ध कमाई",
   "@breakdownNet": {
     "description": "needs native review"
+  },
+  "homeOfferGone": "वह राइड अब उपलब्ध नहीं है।",
+  "@homeOfferGone": {
+    "description": "needs native review"
+  },
+  "homeOfferDeclined": "राइड अनुरोध अस्वीकार किया गया।",
+  "@homeOfferDeclined": {
+    "description": "needs native review"
+  },
+  "homeNoticeReconnecting": "डिस्पैच से फिर से जुड़ रहे हैं",
+  "@homeNoticeReconnecting": {
+    "description": "needs native review"
+  },
+  "homeNoticeWeakGps": "GPS सिग्नल कमज़ोर है",
+  "@homeNoticeWeakGps": {
+    "description": "needs native review"
+  },
+  "homeNoticeFindingLocation": "आपकी लोकेशन ढूँढ रहे हैं",
+  "@homeNoticeFindingLocation": {
+    "description": "needs native review"
+  },
+  "homeNoticeLimitedBackground": "राइड पाने के लिए ऐप खुला रखें, या बैकग्राउंड लोकेशन की अनुमति दें।",
+  "@homeNoticeLimitedBackground": {
+    "description": "needs native review"
+  },
+  "homeNoticeUpgrade": "अपग्रेड करें",
+  "@homeNoticeUpgrade": {
+    "description": "needs native review"
+  },
+  "blockerVerifyTitle": "सत्यापन जारी है",
+  "@blockerVerifyTitle": {
+    "description": "needs native review"
+  },
+  "blockerVerifyBody": "आपके दस्तावेज़ स्वीकृत होने के बाद आप ऑनलाइन जा सकते हैं।",
+  "@blockerVerifyBody": {
+    "description": "needs native review"
+  },
+  "blockerVerifyAction": "स्थिति देखें",
+  "@blockerVerifyAction": {
+    "description": "needs native review"
+  },
+  "blockerVehicleTitle": "अपना वाहन जोड़ें",
+  "@blockerVehicleTitle": {
+    "description": "needs native review"
+  },
+  "blockerVehicleBody": "ऑनलाइन जाने के लिए वह वाहन जोड़ें जिसे आप चलाएँगे।",
+  "@blockerVehicleBody": {
+    "description": "needs native review"
+  },
+  "blockerVehicleAction": "वाहन जोड़ें",
+  "@blockerVehicleAction": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffTitle": "लोकेशन बंद है",
+  "@blockerLocationOffTitle": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffBody": "राइड अनुरोध पाने के लिए लोकेशन चालू करें।",
+  "@blockerLocationOffBody": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffAction": "लोकेशन चालू करें",
+  "@blockerLocationOffAction": {
+    "description": "needs native review"
+  },
+  "blockerLocationAccessTitle": "लोकेशन की अनुमति चाहिए",
+  "@blockerLocationAccessTitle": {
+    "description": "needs native review"
+  },
+  "blockerLocationBlockedBody": "लोकेशन की अनुमति अवरुद्ध है। ऑनलाइन जाने के लिए सेटिंग्स में अनुमति दें।",
+  "@blockerLocationBlockedBody": {
+    "description": "needs native review"
+  },
+  "blockerLocationNeededBody": "राइड अनुरोध पाने के लिए SaaradhiGo को आपकी लोकेशन चाहिए।",
+  "@blockerLocationNeededBody": {
+    "description": "needs native review"
+  },
+  "blockerOpenSettings": "सेटिंग्स खोलें",
+  "@blockerOpenSettings": {
+    "description": "needs native review"
+  },
+  "blockerAllowLocation": "लोकेशन की अनुमति दें",
+  "@blockerAllowLocation": {
+    "description": "needs native review"
+  },
+  "menuProfile": "प्रोफ़ाइल",
+  "@menuProfile": {
+    "description": "needs native review"
+  },
+  "menuVehicle": "वाहन",
+  "@menuVehicle": {
+    "description": "needs native review"
+  },
+  "menuDocuments": "दस्तावेज़",
+  "@menuDocuments": {
+    "description": "needs native review"
+  },
+  "menuRewards": "रिवॉर्ड",
+  "@menuRewards": {
+    "description": "needs native review"
+  },
+  "menuReferDriver": "ड्राइवर को रेफ़र करें",
+  "@menuReferDriver": {
+    "description": "needs native review"
+  },
+  "menuHelp": "सहायता और समर्थन",
+  "@menuHelp": {
+    "description": "needs native review"
+  },
+  "menuDriverFallback": "ड्राइवर",
+  "@menuDriverFallback": {
+    "description": "needs native review"
+  },
+  "navHome": "होम",
+  "@navHome": {
+    "description": "needs native review"
+  },
+  "navTrips": "ट्रिप",
+  "@navTrips": {
+    "description": "needs native review"
+  },
+  "navEarnings": "कमाई",
+  "@navEarnings": {
+    "description": "needs native review"
+  },
+  "navProfile": "प्रोफ़ाइल",
+  "@navProfile": {
+    "description": "needs native review"
+  },
+  "tripTakenTitle": "राइड ले ली गई",
+  "@tripTakenTitle": {
+    "description": "needs native review"
+  },
+  "tripTakenBody": "यह राइड किसी दूसरे ड्राइवर ने स्वीकार कर ली।",
+  "@tripTakenBody": {
+    "description": "needs native review"
+  },
+  "tripRefusedTitle": "आप यह राइड नहीं ले सकते",
+  "@tripRefusedTitle": {
+    "description": "needs native review"
+  },
+  "tripGoneTitle": "राइड अब उपलब्ध नहीं है",
+  "@tripGoneTitle": {
+    "description": "needs native review"
+  },
+  "tripGoneBody": "वह राइड अब उपलब्ध नहीं है। आप फिर से ऑनलाइन हैं।",
+  "@tripGoneBody": {
+    "description": "needs native review"
+  },
+  "tripNoneTitle": "कोई सक्रिय ट्रिप नहीं",
+  "@tripNoneTitle": {
+    "description": "needs native review"
+  },
+  "tripNoneBody": "अभी आपको कोई ट्रिप नहीं दी गई है।",
+  "@tripNoneBody": {
+    "description": "needs native review"
+  },
+  "tripSupportReleasedBody": "SaaradhiGo सपोर्ट ने यह ट्रिप रद्द की। आप नई ट्रिप ले सकते हैं।",
+  "@tripSupportReleasedBody": {
+    "description": "needs native review"
+  },
+  "tripCancelledTitle": "राइड रद्द हुई",
+  "@tripCancelledTitle": {
+    "description": "needs native review"
+  },
+  "tripCancelledBody": "यह राइड यात्री ने रद्द कर दी है।",
+  "@tripCancelledBody": {
+    "description": "needs native review"
+  },
+  "tripConnecting": "ट्रिप से जुड़ रहे हैं…",
+  "@tripConnecting": {
+    "description": "needs native review"
+  },
+  "tripPreparing": "राइड तैयार हो रही है…",
+  "@tripPreparing": {
+    "description": "needs native review"
+  },
+  "tripBackHome": "होम पर वापस",
+  "@tripBackHome": {
+    "description": "needs native review"
+  },
+  "tripCancelledByPassenger": "यात्री ने राइड रद्द की",
+  "@tripCancelledByPassenger": {
+    "description": "needs native review"
+  },
+  "tripCancelledDefaultReason": "यात्री ने यह राइड अनुरोध रद्द कर दिया है।",
+  "@tripCancelledDefaultReason": {
+    "description": "needs native review"
+  },
+  "tripReturningOnline": "{seconds} सेकंड में फिर ऑनलाइन",
+  "@tripReturningOnline": {
+    "description": "needs native review"
+  },
+  "cancelSheetTitle": "यह राइड रद्द करें?",
+  "@cancelSheetTitle": {
+    "description": "needs native review"
+  },
+  "cancelSheetBody": "कारण चुनें। बार-बार रद्द करने से आपकी रेटिंग पर असर पड़ सकता है।",
+  "@cancelSheetBody": {
+    "description": "needs native review"
+  },
+  "cancelReasonNoShow": "राइडर नहीं आया",
+  "@cancelReasonNoShow": {
+    "description": "needs native review"
+  },
+  "cancelReasonVehicle": "वाहन में समस्या",
+  "@cancelReasonVehicle": {
+    "description": "needs native review"
+  },
+  "cancelReasonSafety": "सुरक्षा संबंधी चिंता",
+  "@cancelReasonSafety": {
+    "description": "needs native review"
+  },
+  "cancelReasonPersonal": "निजी आपातकाल",
+  "@cancelReasonPersonal": {
+    "description": "needs native review"
+  },
+  "cancelReasonOther": "अन्य",
+  "@cancelReasonOther": {
+    "description": "needs native review"
+  },
+  "tripNavigate": "नेविगेट करें",
+  "@tripNavigate": {
+    "description": "needs native review"
+  },
+  "tripRiderFallback": "राइडर",
+  "@tripRiderFallback": {
+    "description": "needs native review"
+  },
+  "tripArrived": "मैं पहुँच गया हूँ",
+  "@tripArrived": {
+    "description": "needs native review"
+  },
+  "tripCashCollected": "नकद ले लिया",
+  "@tripCashCollected": {
+    "description": "needs native review"
+  },
+  "tripDone": "हो गया",
+  "@tripDone": {
+    "description": "needs native review"
+  },
+  "tripRateRider": "राइडर को रेटिंग दें",
+  "@tripRateRider": {
+    "description": "needs native review"
+  },
+  "tripRateName": "{name} को रेटिंग दें",
+  "@tripRateName": {
+    "description": "needs native review"
+  },
+  "tripCollectInCash": "नकद में लें",
+  "@tripCollectInCash": {
+    "description": "needs native review"
+  },
+  "tripCollectBody": "{name} से {amount} नकद लें, फिर नीचे पुष्टि करें।",
+  "@tripCollectBody": {
+    "description": "needs native review"
+  },
+  "summaryRatingSaved": "धन्यवाद — रेटिंग सेव हो गई।",
+  "@summaryRatingSaved": {
+    "description": "needs native review"
+  },
+  "summaryTripComplete": "ट्रिप पूरी हुई",
+  "@summaryTripComplete": {
+    "description": "needs native review"
+  },
+  "summaryFareDistance": "चलाई गई दूरी का किराया",
+  "@summaryFareDistance": {
+    "description": "needs native review"
+  },
+  "summaryFare": "किराया",
+  "@summaryFare": {
+    "description": "needs native review"
+  },
+  "summaryCashCollected": "नकद लिया गया",
+  "@summaryCashCollected": {
+    "description": "needs native review"
+  },
+  "summaryPaidBy": "{method} से भुगतान हुआ",
+  "@summaryPaidBy": {
+    "description": "needs native review"
+  },
+  "summaryDistance": "दूरी",
+  "@summaryDistance": {
+    "description": "needs native review"
+  },
+  "summaryTime": "समय",
+  "@summaryTime": {
+    "description": "needs native review"
+  },
+  "summaryPayment": "भुगतान",
+  "@summaryPayment": {
+    "description": "needs native review"
+  },
+  "summaryPromoPaid": "प्रोमो का भुगतान SaaradhiGo ने किया",
+  "@summaryPromoPaid": {
+    "description": "needs native review"
+  },
+  "summarySupportEarned": "चलाई गई दूरी के लिए आपने {amount} कमाए।",
+  "@summarySupportEarned": {
+    "description": "needs native review"
+  },
+  "summaryWorkingOut": "आपकी कमाई का हिसाब लगा रहे हैं...",
+  "@summaryWorkingOut": {
+    "description": "needs native review"
+  },
+  "summaryEarningsLater": "इस ट्रिप की कमाई आपकी कमाई की सूची में दिखेगी।",
+  "@summaryEarningsLater": {
+    "description": "needs native review"
+  },
+  "payUpi": "UPI",
+  "@payUpi": {
+    "description": "needs native review"
+  },
+  "payCard": "कार्ड",
+  "@payCard": {
+    "description": "needs native review"
+  },
+  "payWallet": "वॉलेट",
+  "@payWallet": {
+    "description": "needs native review"
+  },
+  "rateTapStar": "यात्री को रेटिंग देने के लिए किसी तारे पर टैप करें।",
+  "@rateTapStar": {
+    "description": "needs native review"
+  },
+  "rateSaveFailed": "आपकी रेटिंग सेव नहीं हो सकी।",
+  "@rateSaveFailed": {
+    "description": "needs native review"
+  },
+  "rateHowWasTripWith": "{name} के साथ आपकी ट्रिप कैसी रही?",
+  "@rateHowWasTripWith": {
+    "description": "needs native review"
+  },
+  "rateHowWasPassenger": "आपका यात्री कैसा था?",
+  "@rateHowWasPassenger": {
+    "description": "needs native review"
+  },
+  "rateHint": "टीम को कुछ बताना है? (वैकल्पिक)",
+  "@rateHint": {
+    "description": "needs native review"
+  },
+  "rateSubmit": "रेटिंग जमा करें",
+  "@rateSubmit": {
+    "description": "needs native review"
+  },
+  "rateNotNow": "अभी नहीं",
+  "@rateNotNow": {
+    "description": "needs native review"
   }
 }

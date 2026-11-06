@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_l10n.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 /// Item metadata for the main driver bottom navigation bar.
@@ -65,8 +66,19 @@ class AppBottomNav extends StatelessWidget {
     ),
   ];
 
+  /// The tab's label in the app's language; [items] keeps the English.
+  static String _label(AppLocalizations l, AppBottomNavItemData item) =>
+      switch (item.route) {
+        '/' => l.navHome,
+        '/history' => l.navTrips,
+        '/earnings' => l.navEarnings,
+        '/profile' => l.navProfile,
+        _ => item.label,
+      };
+
   @override
   Widget build(BuildContext context) {
+    final l = sgL10n(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return ClipRRect(
@@ -101,7 +113,12 @@ class AppBottomNav extends StatelessWidget {
               final item = items[index];
               return _BottomNavItem(
                 key: ValueKey(item.route),
-                data: item,
+                data: AppBottomNavItemData(
+                  route: item.route,
+                  icon: item.icon,
+                  activeIcon: item.activeIcon,
+                  label: _label(l, item),
+                ),
                 isActive: currentIndex == index,
                 onTap: () => onTap(index),
               );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/models/trip_model.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_text.dart';
 import '../../../../ui/sg_tokens.dart';
 import '../../../../ui/sg_widgets.dart';
@@ -104,11 +105,12 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
     BuildContext context,
     TripSessionState session,
   ) {
+    final l = sgL10n(context);
     if (session.takenByOther) {
-      return const _TripEndedView(
+      return _TripEndedView(
         icon: SgIcons.pin,
-        title: 'Ride taken',
-        message: 'This ride was accepted by another driver.',
+        title: l.tripTakenTitle,
+        message: l.tripTakenBody,
       );
     }
 
@@ -123,19 +125,18 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       return _TripEndedView(
         icon: SgIcons.clock,
         title: session.refusedByBackend
-            ? 'You cannot take this ride'
-            : 'Ride no longer available',
-        message: session.errorMessage
-            ?? 'That ride is no longer available. You are back online.',
+            ? l.tripRefusedTitle
+            : l.tripGoneTitle,
+        message: session.errorMessage ?? l.tripGoneBody,
       );
     }
 
     final trip = session.trip;
     if (trip == null) {
-      return const _TripEndedView(
+      return _TripEndedView(
         icon: SgIcons.check,
-        title: 'No active trip',
-        message: 'There is no trip assigned to you right now.',
+        title: l.tripNoneTitle,
+        message: l.tripNoneBody,
       );
     }
 
@@ -144,18 +145,16 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
         return TripSummaryScreen(trip: trip);
       case TripStatus.cancelled:
         if (session.releasedBySupport) {
-          return const _TripEndedView(
+          return _TripEndedView(
             icon: SgIcons.help,
             title: kSupportReleasedTitle,
-            message:
-                'SaaradhiGo support cancelled this trip. You are free to take '
-                'new trips.',
+            message: l.tripSupportReleasedBody,
           );
         }
         return _TripEndedView(
           icon: SgIcons.close,
-          title: 'Ride cancelled',
-          message: 'This ride has been cancelled by the passenger.',
+          title: l.tripCancelledTitle,
+          message: l.tripCancelledBody,
           reason: session.cancellationReason,
         );
       case TripStatus.reached:
@@ -170,9 +169,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
           return AcceptedRideScreen(trip: trip);
         }
         return _TripLoadingView(
-          message: session.connecting
-              ? 'Connecting to the trip…'
-              : 'Preparing ride…',
+          message: session.connecting ? l.tripConnecting : l.tripPreparing,
         );
     }
   }
@@ -260,7 +257,7 @@ class _TripEndedView extends ConsumerWidget {
               ),
               const Spacer(),
               SgPrimaryButton(
-                label: 'Back to home',
+                label: sgL10n(context).tripBackHome,
                 onPressed: () {
                   ref.read(tripSessionNotifierProvider.notifier).clear();
                   ref.read(availabilityNotifierProvider.notifier).goOnline();

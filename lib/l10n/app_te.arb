@@ -379,5 +379,353 @@
   "breakdownNet": "డ్రైవర్ నికర సంపాదన",
   "@breakdownNet": {
     "description": "needs native review"
+  },
+  "homeOfferGone": "ఆ రైడ్ ఇప్పుడు అందుబాటులో లేదు.",
+  "@homeOfferGone": {
+    "description": "needs native review"
+  },
+  "homeOfferDeclined": "రైడ్ అభ్యర్థన తిరస్కరించబడింది.",
+  "@homeOfferDeclined": {
+    "description": "needs native review"
+  },
+  "homeNoticeReconnecting": "డిస్పాచ్‌కు మళ్లీ కనెక్ట్ అవుతోంది",
+  "@homeNoticeReconnecting": {
+    "description": "needs native review"
+  },
+  "homeNoticeWeakGps": "GPS సిగ్నల్ బలహీనంగా ఉంది",
+  "@homeNoticeWeakGps": {
+    "description": "needs native review"
+  },
+  "homeNoticeFindingLocation": "మీ స్థానాన్ని కనుగొంటోంది",
+  "@homeNoticeFindingLocation": {
+    "description": "needs native review"
+  },
+  "homeNoticeLimitedBackground": "రైడ్‌లు పొందడానికి యాప్‌ను తెరిచి ఉంచండి, లేదా బ్యాక్‌గ్రౌండ్ లొకేషన్‌ను అనుమతించండి.",
+  "@homeNoticeLimitedBackground": {
+    "description": "needs native review"
+  },
+  "homeNoticeUpgrade": "అప్‌గ్రేడ్",
+  "@homeNoticeUpgrade": {
+    "description": "needs native review"
+  },
+  "blockerVerifyTitle": "ధృవీకరణ జరుగుతోంది",
+  "@blockerVerifyTitle": {
+    "description": "needs native review"
+  },
+  "blockerVerifyBody": "మీ పత్రాలు ఆమోదించబడిన తర్వాత మీరు ఆన్‌లైన్‌కి వెళ్లవచ్చు.",
+  "@blockerVerifyBody": {
+    "description": "needs native review"
+  },
+  "blockerVerifyAction": "స్థితి చూడండి",
+  "@blockerVerifyAction": {
+    "description": "needs native review"
+  },
+  "blockerVehicleTitle": "మీ వాహనాన్ని జోడించండి",
+  "@blockerVehicleTitle": {
+    "description": "needs native review"
+  },
+  "blockerVehicleBody": "ఆన్‌లైన్‌కి వెళ్లడానికి మీరు నడిపే వాహనాన్ని జోడించండి.",
+  "@blockerVehicleBody": {
+    "description": "needs native review"
+  },
+  "blockerVehicleAction": "వాహనం జోడించండి",
+  "@blockerVehicleAction": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffTitle": "లొకేషన్ ఆఫ్‌లో ఉంది",
+  "@blockerLocationOffTitle": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffBody": "రైడ్ అభ్యర్థనలు పొందడానికి లొకేషన్‌ను ఆన్ చేయండి.",
+  "@blockerLocationOffBody": {
+    "description": "needs native review"
+  },
+  "blockerLocationOffAction": "లొకేషన్ ఆన్ చేయండి",
+  "@blockerLocationOffAction": {
+    "description": "needs native review"
+  },
+  "blockerLocationAccessTitle": "లొకేషన్ అనుమతి అవసరం",
+  "@blockerLocationAccessTitle": {
+    "description": "needs native review"
+  },
+  "blockerLocationBlockedBody": "లొకేషన్ అనుమతి నిరోధించబడింది. ఆన్‌లైన్‌కి వెళ్లడానికి సెట్టింగ్‌లలో అనుమతించండి.",
+  "@blockerLocationBlockedBody": {
+    "description": "needs native review"
+  },
+  "blockerLocationNeededBody": "రైడ్ అభ్యర్థనలు పొందడానికి SaaradhiGo కి మీ లొకేషన్ అవసరం.",
+  "@blockerLocationNeededBody": {
+    "description": "needs native review"
+  },
+  "blockerOpenSettings": "సెట్టింగ్‌లు తెరవండి",
+  "@blockerOpenSettings": {
+    "description": "needs native review"
+  },
+  "blockerAllowLocation": "లొకేషన్ అనుమతించండి",
+  "@blockerAllowLocation": {
+    "description": "needs native review"
+  },
+  "menuProfile": "ప్రొఫైల్",
+  "@menuProfile": {
+    "description": "needs native review"
+  },
+  "menuVehicle": "వాహనం",
+  "@menuVehicle": {
+    "description": "needs native review"
+  },
+  "menuDocuments": "పత్రాలు",
+  "@menuDocuments": {
+    "description": "needs native review"
+  },
+  "menuRewards": "రివార్డులు",
+  "@menuRewards": {
+    "description": "needs native review"
+  },
+  "menuReferDriver": "డ్రైవర్‌ను సిఫార్సు చేయండి",
+  "@menuReferDriver": {
+    "description": "needs native review"
+  },
+  "menuHelp": "సహాయం మరియు మద్దతు",
+  "@menuHelp": {
+    "description": "needs native review"
+  },
+  "menuDriverFallback": "డ్రైవర్",
+  "@menuDriverFallback": {
+    "description": "needs native review"
+  },
+  "navHome": "హోమ్",
+  "@navHome": {
+    "description": "needs native review"
+  },
+  "navTrips": "ట్రిప్‌లు",
+  "@navTrips": {
+    "description": "needs native review"
+  },
+  "navEarnings": "సంపాదన",
+  "@navEarnings": {
+    "description": "needs native review"
+  },
+  "navProfile": "ప్రొఫైల్",
+  "@navProfile": {
+    "description": "needs native review"
+  },
+  "tripTakenTitle": "రైడ్ తీసుకోబడింది",
+  "@tripTakenTitle": {
+    "description": "needs native review"
+  },
+  "tripTakenBody": "ఈ రైడ్‌ను మరో డ్రైవర్ అంగీకరించారు.",
+  "@tripTakenBody": {
+    "description": "needs native review"
+  },
+  "tripRefusedTitle": "మీరు ఈ రైడ్ తీసుకోలేరు",
+  "@tripRefusedTitle": {
+    "description": "needs native review"
+  },
+  "tripGoneTitle": "రైడ్ ఇప్పుడు అందుబాటులో లేదు",
+  "@tripGoneTitle": {
+    "description": "needs native review"
+  },
+  "tripGoneBody": "ఆ రైడ్ ఇప్పుడు అందుబాటులో లేదు. మీరు మళ్లీ ఆన్‌లైన్‌లో ఉన్నారు.",
+  "@tripGoneBody": {
+    "description": "needs native review"
+  },
+  "tripNoneTitle": "యాక్టివ్ ట్రిప్ లేదు",
+  "@tripNoneTitle": {
+    "description": "needs native review"
+  },
+  "tripNoneBody": "ప్రస్తుతం మీకు ఏ ట్రిప్ కేటాయించబడలేదు.",
+  "@tripNoneBody": {
+    "description": "needs native review"
+  },
+  "tripSupportReleasedBody": "SaaradhiGo సపోర్ట్ ఈ ట్రిప్‌ను రద్దు చేసింది. మీరు కొత్త ట్రిప్‌లు తీసుకోవచ్చు.",
+  "@tripSupportReleasedBody": {
+    "description": "needs native review"
+  },
+  "tripCancelledTitle": "రైడ్ రద్దు చేయబడింది",
+  "@tripCancelledTitle": {
+    "description": "needs native review"
+  },
+  "tripCancelledBody": "ఈ రైడ్‌ను ప్రయాణికుడు రద్దు చేశారు.",
+  "@tripCancelledBody": {
+    "description": "needs native review"
+  },
+  "tripConnecting": "ట్రిప్‌కు కనెక్ట్ అవుతోంది…",
+  "@tripConnecting": {
+    "description": "needs native review"
+  },
+  "tripPreparing": "రైడ్ సిద్ధమవుతోంది…",
+  "@tripPreparing": {
+    "description": "needs native review"
+  },
+  "tripBackHome": "హోమ్‌కి తిరిగి",
+  "@tripBackHome": {
+    "description": "needs native review"
+  },
+  "tripCancelledByPassenger": "ప్రయాణికుడు రైడ్‌ను రద్దు చేశారు",
+  "@tripCancelledByPassenger": {
+    "description": "needs native review"
+  },
+  "tripCancelledDefaultReason": "ప్రయాణికుడు ఈ రైడ్ అభ్యర్థనను రద్దు చేశారు.",
+  "@tripCancelledDefaultReason": {
+    "description": "needs native review"
+  },
+  "tripReturningOnline": "{seconds}సె లో మళ్లీ ఆన్‌లైన్",
+  "@tripReturningOnline": {
+    "description": "needs native review"
+  },
+  "cancelSheetTitle": "ఈ రైడ్‌ను రద్దు చేయాలా?",
+  "@cancelSheetTitle": {
+    "description": "needs native review"
+  },
+  "cancelSheetBody": "కారణాన్ని ఎంచుకోండి. తరచూ రద్దు చేయడం మీ రేటింగ్‌ను ప్రభావితం చేయవచ్చు.",
+  "@cancelSheetBody": {
+    "description": "needs native review"
+  },
+  "cancelReasonNoShow": "రైడర్ రాలేదు",
+  "@cancelReasonNoShow": {
+    "description": "needs native review"
+  },
+  "cancelReasonVehicle": "వాహన సమస్య",
+  "@cancelReasonVehicle": {
+    "description": "needs native review"
+  },
+  "cancelReasonSafety": "భద్రతా సమస్య",
+  "@cancelReasonSafety": {
+    "description": "needs native review"
+  },
+  "cancelReasonPersonal": "వ్యక్తిగత అత్యవసరం",
+  "@cancelReasonPersonal": {
+    "description": "needs native review"
+  },
+  "cancelReasonOther": "ఇతర",
+  "@cancelReasonOther": {
+    "description": "needs native review"
+  },
+  "tripNavigate": "నావిగేట్",
+  "@tripNavigate": {
+    "description": "needs native review"
+  },
+  "tripRiderFallback": "రైడర్",
+  "@tripRiderFallback": {
+    "description": "needs native review"
+  },
+  "tripArrived": "నేను చేరుకున్నాను",
+  "@tripArrived": {
+    "description": "needs native review"
+  },
+  "tripCashCollected": "నగదు తీసుకున్నాను",
+  "@tripCashCollected": {
+    "description": "needs native review"
+  },
+  "tripDone": "పూర్తయింది",
+  "@tripDone": {
+    "description": "needs native review"
+  },
+  "tripRateRider": "రైడర్‌కు రేటింగ్ ఇవ్వండి",
+  "@tripRateRider": {
+    "description": "needs native review"
+  },
+  "tripRateName": "{name} కు రేటింగ్ ఇవ్వండి",
+  "@tripRateName": {
+    "description": "needs native review"
+  },
+  "tripCollectInCash": "నగదుగా తీసుకోండి",
+  "@tripCollectInCash": {
+    "description": "needs native review"
+  },
+  "tripCollectBody": "{name} నుండి {amount} నగదు తీసుకుని, కింద నిర్ధారించండి.",
+  "@tripCollectBody": {
+    "description": "needs native review"
+  },
+  "summaryRatingSaved": "ధన్యవాదాలు — రేటింగ్ సేవ్ అయింది.",
+  "@summaryRatingSaved": {
+    "description": "needs native review"
+  },
+  "summaryTripComplete": "ట్రిప్ పూర్తయింది",
+  "@summaryTripComplete": {
+    "description": "needs native review"
+  },
+  "summaryFareDistance": "నడిపిన దూరానికి ఛార్జీ",
+  "@summaryFareDistance": {
+    "description": "needs native review"
+  },
+  "summaryFare": "ఛార్జీ",
+  "@summaryFare": {
+    "description": "needs native review"
+  },
+  "summaryCashCollected": "నగదు తీసుకోబడింది",
+  "@summaryCashCollected": {
+    "description": "needs native review"
+  },
+  "summaryPaidBy": "{method} ద్వారా చెల్లించబడింది",
+  "@summaryPaidBy": {
+    "description": "needs native review"
+  },
+  "summaryDistance": "దూరం",
+  "@summaryDistance": {
+    "description": "needs native review"
+  },
+  "summaryTime": "సమయం",
+  "@summaryTime": {
+    "description": "needs native review"
+  },
+  "summaryPayment": "చెల్లింపు",
+  "@summaryPayment": {
+    "description": "needs native review"
+  },
+  "summaryPromoPaid": "ప్రోమోను SaaradhiGo చెల్లించింది",
+  "@summaryPromoPaid": {
+    "description": "needs native review"
+  },
+  "summarySupportEarned": "నడిపిన దూరానికి మీరు {amount} సంపాదించారు.",
+  "@summarySupportEarned": {
+    "description": "needs native review"
+  },
+  "summaryWorkingOut": "మీ సంపాదనను లెక్కిస్తోంది...",
+  "@summaryWorkingOut": {
+    "description": "needs native review"
+  },
+  "summaryEarningsLater": "ఈ ట్రిప్ సంపాదన మీ సంపాదన జాబితాలో కనిపిస్తుంది.",
+  "@summaryEarningsLater": {
+    "description": "needs native review"
+  },
+  "payUpi": "UPI",
+  "@payUpi": {
+    "description": "needs native review"
+  },
+  "payCard": "కార్డ్",
+  "@payCard": {
+    "description": "needs native review"
+  },
+  "payWallet": "వాలెట్",
+  "@payWallet": {
+    "description": "needs native review"
+  },
+  "rateTapStar": "ప్రయాణికుడికి రేటింగ్ ఇవ్వడానికి నక్షత్రాన్ని నొక్కండి.",
+  "@rateTapStar": {
+    "description": "needs native review"
+  },
+  "rateSaveFailed": "మీ రేటింగ్‌ను సేవ్ చేయలేకపోయాం.",
+  "@rateSaveFailed": {
+    "description": "needs native review"
+  },
+  "rateHowWasTripWith": "{name} తో మీ ట్రిప్ ఎలా ఉంది?",
+  "@rateHowWasTripWith": {
+    "description": "needs native review"
+  },
+  "rateHowWasPassenger": "మీ ప్రయాణికుడు ఎలా ఉన్నారు?",
+  "@rateHowWasPassenger": {
+    "description": "needs native review"
+  },
+  "rateHint": "టీమ్‌కు తెలియాల్సినది ఏదైనా ఉందా? (ఐచ్ఛికం)",
+  "@rateHint": {
+    "description": "needs native review"
+  },
+  "rateSubmit": "రేటింగ్ సమర్పించండి",
+  "@rateSubmit": {
+    "description": "needs native review"
+  },
+  "rateNotNow": "ఇప్పుడు కాదు",
+  "@rateNotNow": {
+    "description": "needs native review"
   }
 }
