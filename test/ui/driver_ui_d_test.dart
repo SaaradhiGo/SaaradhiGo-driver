@@ -34,7 +34,7 @@ void main() {
       addTearDown(tester.view.reset);
       var tapped = 0;
       await tester.pumpWidget(sgApp(homeFrame(onGoOnline: () => tapped++)));
-      expect(find.text('Offline'), findsOneWidget);
+      expect(find.text('Offline', findRichText: true), findsOneWidget);
       expect(find.text('Go online'), findsOneWidget);
       expect(find.text('Go offline'), findsNothing);
       expect(find.text('₹1,240'), findsOneWidget);
@@ -49,11 +49,11 @@ void main() {
       var tapped = 0;
       await tester.pumpWidget(
           sgApp(homeFrame(online: true, onGoOffline: () => tapped++)));
-      expect(find.text('Online'), findsOneWidget);
+      expect(find.text('Online  · 1h 12m', findRichText: true),
+          findsOneWidget);
       expect(find.text('Go offline'), findsOneWidget);
       expect(find.text('Go online'), findsNothing);
       expect(find.text('Looking for rides near you'), findsOneWidget);
-      expect(find.text('· 1h 12m'), findsOneWidget);
       expect(
           tester.getSize(find.byKey(const Key('home_go_offline'))).height, 64);
       await tester.tap(find.text('Go offline'));

@@ -347,9 +347,21 @@ class DriverHomeView extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: SgSpace.s3),
-              Flexible(
-                child: Text(
-                  statusLabel,
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: statusLabel),
+                      if (online && onlineFor != null)
+                        TextSpan(
+                          text: '  · ${onlineTimeLabel(onlineFor!)}',
+                          style: SgText.body.copyWith(
+                            color: SgColors.inkMuted,
+                          ),
+                        ),
+                    ],
+                  ),
+                  key: const Key('home_status'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: SgText.heading.copyWith(
@@ -359,14 +371,6 @@ class DriverHomeView extends StatelessWidget {
                   ),
                 ),
               ),
-              if (online && onlineFor != null) ...[
-                const SizedBox(width: SgSpace.s2),
-                Text(
-                  '· ${onlineTimeLabel(onlineFor!)}',
-                  style: SgText.body.copyWith(color: SgColors.inkMuted),
-                ),
-              ],
-              const Spacer(),
               if (onInbox != null)
                 InboxBell(unread: unread, onTap: onInbox!, label: l.homeMessages),
             ],
