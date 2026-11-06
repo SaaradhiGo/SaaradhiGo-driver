@@ -12,6 +12,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class HoldToSend extends StatefulWidget {
   const HoldToSend({
@@ -22,7 +23,7 @@ class HoldToSend extends StatefulWidget {
     this.holdFor = const Duration(seconds: 2),
     this.enabled = true,
     this.circular = false,
-    this.ringColor = const Color(0xFFFFFFFF),
+    this.ringColor,
   });
 
   final Widget child;
@@ -33,7 +34,8 @@ class HoldToSend extends StatefulWidget {
 
   /// A ring around a round button; otherwise a bar along the bottom edge.
   final bool circular;
-  final Color ringColor;
+  /// Defaults to on-danger: the ring is drawn over the SOS fill.
+  final Color? ringColor;
 
   @override
   State<HoldToSend> createState() => _HoldToSendState();
@@ -96,14 +98,14 @@ class _HoldToSendState extends State<HoldToSend>
                         ? CircularProgressIndicator(
                             value: _hold.value,
                             strokeWidth: 4,
-                            color: widget.ringColor,
+                            color: widget.ringColor ?? SgColors.onDanger,
                           )
                         : Align(
                             alignment: Alignment.bottomCenter,
                             child: LinearProgressIndicator(
                               value: _hold.value,
                               minHeight: 4,
-                              color: widget.ringColor,
+                              color: widget.ringColor ?? SgColors.onDanger,
                               backgroundColor: Colors.transparent,
                             ),
                           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -54,7 +55,7 @@ class OtpField extends StatelessWidget {
         style: AppTypography.dataMono.copyWith(fontSize: 24),
         decoration: InputDecoration(
           counterText: '',
-          fillColor: const Color(0x26FFFFFF), // 15% White background
+          fillColor: SgColors.bg300,
           contentPadding: EdgeInsets.zero,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -62,7 +63,7 @@ class OtpField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.sm),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.primaryText, width: 2),
           ),
         ),
       ),

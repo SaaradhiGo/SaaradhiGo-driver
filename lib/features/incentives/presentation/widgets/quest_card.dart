@@ -35,12 +35,12 @@ class QuestCard extends StatelessWidget {
     switch (type) {
       case QuestType.peakHour:
       case QuestType.streak:
-        return AppColors.primary;
+        return AppColors.primaryText;
       case QuestType.marathon:
       case QuestType.weeklyMilestone:
-        return AppColors.secondary;
+        return AppColors.primaryText;
       default:
-        return AppColors.primary;
+        return AppColors.primaryText;
     }
   }
 
@@ -111,7 +111,7 @@ class QuestCard extends StatelessWidget {
                                           Container(
                                             width: 6,
                                             height: 6,
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               color: AppColors.secondary,
                                               shape: BoxShape.circle,
                                             ),
@@ -123,7 +123,7 @@ class QuestCard extends StatelessWidget {
                                           style: AppTypography.labelCaps
                                               .copyWith(
                                                 color: quest.isExpiringSoon
-                                                    ? AppColors.secondary
+                                                    ? AppColors.primaryText
                                                     : AppColors
                                                           .onSurfaceVariant,
                                                 fontSize: 11,
@@ -154,7 +154,7 @@ class QuestCard extends StatelessWidget {
                             child: Text(
                               '${marketSymbol()}${quest.rewardAmount}',
                               style: AppTypography.dataMono.copyWith(
-                                color: AppColors.primary,
+                                color: AppColors.primaryText,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),
@@ -179,7 +179,7 @@ class QuestCard extends StatelessWidget {
                       if (quest.isCompleted) ...[
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.check_circle_rounded,
                               color: AppColors.success,
                               size: 16,

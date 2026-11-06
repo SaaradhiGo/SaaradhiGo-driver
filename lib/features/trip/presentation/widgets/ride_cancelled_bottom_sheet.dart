@@ -90,7 +90,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
           AppSpacing.lg,
           AppSpacing.xl,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           border: Border(
@@ -127,7 +127,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
                     width: 2,
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.cancel_outlined,
                     color: AppColors.error,
@@ -175,7 +175,7 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.success,
                         shape: BoxShape.circle,
                       ),

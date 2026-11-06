@@ -53,19 +53,19 @@ class DriverReferralScreen extends ConsumerWidget {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Refer & Earn',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: async.when(
-          loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
+          loading: () => Center(
+            child: CircularProgressIndicator(color: AppColors.primaryText),
           ),
           error: (_, _) => _failed(ref),
           data: (mine) => mine == null ? _failed(ref) : _content(context, mine),
@@ -149,7 +149,7 @@ class DriverReferralScreen extends ConsumerWidget {
                 mine.code,
                 key: const Key('referral_code'),
                 style: AppTypography.dataMono.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
                   letterSpacing: 4,
@@ -353,7 +353,7 @@ class DriverReferralScreen extends ConsumerWidget {
               label,
               style: AppTypography.bodyMd.copyWith(
                 color: r.pendingReview
-                    ? AppColors.secondary
+                    ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
                 fontSize: 13,
               ),

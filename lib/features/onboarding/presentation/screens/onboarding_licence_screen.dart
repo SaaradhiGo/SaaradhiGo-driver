@@ -13,6 +13,7 @@ import '../../../profile/presentation/providers/profile_providers.dart';
 import '../../data/models/picked_document.dart';
 import '../providers/onboarding_providers.dart';
 import '../widgets/floating_text_field.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class OnboardingLicenceScreen extends ConsumerStatefulWidget {
   const OnboardingLicenceScreen({super.key});
@@ -80,7 +81,7 @@ class _OnboardingLicenceScreenState
     if (_formKey.currentState!.validate()) {
       if (_frontDocument == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Please upload the front of your Driving Licence'),
             backgroundColor: AppColors.error,
           ),
@@ -135,7 +136,7 @@ class _OnboardingLicenceScreenState
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.onBackground),
+          icon: Icon(Icons.arrow_back, color: AppColors.onBackground),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -167,7 +168,7 @@ class _OnboardingLicenceScreenState
                           Text(
                             'STEP 4 OF 4',
                             style: AppTypography.labelCaps.copyWith(
-                              color: AppColors.primary,
+                              color: AppColors.primaryText,
                             ),
                           ),
                           Text(
@@ -319,7 +320,7 @@ class _OnboardingLicenceScreenState
                   ),
                 ),
                 if (hasDoc)
-                  const Icon(Icons.check_circle, color: AppColors.primary),
+                  Icon(Icons.check_circle, color: AppColors.primaryText),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -327,7 +328,7 @@ class _OnboardingLicenceScreenState
               height: 160,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: const Color(0xFF151515),
+                color: AppColors.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: hasDoc
@@ -344,11 +345,11 @@ class _OnboardingLicenceScreenState
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.surfaceContainerHigh,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.add_a_photo,
                             color: AppColors.onSurfaceVariant,
                           ),
@@ -378,7 +379,7 @@ class _OnboardingLicenceScreenState
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.replay,
                               size: 16,
                               color: AppColors.onBackground,
@@ -415,7 +416,7 @@ class _OnboardingLicenceScreenState
       image: image,
       fit: BoxFit.cover,
       colorFilter: ColorFilter.mode(
-        Colors.black.withValues(alpha: 0.4),
+        SgColors.black.withValues(alpha: 0.4),
         BlendMode.darken,
       ),
     );

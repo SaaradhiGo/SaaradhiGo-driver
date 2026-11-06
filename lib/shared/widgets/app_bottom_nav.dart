@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 /// Item metadata for the main driver bottom navigation bar.
 class AppBottomNavItemData {
@@ -83,12 +84,12 @@ class AppBottomNav extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            border: const Border(
+            border: Border(
               top: BorderSide(color: AppColors.outlineVariant),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.4),
+                color: SgColors.shadow,
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
@@ -182,7 +183,7 @@ class _BottomNavItemState extends State<_BottomNavItem> {
                   isActive ? widget.data.activeIcon : widget.data.icon,
                   size: 22,
                   color: isActive
-                      ? AppColors.primaryContainer
+                      ? AppColors.primaryText
                       : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
               ),
@@ -195,7 +196,7 @@ class _BottomNavItemState extends State<_BottomNavItem> {
                   letterSpacing: 0,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive
-                      ? AppColors.primaryContainer
+                      ? AppColors.primaryText
                       : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
                 child: Text(widget.data.label),

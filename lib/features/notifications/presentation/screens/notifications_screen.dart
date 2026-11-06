@@ -61,15 +61,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         actions: [
           if (state.unreadCount > 0)
             TextButton.icon(
-              icon: const Icon(
+              icon: Icon(
                 Icons.done_all_rounded,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 18,
               ),
               label: Text(
                 'Mark All Read',
                 style: AppTypography.labelCaps.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -78,7 +78,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   .markAllAsRead(),
             ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
+            icon: Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
             onPressed: () => ref
                 .read(notificationsNotifierProvider.notifier)
                 .fetchNotifications(refresh: true),
@@ -93,7 +93,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             // Main List
             Expanded(
               child: RefreshIndicator(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 backgroundColor: AppColors.surfaceContainer,
                 onRefresh: () => ref
                     .read(notificationsNotifierProvider.notifier)
@@ -130,7 +130,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             showCheckmark: false,
             labelStyle: AppTypography.labelCaps.copyWith(
               color: isSelected
-                  ? AppColors.background
+                  ? AppColors.darkText
                   : AppColors.onSurfaceVariant,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -138,7 +138,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             backgroundColor: AppColors.surfaceContainer,
             side: BorderSide(
               color: isSelected
-                  ? AppColors.primary
+                  ? AppColors.primaryText
                   : AppColors.outlineVariant.withValues(alpha: 0.2),
             ),
             onSelected: (_) => ref
@@ -152,8 +152,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   Widget _buildContent(BuildContext context, NotificationsState state) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -164,7 +164,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 54,
@@ -212,9 +212,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   color: AppColors.primaryContainer.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.notifications_none_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   size: 40,
                 ),
               ),
@@ -298,7 +298,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           ],
         ],
         if (state.isLoadingMore)
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
             child: Center(
               child: SizedBox(
@@ -306,7 +306,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                 ),
               ),
             ),
@@ -340,11 +340,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     switch (item.category) {
       case NotificationCategory.earnings:
-        iconColor = AppColors.primary;
+        iconColor = AppColors.primaryText;
         iconBg = AppColors.primaryContainer.withValues(alpha: 0.15);
         icon = Icons.account_balance_wallet_rounded;
       case NotificationCategory.trips:
-        iconColor = AppColors.primary;
+        iconColor = AppColors.primaryText;
         iconBg = AppColors.primaryContainer.withValues(alpha: 0.15);
         icon = Icons.directions_car_rounded;
       case NotificationCategory.safety:
@@ -353,8 +353,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         icon = Icons.warning_amber_rounded;
       case NotificationCategory.system:
       case NotificationCategory.all:
-        iconColor = const Color(0xFF60A5FA);
-        iconBg = const Color(0xFF60A5FA).withValues(alpha: 0.15);
+        iconColor = AppColors.onSurfaceVariant;
+        iconBg = AppColors.surfaceContainerHigh;
         icon = Icons.verified_user_rounded;
     }
 
@@ -378,12 +378,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   bottom: 0,
                   width: 4,
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          AppColors.primary,
+                          AppColors.primaryText,
                           AppColors.surfaceContainerHigh,
                         ],
                       ),

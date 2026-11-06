@@ -57,7 +57,7 @@ class VerificationApprovedSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainer,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary, width: 2),
+                border: Border.all(color: AppColors.primaryText, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.25),
@@ -66,9 +66,9 @@ class VerificationApprovedSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 48,
               ),
             ),
@@ -79,7 +79,7 @@ class VerificationApprovedSheet extends StatelessWidget {
           Text(
             'Verification Approved!',
             style: AppTypography.headlineMd.copyWith(
-              color: AppColors.primary,
+              color: AppColors.primaryText,
               fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,

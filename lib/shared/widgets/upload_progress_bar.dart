@@ -36,7 +36,7 @@ class UploadProgressBar extends StatelessWidget {
             value: progress.clamp(0.0, 1.0),
             minHeight: 8,
             backgroundColor: AppColors.surfaceContainerHigh,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryText),
           ),
         ),
       ],

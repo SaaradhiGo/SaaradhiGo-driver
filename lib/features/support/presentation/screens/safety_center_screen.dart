@@ -59,42 +59,29 @@ class SafetyCenterScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF93000A), Color(0xFF5C0005)],
-                    ),
-                    border: Border.all(
-                      color: AppColors.error.withValues(alpha: 0.5),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.error.withValues(alpha: 0.2),
-                        blurRadius: 14,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    // Flat danger fill: no gradients or glows on mobile.
+                    color: AppColors.error,
                   ),
                   child: Row(
                     children: [
                       Container(
                         width: 56,
                         height: 56,
-                        decoration: const BoxDecoration(
-                          color: AppColors.errorContainer,
+                        decoration: BoxDecoration(
+                          color: AppColors.onError.withValues(alpha: 0.16),
                           shape: BoxShape.circle,
                         ),
                         child: sos.isRaising
-                            ? const Padding(
+                            ? Padding(
                                 padding: EdgeInsets.all(16),
                                 child: CircularProgressIndicator(
-                                  color: AppColors.whiteText,
+                                  color: AppColors.onError,
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.sos,
-                                color: AppColors.whiteText,
+                                color: AppColors.onError,
                                 size: 30,
                               ),
                       ),
@@ -106,7 +93,7 @@ class SafetyCenterScreen extends ConsumerWidget {
                             Text(
                               'Emergency SOS',
                               style: AppTypography.headlineSm.copyWith(
-                                color: AppColors.whiteText,
+                                color: AppColors.onError,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -114,7 +101,7 @@ class SafetyCenterScreen extends ConsumerWidget {
                               'Hold for 2 seconds. Sends your live location '
                               'to our safety team.',
                               style: AppTypography.bodyMd.copyWith(
-                                color: AppColors.whiteText.withValues(
+                                color: AppColors.onError.withValues(
                                   alpha: 0.85,
                                 ),
                                 fontSize: 13,
@@ -134,7 +121,7 @@ class SafetyCenterScreen extends ConsumerWidget {
             Text(
               'Immediate Help',
               style: AppTypography.headlineSm.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -175,7 +162,7 @@ class SafetyCenterScreen extends ConsumerWidget {
             Text(
               'Safety Tools',
               style: AppTypography.headlineSm.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -256,7 +243,7 @@ class SafetyCenterScreen extends ConsumerWidget {
           color: AppColors.onSurfaceVariant,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right_rounded,
         color: AppColors.onSurfaceVariant,
       ),
@@ -271,7 +258,7 @@ class SafetyCenterScreen extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
+      leading: Icon(icon, color: AppColors.primaryText),
       title: Text(
         title,
         style: AppTypography.bodyMd.copyWith(
@@ -286,7 +273,7 @@ class SafetyCenterScreen extends ConsumerWidget {
           fontSize: 13,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right_rounded,
         color: AppColors.onSurfaceVariant,
       ),

@@ -1,38 +1,50 @@
 import 'package:flutter/material.dart';
 
-/// The older screens' tokens, mapped onto the design system (lib/ui/sg_tokens)
-/// in group F so every screen reads pure black, ink and a single gold.
+import '../../ui/sg_tokens.dart';
+
+/// The older screens' token names, answering from the active design-system
+/// palette (lib/ui/sg_tokens.dart). No colour literals here: every name is a
+/// getter so the app can switch between the dark and light palettes.
+///
+/// [primary] is the gold FILL (buttons, markers, tints). Gold used as text, an
+/// icon, a border or a progress stroke is [primaryText], which is darker in the
+/// light theme so it stays readable on light surfaces.
 class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFFFFD700);
-  static const Color primaryContainer = Color(0xFFFFD700);
-  static const Color secondary = Color(0xFFFFE34D);
+  static Color get primary => SgColors.gold500;
+  static Color get primaryContainer => SgColors.gold500;
+  static Color get secondary => SgColors.gold300;
 
-  // Gold is flat now; the gradient ends are the same colour.
-  static const Color gradientStart = Color(0xFFFFD700);
-  static const Color gradientEnd = Color(0xFFFFD700);
+  /// Gold as text, icon, border or stroke (4.5:1 on every surface).
+  static Color get primaryText => SgColors.goldText;
 
-  static const Color background = Color(0xFF000000);
-  static const Color surface = Color(0xFF141414);
-  static const Color surfaceContainer = Color(0xFF18181B);
-  static const Color surfaceContainerHigh = Color(0xFF27272A);
+  static Color get gradientStart => SgColors.gold500;
+  static Color get gradientEnd => SgColors.gold500;
 
-  static const Color onBackground = Color(0xFFF1F5F9);
-  static const Color onSurfaceVariant = Color(0xFF94A3B8);
-  static const Color whiteText = Color(0xFFF1F5F9);
-  static const Color secondaryGray = Color(0xFF8090A6);
-  static const Color darkText = Color(0xFF000000); // Text on gold.
+  static Color get background => SgColors.bg000;
+  static Color get surface => SgColors.bg100;
+  static Color get surfaceContainer => SgColors.bg200;
+  static Color get surfaceContainerHigh => SgColors.bg300;
 
-  static const Color outline = Color(0xFF71717A);
-  static const Color outlineVariant = Color(0xFF27272A);
+  static Color get onBackground => SgColors.ink;
+  static Color get onSurfaceVariant => SgColors.inkMuted;
+  static Color get whiteText => SgColors.ink;
+  static Color get secondaryGray => SgColors.inkSubtle;
 
-  static const Color error = Color(0xFFFF8A6B);
-  static const Color errorContainer = Color(0xFF3A1A12);
-  static const Color success = Color(0xFF46C98B);
-  static const Color successContainer = Color(0xFF12291E);
-  static const Color pendingContainer = Color(0xFF2A2405);
+  /// Text and icons on a gold fill.
+  static Color get darkText => SgColors.onGold;
 
-  static const Color glassOverlay = Color(0xFF141414);
-  static const Color shadowGlow = Color(0x00000000);
+  static Color get outline => SgColors.lineStrong;
+  static Color get outlineVariant => SgColors.line;
+
+  static Color get error => SgColors.danger;
+  static Color get onError => SgColors.onDanger;
+  static Color get errorContainer => SgColors.tint(SgColors.danger);
+  static Color get success => SgColors.success;
+  static Color get successContainer => SgColors.tint(SgColors.success);
+  static Color get pendingContainer => SgColors.goldSoft;
+
+  static Color get glassOverlay => SgColors.bg100;
+  static Color get shadowGlow => Colors.transparent;
 }

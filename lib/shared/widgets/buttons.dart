@@ -37,7 +37,7 @@ class PrimaryButton extends StatelessWidget {
         ),
       ),
       child: isLoading
-          ? const SizedBox(
+          ? SizedBox(
               height: 22,
               width: 22,
               child: CircularProgressIndicator(
@@ -74,7 +74,7 @@ class SecondaryButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.onBackground,
-        side: const BorderSide(color: AppColors.outline),
+        side: BorderSide(color: AppColors.outline),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),

@@ -53,14 +53,14 @@ class DateRangePickerSheet extends StatelessWidget {
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
+            colorScheme: ColorScheme.dark(
               primary: AppColors.primary,
               onPrimary: AppColors.darkText,
               surface: AppColors.surfaceContainer,
               onSurface: AppColors.onBackground,
               secondary: AppColors.primaryContainer,
             ),
-            dialogTheme: const DialogThemeData(
+            dialogTheme: DialogThemeData(
               backgroundColor: AppColors.surfaceContainer,
             ),
           ),
@@ -78,7 +78,7 @@ class DateRangePickerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSpacing.radiusLg),
@@ -125,21 +125,21 @@ class DateRangePickerSheet extends StatelessWidget {
             _buildPresetTile(context, DateFilterPreset.today),
             _buildPresetTile(context, DateFilterPreset.thisWeek),
             _buildPresetTile(context, DateFilterPreset.thisMonth),
-            const Divider(
+            Divider(
               color: AppColors.outlineVariant,
               height: AppSpacing.md,
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(
+              leading: Icon(
                 Icons.calendar_month_outlined,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Custom Date Range...',
                 style: AppTypography.bodyMd.copyWith(
                   color: activePreset == DateFilterPreset.custom
-                      ? AppColors.primary
+                      ? AppColors.primaryText
                       : AppColors.onBackground,
                   fontWeight: activePreset == DateFilterPreset.custom
                       ? FontWeight.w600
@@ -151,12 +151,12 @@ class DateRangePickerSheet extends StatelessWidget {
                       '${activeCustomRange!.start.day}/${activeCustomRange!.start.month}/${activeCustomRange!.start.year} - '
                       '${activeCustomRange!.end.day}/${activeCustomRange!.end.month}/${activeCustomRange!.end.year}',
                       style: AppTypography.labelCaps.copyWith(
-                        color: AppColors.primary,
+                        color: AppColors.primaryText,
                       ),
                     )
                   : null,
               trailing: activePreset == DateFilterPreset.custom
-                  ? const Icon(Icons.check, color: AppColors.primary)
+                  ? Icon(Icons.check, color: AppColors.primaryText)
                   : null,
               onTap: () => _handleCustomDateRange(context),
             ),
@@ -173,12 +173,12 @@ class DateRangePickerSheet extends StatelessWidget {
       title: Text(
         preset.label,
         style: AppTypography.bodyMd.copyWith(
-          color: isSelected ? AppColors.primary : AppColors.onBackground,
+          color: isSelected ? AppColors.primaryText : AppColors.onBackground,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),
       trailing: isSelected
-          ? const Icon(Icons.check, color: AppColors.primary)
+          ? Icon(Icons.check, color: AppColors.primaryText)
           : null,
       onTap: () {
         onSelected(preset, null);

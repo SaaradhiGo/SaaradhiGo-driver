@@ -78,7 +78,7 @@ class DriverAvatar extends StatelessWidget {
               child: Icon(
                 Icons.verified_rounded,
                 size: badgeSize * 0.75,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
             ),
           ),
@@ -104,7 +104,7 @@ class DriverAvatar extends StatelessWidget {
         child: Text(
           initial,
           style: AppTypography.bodyMd.copyWith(
-            color: AppColors.primaryContainer,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
             fontSize: size * 0.4,
           ),

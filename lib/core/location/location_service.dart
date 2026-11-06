@@ -1,9 +1,9 @@
-import 'dart:ui' show Color;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:geolocator/geolocator.dart';
 
 import 'geolocator_adapter.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 /// Outcome of a permission + service pre-flight check.
 enum LocationAvailability {
@@ -214,8 +214,8 @@ class LocationService {
               (mode == LocationTrackingMode.activeTrip
                   ? 'Driving to Destination'
                   : 'Active & ready for ride dispatches'),
-          notificationIcon: const AndroidResource(name: 'ic_launcher'),
-          color: const Color(0xFFD4AF37),
+          notificationIcon: const AndroidResource(name: 'ic_stat_notify'),
+          color: SgColors.logoClassic,
           enableWakeLock: true,
           setOngoing: true,
         ),

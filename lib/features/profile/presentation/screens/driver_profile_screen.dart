@@ -16,6 +16,7 @@ import '../../../../shared/widgets/glass_panel.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../vehicle/presentation/providers/vehicle_info_providers.dart';
 import '../providers/profile_providers.dart';
+import '../widgets/display_settings_rows.dart';
 
 /// Driver Profile / Account Suite screen (`/profile`).
 class DriverProfileScreen extends ConsumerStatefulWidget {
@@ -67,7 +68,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded, color: AppColors.error),
+            icon: Icon(Icons.logout_rounded, color: AppColors.error),
             tooltip: 'Log Out',
             onPressed: () => _confirmLogout(context),
           ),
@@ -75,8 +76,8 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
       ),
       body: SafeArea(
         child: switch (profileState) {
-          ProfileStateLoading() => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
+          ProfileStateLoading() => Center(
+            child: CircularProgressIndicator(color: AppColors.primaryText),
           ),
           ProfileStateError(:final message) => Center(
             child: Padding(
@@ -84,7 +85,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.error_outline_rounded,
                     color: AppColors.error,
                     size: 48,
@@ -116,7 +117,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
             ),
           ),
           ProfileStateLoaded(:final profile) => RefreshIndicator(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             backgroundColor: AppColors.surfaceContainer,
             onRefresh: () =>
                 ref.read(driverProfileNotifierProvider.notifier).fetchProfile(),
@@ -200,16 +201,16 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.star_rounded,
                       size: 18,
-                      color: AppColors.primaryContainer,
+                      color: AppColors.primaryText,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       rating,
                       style: AppTypography.dataMono.copyWith(
-                        color: AppColors.primaryContainer,
+                        color: AppColors.primaryText,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -262,8 +263,8 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                       : Icons.pending_rounded,
                   size: 18,
                   color: profile.approved
-                      ? AppColors.primaryContainer
-                      : AppColors.secondary,
+                      ? AppColors.primaryText
+                      : AppColors.primaryText,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -303,9 +304,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                       color: AppColors.primary.withValues(alpha: 0.4),
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.directions_car_outlined,
-                    color: AppColors.primary,
+                    color: AppColors.primaryText,
                     size: 24,
                   ),
                 ),
@@ -345,7 +346,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                             child: Text(
                               'REQUIRED',
                               style: AppTypography.labelCaps.copyWith(
-                                color: AppColors.primary,
+                                color: AppColors.primaryText,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -413,9 +414,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.directions_car_rounded,
-                  color: AppColors.primaryContainer,
+                  color: AppColors.primaryText,
                   size: 20,
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -480,15 +481,15 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                         : AppColors.surfaceContainer,
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     border: v.id == state.activeVehicle?.id
-                        ? Border.all(color: AppColors.primary)
+                        ? Border.all(color: AppColors.primaryText)
                         : null,
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.directions_car_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.primaryText,
                       ),
                       title: Text(
                         '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
@@ -504,9 +505,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                         ),
                       ),
                       trailing: v.id == state.activeVehicle?.id
-                          ? const Icon(
+                          ? Icon(
                               Icons.check_circle,
-                              color: AppColors.primary,
+                              color: AppColors.primaryText,
                             )
                           : TextButton(
                               child: const Text('Activate'),
@@ -539,11 +540,11 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               ],
               const SizedBox(height: AppSpacing.sm),
               OutlinedButton.icon(
-                icon: const Icon(Icons.add_rounded, color: AppColors.primary),
+                icon: Icon(Icons.add_rounded, color: AppColors.primaryText),
                 label: const Text('Add New Vehicle'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
+                  foregroundColor: AppColors.primaryText,
+                  side: BorderSide(color: AppColors.primaryText),
                   minimumSize: const Size.fromHeight(48),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -587,9 +588,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.person_rounded,
-                  color: AppColors.primaryContainer,
+                  color: AppColors.primaryText,
                   size: 20,
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -660,9 +661,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.military_tech_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Elite Tier',
@@ -677,7 +678,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   fontSize: 12,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -691,9 +692,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.directions_car_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Active Vehicle Information',
@@ -701,7 +702,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   color: AppColors.onBackground,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -715,9 +716,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.description_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Compliance & Document Vault',
@@ -725,7 +726,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   color: AppColors.onBackground,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -739,9 +740,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.notifications_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Notifications Center',
@@ -749,7 +750,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   color: AppColors.onBackground,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -764,9 +765,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
             color: Colors.transparent,
             child: ListTile(
               key: const Key('profile_notification_preferences'),
-              leading: const Icon(
+              leading: Icon(
                 Icons.tune_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Notification preferences',
@@ -774,7 +775,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   color: AppColors.onBackground,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -788,9 +789,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           Material(
             color: Colors.transparent,
             child: ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.security_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
               ),
               title: Text(
                 'Safety & Emergency Center',
@@ -798,7 +799,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   color: AppColors.onBackground,
                 ),
               ),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.onSurfaceVariant,
               ),
@@ -816,9 +817,9 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               color: Colors.transparent,
               child: ListTile(
                 key: const Key('profile_refer_tile'),
-                leading: const Icon(
+                leading: Icon(
                   Icons.group_add_rounded,
-                  color: AppColors.primaryContainer,
+                  color: AppColors.primaryText,
                 ),
                 title: Text(
                   'Refer & Earn',
@@ -833,7 +834,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                     fontSize: 12,
                   ),
                 ),
-                trailing: const Icon(
+                trailing: Icon(
                   Icons.chevron_right_rounded,
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -841,6 +842,11 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               ),
             ),
           ],
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          const DisplaySettingsRows(),
         ],
       ),
     );

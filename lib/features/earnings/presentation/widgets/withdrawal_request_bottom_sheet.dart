@@ -139,7 +139,7 @@ class _WithdrawalRequestBottomSheetState
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.close,
                       color: AppColors.onSurfaceVariant,
                     ),
@@ -172,7 +172,7 @@ class _WithdrawalRequestBottomSheetState
                     Text(
                       formatMoney(availBalance, currency),
                       style: AppTypography.displayLg.copyWith(
-                        color: AppColors.primary,
+                        color: AppColors.primaryText,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -225,7 +225,7 @@ class _WithdrawalRequestBottomSheetState
                       child: Text(
                         formatMoney(500, currency, decimals: 0),
                         style: AppTypography.dataMono.copyWith(
-                          color: AppColors.primary,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -244,7 +244,7 @@ class _WithdrawalRequestBottomSheetState
                       child: Text(
                         '${currencySymbol(currency)}1,000',
                         style: AppTypography.dataMono.copyWith(
-                          color: AppColors.primary,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -263,7 +263,7 @@ class _WithdrawalRequestBottomSheetState
                       child: Text(
                         'Max',
                         style: AppTypography.dataMono.copyWith(
-                          color: AppColors.primary,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -298,7 +298,7 @@ class _WithdrawalRequestBottomSheetState
                     child: Text(
                       currencySymbol(currency).trim(),
                       style: AppTypography.bodyMd.copyWith(
-                        color: AppColors.primary,
+                        color: AppColors.primaryText,
                         fontSize: 18,
                       ),
                     ),
@@ -338,7 +338,7 @@ class _WithdrawalRequestBottomSheetState
                     : () {
                         if (isBlocked) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
                                 'Withdrawals are currently locked for your account. Please contact support.',
                               ),

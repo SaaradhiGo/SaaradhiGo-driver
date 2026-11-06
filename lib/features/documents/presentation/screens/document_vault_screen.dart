@@ -47,7 +47,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
+            icon: Icon(Icons.refresh, color: AppColors.onSurfaceVariant),
             onPressed: () => ref
                 .read(documentVaultNotifierProvider.notifier)
                 .fetchDocuments(refresh: true),
@@ -56,7 +56,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AppColors.primaryText,
           backgroundColor: AppColors.surfaceContainer,
           onRefresh: () => ref
               .read(documentVaultNotifierProvider.notifier)
@@ -69,8 +69,8 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
 
   Widget _buildBody(BuildContext context, DocumentVaultState state) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -81,7 +81,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 54,
@@ -122,7 +122,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.folder_open_rounded,
                 color: AppColors.onSurfaceVariant,
                 size: 64,
@@ -211,9 +211,9 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
             ),
             child: Column(
               children: [
-                const Icon(
+                Icon(
                   Icons.verified_user_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   size: 32,
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -250,14 +250,14 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   actionReq > 0
                       ? Icons.warning_amber_rounded
                       : Icons.check_circle_outline_rounded,
-                  color: actionReq > 0 ? AppColors.error : AppColors.primary,
+                  color: actionReq > 0 ? AppColors.error : AppColors.primaryText,
                   size: 32,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   '$actionReq',
                   style: AppTypography.headlineSm.copyWith(
-                    color: actionReq > 0 ? AppColors.error : AppColors.primary,
+                    color: actionReq > 0 ? AppColors.error : AppColors.primaryText,
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
                   ),
@@ -293,14 +293,14 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
               Text(
                 'Uploading document to S3…',
                 style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
                 '$pct%',
                 style: AppTypography.dataMono.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -310,7 +310,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
           LinearProgressIndicator(
             value: state.uploadProgress > 0 ? state.uploadProgress : null,
             backgroundColor: AppColors.surfaceContainerHigh,
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             borderRadius: BorderRadius.circular(4),
           ),
         ],
@@ -330,19 +330,19 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
 
     switch (doc.status) {
       case DocumentStatus.verified:
-        indicatorColor = const Color(0xFF4ADE80);
-        badgeBg = const Color(0xFF4ADE80).withValues(alpha: 0.15);
-        badgeTextColor = const Color(0xFF4ADE80);
+        indicatorColor = AppColors.success;
+        badgeBg = AppColors.success.withValues(alpha: 0.15);
+        badgeTextColor = AppColors.success;
         badgeIcon = Icons.check_circle_rounded;
       case DocumentStatus.pending:
-        indicatorColor = const Color(0xFFF97316);
-        badgeBg = const Color(0xFFF97316).withValues(alpha: 0.15);
-        badgeTextColor = const Color(0xFFF97316);
+        indicatorColor = AppColors.primaryText;
+        badgeBg = AppColors.pendingContainer;
+        badgeTextColor = AppColors.primaryText;
         badgeIcon = Icons.pending_rounded;
       case DocumentStatus.renewalDue:
-        indicatorColor = Colors.amber;
-        badgeBg = Colors.amber.withValues(alpha: 0.15);
-        badgeTextColor = Colors.amber;
+        indicatorColor = AppColors.primaryText;
+        badgeBg = AppColors.pendingContainer;
+        badgeTextColor = AppColors.primaryText;
         badgeIcon = Icons.warning_amber_rounded;
       case DocumentStatus.expired:
       case DocumentStatus.rejected:
@@ -467,7 +467,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                     if (hasFile && !doc.status.isActionRequired) ...[
                       IconButton(
                         tooltip: 'View Document',
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.visibility_outlined,
                           color: AppColors.onSurfaceVariant,
                         ),
@@ -477,7 +477,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          foregroundColor: AppColors.background,
+                          foregroundColor: AppColors.darkText,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 8,
@@ -490,7 +490,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                         label: Text(
                           hasFile ? 'Re-upload' : 'Upload',
                           style: AppTypography.labelCaps.copyWith(
-                            color: AppColors.background,
+                            color: AppColors.darkText,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -540,7 +540,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.close,
                       color: AppColors.onSurfaceVariant,
                     ),
@@ -558,7 +558,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                     maxScale: 4.0,
                     child: doc.fileUrl != null
                         ? AppServerImage(url: doc.fileUrl!, fit: BoxFit.contain)
-                        : const Center(
+                        : Center(
                             child: Icon(
                               Icons.broken_image_rounded,
                               size: 48,
@@ -638,9 +638,9 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   color: AppColors.primaryContainer.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.camera_alt_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                 ),
               ),
               title: Text(
@@ -662,7 +662,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 _pickAndUpload(doc, ImageSource.camera);
               },
             ),
-            const Divider(color: AppColors.surfaceContainerHigh),
+            Divider(color: AppColors.surfaceContainerHigh),
             ListTile(
               leading: Container(
                 padding: const EdgeInsets.all(10),
@@ -670,9 +670,9 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   color: AppColors.primaryContainer.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.photo_library_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                 ),
               ),
               title: Text(

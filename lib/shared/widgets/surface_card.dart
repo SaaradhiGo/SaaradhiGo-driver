@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class SurfaceCard extends StatelessWidget {
   final Widget child;
@@ -20,7 +21,7 @@ class SurfaceCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: const Color(0x1AFFFFFF), // 10% white inner border
+          color: SgColors.line,
           width: 1,
         ),
       ),

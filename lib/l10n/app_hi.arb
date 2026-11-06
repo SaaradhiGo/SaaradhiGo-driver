@@ -1,0 +1,43 @@
+{
+  "@@locale": "hi",
+  "appearanceTitle": "रूप",
+  "@appearanceTitle": {
+    "description": "needs native review"
+  },
+  "appearanceAutomatic": "स्वचालित",
+  "@appearanceAutomatic": {
+    "description": "needs native review"
+  },
+  "appearanceAutomaticHint": "दिन में हल्का, सूर्यास्त के बाद गहरा",
+  "@appearanceAutomaticHint": {
+    "description": "needs native review"
+  },
+  "appearanceDark": "गहरा",
+  "@appearanceDark": {
+    "description": "needs native review"
+  },
+  "appearanceLight": "हल्का",
+  "@appearanceLight": {
+    "description": "needs native review"
+  },
+  "languageTitle": "भाषा",
+  "@languageTitle": {
+    "description": "needs native review"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "needs native review"
+  },
+  "languageTelugu": "తెలుగు",
+  "@languageTelugu": {
+    "description": "needs native review"
+  },
+  "languageHindi": "हिन्दी",
+  "@languageHindi": {
+    "description": "needs native review"
+  },
+  "brandLogoLabel": "Saaradhi Go",
+  "@brandLogoLabel": {
+    "description": "needs native review"
+  }
+}

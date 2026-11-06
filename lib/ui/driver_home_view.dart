@@ -3,12 +3,12 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../core/market/market_config_store.dart';
 import 'sg_text.dart';
 import 'sg_tokens.dart';
 import 'sg_widgets.dart';
+import 'sg_brand.dart';
 
 /// Whole currency units: "₹248". Null for an amount that does not parse.
 String? wholeMoney(String? raw) {
@@ -122,7 +122,7 @@ class InboxBell extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: SgColors.goldLine),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: SgIcon(SgIcons.bell, color: SgColors.ink),
                   ),
                 ),
@@ -251,11 +251,7 @@ class DriverHomeView extends StatelessWidget {
               SgMapButton(icon: SgIcons.menu, label: 'Menu', onTap: onMenu),
               Expanded(
                 child: Center(
-                  child: SvgPicture.asset(
-                    'assets/brand/saaradhigo-emblem-gold.svg',
-                    height: 30,
-                    semanticsLabel: 'SaaradhiGo',
-                  ),
+                  child: SgBrandLockup(badgeSize: 32, overDarkMap: true),
                 ),
               ),
               if (onInbox != null) ...[

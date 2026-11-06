@@ -105,7 +105,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                 borderColor: AppColors.error.withValues(alpha: 0.4),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.error_outline_rounded,
                       color: AppColors.error,
                     ),
@@ -128,7 +128,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
             Text(
               'Incident Category',
               style: AppTypography.headlineSm.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -139,9 +139,9 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                   value: _category,
                   isExpanded: true,
                   dropdownColor: AppColors.surfaceContainerHigh,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_drop_down_rounded,
-                    color: AppColors.primaryContainer,
+                    color: AppColors.primaryText,
                   ),
                   style: AppTypography.bodyLg.copyWith(
                     color: AppColors.onBackground,
@@ -166,7 +166,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
             Text(
               'Incident Details',
               style: AppTypography.headlineSm.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryText,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),

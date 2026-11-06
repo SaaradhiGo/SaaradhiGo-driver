@@ -85,7 +85,7 @@ class _EarningsDashboardScreenState
 
   Widget _buildBody(EarningsState state) {
     if (state.isLoading && state.summary == null) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(color: AppColors.onBackground),
       );
     }
@@ -97,7 +97,7 @@ class _EarningsDashboardScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.cloud_off,
                 size: 64,
                 color: AppColors.onSurfaceVariant,
@@ -312,7 +312,7 @@ class _EarningsDashboardScreenState
                       color: AppColors.primaryContainer.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.emoji_events_rounded,
                       color: AppColors.onBackground,
                       size: 26,
@@ -374,7 +374,7 @@ class _EarningsDashboardScreenState
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.arrow_forward_ios_rounded,
                     color: AppColors.onSurfaceVariant,
                     size: 14,
@@ -533,13 +533,13 @@ class _EarningsDashboardScreenState
               children: [
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.surfaceContainerHigh,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.account_balance,
-                    color: AppColors.secondary,
+                    color: AppColors.primaryText,
                     size: 20,
                   ),
                 ),

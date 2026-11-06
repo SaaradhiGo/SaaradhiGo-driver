@@ -64,7 +64,7 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
                       color: AppColors.onBackground,
                     ),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.chevron_right_rounded,
                     color: AppColors.onSurfaceVariant,
                   ),

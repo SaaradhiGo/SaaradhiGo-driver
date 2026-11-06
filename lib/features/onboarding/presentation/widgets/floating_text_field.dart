@@ -19,7 +19,7 @@ class FloatingTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
@@ -34,7 +34,7 @@ class FloatingTextField extends StatelessWidget {
             color: AppColors.onSurfaceVariant,
           ),
           floatingLabelStyle: AppTypography.bodyMd.copyWith(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
           ),
           contentPadding: const EdgeInsets.only(
             left: 16,
@@ -42,14 +42,14 @@ class FloatingTextField extends StatelessWidget {
             top: 24,
             bottom: 8,
           ),
-          border: const UnderlineInputBorder(
+          border: UnderlineInputBorder(
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
-          enabledBorder: const UnderlineInputBorder(
+          enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
-          focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.primaryText, width: 2),
           ),
         ),
       ),

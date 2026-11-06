@@ -31,8 +31,10 @@ Future<void> loadSgFonts() async {
     await loader.load();
   }
 
-  await load('Manrope', ['Manrope.ttf']);
-  await load('CormorantGaramond', ['CormorantGaramond.ttf']);
+  await load('AnekLatin', ['AnekLatin.ttf']);
+  await load('AnekTelugu', ['AnekTelugu.ttf']);
+  await load('AnekDevanagari', ['AnekDevanagari.ttf']);
+  await load('Cinzel', ['Cinzel-SemiBold.ttf']);
 }
 
 Widget homeFrame({
@@ -45,7 +47,7 @@ Widget homeFrame({
   String? commission,
 }) =>
     DriverHomeView(
-      map: const SgMap(
+      map: SgMap(
         provider: kPlaceholderMaps,
         initialCenter: LatLng(17.44, 78.38),
         markers: [
@@ -89,7 +91,7 @@ const sampleOffer = <String, dynamic>{
   'payment_method': 'cash',
 };
 
-const _tripMap = SgMap(
+final _tripMap = SgMap(
   provider: kPlaceholderMaps,
   initialCenter: LatLng(17.44, 78.38),
   markers: [
@@ -103,7 +105,7 @@ const _tripMap = SgMap(
 );
 
 /// Stand-in for the SOS hold button, which needs the app's providers.
-Widget sosStandIn() => const SizedBox(
+Widget sosStandIn() => SizedBox(
       width: 48,
       height: 48,
       child: DecoratedBox(

@@ -22,13 +22,13 @@ class RiderSummaryRow extends StatelessWidget {
         Container(
           width: 40,
           height: 40,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.surfaceContainerHigh,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.person_rounded,
-            color: AppColors.primaryContainer,
+            color: AppColors.primaryText,
             size: 22,
           ),
         ),

@@ -125,12 +125,12 @@ class _DriverPuck extends StatelessWidget {
         color: AppColors.primaryContainer,
         shape: BoxShape.circle,
         border: Border.all(color: AppColors.background, width: 2),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(color: AppColors.shadowGlow, blurRadius: 10),
         ],
       ),
       child: showHeading
-          ? const Icon(Icons.navigation, size: 14, color: AppColors.darkText)
+          ? Icon(Icons.navigation, size: 14, color: AppColors.darkText)
           : null,
     );
   }

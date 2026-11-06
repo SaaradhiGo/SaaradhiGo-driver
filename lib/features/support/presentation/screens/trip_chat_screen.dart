@@ -92,13 +92,13 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
             Container(
               width: 38,
               height: 38,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.surfaceContainerHigh,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.person_rounded,
-                color: AppColors.primaryContainer,
+                color: AppColors.primaryText,
                 size: 20,
               ),
             ),
@@ -117,7 +117,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
                   'In-trip chat',
                   style: AppTypography.labelCaps.copyWith(
                     color: chat.connecting
-                        ? AppColors.secondary
+                        ? AppColors.primaryText
                         : chat.socketError
                         ? AppColors.error
                         : AppColors.onSurfaceVariant,
@@ -131,7 +131,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
         actions: [
           IconButton(
             tooltip: 'Call rider',
-            icon: const Icon(Icons.call_rounded, color: AppColors.primary),
+            icon: Icon(Icons.call_rounded, color: AppColors.primaryText),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -166,8 +166,8 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
     }
 
     if (chat.isLoadingHistory && chat.messages.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -202,7 +202,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
         AppSpacing.margin,
         MediaQuery.paddingOf(context).bottom + AppSpacing.sm,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         border: Border(
           top: BorderSide(color: AppColors.outlineVariant, width: 0.4),
@@ -312,7 +312,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
         child: Text(
           text,
           style: AppTypography.bodyMd.copyWith(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             fontSize: 13,
           ),
         ),
@@ -470,7 +470,7 @@ class _ChatErrorBanner extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.wifi_off_rounded,
               color: AppColors.error,
               size: 48,
@@ -511,10 +511,10 @@ class _EmptyChat extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.chat_bubble_outline_rounded,
               size: 56,
-              color: AppColors.primaryContainer,
+              color: AppColors.primaryText,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(

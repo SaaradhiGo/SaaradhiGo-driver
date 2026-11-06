@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class TripHistoryCard extends StatelessWidget {
   final TripModel trip;
@@ -71,7 +72,7 @@ class TripHistoryCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.4),
+              color: SgColors.shadow,
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -117,7 +118,7 @@ class TripHistoryCard extends StatelessWidget {
                       fareText,
                       style: AppTypography.dataMono.copyWith(
                         color: isCompleted
-                            ? AppColors.primary
+                            ? AppColors.primaryText
                             : AppColors.onSurfaceVariant,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -150,7 +151,7 @@ class TripHistoryCard extends StatelessWidget {
                             : (isCancelled ? 'Cancelled' : 'In Progress'),
                         style: AppTypography.labelCaps.copyWith(
                           color: isCompleted
-                              ? AppColors.primary
+                              ? AppColors.primaryText
                               : AppColors.onSurfaceVariant,
                           fontSize: 11,
                         ),
@@ -168,7 +169,7 @@ class TripHistoryCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.info_outline,
                     size: 14,
                     color: AppColors.error,
@@ -210,11 +211,11 @@ class TripHistoryCard extends StatelessWidget {
                     Container(
                       width: 2,
                       height: 36,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [AppColors.primary, AppColors.outlineVariant],
+                          colors: [AppColors.primaryText, AppColors.outlineVariant],
                         ),
                       ),
                     ),
@@ -261,7 +262,7 @@ class TripHistoryCard extends StatelessWidget {
             ),
 
             const SizedBox(height: AppSpacing.md),
-            const Divider(color: AppColors.outlineVariant, height: 1),
+            Divider(color: AppColors.outlineVariant, height: 1),
             const SizedBox(height: AppSpacing.sm),
 
             // Footer Row: Distance, Duration, Payment Type
@@ -270,7 +271,7 @@ class TripHistoryCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.route_outlined,
                       size: 16,
                       color: AppColors.onSurfaceVariant,
@@ -286,7 +287,7 @@ class TripHistoryCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
-                    const Icon(
+                    Icon(
                       Icons.schedule_outlined,
                       size: 16,
                       color: AppColors.onSurfaceVariant,
@@ -310,7 +311,7 @@ class TripHistoryCard extends StatelessWidget {
                           ? Icons.account_balance_wallet_outlined
                           : Icons.contactless_outlined,
                       size: 16,
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                     ),
                     const SizedBox(width: 4),
                     Text(

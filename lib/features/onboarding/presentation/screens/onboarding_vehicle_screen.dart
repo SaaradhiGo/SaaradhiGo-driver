@@ -117,7 +117,7 @@ class _OnboardingVehicleScreenState
     if (_formKey.currentState!.validate()) {
       if (!_hasRcDoc) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Please upload RC Document'),
             backgroundColor: AppColors.error,
           ),
@@ -167,13 +167,13 @@ class _OnboardingVehicleScreenState
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'SaaradhiGo',
           style: AppTypography.headlineMd.copyWith(
-            color: AppColors.primary,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -216,7 +216,7 @@ class _OnboardingVehicleScreenState
                         decoration: BoxDecoration(
                           color: AppColors.surfaceContainerHigh,
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.05),
+                            color: AppColors.onBackground.withValues(alpha: 0.05),
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -325,7 +325,7 @@ class _OnboardingVehicleScreenState
                                   child: Icon(
                                     Icons.description,
                                     color: _hasRcDoc
-                                        ? AppColors.primary
+                                        ? AppColors.primaryText
                                         : AppColors.onSurfaceVariant,
                                   ),
                                 ),
@@ -351,7 +351,7 @@ class _OnboardingVehicleScreenState
                                                 : Icons.pending,
                                             size: 16,
                                             color: _hasRcDoc
-                                                ? AppColors.primary
+                                                ? AppColors.primaryText
                                                 : AppColors.error,
                                           ),
                                           const SizedBox(width: 4),
@@ -362,7 +362,7 @@ class _OnboardingVehicleScreenState
                                             style: AppTypography.labelCaps
                                                 .copyWith(
                                                   color: _hasRcDoc
-                                                      ? AppColors.primary
+                                                      ? AppColors.primaryText
                                                       : AppColors.error,
                                                 ),
                                           ),
@@ -376,7 +376,7 @@ class _OnboardingVehicleScreenState
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: _hasRcDoc
                                         ? AppColors.surfaceContainer
-                                        : AppColors.primary,
+                                        : AppColors.primaryText,
                                     foregroundColor: _hasRcDoc
                                         ? AppColors.onSurfaceVariant
                                         : AppColors.darkText,
@@ -447,7 +447,7 @@ class _OnboardingVehicleScreenState
                               alignment: Alignment.center,
                               child: _hasVehiclePic
                                   ? null
-                                  : const Icon(
+                                  : Icon(
                                       Icons.directions_car,
                                       color: AppColors.onSurfaceVariant,
                                     ),
@@ -472,7 +472,7 @@ class _OnboardingVehicleScreenState
                                             : Icons.info_outline,
                                         size: 16,
                                         color: _hasVehiclePic
-                                            ? AppColors.primary
+                                            ? AppColors.primaryText
                                             : AppColors.onSurfaceVariant,
                                       ),
                                       const SizedBox(width: 4),
@@ -480,7 +480,7 @@ class _OnboardingVehicleScreenState
                                         _hasVehiclePic ? 'Added' : 'Optional',
                                         style: AppTypography.labelCaps.copyWith(
                                           color: _hasVehiclePic
-                                              ? AppColors.primary
+                                              ? AppColors.primaryText
                                               : AppColors.onSurfaceVariant,
                                         ),
                                       ),
@@ -494,7 +494,7 @@ class _OnboardingVehicleScreenState
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: _hasVehiclePic
                                     ? AppColors.surfaceContainer
-                                    : AppColors.primary,
+                                    : AppColors.primaryText,
                                 foregroundColor: _hasVehiclePic
                                     ? AppColors.onSurfaceVariant
                                     : AppColors.darkText,
@@ -525,7 +525,7 @@ class _OnboardingVehicleScreenState
                         decoration: BoxDecoration(
                           color: AppColors.surfaceContainerHigh,
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.05),
+                            color: AppColors.onBackground.withValues(alpha: 0.05),
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -592,7 +592,7 @@ class _OnboardingVehicleScreenState
 
   Widget _buildVehicleTypeDropdown() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surfaceContainer,
         borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
@@ -600,7 +600,7 @@ class _OnboardingVehicleScreenState
       child: DropdownButtonFormField<String>(
         isExpanded: true,
         initialValue: _selectedVehicleType,
-        icon: const Icon(Icons.expand_more, color: AppColors.onSurfaceVariant),
+        icon: Icon(Icons.expand_more, color: AppColors.onSurfaceVariant),
         dropdownColor: AppColors.surfaceContainer,
         style: AppTypography.bodyLg.copyWith(color: AppColors.onBackground),
         decoration: InputDecoration(
@@ -608,14 +608,14 @@ class _OnboardingVehicleScreenState
           labelStyle: AppTypography.bodyMd.copyWith(
             color: AppColors.onSurfaceVariant,
           ),
-          border: const UnderlineInputBorder(
+          border: UnderlineInputBorder(
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
-          enabledBorder: const UnderlineInputBorder(
+          enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: AppColors.outlineVariant),
           ),
-          focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.primaryText, width: 2),
           ),
           contentPadding: EdgeInsets.zero,
         ),

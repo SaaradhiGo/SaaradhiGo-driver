@@ -232,19 +232,19 @@ class _NotificationPreferencesScreenState
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Notification preferences',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: _loading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+            ? Center(
+                child: CircularProgressIndicator(color: AppColors.primaryText),
               )
             : _failed
             ? Center(

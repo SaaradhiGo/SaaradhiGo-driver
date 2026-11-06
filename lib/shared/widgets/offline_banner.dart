@@ -27,26 +27,26 @@ class OfflineBanner extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.wifi_off_rounded,
                 size: 18,
-                color: AppColors.whiteText,
+                color: AppColors.onBackground,
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   'No Internet Connection. Retrying…',
                   style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.whiteText,
+                    color: AppColors.onBackground,
                   ),
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 14,
                 height: 14,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: AppColors.whiteText,
+                  color: AppColors.onBackground,
                 ),
               ),
             ],

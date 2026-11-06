@@ -35,12 +35,12 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'SaaradhiGo Elite',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primary),
+          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
         ),
         centerTitle: true,
       ),
@@ -50,8 +50,8 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
 
   Widget _buildContent(BuildContext context, EliteStatusState state) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primaryText),
       );
     }
 
@@ -62,7 +62,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 color: AppColors.error,
                 size: 48,
@@ -102,7 +102,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
       onRefresh: () => ref
           .read(eliteStatusNotifierProvider.notifier)
           .fetchEliteStatus(refresh: true),
-      color: AppColors.primary,
+      color: AppColors.primaryText,
       backgroundColor: AppColors.surface,
       child: ListView(
         padding: const EdgeInsets.symmetric(
@@ -259,9 +259,9 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.analytics_outlined,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -285,7 +285,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                   isQualified: elite.isRatingQualified,
                 ),
               ),
-              Container(width: 1, height: 50, color: const Color(0x1AFFFFFF)),
+              Container(width: 1, height: 50, color: AppColors.outlineVariant),
               Expanded(
                 child: _buildMetricCol(
                   title: 'Acceptance',
@@ -294,7 +294,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                   isQualified: elite.isAcceptanceQualified,
                 ),
               ),
-              Container(width: 1, height: 50, color: const Color(0x1AFFFFFF)),
+              Container(width: 1, height: 50, color: AppColors.outlineVariant),
               Expanded(
                 child: _buildMetricCol(
                   title: 'Cancellation',

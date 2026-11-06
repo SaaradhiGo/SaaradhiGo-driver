@@ -39,7 +39,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.primaryContainer.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
                       color: AppColors.shadowGlow,
                       blurRadius: 24,
@@ -47,9 +47,9 @@ class QuestCelebrationSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.emoji_events_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryText,
                   size: 44,
                 ),
               ),
@@ -94,8 +94,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                   Text(
                     '+ ${marketSymbol()}${quest.rewardAmount}',
                     style: AppTypography.displayLg.copyWith(
-                      color: AppColors.primary,
-                      fontFamily: 'JetBrains Mono',
+                      color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
                     ),
@@ -104,7 +103,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_circle_rounded,
                         color: AppColors.success,
                         size: 14,

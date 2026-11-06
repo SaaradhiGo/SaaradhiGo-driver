@@ -10,7 +10,10 @@ class CircularGoalRing extends StatelessWidget {
   final String title;
   final String valueText;
   final double progress;
-  final Color accentColor;
+  final Color? _accentColor;
+
+  /// Gold-text in the active palette unless the caller picks one.
+  Color get accentColor => _accentColor ?? AppColors.primaryText;
   final VoidCallback? onTap;
 
   const CircularGoalRing({
@@ -18,9 +21,9 @@ class CircularGoalRing extends StatelessWidget {
     required this.title,
     required this.valueText,
     required this.progress,
-    this.accentColor = AppColors.primary,
+    Color? accentColor,
     this.onTap,
-  });
+  }) : _accentColor = accentColor;
 
   @override
   Widget build(BuildContext context) {

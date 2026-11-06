@@ -73,7 +73,7 @@ class SosFeedbackListener extends ConsumerWidget {
             action: canUndo
                 ? SnackBarAction(
                     label: 'Tap if this was a mistake',
-                    textColor: AppColors.whiteText,
+                    textColor: AppColors.onBackground,
                     onPressed: () =>
                         ref.read(sosNotifierProvider.notifier).reportMistake(),
                   )
@@ -125,28 +125,18 @@ class TripSosButton extends ConsumerWidget {
               height: size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFFF4D4D), Color(0xFF93000A)],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.error.withValues(alpha: 0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                // Flat danger fill: no gradients or glows on mobile.
+                color: AppColors.error,
               ),
               child: state.isRaising
-                  ? const Padding(
+                  ? Padding(
                       padding: EdgeInsets.all(12),
                       child: CircularProgressIndicator(
-                        color: AppColors.whiteText,
+                        color: AppColors.onError,
                         strokeWidth: 2,
                       ),
                     )
-                  : const Icon(Icons.sos, color: AppColors.whiteText, size: 22),
+                  : Icon(Icons.sos, color: AppColors.onError, size: 22),
           ),
         ),
         const SosFeedbackListener(),

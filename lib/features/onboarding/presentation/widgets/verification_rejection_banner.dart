@@ -27,7 +27,7 @@ class VerificationRejectionBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.warning_rounded, color: AppColors.error, size: 24),
+          Icon(Icons.warning_rounded, color: AppColors.error, size: 24),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

@@ -40,10 +40,12 @@ class SgIcons {
 }
 
 class SgIcon extends StatelessWidget {
-  const SgIcon(this.body, {super.key, this.size = 20, this.color = SgColors.inkMuted});
+  const SgIcon(this.body, {super.key, this.size = 20, this.color});
   final String body;
   final double size;
-  final Color color;
+
+  /// Defaults to ink-muted in the active palette.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) => SvgPicture.string(
@@ -52,7 +54,7 @@ class SgIcon extends StatelessWidget {
         'stroke-linejoin="round">$body</svg>',
         width: size,
         height: size,
-        theme: SvgTheme(currentColor: color),
+        theme: SvgTheme(currentColor: color ?? SgColors.inkMuted),
       );
 }
 
@@ -76,7 +78,7 @@ class SgMapButton extends StatelessWidget {
               color: SgColors.bg100,
               shape: BoxShape.circle,
               border: Border.all(color: SgColors.goldLine),
-              boxShadow: const [BoxShadow(color: Color(0x99000000), blurRadius: 24, offset: Offset(0, 8))],
+              boxShadow: [BoxShadow(color: SgColors.shadow, blurRadius: 24, offset: Offset(0, 8))],
             ),
             child: Center(child: SgIcon(icon, size: 20, color: SgColors.ink)),
           ),
@@ -126,11 +128,11 @@ class SgSheetSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: SgColors.bg100,
           borderRadius: BorderRadius.vertical(top: Radius.circular(SgRadius.lg)),
           border: Border(top: BorderSide(color: SgColors.goldLine)),
-          boxShadow: [BoxShadow(color: Color(0x99000000), blurRadius: 40, offset: Offset(0, -12))],
+          boxShadow: [BoxShadow(color: SgColors.shadow, blurRadius: 40, offset: Offset(0, -12))],
         ),
         padding: padding ?? const EdgeInsets.fromLTRB(SgSpace.s4, SgSpace.s3, SgSpace.s4, SgSpace.s4),
         child: Column(

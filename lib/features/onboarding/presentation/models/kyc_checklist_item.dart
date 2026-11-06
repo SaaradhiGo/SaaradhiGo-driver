@@ -26,9 +26,9 @@ enum KycItemStatus {
   Color get color {
     switch (this) {
       case KycItemStatus.verified:
-        return AppColors.primary;
+        return AppColors.primaryText;
       case KycItemStatus.reviewing:
-        return AppColors.secondary;
+        return AppColors.primaryText;
       case KycItemStatus.actionRequired:
         return AppColors.error;
       case KycItemStatus.notUploaded:

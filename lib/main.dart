@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,11 +10,16 @@ import 'core/market/market_config_store.dart';
 import 'core/notifications/push_providers.dart';
 import 'core/utils/app_logger.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/appearance_controller.dart';
+import 'core/theme/locale_controller.dart';
+import 'l10n/app_localizations.dart';
+import 'ui/sg_text.dart';
 import 'features/auth/presentation/providers/auth_notifier.dart';
 import 'features/auth/presentation/providers/auth_state.dart';
 import 'routing/app_router.dart';
 import 'shared/widgets/app_connectivity_host.dart';
 import 'shared/widgets/market_overlays.dart';
+import 'ui/sg_tokens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,15 +35,11 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI overlay style for premium dark theme
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF0B0B0B),
-      systemNavigationBarIconBrightness: Brightness.light,
-    ),
-  );
+  // Appearance (automatic / dark / light) and language, read before the
+  // first frame so the app opens in the right theme and language. The system
+  // bars follow the theme from SaaradhiGoDriverApp.build.
+  await AppearanceController.restore();
+  await LocaleController.restore();
 
   // A release build that cannot say which server it talks to must not pretend
   // to work. EnvironmentConfig.misconfiguration is null for every debug build
@@ -103,6 +105,23 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
+    final appearance = ref.watch(appearanceControllerProvider);
+    final locale = ref.watch(localeControllerProvider);
+
+    // Tokens and type are static getters (lib/ui/sg_tokens.dart, sg_text.dart):
+    // point them at the active palette and language before anything below
+    // builds. When either changes, every element is marked dirty so widgets
+    // that read a token without depending on Theme repaint too -- without
+    // losing any state (a trip in progress keeps its screen).
+    SgColors.use(appearance.palette);
+    SgText.useLanguage(locale.languageCode);
+    ref.listen(appearanceControllerProvider, (previous, next) {
+      if (previous?.brightness != next.brightness) _rebuildAll(context);
+    });
+    ref.listen(localeControllerProvider, (previous, next) {
+      if (previous != next) _rebuildAll(context);
+    });
+    _applySystemBars(appearance.palette);
 
     // After sign-in, ask app-config about the signed-in driver's country.
     ref.listen(authNotifierProvider, (previous, next) {
@@ -115,7 +134,11 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'SaaradhiGo Driver',
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.of(appearance.palette),
+      themeAnimationDuration: Duration.zero,
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       // Global offline strip above every route (docs/14_ERROR_HANDLING.md:11),
@@ -130,12 +153,46 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
     );
   }
 
+  static void _applySystemBars(SgPalette p) {
+    final icons = p.isDark ? Brightness.light : Brightness.dark;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: icons,
+        statusBarBrightness: p.brightness,
+        systemNavigationBarColor: p.bg000,
+        systemNavigationBarIconBrightness: icons,
+      ),
+    );
+  }
+
+  /// Mark the whole tree dirty (what hot reload does), keeping all state.
+  static void _rebuildAll(BuildContext context) {
+    void run() {
+      if (!context.mounted) return;
+      void visit(Element e) {
+        e.markNeedsBuild();
+        e.visitChildren(visit);
+      }
+
+      (context as Element).visitChildren(visit);
+    }
+
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      run();
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((_) => run());
+    }
+  }
+
   static Widget _withEnvironmentBanner(Widget child) {
     if (EnvironmentConfig.environmentLabel != 'non-production') return child;
     return Banner(
       message: 'QA',
       location: BannerLocation.topEnd,
-      color: const Color(0xFFB00020),
+      color: SgColors.danger,
       child: child,
     );
   }

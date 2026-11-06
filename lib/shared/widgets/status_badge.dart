@@ -27,7 +27,7 @@ class StatusBadge extends StatelessWidget {
         break;
       case BadgeStatus.pending:
         containerColor = AppColors.pendingContainer;
-        textColor = AppColors.secondary;
+        textColor = AppColors.primaryText;
         break;
       case BadgeStatus.error:
         containerColor = AppColors.errorContainer;

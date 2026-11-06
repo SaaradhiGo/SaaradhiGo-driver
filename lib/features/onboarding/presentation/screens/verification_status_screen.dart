@@ -166,7 +166,7 @@ class _VerificationStatusScreenState
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(
+            icon: Icon(
               Icons.more_vert,
               color: AppColors.onSurfaceVariant,
             ),
@@ -182,7 +182,7 @@ class _VerificationStatusScreenState
                 value: 'logout',
                 child: Row(
                   children: [
-                    const Icon(Icons.logout, color: AppColors.error, size: 20),
+                    Icon(Icons.logout, color: AppColors.error, size: 20),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Sign Out',
@@ -199,7 +199,7 @@ class _VerificationStatusScreenState
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AppColors.primaryText,
           backgroundColor: AppColors.surfaceContainerHigh,
           onRefresh: () async {
             await ref
@@ -247,16 +247,16 @@ class _VerificationStatusScreenState
                               : Icons.hourglass_top,
                           color: issuesCount > 0
                               ? AppColors.error
-                              : AppColors.primary,
+                              : AppColors.primaryText,
                           size: 40,
                         ),
                         if (isLoading)
-                          const SizedBox(
+                          SizedBox(
                             width: 96,
                             height: 96,
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
+                                AppColors.primaryText,
                               ),
                               strokeWidth: 2,
                             ),
@@ -297,9 +297,9 @@ class _VerificationStatusScreenState
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: const Color(0x15FFFFFF),
+                    color: AppColors.outlineVariant,
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: AppColors.onBackground.withValues(alpha: 0.1),
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -331,14 +331,14 @@ class _VerificationStatusScreenState
                               style: AppTypography.labelCaps.copyWith(
                                 color: issuesCount > 0
                                     ? AppColors.error
-                                    : AppColors.primary,
+                                    : AppColors.primaryText,
                               ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      const Divider(color: AppColors.outlineVariant),
+                      Divider(color: AppColors.outlineVariant),
                       const SizedBox(height: AppSpacing.sm),
 
                       // Dynamic Checklist Rows
@@ -350,7 +350,7 @@ class _VerificationStatusScreenState
                           },
                         ),
                         if (item != checklistItems.last)
-                          const Divider(color: Color(0x15FFFFFF), height: 1),
+                          Divider(color: AppColors.outlineVariant, height: 1),
                       ],
                     ],
                   ),

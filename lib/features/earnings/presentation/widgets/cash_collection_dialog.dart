@@ -51,9 +51,9 @@ class CashCollectionDialog extends StatelessWidget {
                 color: AppColors.primaryContainer.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.payments,
-                color: AppColors.primary,
+                color: AppColors.primaryText,
                 size: 32,
               ),
             ),
@@ -95,7 +95,7 @@ class CashCollectionDialog extends StatelessWidget {
                   Text(
                     '${marketSymbol()}${amount.toStringAsFixed(2)}',
                     style: AppTypography.displayLg.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.primaryText,
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),

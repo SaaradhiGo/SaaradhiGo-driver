@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../shared/widgets/buttons.dart';
 import 'app_router.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 
 class PageNotFoundScreen extends StatelessWidget {
   final String? errorMessage;
@@ -19,10 +20,10 @@ class PageNotFoundScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
-                color: Colors.redAccent,
+                color: SgColors.danger,
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
