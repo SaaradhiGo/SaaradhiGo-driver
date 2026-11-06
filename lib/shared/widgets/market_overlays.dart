@@ -6,6 +6,7 @@ import '../../core/market/market_config.dart';
 import '../../core/market/market_config_store.dart';
 import '../../core/theme/app_colors.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Blocking screen for 426 APP_UPDATE_REQUIRED. Shown instead of the app; the
 /// only way forward is the store link from the response body.
@@ -34,7 +35,7 @@ class UpdateRequiredScreen extends StatelessWidget {
                   key: Key('update_required_title'),
                   style: TextStyle(
                     color: AppColors.onBackground,
-                    fontSize: 24,
+                    fontSize: SgText.size(24),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -45,7 +46,7 @@ class UpdateRequiredScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.secondaryGray,
-                    fontSize: 16,
+                    fontSize: SgText.size(16),
                   ),
                 ),
                 if (url != null) ...[
@@ -135,7 +136,7 @@ class _NoticeBannerState extends State<NoticeBanner> {
                   Expanded(
                     child: Text(
                       n.message,
-                      style: TextStyle(color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink, fontSize: 13),
+                      style: TextStyle(color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink, fontSize: SgText.size(13)),
                     ),
                   ),
                   if (!n.blocking)

@@ -9,6 +9,7 @@ import '../../../../core/utils/money_format.dart';
 import '../../../../shared/widgets/bottom_sheet_container.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../providers/earnings_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class WithdrawalRequestBottomSheet extends ConsumerStatefulWidget {
   const WithdrawalRequestBottomSheet({super.key});
@@ -283,7 +284,7 @@ class _WithdrawalRequestBottomSheetState
                 ],
                 style: AppTypography.displayLg.copyWith(
                   color: AppColors.onBackground,
-                  fontSize: 24,
+                  fontSize: SgText.size(24),
                 ),
                 onChanged: (_) => _validate(null),
                 decoration: InputDecoration(
@@ -299,7 +300,7 @@ class _WithdrawalRequestBottomSheetState
                       currencySymbol(currency).trim(),
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.primaryText,
-                        fontSize: 18,
+                        fontSize: SgText.size(18),
                       ),
                     ),
                   ),
@@ -322,7 +323,7 @@ class _WithdrawalRequestBottomSheetState
                 ].join(' '),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 11,
+                  fontSize: SgText.size(13),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),

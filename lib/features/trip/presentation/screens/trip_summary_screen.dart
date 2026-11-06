@@ -9,7 +9,6 @@ import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/driver_trip_views.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../earnings/presentation/earnings_display.dart';
-import '../../domain/support_end.dart';
 import '../providers/support_end_provider.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/rate_passenger_sheet.dart';
@@ -38,9 +37,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
     if (!mounted) return;
     if (rated) {
       setState(() => _rated = true);
-      ScaffoldMessenger.maybeOf(
-        context,
-      )?.showSnackBar(
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
         SnackBar(content: Text(sgL10n(context).summaryRatingSaved)),
       );
     }
@@ -78,7 +75,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
     final payment = paymentLabel(trip.paymentMethod, l);
 
     return TripCompleteView(
-      title: endedBySupport ? kSupportEndedTitle : l.summaryTripComplete,
+      title: endedBySupport ? l.tripSupportEndedTitle : l.summaryTripComplete,
       riderName: trip.riderName,
       // A platform-paid end: the rider's fare is zero and means nothing to
       // the driver, whose earning is in the panel below. Never show ₹0.
@@ -96,14 +93,14 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
         if (trip.distanceKm != null)
           (l.summaryDistance, '${trip.distanceKm!.toStringAsFixed(1)} km'),
         if (trip.durationMin != null)
-          (l.summaryTime, '${trip.durationMin!.round()} min'),
+          (l.summaryTime, l.commonMinutes(trip.durationMin!.round())),
         (l.summaryPayment, payment),
       ],
       notes: [
         if (endedBySupport && platformPaid)
           TripNote(
             key: const Key('summary_platform_paid'),
-            text: kSupportEndedPlatformPaid,
+            text: l.tripSupportEndedPlatformPaid,
           ),
         if (isPositiveAmount(trip.promoDiscount))
           TripNote(

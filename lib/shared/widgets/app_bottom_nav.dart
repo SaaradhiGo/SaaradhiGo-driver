@@ -7,6 +7,7 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import 'package:saaradhigo_driver/ui/sg_l10n.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Item metadata for the main driver bottom navigation bar.
 class AppBottomNavItemData {
@@ -209,7 +210,7 @@ class _BottomNavItemState extends State<_BottomNavItem> {
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
                 style: AppTypography.labelCaps.copyWith(
-                  fontSize: 12,
+                  fontSize: SgText.size(13),
                   letterSpacing: 0,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive

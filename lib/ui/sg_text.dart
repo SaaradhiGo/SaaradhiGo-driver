@@ -10,6 +10,23 @@ import 'package:flutter/material.dart';
 
 import 'sg_tokens.dart';
 
+/// Size classes from the window's shortest side (owner brief, Tier 1).
+enum SgSizeClass {
+  compact(0.92),
+  regular(1.0),
+  tablet(1.12);
+
+  const SgSizeClass(this.factor);
+
+  final double factor;
+
+  static SgSizeClass of(double shortestSide) => shortestSide < 360
+      ? compact
+      : shortestSide >= 600
+      ? tablet
+      : regular;
+}
+
 class SgText {
   SgText._();
 
@@ -27,6 +44,9 @@ class SgText {
 
   /// The UI family for the active language.
   static String get family => familyFor(_languageCode);
+
+  /// The active language code.
+  static String get languageCode => _languageCode;
 
   static String familyFor(String languageCode) => switch (languageCode) {
     'te' => telugu,
@@ -46,52 +66,93 @@ class SgText {
   /// Kept for older call sites: the UI family.
   static String get sans => family;
 
+  /// The size class, from the shortest side of the window: compact under
+  /// 360, regular to 599, tablet from 600. Set by the app root.
+  static SgSizeClass _sizeClass = SgSizeClass.regular;
+
+  static SgSizeClass get sizeClass => _sizeClass;
+
+  /// Sets the size class from the window's shortest side. True when it changed.
+  static bool useShortestSide(double shortestSide) {
+    final next = SgSizeClass.of(shortestSide);
+    if (next == _sizeClass) return false;
+    _sizeClass = next;
+    return true;
+  }
+
+  /// [base] in this size class: every size in the app goes through here.
+  static double size(double base) => base * _sizeClass.factor;
+
   static TextStyle _anek(
     double size,
     double line,
     double weight, {
     Color? color,
-    double spacing = 0,
     bool figures = false,
-  }) => TextStyle(
-    fontFamily: family,
-    fontFamilyFallback: fallback,
-    fontSize: size,
-    height: line / size,
-    fontWeight: FontWeight.values[((weight / 100).round() - 1).clamp(0, 8)],
-    fontVariations: [FontVariation('wght', weight)],
-    letterSpacing: spacing,
-    color: color ?? SgColors.ink,
-    fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
-  );
+  }) {
+    final s = SgText.size(size);
+    return TextStyle(
+      fontFamily: family,
+      fontFamilyFallback: fallback,
+      fontSize: s,
+      height: line / size,
+      fontWeight: FontWeight.values[((weight / 100).round() - 1).clamp(0, 8)],
+      fontVariations: [
+        FontVariation('wght', weight),
+        FontVariation('wdth', 100),
+      ],
+      letterSpacing: 0,
+      color: color ?? SgColors.ink,
+      fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
+    );
+  }
 
-  /// 34/36, 800, -0.03em. One per screen.
-  static TextStyle get display => _anek(34, 36, 800, spacing: -1.02);
+  // The Tier 1 scale (owner brief, 6 Nov): sizes in logical pixels times the
+  // size-class factor, weights 500, 600 and 700 only, no tracking.
 
-  /// Older name for [display].
-  static TextStyle get displayLg => display;
+  /// 24/30, 700. One per screen.
+  static TextStyle get screenTitle => _anek(24, 30, 700);
 
-  static TextStyle get heading => _anek(26, 30, 800);
-  static TextStyle get title => _anek(17, 22, 800);
-  static TextStyle get body => _anek(16, 22, 500);
+  /// 18/24, 600.
+  static TextStyle get sectionTitle => _anek(18, 24, 600);
 
-  /// Older name; the scale has one body size.
-  static TextStyle get bodyLg => body;
+  /// 16/24, 500.
+  static TextStyle get body => _anek(16, 24, 500);
 
+  /// 14/20, 500, ink-muted.
   static TextStyle get caption => _anek(14, 20, 500, color: SgColors.inkMuted);
 
-  /// 13/18, 700, 0.14em. Upper-case the string at the call site.
-  static TextStyle get label =>
-      _anek(13, 18, 700, color: SgColors.inkSubtle, spacing: 1.82);
+  /// 13/18, 600, ink-subtle. Sentence case; never upper-cased.
+  static TextStyle get label => _anek(13, 18, 600, color: SgColors.inkSubtle);
 
-  static TextStyle get fareXl => _anek(56, 56, 800, figures: true);
-  static TextStyle get fare => _anek(22, 24, 800, figures: true);
-
-  /// The driver's big earnings figure.
-  static TextStyle get driverEarning => _anek(96, 92, 800, figures: true);
-
+  /// 17/22, 600, on-gold.
   static TextStyle get button =>
-      _anek(16, 22, 700, color: SgColors.onGold, figures: true);
+      _anek(17, 22, 600, color: SgColors.onGold, figures: true);
+
+  /// A figure in a tile or a row: section-title size at 700, tabular.
+  static TextStyle get figure => _anek(18, 24, 700, figures: true);
+
+  /// A large figure (the PIN digits, the trip-complete facts): 24/30, 700.
+  static TextStyle get figureLg => _anek(24, 30, 700, figures: true);
+
+  /// The big fare: 44 (40 on compact), 700.
+  static TextStyle get bigFare => _sizeClass == SgSizeClass.compact
+      ? _anek(40 / 0.92, 48 / 0.92, 700, figures: true)
+      : _anek(44, 52, 700, figures: true);
+
+  /// The driver's earning on the offer: 64 (56 on compact), 700.
+  static TextStyle get driverEarning => _sizeClass == SgSizeClass.compact
+      ? _anek(56 / 0.92, 60 / 0.92, 700, figures: true)
+      : _anek(64, 68, 700, figures: true);
+
+  // Older names, kept so every call site lands on the scale.
+  static TextStyle get display => screenTitle;
+  static TextStyle get displayLg => screenTitle;
+  static TextStyle get heading => screenTitle;
+  static TextStyle get title => sectionTitle;
+  static TextStyle get bodyLg => body;
+  static TextStyle get fareXl => bigFare;
+  static TextStyle get fare => figure;
 
   /// "Saaradhi Go" beside the badge in headers: Cinzel 600, gold-text.
   static TextStyle brandLettering({double size = 18}) => TextStyle(
@@ -100,7 +161,7 @@ class SgText {
     height: 1.1,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
-    color: SgColors.goldText,
+    color: SgColors.logo,
   );
 }
 

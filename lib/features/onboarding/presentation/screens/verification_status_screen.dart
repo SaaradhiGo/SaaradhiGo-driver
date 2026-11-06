@@ -15,6 +15,7 @@ import '../models/kyc_checklist_item.dart';
 import '../widgets/verification_approved_sheet.dart';
 import '../widgets/verification_rejection_banner.dart';
 import '../widgets/verification_status_row.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Screen displaying the driver's onboarding verification waiting room.
 ///
@@ -377,7 +378,7 @@ class _VerificationStatusScreenState
                   'We will notify you via SMS and Email once the verification is complete.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 14,
+                    fontSize: SgText.size(14),
                   ),
                   textAlign: TextAlign.center,
                 ),

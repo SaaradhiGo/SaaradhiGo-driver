@@ -146,8 +146,10 @@ class OfferData {
           ? null
           : '${klass[0].toUpperCase()}${klass.substring(1)}',
       cash: pay == null || pay.isEmpty ? null : pay == 'cash',
-      pickupKm:
-          number(['pickup_distance_km', 'distance_to_pickup_km'])?.toDouble(),
+      pickupKm: number([
+        'pickup_distance_km',
+        'distance_to_pickup_km',
+      ])?.toDouble(),
       pickupMin: number([
         'pickup_eta_min',
         'eta_to_pickup_min',
@@ -239,36 +241,72 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
   @override
   Widget build(BuildContext context) {
     final l = sgL10n(context);
-    final pad = MediaQuery.paddingOf(context);
+    // The modal sheet this sits in drops the top inset from MediaQuery, so
+    // read the window's own: the countdown must clear the status bar.
+    final media = MediaQuery.paddingOf(context);
+    final view = MediaQueryData.fromView(View.of(context)).padding;
+    final pad = EdgeInsets.only(
+      top: media.top > view.top ? media.top : view.top,
+      bottom: media.bottom > view.bottom ? media.bottom : view.bottom,
+    );
+    final tablet = SgText.sizeClass == SgSizeClass.tablet;
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _CountdownBar(remaining: _remaining, total: _total),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              SgSpace.s4,
+              SgSpace.s4,
+              SgSpace.s4,
+              SgSpace.s3 + (tablet ? 0 : pad.bottom),
+            ),
+            child: _expired
+                ? Center(
+                    child: Text(
+                      l.offerExpired,
+                      textAlign: TextAlign.center,
+                      style: SgText.screenTitle.copyWith(
+                        color: SgColors.inkMuted,
+                      ),
+                    ),
+                  )
+                : _body(l, _offer),
+          ),
+        ),
+      ],
+    );
     return Material(
       color: SgColors.bg000,
       child: Padding(
-        padding: EdgeInsets.only(top: pad.top),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _CountdownBar(remaining: _remaining, total: _total),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  SgSpace.s4,
-                  SgSpace.s4,
-                  SgSpace.s4,
-                  SgSpace.s3 + pad.bottom,
-                ),
-                child: _expired
-                    ? Center(
-                        child: Text(
-                          l.offerExpired,
-                          style: SgText.heading.copyWith(
-                            color: SgColors.inkMuted,
-                          ),
-                        ),
-                      )
-                    : _body(l, _offer),
-              ),
+        padding: EdgeInsets.only(top: pad.top, bottom: tablet ? pad.bottom : 0),
+        // Tablets: a centred card, at most 480 wide (owner brief). Phones:
+        // the whole screen, still capped at 480 so landscape stays readable.
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 480,
+              maxHeight: tablet ? 860 : double.infinity,
             ),
-          ],
+            child: tablet
+                ? Padding(
+                    padding: const EdgeInsets.all(SgSpace.s5),
+                    child: DecoratedBox(
+                      key: const Key('offer_tablet_card'),
+                      decoration: BoxDecoration(
+                        color: SgColors.bg100,
+                        borderRadius: BorderRadius.circular(SgRadius.xl),
+                        border: Border.all(color: SgColors.line),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(SgRadius.xl),
+                        child: content,
+                      ),
+                    ),
+                  )
+                : content,
+          ),
         ),
       ),
     );
@@ -280,7 +318,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
     String? min(double? v) =>
         v == null ? null : l.commonMinutes(v.round().clamp(1, 999));
     final earn = o.earning;
-    return Column(
+    final details = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
@@ -296,8 +334,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
               child: Text(
                 l.offerSecondsLeft(_remaining),
                 key: const Key('offer_seconds'),
-                style: SgText.title.copyWith(
-                  fontSize: 20,
+                style: SgText.sectionTitle.copyWith(
                   color: _remaining <= 5 ? SgColors.danger : SgColors.ink,
                 ),
               ),
@@ -306,7 +343,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         ),
         const SizedBox(height: SgSpace.s4),
         Text(
-          (earn != null ? l.offerYouEarn : l.offerFare).toUpperCase(),
+          earn != null ? l.offerYouEarn : l.offerFare,
           style: SgText.label.copyWith(color: SgColors.goldText),
         ),
         FittedBox(
@@ -365,7 +402,11 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         ),
         const SizedBox(height: SgSpace.s4),
         if (o.pickupAddress != null)
-          _AreaRow(address: o.pickupAddress!, drop: false, label: l.offerPickup),
+          _AreaRow(
+            address: o.pickupAddress!,
+            drop: false,
+            label: l.offerPickup,
+          ),
         if (o.pickupAddress != null && o.destinationAddress != null)
           const SizedBox(height: SgSpace.s3),
         if (o.destinationAddress != null)
@@ -374,14 +415,35 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             drop: true,
             label: l.offerDrop,
           ),
-        Expanded(child: _MiniMap(offer: o, provider: widget.mapProvider)),
+      ],
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            key: const Key('offer_scroll'),
+            slivers: [
+              SliverToBoxAdapter(child: details),
+              SliverLayoutBuilder(
+                builder: (context, c) => SliverToBoxAdapter(
+                  child: _MiniMap(
+                    offer: o,
+                    provider: widget.mapProvider,
+                    height: c.remainingPaintExtent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: SgSpace.s3),
         SgPrimaryButton(
           key: const Key('offer_accept'),
           label: l.offerAccept,
-          height: 80,
+          height: kSgPrimaryAction,
           onPressed: widget.onAccept,
         ),
-        // 52px to the eye, 64px to the thumb.
         Semantics(
           button: true,
           label: l.offerDecline,
@@ -391,9 +453,9 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             onTap: widget.onDecline,
             borderRadius: BorderRadius.circular(SgRadius.md),
             child: Padding(
-              padding: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: SgSpace.s2),
               child: Container(
-                height: 52,
+                constraints: const BoxConstraints(minHeight: kSgTouch),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(SgRadius.md),
@@ -401,10 +463,8 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
                 ),
                 child: Text(
                   l.offerDecline,
-                  style: SgText.body.copyWith(
-                    color: SgColors.inkMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  textAlign: TextAlign.center,
+                  style: SgText.button.copyWith(color: SgColors.inkMuted),
                 ),
               ),
             ),
@@ -418,20 +478,25 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
 /// The pickup and drop on a small map in whatever room is left; nothing when
 /// there is too little room or no pickup point.
 class _MiniMap extends StatelessWidget {
-  const _MiniMap({required this.offer, this.provider});
+  const _MiniMap({required this.offer, required this.height, this.provider});
 
   final OfferData offer;
   final MapsProvider? provider;
 
+  /// The room left under the details; no map under 120 + its padding.
+  final double height;
+
   @override
   Widget build(BuildContext context) {
     final pickup = offer.pickup;
-    if (pickup == null) return const SizedBox.shrink();
+    if (pickup == null || height < 120 + 2 * SgSpace.s4) {
+      return const SizedBox.shrink();
+    }
     final drop = offer.destination;
-    return LayoutBuilder(
-      builder: (context, box) {
-        if (box.maxHeight < 120) return const SizedBox.shrink();
-        return Padding(
+    return Builder(
+      builder: (context) {
+        return Container(
+          height: height,
           padding: const EdgeInsets.symmetric(vertical: SgSpace.s4),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(SgRadius.lg),
@@ -444,21 +509,17 @@ class _MiniMap extends StatelessWidget {
                 SgMarker(
                   id: 'pickup',
                   point: pickup,
-                  icon: SgIconMarker(Icons.circle, SgColors.pickup, size: 20),
+                  icon: SgJourneyMarker.pickup(SgColors.pickup, size: 20),
                   anchor: const Offset(0.5, 0.5),
-                  label: 'Pickup',
+                  label: sgL10n(context).offerPickup,
                 ),
                 if (drop != null)
                   SgMarker(
                     id: 'drop',
                     point: drop,
-                    icon: SgIconMarker(
-                      Icons.square_rounded,
-                      SgColors.gold500,
-                      size: 20,
-                    ),
+                    icon: sgDropMarker(size: 20),
                     anchor: const Offset(0.5, 0.5),
-                    label: 'Drop',
+                    label: sgL10n(context).offerDrop,
                   ),
               ],
               padding: const EdgeInsets.all(32),
@@ -516,22 +577,22 @@ class _ClassChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s3),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: SgVehicleClass.tileColorFor(code),
-          borderRadius: BorderRadius.circular(SgRadius.pill),
-        ),
-        child: Text(
-          name,
-          key: const Key('offer_class'),
-          style: SgText.body.copyWith(
-            fontWeight: FontWeight.w700,
-            color: SgVehicleClass.iconColorFor(code),
-          ),
-        ),
-      );
+    height: 36,
+    padding: const EdgeInsets.symmetric(horizontal: SgSpace.s3),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: SgVehicleClass.tileColorFor(code),
+      borderRadius: BorderRadius.circular(SgRadius.pill),
+    ),
+    child: Text(
+      name,
+      key: const Key('offer_class'),
+      style: SgText.body.copyWith(
+        fontWeight: FontWeight.w700,
+        color: SgVehicleClass.iconColorFor(code),
+      ),
+    ),
+  );
 }
 
 class _RatingChip extends StatelessWidget {
@@ -580,31 +641,30 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(SgSpace.s3),
-        decoration: BoxDecoration(
-          color: SgColors.bg200,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          border: Border.all(color: SgColors.line),
+    padding: const EdgeInsets.all(SgSpace.s3),
+    decoration: BoxDecoration(
+      color: SgColors.bg200,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      border: Border.all(color: SgColors.line),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          maxLines: 2,
+          style: SgText.caption.copyWith(fontWeight: FontWeight.w700),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              maxLines: 2,
-              style: SgText.caption.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: SgSpace.s1),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(value ?? '–', style: SgText.fare),
-            ),
-            if (detail != null)
-              Text(detail!, maxLines: 1, style: SgText.caption),
-          ],
+        const SizedBox(height: SgSpace.s1),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(value ?? '–', style: SgText.fare),
         ),
-      );
+        if (detail != null) Text(detail!, maxLines: 1, style: SgText.caption),
+      ],
+    ),
+  );
 }
 
 /// The area at 19px with the rest of the address muted under it.
@@ -648,7 +708,7 @@ class _AreaRow extends StatelessWidget {
                   area,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: SgText.title.copyWith(fontSize: 19, height: 24 / 19),
+                  style: SgText.sectionTitle,
                 ),
                 if (rest != null)
                   Text(

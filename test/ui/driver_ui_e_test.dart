@@ -116,8 +116,8 @@ void main() {
       expect(find.byKey(const Key('pin_box_5')), findsOneWidget);
       expect(find.byKey(const Key('pin_box_6')), findsNothing);
       expect(tester.getSize(find.byKey(const Key('pin_box_0'))).height, 72);
-      expect(tester.getSize(find.byKey(const Key('pin_key_1'))).height, 64);
-      expect(tester.getSize(find.byKey(const Key('trip_start'))).height, 72);
+      expect(tester.getSize(find.byKey(const Key('pin_key_1'))).height, 56);
+      expect(tester.getSize(find.byKey(const Key('trip_start'))).height, 64);
       for (final d in '1234'.split('')) {
         await tester.tap(find.byKey(Key('pin_key_$d')));
       }
@@ -157,16 +157,16 @@ void main() {
     addTearDown(tester.view.reset);
     var done = 0;
     await tester.pumpWidget(sgApp(inTripFrame(onComplete: () => done++)));
-    expect(find.text('DROPPING RAJA'), findsOneWidget);
+    expect(find.text('Dropping Raja'), findsOneWidget);
     expect(find.text('Hitech City'), findsOneWidget);
     expect(find.text('Madhapur, Hyderabad'), findsOneWidget);
     expect(find.text('8.4 km · 20 min'), findsOneWidget);
     expect(find.text('₹248'), findsOneWidget);
     expect(find.text('Open in Maps'), findsOneWidget);
     expect(find.byKey(const Key('trip_night_chip')), findsNothing);
-    expect(tester.getSize(find.byKey(const Key('trip_complete'))).height, 72);
+    expect(tester.getSize(find.byKey(const Key('trip_complete'))).height, 64);
     expect(
-        tester.getSize(find.byKey(const Key('trip_open_in_maps'))).height, 72);
+        tester.getSize(find.byKey(const Key('trip_open_in_maps'))).height, 64);
     await tester.tap(find.text('End trip at drop'));
     expect(done, 1);
   });
@@ -184,7 +184,7 @@ void main() {
     var confirmed = 0;
     await tester.pumpWidget(
         sgApp(completeFrame(onConfirmCash: () => confirmed++)));
-    expect(find.text('COLLECT IN CASH'), findsOneWidget);
+    expect(find.text('Collect in cash'), findsOneWidget);
     expect(find.textContaining('Collect ₹248 cash from Raja'), findsOneWidget);
     expect(find.text('Done'), findsNothing);
     await tester.tap(find.text('Cash collected'));
@@ -199,6 +199,6 @@ void main() {
     await tester.pumpWidget(sgApp(completeFrame(cash: false)));
     expect(find.text('Paid by UPI'), findsOneWidget);
     expect(find.text('Done'), findsOneWidget);
-    expect(find.text('COLLECT IN CASH'), findsNothing);
+    expect(find.text('Collect in cash'), findsNothing);
   });
 }

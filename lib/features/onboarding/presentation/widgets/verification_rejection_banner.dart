@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Crimson banner shown at top of VerificationStatusScreen when one or more
 /// documents have been rejected or require attention.
@@ -37,7 +38,7 @@ class VerificationRejectionBanner extends StatelessWidget {
                   'Action Required: $issuesCount ${issuesCount == 1 ? 'Item Needs' : 'Items Need'} Attention',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.error,
-                    fontSize: 14,
+                    fontSize: SgText.size(14),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -46,7 +47,7 @@ class VerificationRejectionBanner extends StatelessWidget {
                   'Please review the highlighted items below and submit updated documents to complete your verification.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: SgText.size(13),
                     height: 1.4,
                   ),
                 ),

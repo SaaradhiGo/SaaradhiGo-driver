@@ -3,6 +3,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -52,7 +53,7 @@ class OtpField extends StatelessWidget {
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: AppTypography.dataMono.copyWith(fontSize: 24),
+        style: AppTypography.dataMono.copyWith(fontSize: SgText.size(24)),
         decoration: InputDecoration(
           counterText: '',
           fillColor: SgColors.bg300,

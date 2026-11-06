@@ -8,6 +8,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/incentive_quest_model.dart';
 import '../../../../shared/widgets/bottom_sheet_container.dart';
 import '../../../../shared/widgets/buttons.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class QuestCelebrationSheet extends StatelessWidget {
   final IncentiveQuestModel quest;
@@ -87,7 +88,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                     'BONUS REWARD',
                     style: AppTypography.labelCaps.copyWith(
                       color: AppColors.onSurfaceVariant,
-                      letterSpacing: 1.2,
+                      letterSpacing: 0,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -96,7 +97,7 @@ class QuestCelebrationSheet extends StatelessWidget {
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
-                      fontSize: 28,
+                      fontSize: SgText.size(24),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -113,8 +114,8 @@ class QuestCelebrationSheet extends StatelessWidget {
                         'Automatically credited to your driver wallet',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.success,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          fontSize: SgText.size(13),
                         ),
                       ),
                     ],

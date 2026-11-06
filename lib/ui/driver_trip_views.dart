@@ -108,31 +108,20 @@ class DriverTripScaffold extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (mapButton != null)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: SgSpace.s4,
-                      bottom: SgSpace.s3,
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: mapButton,
-                    ),
-                  ),
-                SgSheetSurface(
-                  padding: EdgeInsets.fromLTRB(
-                    SgSpace.s4,
-                    SgSpace.s3,
-                    SgSpace.s4,
-                    SgSpace.s4 + pad.bottom,
-                  ),
-                  child: sheet,
+            // Never taller than the screen below the top buttons: on a
+            // landscape phone or at a large text size the sheet scrolls.
+            top: pad.top + kSgTouch + SgSpace.s4,
+            child: SgBottomSheetArea(
+              mapButton: mapButton,
+              child: SgSheetSurface(
+                padding: EdgeInsets.fromLTRB(
+                  SgSpace.s4,
+                  SgSpace.s3,
+                  SgSpace.s4,
+                  SgSpace.s4 + pad.bottom,
                 ),
-              ],
+                child: SingleChildScrollView(child: sheet),
+              ),
             ),
           ),
         ],
@@ -149,44 +138,44 @@ class NavigateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: sgL10n(context).tripNavigate,
-        child: GestureDetector(
-          key: const Key('trip_navigate'),
-          onTap: onTap,
-          child: Container(
-            height: kSgTouch,
-            padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
-            decoration: BoxDecoration(
-              color: SgColors.bg100,
-              borderRadius: BorderRadius.circular(SgRadius.pill),
-              border: Border.all(color: SgColors.goldLine),
-              boxShadow: [
-                BoxShadow(
-                  color: SgColors.scrim,
-                  blurRadius: 24,
-                  offset: Offset(0, 8),
-                ),
-              ],
+    button: true,
+    label: sgL10n(context).tripNavigate,
+    child: GestureDetector(
+      key: const Key('trip_navigate'),
+      onTap: onTap,
+      child: Container(
+        height: kSgTouch,
+        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s4),
+        decoration: BoxDecoration(
+          color: SgColors.bg100,
+          borderRadius: BorderRadius.circular(SgRadius.pill),
+          border: Border.all(color: SgColors.goldLine),
+          boxShadow: [
+            BoxShadow(
+              color: SgColors.scrim,
+              blurRadius: 24,
+              offset: Offset(0, 8),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SgIcon(
-                  '<path d="M3 11l18-8-8 18-2-8z"/>',
-                  size: 18,
-                  color: SgColors.goldText,
-                ),
-                const SizedBox(width: SgSpace.s2),
-                Text(
-                  sgL10n(context).tripNavigate,
-                  style: SgText.body.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
-      );
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SgIcon(
+              '<path d="M3 11l18-8-8 18-2-8z"/>',
+              size: 18,
+              color: SgColors.goldText,
+            ),
+            const SizedBox(width: SgSpace.s2),
+            Text(
+              sgL10n(context).tripNavigate,
+              style: SgText.body.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 /// Manrope has no ★, so the star is drawn.
@@ -213,10 +202,7 @@ class RiderRow extends StatelessWidget {
     final first = firstNameOf(name);
     final initials = initialsOf(name);
     final rated = rating != null && rating! > 0;
-    final meta = [
-      if (rated) rating!.toStringAsFixed(1),
-      ?subtitle,
-    ].join(' · ');
+    final meta = [if (rated) rating!.toStringAsFixed(1), ?subtitle].join(' · ');
     return Row(
       children: [
         Container(
@@ -266,7 +252,9 @@ class RiderRow extends StatelessWidget {
         if (onMessage != null)
           Semantics(
             button: true,
-            label: 'Message ${first.isEmpty ? 'rider' : first}',
+            label: sgL10n(
+              context,
+            ).pinMessage(first.isEmpty ? sgL10n(context).riderFallback : first),
             child: InkWell(
               key: const Key('trip_message'),
               customBorder: const CircleBorder(),
@@ -304,31 +292,31 @@ class PlaceLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: large ? 8 : 6),
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: drop ? SgColors.gold500 : SgColors.pickup,
-                shape: drop ? BoxShape.rectangle : BoxShape.circle,
-                borderRadius: drop ? BorderRadius.circular(2) : null,
-              ),
-            ),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: EdgeInsets.only(top: large ? 8 : 6),
+        child: Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: drop ? SgColors.gold500 : SgColors.pickup,
+            shape: drop ? BoxShape.rectangle : BoxShape.circle,
+            borderRadius: drop ? BorderRadius.circular(2) : null,
           ),
-          const SizedBox(width: SgSpace.s3),
-          Expanded(
-            child: Text(
-              text,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: large ? SgText.title : SgText.body,
-            ),
-          ),
-        ],
-      );
+        ),
+      ),
+      const SizedBox(width: SgSpace.s3),
+      Expanded(
+        child: Text(
+          text,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: large ? SgText.title : SgText.body,
+        ),
+      ),
+    ],
+  );
 }
 
 class _QuietLink extends StatelessWidget {
@@ -339,21 +327,21 @@ class _QuietLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(SgRadius.sm),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: kSgTouch),
-          child: Center(
-            child: Text(
-              label,
-              style: SgText.body.copyWith(
-                color: onTap == null ? SgColors.inkSubtle : SgColors.inkMuted,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(SgRadius.sm),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kSgTouch),
+      child: Center(
+        child: Text(
+          label,
+          style: SgText.body.copyWith(
+            color: onTap == null ? SgColors.inkSubtle : SgColors.inkMuted,
+            fontWeight: FontWeight.w700,
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// Accepted: heading to the rider.
@@ -383,40 +371,36 @@ class ToPickupSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('HEADING TO PICKUP', style: SgText.label),
-          const SizedBox(height: SgSpace.s2),
-          PlaceLine(text: pickupAddress, drop: false, large: true),
-          if (awayLine != null) ...[
-            const SizedBox(height: SgSpace.s1),
-            Padding(
-              padding: const EdgeInsets.only(left: 22),
-              child: Text(awayLine!, style: SgText.caption),
-            ),
-          ],
-          const SizedBox(height: SgSpace.s4),
-          RiderRow(
-            name: riderName,
-            rating: riderRating,
-            onMessage: onMessage,
-          ),
-          const SizedBox(height: SgSpace.s4),
-          SgPrimaryButton(
-            key: const Key('trip_arrived'),
-            label: busy
-                ? sgL10n(context).commonPleaseWait
-                : sgL10n(context).tripArrived,
-            onPressed: busy ? null : onArrived,
-          ),
-          _QuietLink(
-            key: const Key('trip_cancel'),
-            label: sgL10n(context).tripCancelRide,
-            onTap: busy ? null : onCancel,
-          ),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Text(sgL10n(context).tripHeadingToPickup, style: SgText.label),
+      const SizedBox(height: SgSpace.s2),
+      PlaceLine(text: pickupAddress, drop: false, large: true),
+      if (awayLine != null) ...[
+        const SizedBox(height: SgSpace.s1),
+        Padding(
+          padding: const EdgeInsets.only(left: 22),
+          child: Text(awayLine!, style: SgText.caption),
+        ),
+      ],
+      const SizedBox(height: SgSpace.s4),
+      RiderRow(name: riderName, rating: riderRating, onMessage: onMessage),
+      const SizedBox(height: SgSpace.s4),
+      SgPrimaryButton(
+        key: const Key('trip_arrived'),
+        label: busy
+            ? sgL10n(context).commonPleaseWait
+            : sgL10n(context).tripArrived,
+        onPressed: busy ? null : onArrived,
+      ),
+      _QuietLink(
+        key: const Key('trip_cancel'),
+        label: sgL10n(context).tripCancelRide,
+        onTap: busy ? null : onCancel,
+      ),
+    ],
+  );
 }
 
 /// The trip PIN's length: six digits, as the rider app shows it (rider #22)
@@ -430,11 +414,15 @@ class PinBoxes extends StatelessWidget {
     required this.digits,
     this.length = kTripPinLength,
     this.error = false,
+    this.height = 72,
   });
 
   final String digits;
   final int length;
   final bool error;
+
+  /// 72 by default; 56 on a short screen.
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -449,7 +437,7 @@ class PinBoxes extends StatelessWidget {
             Expanded(
               child: Container(
                 key: Key('pin_box_$i'),
-                height: 72,
+                height: height,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: SgColors.bg200,
@@ -459,13 +447,13 @@ class PinBoxes extends StatelessWidget {
                     color: error
                         ? SgColors.danger
                         : i == digits.length
-                        ? SgColors.gold500
+                        ? SgColors.goldText
                         : SgColors.lineStrong,
                   ),
                 ),
                 child: Text(
                   i < digits.length ? digits[i] : '',
-                  style: SgText.fare.copyWith(fontSize: 32, height: 36 / 32),
+                  style: SgText.figureLg,
                 ),
               ),
             ),
@@ -513,7 +501,7 @@ class PinKeypad extends StatelessWidget {
       key: Key('pin_key_$d'),
       label: d,
       onTap: enabled ? () => _type(d) : null,
-      child: Text(d, style: SgText.fare.copyWith(fontSize: 28)),
+      child: Text(d, style: SgText.figureLg),
     );
     Widget row(List<Widget> keys) => Row(
       children: [
@@ -576,7 +564,10 @@ class _Key extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(SgRadius.md),
-        child: SizedBox(height: kSgTouch, child: Center(child: child)),
+        child: SizedBox(
+          height: kSgTouch,
+          child: Center(child: child),
+        ),
       ),
     ),
   );
@@ -642,186 +633,239 @@ class PinCheckView extends StatelessWidget {
     // TODO(data): the free-wait timer needs the time the driver reached
     // pickup and cancel_policy.free_wait_minutes; neither reaches this
     // screen yet, so "At pickup" shows without a timer.
+    final tablet = SgText.sizeClass == SgSizeClass.tablet;
     return Scaffold(
       backgroundColor: SgColors.bg000,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, box) => SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(
-              SgSpace.s4,
-              SgSpace.s2,
-              SgSpace.s4,
-              SgSpace.s3,
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: kSgTouch,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 32,
-                            height: 32,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: SgColors.success,
-                              shape: BoxShape.circle,
-                            ),
-                            child: SgIcon(
-                              SgIcons.check,
-                              size: 20,
-                              color: SgColors.bg000,
-                            ),
-                          ),
-                          const SizedBox(width: SgSpace.s2),
-                          Expanded(
-                            child: Text(
-                              l.pinAtPickup,
-                              key: const Key('pin_at_pickup'),
-                              style: SgText.title.copyWith(
-                                fontSize: 20,
-                                color: SgColors.success,
+        // Tablets: a centred card at most 480 wide (owner brief).
+        child: _CentredCard(
+          tablet: tablet,
+          cardKey: const Key('pin_tablet_card'),
+          child: LayoutBuilder(
+            builder: (context, box) {
+              // A short window (a 360x640 phone, a landscape phone, a large
+              // text size): fold the rider row into the header and tighten
+              // the gaps so Start trip stays on screen without a scroll.
+              final short = box.maxHeight < 700;
+              final Widget? message = onMessage == null
+                  ? null
+                  : Semantics(
+                      button: true,
+                      label: l.pinMessage(who),
+                      excludeSemantics: true,
+                      child: Material(
+                        color: SgColors.bg200,
+                        shape: CircleBorder(
+                          side: BorderSide(color: SgColors.lineStrong),
+                        ),
+                        child: InkWell(
+                          key: const Key('trip_message'),
+                          customBorder: const CircleBorder(),
+                          onTap: onMessage,
+                          child: SizedBox(
+                            width: 56,
+                            height: 56,
+                            child: Center(
+                              child: SgIcon(
+                                SgIcons.message,
+                                size: 24,
+                                color: SgColors.ink,
                               ),
                             ),
                           ),
-                          ?topActions,
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: SgSpace.s2),
-                    Row(
+                    );
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(
+                  SgSpace.s4,
+                  SgSpace.s2,
+                  SgSpace.s4,
+                  SgSpace.s3,
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: SgColors.bg300,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: SgColors.line),
-                          ),
-                          child: initials.isEmpty
-                              ? SgIcon(SgIcons.user, color: SgColors.ink)
-                              : Text(initials, style: SgText.title),
-                        ),
-                        const SizedBox(width: SgSpace.s3),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        SizedBox(
+                          height: kSgTouch,
+                          child: Row(
                             children: [
-                              Text(
-                                first.isEmpty ? l.riderFallback : first,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: SgText.title.copyWith(fontSize: 19),
-                              ),
-                              if (rated)
-                                Row(
-                                  children: [
-                                    SgIcon(
-                                      kStarIcon,
-                                      size: 14,
-                                      color: SgColors.goldText,
-                                    ),
-                                    const SizedBox(width: SgSpace.s1),
-                                    Text(
-                                      riderRating!.toStringAsFixed(1),
-                                      style: SgText.caption,
-                                    ),
-                                  ],
+                              Container(
+                                width: 32,
+                                height: 32,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: SgColors.success,
+                                  shape: BoxShape.circle,
                                 ),
-                            ],
-                          ),
-                        ),
-                        if (onMessage != null)
-                          Semantics(
-                            button: true,
-                            label: l.pinMessage(who),
-                            excludeSemantics: true,
-                            child: Material(
-                              color: SgColors.bg200,
-                              shape: CircleBorder(
-                                side: BorderSide(color: SgColors.lineStrong),
+                                child: SgIcon(
+                                  SgIcons.check,
+                                  size: 20,
+                                  color: SgColors.bg000,
+                                ),
                               ),
-                              child: InkWell(
-                                key: const Key('trip_message'),
-                                customBorder: const CircleBorder(),
-                                onTap: onMessage,
-                                child: SizedBox(
-                                  width: 56,
-                                  height: 56,
-                                  child: Center(
-                                    child: SgIcon(
-                                      SgIcons.message,
-                                      size: 24,
-                                      color: SgColors.ink,
-                                    ),
+                              const SizedBox(width: SgSpace.s2),
+                              Expanded(
+                                child: Text(
+                                  l.pinAtPickup,
+                                  key: const Key('pin_at_pickup'),
+                                  style: SgText.sectionTitle.copyWith(
+                                    color: SgColors.success,
                                   ),
                                 ),
                               ),
-                            ),
+                              if (short) ?message,
+                              if (short) const SizedBox(width: SgSpace.s2),
+                              ?topActions,
+                            ],
                           ),
-                      ],
-                    ),
-                    const SizedBox(height: SgSpace.s4),
-                    Text(l.pinAsk(who), style: SgText.heading),
-                    const SizedBox(height: SgSpace.s3),
-                    PinBoxes(
-                      digits: controller.text,
-                      length: length,
-                      error: error != null,
-                    ),
-                    SizedBox(
-                      height: 48,
-                      child: error == null
-                          ? null
-                          : Center(
-                              child: Text(
-                                error!,
-                                key: const Key('trip_pin_error'),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: SgText.body.copyWith(
-                                  color: SgColors.danger,
+                        ),
+                        if (!short) const SizedBox(height: SgSpace.s2),
+                        if (!short)
+                          Row(
+                            children: [
+                              Container(
+                                width: 56,
+                                height: 56,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: SgColors.bg300,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: SgColors.line),
+                                ),
+                                child: initials.isEmpty
+                                    ? SgIcon(SgIcons.user, color: SgColors.ink)
+                                    : Text(initials, style: SgText.title),
+                              ),
+                              const SizedBox(width: SgSpace.s3),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      first.isEmpty ? l.riderFallback : first,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: SgText.sectionTitle,
+                                    ),
+                                    if (rated)
+                                      Row(
+                                        children: [
+                                          SgIcon(
+                                            kStarIcon,
+                                            size: 14,
+                                            color: SgColors.goldText,
+                                          ),
+                                          const SizedBox(width: SgSpace.s1),
+                                          Text(
+                                            riderRating!.toStringAsFixed(1),
+                                            style: SgText.caption,
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
-                            ),
+                              if (!short) ?message,
+                            ],
+                          ),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s4),
+                        Text(l.pinAsk(who), style: SgText.heading),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
+                        PinBoxes(
+                          digits: controller.text,
+                          length: length,
+                          error: error != null,
+                          height: short ? 56 : 72,
+                        ),
+                        SizedBox(
+                          height: short ? 32 : 48,
+                          child: error == null
+                              ? null
+                              : Center(
+                                  child: Text(
+                                    error!,
+                                    key: const Key('trip_pin_error'),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: SgText.body.copyWith(
+                                      color: SgColors.danger,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                        PinKeypad(
+                          controller: controller,
+                          length: length,
+                          enabled: !busy,
+                          onChanged: onChanged,
+                        ),
+                        const Spacer(),
+                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
+                        SgPrimaryButton(
+                          key: const Key('trip_start'),
+                          label: busy ? l.commonPleaseWait : l.pinStartTrip,
+                          height: kSgPrimaryAction,
+                          onPressed: busy || !ready ? null : onStart,
+                        ),
+                        _QuietLink(
+                          key: const Key('trip_cancel'),
+                          label: l.tripCancelRide,
+                          onTap: busy ? null : onCancel,
+                        ),
+                      ],
                     ),
-                    PinKeypad(
-                      controller: controller,
-                      length: length,
-                      enabled: !busy,
-                      onChanged: onChanged,
-                    ),
-                    const Spacer(),
-                    const SizedBox(height: SgSpace.s3),
-                    SgPrimaryButton(
-                      key: const Key('trip_start'),
-                      label: busy ? l.commonPleaseWait : l.pinStartTrip,
-                      height: kSgPrimaryAction,
-                      onPressed: busy || !ready ? null : onStart,
-                    ),
-                    _QuietLink(
-                      key: const Key('trip_cancel'),
-                      label: l.tripCancelRide,
-                      onTap: busy ? null : onCancel,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
     );
   }
+}
+
+/// Phones: the child, at most 480 wide. Tablets: a bordered card, centred.
+class _CentredCard extends StatelessWidget {
+  const _CentredCard({required this.tablet, required this.child, this.cardKey});
+
+  final bool tablet;
+  final Widget child;
+  final Key? cardKey;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 480,
+        maxHeight: tablet ? 900 : double.infinity,
+      ),
+      child: tablet
+          ? Padding(
+              padding: const EdgeInsets.all(SgSpace.s5),
+              child: DecoratedBox(
+                key: cardKey,
+                decoration: BoxDecoration(
+                  color: SgColors.bg100,
+                  borderRadius: BorderRadius.circular(SgRadius.xl),
+                  border: Border.all(color: SgColors.line),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(SgRadius.xl),
+                  child: child,
+                ),
+              ),
+            )
+          : child,
+    ),
+  );
 }
 
 /// The large light banner over the trip map. There is no turn-by-turn data,
@@ -877,7 +921,7 @@ class OpenInMapsBanner extends StatelessWidget {
                     l.tripOpenInMaps,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: SgText.title.copyWith(fontSize: 20, color: p.ink),
+                    style: SgText.sectionTitle.copyWith(color: p.ink),
                   ),
                 ),
               ],
@@ -965,7 +1009,7 @@ class InTripSheet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          l.tripDropping(first.isEmpty ? l.riderFallback : first).toUpperCase(),
+          l.tripDropping(first.isEmpty ? l.riderFallback : first),
           key: const Key('trip_dropping'),
           style: SgText.label.copyWith(color: SgColors.goldText),
         ),
@@ -992,7 +1036,7 @@ class InTripSheet extends StatelessWidget {
                     area,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: SgText.title.copyWith(fontSize: 19, height: 24 / 19),
+                    style: SgText.sectionTitle,
                   ),
                   if (rest.isNotEmpty)
                     Text(
@@ -1010,12 +1054,7 @@ class InTripSheet extends StatelessWidget {
         Row(
           children: [
             if (leftLine != null)
-              Expanded(
-                child: Text(
-                  leftLine!,
-                  style: SgText.fare,
-                ),
-              )
+              Expanded(child: Text(leftLine!, style: SgText.fare))
             else
               const Spacer(),
             // The driver's earning when the trip carries it (`driver_earning`),
@@ -1031,8 +1070,12 @@ class InTripSheet extends StatelessWidget {
                   ),
                   Text(
                     earning != null
-                        ? (payment == null ? l.offerYouEarn : '${l.offerYouEarn} · $payment')
-                        : (payment == null ? l.offerFare : '${l.offerFare} · $payment'),
+                        ? (payment == null
+                              ? l.offerYouEarn
+                              : '${l.offerYouEarn} · $payment')
+                        : (payment == null
+                              ? l.offerFare
+                              : '${l.offerFare} · $payment'),
                     style: SgText.caption,
                   ),
                 ],
@@ -1129,10 +1172,7 @@ class TripCompleteView extends StatelessWidget {
                         Text(
                           amount!,
                           key: const Key('summary_fare'),
-                          style: SgText.fare.copyWith(
-                            fontSize: 44,
-                            height: 52 / 44,
-                          ),
+                          style: SgText.bigFare,
                         ),
                         if (paidLine != null) ...[
                           const SizedBox(height: SgSpace.s2),
@@ -1201,34 +1241,30 @@ class _CollectPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        key: const Key('summary_collect'),
-        padding: const EdgeInsets.all(SgSpace.s5),
-        decoration: BoxDecoration(
-          color: SgColors.bg100,
-          borderRadius: BorderRadius.circular(SgRadius.lg),
-          border: Border.all(color: SgColors.goldLine),
+    key: const Key('summary_collect'),
+    padding: const EdgeInsets.all(SgSpace.s5),
+    decoration: BoxDecoration(
+      color: SgColors.bg100,
+      borderRadius: BorderRadius.circular(SgRadius.lg),
+      border: Border.all(color: SgColors.goldLine),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(sgL10n(context).tripCollectInCash, style: SgText.label),
+        const SizedBox(height: SgSpace.s2),
+        Text(amount, key: const Key('summary_fare'), style: SgText.bigFare),
+        const SizedBox(height: SgSpace.s2),
+        Text(
+          sgL10n(context).tripCollectBody(
+            amount,
+            name.isEmpty ? sgL10n(context).riderFallback : name,
+          ),
+          style: SgText.body.copyWith(color: SgColors.inkMuted),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(sgL10n(context).tripCollectInCash, style: SgText.label),
-            const SizedBox(height: SgSpace.s2),
-            Text(
-              amount,
-              key: const Key('summary_fare'),
-              style: SgText.fare.copyWith(fontSize: 56, height: 64 / 56),
-            ),
-            const SizedBox(height: SgSpace.s2),
-            Text(
-              sgL10n(context).tripCollectBody(
-                amount,
-                name.isEmpty ? sgL10n(context).riderFallback : name,
-              ),
-              style: SgText.body.copyWith(color: SgColors.inkMuted),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }
 
 class _Facts extends StatelessWidget {
@@ -1238,29 +1274,29 @@ class _Facts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: SgSpace.s3),
-        decoration: BoxDecoration(
-          color: SgColors.bg100,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          border: Border.all(color: SgColors.line),
-        ),
-        child: Row(
-          children: [
-            for (var i = 0; i < facts.length; i++) ...[
-              if (i > 0) Container(width: 1, height: 32, color: SgColors.line),
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(facts[i].$1, style: SgText.caption),
-                    const SizedBox(height: SgSpace.s1),
-                    Text(facts[i].$2, style: SgText.title),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-      );
+    padding: const EdgeInsets.symmetric(vertical: SgSpace.s3),
+    decoration: BoxDecoration(
+      color: SgColors.bg100,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      border: Border.all(color: SgColors.line),
+    ),
+    child: Row(
+      children: [
+        for (var i = 0; i < facts.length; i++) ...[
+          if (i > 0) Container(width: 1, height: 32, color: SgColors.line),
+          Expanded(
+            child: Column(
+              children: [
+                Text(facts[i].$1, style: SgText.caption),
+                const SizedBox(height: SgSpace.s1),
+                Text(facts[i].$2, style: SgText.title),
+              ],
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
 }
 
 /// A one-line panel under the facts: a promo paid, a support end.
@@ -1272,17 +1308,17 @@ class TripNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(SgSpace.s4),
-        decoration: BoxDecoration(
-          color: SgColors.bg100,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          border: Border.all(color: SgColors.line),
-        ),
-        child: Row(
-          children: [
-            Expanded(child: Text(text, style: SgText.body)),
-            if (trailing != null) Text(trailing!, style: SgText.fare),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.all(SgSpace.s4),
+    decoration: BoxDecoration(
+      color: SgColors.bg100,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      border: Border.all(color: SgColors.line),
+    ),
+    child: Row(
+      children: [
+        Expanded(child: Text(text, style: SgText.body)),
+        if (trailing != null) Text(trailing!, style: SgText.fare),
+      ],
+    ),
+  );
 }

@@ -11,6 +11,7 @@ import '../../../trip/presentation/providers/trip_providers.dart';
 import '../providers/trip_history_providers.dart';
 import '../widgets/date_range_picker_sheet.dart';
 import '../widgets/trip_history_card.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class TripHistoryScreen extends ConsumerStatefulWidget {
   const TripHistoryScreen({super.key});
@@ -288,8 +289,8 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                 color: isActive
                     ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
-                fontSize: 14,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                fontSize: SgText.size(14),
+                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
               ),
             ),
           ],

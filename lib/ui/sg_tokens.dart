@@ -30,6 +30,7 @@ class SgPalette {
     required this.goldText,
     required this.goldLine,
     required this.goldSoft,
+    required this.logo,
     required this.bgGlass,
     required this.scrim,
     required this.shadow,
@@ -65,6 +66,9 @@ class SgPalette {
   final Color goldText;
   final Color goldLine;
   final Color goldSoft;
+
+  /// The logo's colour: gold on dark, deep gold #7A6000 on light.
+  final Color logo;
 
   // Surfaces over the map.
   final Color bgGlass;
@@ -106,6 +110,7 @@ class SgPalette {
     goldText: Color(0xFFFFD700),
     goldLine: Color(0x38FFD700), // rgba(255,215,0,0.22)
     goldSoft: Color(0x1AFFD700), // rgba(255,215,0,0.10)
+    logo: Color(0xFFFFD700),
     bgGlass: Color(0xCC0A0A0A),
     scrim: Color(0x99000000),
     shadow: Color(0x99000000),
@@ -131,13 +136,16 @@ class SgPalette {
     ink: Color(0xFF1B1A17),
     inkMuted: Color(0xFF57524A),
     inkSubtle: Color(0xFF6B655B),
-    gold500: Color(0xFFFFD700),
-    gold300: Color(0xFFFFE34D),
-    gold700: Color(0xFFD4B200),
-    onGold: Color(0xFF000000),
-    goldText: Color(0xFF7A6000),
-    goldLine: Color(0x477A6000), // rgba(122,96,0,0.28)
-    goldSoft: Color(0x2EFFD700), // rgba(255,215,0,0.18)
+    // Daylight (owner brief, 6 Nov): a marigold primary with ink on it, and
+    // #8A5300 for gold as text and links.
+    gold500: Color(0xFFF5A623),
+    gold300: Color(0xFFF8BF5E),
+    gold700: Color(0xFFD48A0E),
+    onGold: Color(0xFF1B1A17),
+    goldText: Color(0xFF8A5300),
+    goldLine: Color(0x478A5300), // rgba(138,83,0,0.28)
+    goldSoft: Color(0x24F5A623), // rgba(245,166,35,0.14)
+    logo: Color(0xFF7A6000),
     bgGlass: Color(0xE6FFFFFF),
     scrim: Color(0x66000000),
     shadow: Color(0x1F000000),
@@ -186,6 +194,7 @@ class SgColors {
   static Color get goldText => _active.goldText;
   static Color get goldSoft => _active.goldSoft;
   static Color get goldLine => _active.goldLine;
+  static Color get logo => _active.logo;
   static Color get bgGlass => _active.bgGlass;
   static Color get scrim => _active.scrim;
   static Color get pickup => _active.pickup;
@@ -297,11 +306,12 @@ class SgSpace {
   static const s7 = 48.0;
 }
 
-/// Minimum touch target in the driver app.
-const double kSgTouch = 64;
+/// Minimum touch target in the driver app (owner brief: 56).
+const double kSgTouch = 56;
 
-/// Height of a primary driver action (72-80 by spec).
-const double kSgPrimaryAction = 72;
+/// Minimum height of a primary driver action: Accept, Go online, Start,
+/// Complete, the PIN confirm (owner brief: 64). Grows with the text size.
+const double kSgPrimaryAction = 64;
 
 /// Motion: press feedback and sheets, ease-out.
 const Duration kSgPress = Duration(milliseconds: 140);

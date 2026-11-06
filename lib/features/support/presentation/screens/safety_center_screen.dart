@@ -13,6 +13,7 @@ import '../../../../shared/widgets/glass_panel.dart';
 import '../../../trip/presentation/providers/trip_providers.dart';
 import '../providers/support_providers.dart';
 import '../widgets/sos_widgets.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Safety Center Hub (`/safety`).
 ///
@@ -104,7 +105,7 @@ class SafetyCenterScreen extends ConsumerWidget {
                                 color: AppColors.onError.withValues(
                                   alpha: 0.85,
                                 ),
-                                fontSize: 13,
+                                fontSize: SgText.size(13),
                               ),
                             ),
                           ],
@@ -270,7 +271,7 @@ class SafetyCenterScreen extends ConsumerWidget {
         subtitle,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: 13,
+          fontSize: SgText.size(13),
         ),
       ),
       trailing: Icon(

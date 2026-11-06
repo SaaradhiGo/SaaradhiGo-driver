@@ -12,6 +12,7 @@ import '../../../../shared/widgets/bottom_sheet_container.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/document_vault_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class DocumentVaultScreen extends ConsumerStatefulWidget {
   const DocumentVaultScreen({super.key});
@@ -222,7 +223,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: SgText.size(24),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -230,7 +231,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   'Verified',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    letterSpacing: 1.2,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -259,7 +260,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   style: AppTypography.headlineSm.copyWith(
                     color: actionReq > 0 ? AppColors.error : AppColors.primaryText,
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: SgText.size(24),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -269,7 +270,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                     color: actionReq > 0
                         ? AppColors.error
                         : AppColors.onSurfaceVariant,
-                    letterSpacing: 1.2,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -443,7 +444,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                                       doc.status.label,
                                       style: AppTypography.labelCaps.copyWith(
                                         color: badgeTextColor,
-                                        fontSize: 10,
+                                        fontSize: SgText.size(13),
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -454,7 +455,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                                 expiryFormatted,
                                 style: AppTypography.dataMono.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: 11,
+                                  fontSize: SgText.size(13),
                                 ),
                               ),
                             ],
@@ -578,7 +579,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                         : 'No Expiration Specified',
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.onSurfaceVariant,
-                      fontSize: 12,
+                      fontSize: SgText.size(13),
                     ),
                   ),
                   TextButton.icon(
@@ -654,7 +655,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 'Use camera to capture document',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 12,
+                  fontSize: SgText.size(13),
                 ),
               ),
               onTap: () {
@@ -686,7 +687,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 'Select existing photo from device',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 12,
+                  fontSize: SgText.size(13),
                 ),
               ),
               onTap: () {

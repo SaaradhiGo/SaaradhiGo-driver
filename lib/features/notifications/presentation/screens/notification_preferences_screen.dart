@@ -7,6 +7,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/notification_prefs.dart';
 import '../providers/notification_preferences_provider.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 const String kPrefsSaveFailed =
     "We couldn't save that change. Your setting has not changed.";
@@ -121,7 +122,7 @@ class _NotificationPreferencesScreenState
         subtitle,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: 12,
+          fontSize: SgText.size(13),
         ),
       ),
       value: _prefs!.value(channel, category),
@@ -151,7 +152,7 @@ class _NotificationPreferencesScreenState
                 note,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: SgText.size(13),
                 ),
               ),
             ),

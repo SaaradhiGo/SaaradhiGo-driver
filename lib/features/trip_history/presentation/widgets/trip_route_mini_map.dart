@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/maps/sg_map.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 import '../../../dashboard/presentation/widgets/driver_map.dart'
     show kFallbackMapCenter;
 
@@ -118,7 +119,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
                 'Route coordinates unavailable for this archived trip',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: SgText.size(13),
                 ),
               ),
             ],

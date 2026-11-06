@@ -252,6 +252,14 @@ abstract class TripModel with _$TripModel {
     Map<String, dynamic>? fareBreakdown,
     @JsonKey(readValue: _readCancellationReason) String? cancellationReason,
     @JsonKey(name: 'cancelled_at') String? cancelledAt,
+    // Who cancelled: 'rider', 'driver', 'system' or 'admin' ('' while not
+    // cancelled). On the trip detail and on every cancel frame (backend #181).
+    @JsonKey(name: 'cancelled_by') String? cancelledBy,
+    // `GET /ride/active/` only: whether the trip is in flight, and why a trip
+    // that is not came back (`recently_completed`, for cash and receipt
+    // recovery). Null from an older server.
+    @JsonKey(name: 'is_active') bool? serverActive,
+    String? recovery,
     @JsonKey(readValue: _readSurgeMultiplier) String? surgeMultiplier,
     @JsonKey(name: 'promo_discount', readValue: _readPromoDiscount)
     String? promoDiscount,
@@ -261,4 +269,28 @@ abstract class TripModel with _$TripModel {
 
   factory TripModel.fromJson(Map<String, dynamic> json) =>
       _$TripModelFromJson(json);
+}
+
+/// Who cancelled a trip, as the server recorded it. Never inferred.
+enum CancelActor {
+  you,
+  rider,
+
+  /// Missing, 'system', 'admin' or anything else: say nothing about who.
+  unknown;
+
+  static CancelActor fromServer(String? raw) =>
+      switch ((raw ?? '').trim().toLowerCase()) {
+        'driver' => CancelActor.you,
+        'rider' => CancelActor.rider,
+        _ => CancelActor.unknown,
+      };
+}
+
+extension TripActivity on TripModel {
+  /// True only for a trip the driver is on now. The server's `is_active`
+  /// decides when it is sent; an older server is read from the status. A
+  /// completed or cancelled trip is never active, whatever else it says.
+  bool get isActiveOnServer =>
+      !status.isTerminal && (serverActive ?? true);
 }

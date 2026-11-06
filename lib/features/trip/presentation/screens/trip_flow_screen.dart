@@ -10,7 +10,6 @@ import '../../../../ui/sg_widgets.dart';
 import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 import '../providers/trip_providers.dart';
 import '../widgets/ride_cancelled_bottom_sheet.dart';
-import '../../domain/support_end.dart';
 import 'accepted_ride_screen.dart';
 import 'active_trip_navigation_screen.dart';
 import 'arrived_at_pickup_screen.dart';
@@ -49,7 +48,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
     }
   }
 
-  void _showCancelledModal(String? reason) {
+  void _showCancelledModal(String? reason, String? cancelledBy) {
     if (_showingCancelledModal || !mounted) return;
     _showingCancelledModal = true;
     showModalBottomSheet<void>(
@@ -61,6 +60,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       builder: (modalCtx) {
         return RideCancelledBottomSheet(
           reason: reason,
+          actor: CancelActor.fromServer(cancelledBy),
           onDismiss: () {
             Navigator.of(modalCtx, rootNavigator: true).pop();
             _showingCancelledModal = false;
@@ -81,7 +81,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
   Widget build(BuildContext context) {
     ref.listen<TripSessionState>(tripSessionNotifierProvider, (previous, next) {
       if (next.status == TripStatus.cancelled && !next.releasedBySupport) {
-        _showCancelledModal(next.cancellationReason);
+        _showCancelledModal(next.cancellationReason, next.trip?.cancelledBy);
       }
     });
 
@@ -91,7 +91,10 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
         !session.releasedBySupport &&
         !_showingCancelledModal) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showCancelledModal(session.cancellationReason);
+        _showCancelledModal(
+          session.cancellationReason,
+          session.trip?.cancelledBy,
+        );
       });
     }
 
@@ -101,10 +104,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    TripSessionState session,
-  ) {
+  Widget _buildBody(BuildContext context, TripSessionState session) {
     final l = sgL10n(context);
     if (session.takenByOther) {
       return _TripEndedView(
@@ -124,9 +124,7 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
       // ride was available; the driver was locked out.
       return _TripEndedView(
         icon: SgIcons.clock,
-        title: session.refusedByBackend
-            ? l.tripRefusedTitle
-            : l.tripGoneTitle,
+        title: session.refusedByBackend ? l.tripRefusedTitle : l.tripGoneTitle,
         message: session.errorMessage ?? l.tripGoneBody,
       );
     }
@@ -147,15 +145,19 @@ class _TripFlowScreenState extends ConsumerState<TripFlowScreen>
         if (session.releasedBySupport) {
           return _TripEndedView(
             icon: SgIcons.help,
-            title: kSupportReleasedTitle,
+            title: l.tripSupportReleasedTitle,
             message: l.tripSupportReleasedBody,
           );
         }
         return _TripEndedView(
           icon: SgIcons.close,
-          title: l.tripCancelledTitle,
-          message: l.tripCancelledBody,
-          reason: session.cancellationReason,
+          title: cancelledTitle(l, CancelActor.fromServer(trip.cancelledBy)),
+          message: l.tripCancelledNext,
+          reason: cancelReasonText(
+            l,
+            session.cancellationReason,
+            CancelActor.fromServer(trip.cancelledBy),
+          ),
         );
       case TripStatus.reached:
         return ArrivedAtPickupScreen(trip: trip);
@@ -197,7 +199,10 @@ class _TripLoadingView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: SgSpace.s4),
-            Text(message, style: SgText.body.copyWith(color: SgColors.inkMuted)),
+            Text(
+              message,
+              style: SgText.body.copyWith(color: SgColors.inkMuted),
+            ),
           ],
         ),
       ),
@@ -221,7 +226,7 @@ class _TripEndedView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final effectiveMsg = (reason != null && reason!.trim().isNotEmpty)
-        ? '$message\n\nReason: $reason'
+        ? '$message\n\n${sgL10n(context).tripCancelReason(reason!.trim())}'
         : message;
 
     return Scaffold(

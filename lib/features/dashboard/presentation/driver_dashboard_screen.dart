@@ -25,6 +25,7 @@ import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
 import 'widgets/driver_map.dart';
 import 'widgets/limited_background_banner.dart';
+import '../../profile/presentation/widgets/appearance_toggle.dart';
 
 /// `/` -- the driver home: a map, the online status, today's earnings and the
 /// one control that goes online or offline. An incoming offer opens as a
@@ -178,6 +179,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       // the barrier covers the lower screen where Accept is about to be,
       // and a tap there dismissed the offer silently.
       isDismissible: false,
+      // Full width on a tablet too; the offer centres its own 480 card.
+      constraints: const BoxConstraints(maxWidth: double.infinity),
       backgroundColor: SgColors.bg000,
       builder: (modalCtx) {
         return SizedBox(
@@ -313,6 +316,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           weakSignal: weakSignal,
           pulsing: engaged,
         ),
+        themeButton: const AppearanceToggle(),
         online: engaged,
         statusLabel: switch (availability) {
           AvailabilityStateOnline() => l.statusOnline,

@@ -6,6 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/incentive_quest_model.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class QuestCard extends StatelessWidget {
   final IncentiveQuestModel quest;
@@ -126,7 +127,7 @@ class QuestCard extends StatelessWidget {
                                                     ? AppColors.primaryText
                                                     : AppColors
                                                           .onSurfaceVariant,
-                                                fontSize: 11,
+                                                fontSize: SgText.size(13),
                                               ),
                                         ),
                                       ],
@@ -156,7 +157,7 @@ class QuestCard extends StatelessWidget {
                               style: AppTypography.dataMono.copyWith(
                                 color: AppColors.primaryText,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                                fontSize: SgText.size(13),
                               ),
                             ),
                           ),
@@ -170,7 +171,7 @@ class QuestCard extends StatelessWidget {
                           quest.description,
                           style: AppTypography.bodyMd.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: 13,
+                            fontSize: SgText.size(13),
                           ),
                         ),
                       const SizedBox(height: AppSpacing.md),
@@ -215,7 +216,7 @@ class QuestCard extends StatelessWidget {
                                 '${quest.progressTrips} of ${quest.targetTrips} trips',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: 11,
+                                  fontSize: SgText.size(13),
                                 ),
                               ),
                             ),
@@ -228,7 +229,7 @@ class QuestCard extends StatelessWidget {
                                 style: AppTypography.labelCaps.copyWith(
                                   color: accent,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 11,
+                                  fontSize: SgText.size(13),
                                 ),
                                 textAlign: TextAlign.end,
                               ),

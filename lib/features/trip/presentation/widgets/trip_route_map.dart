@@ -71,18 +71,30 @@ class TripRouteMap extends ConsumerWidget {
     final leg = _leg();
     final road = leg == null
         ? const <LatLng>[]
-        : ref.watch(routeForLegProvider(leg)).maybeWhen(
-              data: (points) => points,
-              orElse: () => const <LatLng>[],
-            );
+        : ref
+              .watch(routeForLegProvider(leg))
+              .maybeWhen(
+                data: (points) => points,
+                orElse: () => const <LatLng>[],
+              );
 
     final markers = <SgMarker>[
       if (driver != null)
         _pin('driver', driver!, Icons.navigation_rounded, SgColors.gold500),
       if (pickup != null)
-        _pin('pickup', pickup!, Icons.circle, SgColors.pickup),
+        SgMarker(
+          id: 'pickup',
+          point: pickup!,
+          icon: sgPickupMarker(),
+          anchor: const Offset(0.5, 0.5),
+        ),
       if (destination != null)
-        _pin('drop', destination!, Icons.square_rounded, SgColors.gold500),
+        SgMarker(
+          id: 'drop',
+          point: destination!,
+          icon: sgDropMarker(),
+          anchor: const Offset(0.5, 0.5),
+        ),
     ];
 
     return SgMap(
@@ -92,14 +104,7 @@ class TripRouteMap extends ConsumerWidget {
       markers: markers,
       // Only a real road. While the lookup is in flight, or if it failed,
       // the map shows markers and nothing between them.
-      polylines: [
-        if (road.length > 1)
-          SgPolyline(
-            id: 'road',
-            points: road,
-            color: SgColors.gold500.withValues(alpha: 0.85),
-          ),
-      ],
+      polylines: [if (road.length > 1) sgRoute('road', road)],
     );
   }
 

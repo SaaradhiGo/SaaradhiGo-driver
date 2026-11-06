@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Locale;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,8 @@ import '../../../../core/network/websocket_service.dart';
 import '../../../../core/storage/local_storage_service.dart';
 import '../../../../core/utils/app_logger.dart';
 import '../../../../domain/models/trip_model.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../ui/sg_text.dart';
 import '../../../dashboard/data/data_sources/driver_location_consumer.dart';
 import '../../data/data_sources/trip_status_consumer.dart';
 import '../../domain/support_end.dart';
@@ -20,6 +23,18 @@ import 'trip_providers.dart';
 /// cancel→cancelled. On success the backend does NOT reply directly — it
 /// group-sends a `trip_status_update`; on failure it sends `{type:error}`.
 class TripSessionNotifier extends Notifier<TripSessionState> {
+  static String? _reasonCode(Map<String, dynamic> raw) {
+    for (final k in const ['cancellation_reason', 'reason', 'cancel_reason']) {
+      final v = raw[k]?.toString().trim();
+      if (v != null && v.isNotEmpty) return v;
+    }
+    return null;
+  }
+
+  /// Messages this notifier puts on screen, in the app's language.
+  AppLocalizations get _l =>
+      lookupAppLocalizations(Locale(SgText.languageCode));
+
   TripStatusConsumer? _consumer;
   StreamSubscription<TripStatusEvent>? _eventSub;
   StreamSubscription<WebSocketState>? _connSub;
@@ -82,9 +97,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   Future<void> acceptFromRequest(DriverLocationRideRequest request) async {
     final tripId = request.tripId;
     if (tripId == null) {
-      state = state.copyWith(
-        errorMessage: 'Ride request is missing a trip id.',
-      );
+      state = state.copyWith(errorMessage: _l.tripMissingId);
       return;
     }
     // A second tap, or a second channel delivering the same offer, must not
@@ -116,7 +129,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
 
   /// Crash recovery: rejoins an in-flight trip returned by `GET /ride/active/`.
   void resumeActiveTrip(TripModel trip) {
-    if (trip.status.isTerminal) return;
+    if (!trip.isActiveOnServer) return;
     if (state.trip?.id == trip.id && !state.isTerminal) return;
 
     // If an assigned active trip arrives with 'requested', normalize to 'accepted'
@@ -165,7 +178,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
       );
       return null;
     }
-    if (trip == null || trip.status.isTerminal) {
+    if (trip == null || !trip.isActiveOnServer) {
       if (state.isActive) clear();
       return null;
     }
@@ -179,26 +192,58 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     if (!state.isActive) return;
 
     try {
-      final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
-      if (trip == null || trip.status.isTerminal) {
-        AppLogger.w(
-          'Active trip check on resume: trip ended or cancelled on backend (id: ${state.trip?.id})',
-        );
-        HapticFeedback.heavyImpact();
+      final repo = ref.read(tripRepositoryProvider);
+      final id = state.trip?.id;
+      final trip = await repo.getActiveTrip();
+      if (trip != null && trip.isActiveOnServer) return;
+      // Not active any more: read what happened to OUR trip rather than
+      // guess. A trip completed while the app was away goes to the summary
+      // (and the cash confirmation); a cancel says who, when the server says.
+      var ended = trip != null && trip.id == id ? trip : null;
+      if (ended == null && id != null) ended = await repo.getTrip(id);
+      if (!ref.mounted || state.trip?.id != id || !state.isActive) return;
+      AppLogger.w(
+        'Active trip check on resume: trip $id is ${ended?.status.name} '
+        'on the backend',
+      );
+      HapticFeedback.heavyImpact();
+      if (ended != null && ended.status == TripStatus.completed) {
         state = state.copyWith(
-          status: TripStatus.cancelled,
-          trip: state.trip?.copyWith(status: TripStatus.cancelled),
-          cancellationReason: trip?.status == TripStatus.cancelled
-              ? 'Ride was cancelled by the passenger.'
-              : 'Trip is no longer active.',
+          status: TripStatus.completed,
+          trip: state.trip?.copyWith(
+            status: TripStatus.completed,
+            finalFare: ended.finalFare ?? state.trip?.finalFare,
+            paymentMethod: ended.paymentMethod ?? state.trip?.paymentMethod,
+            paymentStatus: ended.paymentStatus ?? state.trip?.paymentStatus,
+            riderPayable: ended.riderPayable ?? state.trip?.riderPayable,
+            promoDiscount: ended.promoDiscount ?? state.trip?.promoDiscount,
+            driverEarning: ended.driverEarning ?? state.trip?.driverEarning,
+          ),
           connecting: false,
           actionInProgress: false,
         );
-        _detachConsumer();
-        unawaited(LocalStorageService.clearActiveTripId());
+        // Cash still to collect: keep the channel, the backend takes the
+        // confirmation only over it.
+        if (!state.needsCashCollection) {
+          _detachConsumer();
+          unawaited(LocalStorageService.clearActiveTripId());
+        }
+        return;
       }
+      state = state.copyWith(
+        status: TripStatus.cancelled,
+        trip: state.trip?.copyWith(
+          status: TripStatus.cancelled,
+          cancelledBy: ended?.cancelledBy,
+        ),
+        cancellationReason: ended?.cancellationReason,
+        connecting: false,
+        actionInProgress: false,
+      );
+      _detachConsumer();
+      unawaited(LocalStorageService.clearActiveTripId());
     } catch (e, st) {
-      AppLogger.w('Failed checking active trip on resume: $e\n$st');
+      AppLogger.w('Failed checking active trip on resume', e, st);
     }
   }
 
@@ -268,9 +313,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
   }) {
     final consumer = _consumer;
     if (consumer == null) {
-      state = state.copyWith(
-        errorMessage: 'Not connected to the trip. Please retry.',
-      );
+      state = state.copyWith(errorMessage: _l.tripNotConnected);
       return;
     }
     AppLogger.i(
@@ -290,13 +333,20 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
           _sendAction('accept', commandId: _acceptCommandId);
         }
 
-      case TripStatusChanged(:final status, :final message):
+      case TripStatusChanged(:final status, :final message, :final raw):
         AppLogger.i('Trip ${_consumer?.tripId} → ${status.name}');
         // The backend has spoken about this trip, so the acceptance is no
         // longer in doubt and the watchdog must not fire later and tear down
         // a ride that is genuinely ours.
         _cancelAcceptWatchdog();
-        final trip = state.trip?.copyWith(status: status);
+        // Who cancelled, exactly as the frame says (`cancelled_by`).
+        final actor = raw['cancelled_by']?.toString();
+        final trip = state.trip?.copyWith(
+          status: status,
+          cancelledBy: status == TripStatus.cancelled
+              ? (actor ?? state.trip?.cancelledBy)
+              : state.trip?.cancelledBy,
+        );
         if (status == TripStatus.cancelled) {
           HapticFeedback.heavyImpact();
         }
@@ -307,8 +357,10 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
         state = state.copyWith(
           status: status,
           trip: trip,
+          // The reason CODE the frame carries, never its generic message:
+          // the screen shows a reason only for a code it can translate.
           cancellationReason: (status == TripStatus.cancelled)
-              ? (message ?? state.cancellationReason)
+              ? (_reasonCode(raw) ?? state.cancellationReason)
               : state.cancellationReason,
           connecting: false,
           actionInProgress: false,
@@ -425,7 +477,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
           socketError: true,
           connecting: false,
           actionInProgress: false,
-          errorMessage: 'Lost connection to the trip. Reopen to reconnect.',
+          errorMessage: _l.tripLostConnection,
         );
     }
   }
@@ -497,13 +549,11 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
       // strength of a failed request -- release it and let /ride/active/
       // recovery re-adopt the trip if there really is one.
       AppLogger.w('Reconcile failed', error, stackTrace);
-      _releaseUnconfirmedRide(
-        'We could not confirm that ride. You are back online.',
-      );
+      _releaseUnconfirmedRide(_l.tripUnconfirmed);
       return;
     }
 
-    if (active != null && !active.status.isTerminal) {
+    if (active != null && active.isActiveOnServer) {
       AppLogger.i('Reconcile: backend has trip ${active.id} active; adopting');
       _cancelAcceptWatchdog();
       _pendingAccept = false;
@@ -535,7 +585,7 @@ class TripSessionNotifier extends Notifier<TripSessionState> {
     }
 
     _releaseUnconfirmedRide(
-      refusal ?? 'That ride is no longer available. You are back online.',
+      refusal ?? _l.tripNoLongerAvailable,
       refused: refusal != null,
     );
   }

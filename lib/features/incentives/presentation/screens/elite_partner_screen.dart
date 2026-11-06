@@ -9,6 +9,7 @@ import '../../../../domain/models/elite_status_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/incentives_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class ElitePartnerScreen extends ConsumerStatefulWidget {
   const ElitePartnerScreen({super.key});
@@ -176,7 +177,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       'ACTIVE STATUS',
                       style: AppTypography.labelCaps.copyWith(
                         color: accent,
-                        letterSpacing: 1.2,
+                        letterSpacing: 0,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -192,7 +193,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       '${elite.totalTrips} Lifetime Completed Trips',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: 11,
+                        fontSize: SgText.size(13),
                       ),
                     ),
                   ],
@@ -220,7 +221,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onBackground,
                         fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                        fontSize: SgText.size(13),
                       ),
                     ),
                     Text(
@@ -322,7 +323,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           title,
           style: AppTypography.labelCaps.copyWith(
             color: AppColors.onSurfaceVariant,
-            fontSize: 11,
+            fontSize: SgText.size(13),
           ),
         ),
         const SizedBox(height: 4),
@@ -331,7 +332,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           style: AppTypography.dataMono.copyWith(
             color: AppColors.onBackground,
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: SgText.size(16),
           ),
         ),
         const SizedBox(height: 4),
@@ -347,7 +348,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
             style: AppTypography.labelCaps.copyWith(
               color: isQualified ? AppColors.success : AppColors.error,
               fontWeight: FontWeight.bold,
-              fontSize: 8,
+              fontSize: SgText.size(13),
             ),
           ),
         ),

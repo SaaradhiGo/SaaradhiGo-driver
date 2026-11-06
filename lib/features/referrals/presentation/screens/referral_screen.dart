@@ -12,6 +12,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../earnings/presentation/earnings_display.dart';
 import '../providers/referral_provider.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// What a driver shares. The API supplies the code and the offer, never a
 /// ready-made message, so this is a neutral line built from them.
@@ -151,7 +152,7 @@ class DriverReferralScreen extends ConsumerWidget {
                 style: AppTypography.dataMono.copyWith(
                   color: AppColors.primaryText,
                   fontWeight: FontWeight.bold,
-                  fontSize: 30,
+                  fontSize: SgText.size(24),
                   letterSpacing: 4,
                 ),
               ),
@@ -196,7 +197,7 @@ class DriverReferralScreen extends ConsumerWidget {
               rewardNote(commission: 'none', tax: 'not configured'),
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],
@@ -250,7 +251,7 @@ class DriverReferralScreen extends ConsumerWidget {
             color: earned.isNotEmpty
                 ? AppColors.onBackground
                 : AppColors.onSurfaceVariant,
-            fontWeight: earned.isNotEmpty ? FontWeight.w600 : FontWeight.normal,
+            fontWeight: earned.isNotEmpty ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
         if (pending.isNotEmpty) ...[
@@ -309,7 +310,7 @@ class DriverReferralScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],
@@ -355,7 +356,7 @@ class DriverReferralScreen extends ConsumerWidget {
                 color: r.pendingReview
                     ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: SgText.size(13),
               ),
             ),
           ],

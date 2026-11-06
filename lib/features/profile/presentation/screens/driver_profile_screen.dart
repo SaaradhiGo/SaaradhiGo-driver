@@ -17,6 +17,7 @@ import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../vehicle/presentation/providers/vehicle_info_providers.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/display_settings_rows.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Driver Profile / Account Suite screen (`/profile`).
 class DriverProfileScreen extends ConsumerStatefulWidget {
@@ -322,7 +323,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                               'No Active Vehicle Set',
                               style: AppTypography.headlineSm.copyWith(
                                 color: AppColors.onBackground,
-                                fontSize: 16,
+                                fontSize: SgText.size(16),
                               ),
                             ),
                           ),
@@ -347,7 +348,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                               'REQUIRED',
                               style: AppTypography.labelCaps.copyWith(
                                 color: AppColors.primaryText,
-                                fontSize: 10,
+                                fontSize: SgText.size(13),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -359,7 +360,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                         'Register or assign your vehicle to start accepting rides and going online.',
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: 13,
+                          fontSize: SgText.size(13),
                         ),
                       ),
                     ],
@@ -424,7 +425,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Active Vehicle Information',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: 15,
+                    fontSize: SgText.size(14),
                   ),
                 ),
               ],
@@ -598,7 +599,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Personal Information',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: 15,
+                    fontSize: SgText.size(14),
                   ),
                 ),
               ],
@@ -675,7 +676,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                 'Quality scores & qualification status',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 12,
+                  fontSize: SgText.size(13),
                 ),
               ),
               trailing: Icon(
@@ -831,7 +832,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Refer drivers and earn rewards',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: SgText.size(13),
                   ),
                 ),
                 trailing: Icon(

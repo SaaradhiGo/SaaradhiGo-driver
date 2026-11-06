@@ -11,29 +11,27 @@ class AppTypography {
     double size,
     double line,
     FontWeight w, {
-    double spacing = 0,
     bool figures = false,
   }) => TextStyle(
     fontFamily: SgText.family,
     fontFamilyFallback: SgText.fallback,
-    fontSize: size,
+    fontSize: SgText.size(size),
     height: line / size,
     fontWeight: w,
     fontVariations: [FontVariation('wght', w.value.toDouble())],
-    letterSpacing: spacing,
+    letterSpacing: 0,
     fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
   );
 
-  // Sizes unchanged from before Tier 1 so the older layouts hold; the
-  // design-system scale lives in SgText.
-  static TextStyle get displayLg => _m(32, 40, FontWeight.w700, spacing: -0.3);
-  static TextStyle get headlineLgMobile => _m(28, 34, FontWeight.w700);
-  static TextStyle get headlineMd => _m(24, 32, FontWeight.w700);
-  static TextStyle get headlineSm => _m(20, 28, FontWeight.w700);
-  static TextStyle get bodyLg => _m(17, 26, FontWeight.w500);
-  static TextStyle get bodyMd => _m(15, 22, FontWeight.w500);
-  static TextStyle get labelCaps => _m(12, 16, FontWeight.w700, spacing: 0.4);
+  // The older names on the Tier 1 scale (SgText): same sizes, same factor.
+  static TextStyle get displayLg => _m(24, 30, FontWeight.w700);
+  static TextStyle get headlineLgMobile => _m(24, 30, FontWeight.w700);
+  static TextStyle get headlineMd => _m(24, 30, FontWeight.w700);
+  static TextStyle get headlineSm => _m(18, 24, FontWeight.w600);
+  static TextStyle get bodyLg => _m(16, 24, FontWeight.w500);
+  static TextStyle get bodyMd => _m(16, 24, FontWeight.w500);
+  static TextStyle get labelCaps => _m(13, 18, FontWeight.w600);
 
   /// Numbers: Anek with tabular figures (no monospace family).
-  static TextStyle get dataMono => _m(15, 20, FontWeight.w700, figures: true);
+  static TextStyle get dataMono => _m(16, 22, FontWeight.w700, figures: true);
 }

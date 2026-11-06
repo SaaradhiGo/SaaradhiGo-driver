@@ -11,6 +11,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../../shared/widgets/status_badge.dart';
 import '../providers/support_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Help & Support Center (`/support`).
 ///
@@ -89,7 +90,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 'team.',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: SgText.size(13),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -175,7 +176,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
               textAlign: TextAlign.center,
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: SgText.size(13),
               ),
             ),
           ],
@@ -226,7 +227,7 @@ class _SupportBanner extends StatelessWidget {
                   'Raise a ticket and our team replies here.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 13,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ],
@@ -318,7 +319,7 @@ class _TicketCard extends ConsumerWidget {
                           _formatDate(ticket.createdAt!),
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: 11,
+                            fontSize: SgText.size(13),
                           ),
                         ),
                       ],

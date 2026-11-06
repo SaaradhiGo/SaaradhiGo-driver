@@ -1,6 +1,6 @@
 /// The SaaradhiGo basemap for the Google Maps SDK: the website's style
 /// (`apps/web/src/lib/mapStyle.ts`), from the same seven `map-*` tokens, dark
-/// theme only (owner decision D2).
+/// theme; the light theme uses the shared light style (sg_map_light.json).
 ///
 /// Seven colours and not one more. Anything Google would tint from its own
 /// palette -- business pins, transit, parcel lines -- is turned off rather
@@ -9,6 +9,8 @@
 library;
 
 import 'dart:convert';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 /// `design-system/tokens.json`, dark values.
 abstract final class MapTokens {
@@ -43,7 +45,9 @@ final String kSgMapStyle = jsonEncode([
   ..._rule('road.local', 'geometry', {'color': MapTokens.street}),
   ..._rule('road.arterial', 'geometry', {'color': MapTokens.arterial}),
   ..._rule('road.highway', 'geometry', {'color': MapTokens.highway}),
-  ..._rule('road.highway.controlled_access', 'geometry', {'color': MapTokens.highway}),
+  ..._rule('road.highway.controlled_access', 'geometry', {
+    'color': MapTokens.highway,
+  }),
   ..._rule('water', 'geometry', {'color': MapTokens.water}),
   ..._rule('water', 'labels.text.fill', {'color': MapTokens.label}),
   ..._rule('poi.park', 'geometry', {'color': MapTokens.park}),
@@ -56,3 +60,19 @@ final String kSgMapStyle = jsonEncode([
   ..._rule('administrative.neighborhood', 'labels', {'visibility': 'off'}),
   ..._rule('road', 'labels.icon', {'visibility': 'off'}),
 ]);
+
+/// The light basemap: assets/maps/sg_map_light.json, the style the website and
+/// the rider app use, verbatim. Loaded once at start-up by [loadSgMapStyles].
+String? _lightStyle;
+
+/// Reads the light style from the bundle. Never throws: without it the light
+/// theme falls back to the dark style.
+Future<void> loadSgMapStyles() async {
+  try {
+    _lightStyle = await rootBundle.loadString('assets/maps/sg_map_light.json');
+  } catch (_) {}
+}
+
+/// The style for the active theme.
+String sgMapStyleFor({required bool dark}) =>
+    dark ? kSgMapStyle : (_lightStyle ?? kSgMapStyle);

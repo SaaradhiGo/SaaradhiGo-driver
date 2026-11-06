@@ -8,6 +8,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/buttons.dart';
 import 'providers/auth_notifier.dart';
 import 'providers/auth_state.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
@@ -117,7 +118,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   textAlign: TextAlign.center,
                   autofocus: true,
                   style: AppTypography.dataMono.copyWith(
-                    fontSize: 28,
+                    fontSize: SgText.size(24),
                     letterSpacing: 14,
                   ),
                   decoration: const InputDecoration(counterText: ''),

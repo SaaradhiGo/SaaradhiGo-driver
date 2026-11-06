@@ -10,6 +10,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../trip/presentation/providers/trip_providers.dart';
 import '../providers/support_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Report an Incident (`/report-incident`).
 ///
@@ -115,7 +116,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                         error,
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.error,
-                          fontSize: 13,
+                          fontSize: SgText.size(13),
                         ),
                       ),
                     ),
@@ -200,7 +201,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                   : 'This report will be linked to your active trip #$_tripId.',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 13,
+                fontSize: SgText.size(13),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

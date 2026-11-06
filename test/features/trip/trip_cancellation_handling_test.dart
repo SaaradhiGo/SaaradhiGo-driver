@@ -187,16 +187,22 @@ void main() {
       // Emit cancellation event over socket
       consumer.emitEvent(const TripStatusChanged(
         status: TripStatus.cancelled,
-        message: 'Rider cancelled due to delay',
-        raw: {'type': 'trip_status_update', 'status': 'cancelled'},
+        message: 'Your ride has been cancelled.',
+        raw: {
+          'type': 'trip_status_update',
+          'status': 'cancelled',
+          'reason': 'too_long',
+          'cancelled_by': 'rider',
+        },
       ));
       await Future<void>.delayed(Duration.zero);
 
       state = container.read(tripSessionNotifierProvider);
       // Status is cancelled
       expect(state.status, equals(TripStatus.cancelled));
-      // Reason captured
-      expect(state.cancellationReason, equals('Rider cancelled due to delay'));
+      // The reason CODE and the actor, never the generic message.
+      expect(state.cancellationReason, equals('too_long'));
+      expect(state.trip?.cancelledBy, equals('rider'));
       // Route guard flags
       expect(state.isTerminal, isTrue);
       expect(state.isActive, isFalse);
@@ -237,6 +243,7 @@ void main() {
       fakeRepo.mockActiveTrip = const TripModel(
         id: 707,
         status: TripStatus.cancelled,
+        cancelledBy: 'rider',
       );
 
       await notifier.checkActiveTripOnResume();
@@ -245,7 +252,9 @@ void main() {
       expect(state.status, equals(TripStatus.cancelled));
       expect(state.isTerminal, isTrue);
       expect(state.isActive, isFalse);
-      expect(state.cancellationReason, contains('cancelled by the passenger'));
+      // No invented reason; the actor is the server's.
+      expect(state.cancellationReason, isNull);
+      expect(state.trip?.cancelledBy, 'rider');
       expect(LocalStorageService.getActiveTripId(), isNull);
     });
   });
@@ -258,7 +267,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: RideCancelledBottomSheet(
-              reason: 'Customer changed plans',
+              reason: 'too_long',
               autoDismissSeconds: 0, // disable countdown during tap test
               onDismiss: () {
                 dismissed = true;
@@ -268,11 +277,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Ride Cancelled by Passenger'), findsOneWidget);
-      expect(find.text('Customer changed plans'), findsOneWidget);
-      expect(find.text('RETURN TO DASHBOARD'), findsOneWidget);
+      // No actor from the server: a neutral title, never a guess.
+      expect(find.text('Trip cancelled'), findsOneWidget);
+      expect(find.text('Reason: Waited too long'), findsOneWidget);
+      expect(find.text('Back to home'), findsOneWidget);
 
-      await tester.tap(find.text('RETURN TO DASHBOARD'));
+      await tester.tap(find.text('Back to home'));
       await tester.pump();
 
       expect(dismissed, isTrue);

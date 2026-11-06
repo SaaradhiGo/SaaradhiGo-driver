@@ -30,7 +30,16 @@ class LocalStorageService {
     return _prefs?.getString(_keyActiveTripId);
   }
 
+  /// Device choices that outlive a session (owner brief: the driver's
+  /// appearance choice survives logout). Never removed by [clearAll].
+  static const keptAcrossSessions = {'driver_appearance_mode_v1'};
+
+  /// Clears this install's session data, keeping [keptAcrossSessions].
   static Future<void> clearAll() async {
-    await _prefs?.clear();
+    final prefs = _prefs;
+    if (prefs == null) return;
+    for (final key in prefs.getKeys().toList()) {
+      if (!keptAcrossSessions.contains(key)) await prefs.remove(key);
+    }
   }
 }
