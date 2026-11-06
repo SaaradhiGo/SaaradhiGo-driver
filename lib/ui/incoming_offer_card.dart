@@ -1,5 +1,7 @@
-/// The ride offer as a full-height card over the map: fare, route, a visible
-/// accept countdown, one gold Accept and a quiet Decline.
+/// The ride offer (Tier 3, screen 2): a full-width countdown bar, the class and
+/// the seconds left, "You earn" at 96px from the frame's own `earning`, three
+/// tiles (to pickup, trip, rider pays), the pickup and drop areas, an 80px
+/// gold Accept and a 52px Decline.
 library;
 
 import 'dart:async';
@@ -8,54 +10,104 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../core/maps/sg_map.dart';
-import '../core/notifications/offer_alert.dart';
 import '../core/market/market_config_store.dart';
+import '../core/notifications/offer_alert.dart';
+import '../core/maps/sg_map.dart';
 import '../domain/models/trip_model.dart';
 import 'driver_home_view.dart';
+import 'driver_trip_views.dart' show kStarIcon;
+import 'sg_l10n.dart';
 import 'sg_text.dart';
 import 'sg_tokens.dart';
 import 'sg_widgets.dart';
 
+/// An address split for a glance: the part before the first comma (the area)
+/// and the rest, or null when there is no rest. No geocoding.
+(String, String?) splitArea(String address) {
+  final t = address.trim();
+  final at = t.indexOf(',');
+  if (at <= 0) return (t, null);
+  final head = t.substring(0, at).trim();
+  final rest = t.substring(at + 1).trim();
+  return (head, rest.isEmpty ? null : rest);
+}
+
+/// "20" for "20.00", "12.5" for "12.50". A rate given as a fraction (0.2) is
+/// shown as a percentage (20). Null when it does not parse.
+String? percentText(Object? raw) {
+  final v = raw is num ? raw.toDouble() : double.tryParse('${raw ?? ''}');
+  if (v == null || v < 0) return null;
+  final pct = v > 0 && v < 1 ? v * 100 : v;
+  final fixed = pct.toStringAsFixed(2);
+  return fixed.replaceFirst(RegExp(r'\.?0+$'), '');
+}
+
 /// What the card shows, read from a `ride_request` frame.
 ///
-/// Fields the frame does not carry are null and their line is left out; the
-/// card never invents a figure.
+/// Fields the frame does not carry are null and their element is left out;
+/// the card never invents a figure. The driver's earning is the frame's own
+/// `earning` (the backend's figure), never worked out on the phone.
 class OfferData {
   const OfferData({
     this.fare,
+    this.earning,
+    this.commissionPercent,
+    this.commissionAmount,
+    this.riderRating,
+    this.classCode,
     this.className,
-    this.payment,
-    this.pickupAway,
+    this.cash,
+    this.pickupKm,
+    this.pickupMin,
+    this.tripKm,
+    this.tripMin,
     this.pickupAddress,
     this.destinationAddress,
-    this.tripLine,
     this.pickup,
     this.destination,
     this.expiresAt,
   });
 
+  /// Whole currency: "₹248".
   final String? fare;
-  final String? className;
-  final String? payment;
 
-  /// "1.2 km · 4 min away".
-  final String? pickupAway;
+  /// The backend's `earning`, whole currency. Null when the frame has none.
+  final String? earning;
+
+  /// "20" from `commission_rate`.
+  final String? commissionPercent;
+
+  /// Whole currency from `commission_amount`.
+  final String? commissionAmount;
+  final double? riderRating;
+  final String? classCode;
+  final String? className;
+
+  /// True for cash, false for paid in the app, null when unknown.
+  final bool? cash;
+  final double? pickupKm;
+  final double? pickupMin;
+  final double? tripKm;
+  final double? tripMin;
   final String? pickupAddress;
   final String? destinationAddress;
-
-  /// "8.4 km · 20 min".
-  final String? tripLine;
   final LatLng? pickup;
   final LatLng? destination;
   final DateTime? expiresAt;
+
+  /// The "Fare ₹X − Y% commission ₹Z" line is shown only when every part of
+  /// it came from the frame.
+  bool get hasFareLine =>
+      earning != null &&
+      fare != null &&
+      commissionPercent != null &&
+      commissionAmount != null;
 
   factory OfferData.fromPayload(Map<String, dynamic> p) {
     TripModel? trip;
     try {
       trip = TripModel.fromJson({...p, 'trip_id': p['trip_id'] ?? 0});
     } catch (_) {}
-    final market = MarketConfigStore.instance.current;
 
     num? number(List<String> keys) {
       for (final k in keys) {
@@ -75,45 +127,37 @@ class OfferData {
       return null;
     }
 
-    final awayKm = number(['pickup_distance_km', 'distance_to_pickup_km']);
-    final awayMin = number([
-      'pickup_eta_min',
-      'eta_to_pickup_min',
-      'pickup_eta_minutes',
-    ]);
-    final away = [
-      if (awayKm != null) market.formatDistanceKm(awayKm.toDouble()),
-      if (awayMin != null) '${awayMin.round()} min',
-    ];
-
-    final km = trip?.distanceKm;
-    final min = trip?.durationMin;
-    final tripBits = [
-      if (km != null) market.formatDistanceKm(km),
-      if (min != null) '${min.round()} min',
-    ];
-
     final pay = (trip?.paymentMethod ?? text(['payment_mode']))
         ?.trim()
         .toLowerCase();
     final klass = trip?.vehicleType ?? text(['ride_class', 'vehicle_class']);
-
+    final rating = number(['rider_rating'])?.toDouble();
     LatLng? point(double? lat, double? lng) =>
         lat == null || lng == null ? null : LatLng(lat, lng);
 
     return OfferData(
       fare: wholeMoney(trip?.estimatedFare ?? text(['estimated_fare', 'fare'])),
+      earning: wholeMoney(text(['earning'])),
+      commissionPercent: percentText(p['commission_rate']),
+      commissionAmount: wholeMoney(text(['commission_amount'])),
+      riderRating: rating != null && rating > 0 ? rating : null,
+      classCode: klass,
       className: klass == null || klass.isEmpty
           ? null
           : '${klass[0].toUpperCase()}${klass.substring(1)}',
-      payment: pay == null || pay.isEmpty
-          ? null
-          : (pay == 'cash' ? 'Cash' : 'Online'),
-      pickupAway: away.isEmpty ? null : '${away.join(' · ')} away',
+      cash: pay == null || pay.isEmpty ? null : pay == 'cash',
+      pickupKm:
+          number(['pickup_distance_km', 'distance_to_pickup_km'])?.toDouble(),
+      pickupMin: number([
+        'pickup_eta_min',
+        'eta_to_pickup_min',
+        'pickup_eta_minutes',
+      ])?.toDouble(),
+      tripKm: trip?.distanceKm,
+      tripMin: trip?.durationMin,
       pickupAddress: trip?.pickupAddress ?? text(['pickup_address']),
       destinationAddress:
           trip?.destinationAddress ?? text(['destination_address']),
-      tripLine: tripBits.isEmpty ? null : tripBits.join(' · '),
       pickup: point(trip?.pickupLat, trip?.pickupLng),
       destination: point(trip?.destinationLat, trip?.destinationLng),
       expiresAt: DateTime.tryParse(text(['expires_at']) ?? '')?.toLocal(),
@@ -142,6 +186,7 @@ class IncomingOfferCard extends StatefulWidget {
 
   /// The UI countdown when the frame carries no `expires_at`.
   final int timeoutSeconds;
+
   final MapsProvider? mapProvider;
 
   /// Sound and vibration on arrival; off in tests.
@@ -193,154 +238,174 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
 
   @override
   Widget build(BuildContext context) {
-    final o = _offer;
-    final pickup = o.pickup, drop = o.destination;
-    final pins = [
-      if (pickup != null)
-        SgMarker(
-          id: 'pickup',
-          point: pickup,
-          icon: SgIconMarker(Icons.circle, SgColors.pickup, size: 20),
-          anchor: const Offset(0.5, 0.5),
-          label: 'Pickup',
-        ),
-      if (drop != null)
-        SgMarker(
-          id: 'drop',
-          point: drop,
-          icon: SgIconMarker(
-            Icons.square_rounded,
-            SgColors.gold500,
-            size: 20,
-          ),
-          anchor: const Offset(0.5, 0.5),
-          label: 'Drop',
-        ),
-    ];
-    final bottom = MediaQuery.paddingOf(context).bottom;
+    final l = sgL10n(context);
+    final pad = MediaQuery.paddingOf(context);
     return Material(
       color: SgColors.bg000,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: SgMap(
-              provider: widget.mapProvider,
-              initialCenter: pickup ?? const LatLng(17.385, 78.4867),
-              initialZoom: 14,
-              interactive: false,
-              markers: pins,
-              padding: const EdgeInsets.only(top: 40, bottom: 40),
+      child: Padding(
+        padding: EdgeInsets.only(top: pad.top),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _CountdownBar(remaining: _remaining, total: _total),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  SgSpace.s4,
+                  SgSpace.s4,
+                  SgSpace.s4,
+                  SgSpace.s3 + pad.bottom,
+                ),
+                child: _expired
+                    ? Center(
+                        child: Text(
+                          l.offerExpired,
+                          style: SgText.heading.copyWith(
+                            color: SgColors.inkMuted,
+                          ),
+                        ),
+                      )
+                    : _body(l, _offer),
+              ),
             ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: SgColors.bg100,
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(SgRadius.lg)),
-              border: Border(top: BorderSide(color: SgColors.goldLine)),
-            ),
-            padding: EdgeInsets.fromLTRB(
-              SgSpace.s4,
-              SgSpace.s5,
-              SgSpace.s4,
-              SgSpace.s4 + bottom,
-            ),
-            child: _expired ? _expiredBody() : _body(o),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _expiredBody() => SizedBox(
-        height: 220,
-        child: Center(
-          child: Text(
-            'Offer expired',
-            style: SgText.title.copyWith(color: SgColors.inkMuted),
-          ),
-        ),
-      );
-
-  Widget _body(OfferData o) {
-    final meta = [if (o.className != null) o.className!, if (o.payment != null) o.payment!];
+  Widget _body(AppLocalizations l, OfferData o) {
+    final market = MarketConfigStore.instance.current;
+    String? km(double? v) => v == null ? null : market.formatDistanceKm(v);
+    String? min(double? v) =>
+        v == null ? null : l.commonMinutes(v.round().clamp(1, 999));
+    final earn = o.earning;
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    o.fare ?? '–',
-                    style: SgText.heading.copyWith(
-                      fontSize: 44,
-                      height: 48 / 44,
-                      fontWeight: FontWeight.w800,
-                      fontVariations: const [FontVariation('wght', 800)],
-                    ),
-                  ),
-                  if (meta.isNotEmpty)
-                    Text(meta.join(' · '), style: SgText.body),
-                  if (o.pickupAway != null) ...[
-                    const SizedBox(height: SgSpace.s1),
-                    Text(
-                      o.pickupAway!,
-                      style: SgText.body.copyWith(color: SgColors.inkMuted),
-                    ),
-                  ],
-                ],
+            if (o.className != null) _ClassChip(o.className!, o.classCode),
+            if (o.riderRating != null) ...[
+              const SizedBox(width: SgSpace.s2),
+              _RatingChip(o.riderRating!, l),
+            ],
+            const Spacer(),
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                l.offerSecondsLeft(_remaining),
+                key: const Key('offer_seconds'),
+                style: SgText.title.copyWith(
+                  fontSize: 20,
+                  color: _remaining <= 5 ? SgColors.danger : SgColors.ink,
+                ),
               ),
             ),
-            _CountdownRing(remaining: _remaining, total: _total),
           ],
         ),
-        const SizedBox(height: SgSpace.s5),
-        _RouteRow(
-          marker: Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: SgColors.pickup,
-            ),
+        const SizedBox(height: SgSpace.s4),
+        Text(
+          (earn != null ? l.offerYouEarn : l.offerFare).toUpperCase(),
+          style: SgText.label.copyWith(color: SgColors.goldText),
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: GoldSymbolAmount(
+            earn ?? o.fare ?? '–',
+            key: const Key('offer_amount'),
+            symbolColor: SgColors.goldText,
+            style: SgText.driverEarning,
           ),
-          label: 'Pickup',
-          address: o.pickupAddress ?? 'Pickup location',
+        ),
+        if (o.hasFareLine)
+          Text(
+            l.offerFareLine(o.fare!, o.commissionPercent!, o.commissionAmount!),
+            key: const Key('offer_fare_line'),
+            style: SgText.body.copyWith(color: SgColors.inkMuted),
+          )
+        else if (earn != null && o.fare != null)
+          Text(
+            '${l.offerFare} ${o.fare}',
+            key: const Key('offer_fare_line'),
+            style: SgText.body.copyWith(color: SgColors.inkMuted),
+          ),
+        const SizedBox(height: SgSpace.s4),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _Tile(
+                  label: l.offerToPickup,
+                  value: min(o.pickupMin) ?? km(o.pickupKm),
+                  detail: o.pickupMin == null ? null : km(o.pickupKm),
+                ),
+              ),
+              const SizedBox(width: SgSpace.s2),
+              Expanded(
+                child: _Tile(
+                  label: l.offerTrip,
+                  value: min(o.tripMin) ?? km(o.tripKm),
+                  detail: o.tripMin == null ? null : km(o.tripKm),
+                ),
+              ),
+              const SizedBox(width: SgSpace.s2),
+              Expanded(
+                child: _Tile(
+                  label: l.offerRiderPays,
+                  value: o.cash == null
+                      ? null
+                      : (o.cash! ? l.payCash : l.payOnline),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: SgSpace.s4),
-        _RouteRow(
-          marker: Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              color: SgColors.gold500,
-            ),
+        if (o.pickupAddress != null)
+          _AreaRow(address: o.pickupAddress!, drop: false, label: l.offerPickup),
+        if (o.pickupAddress != null && o.destinationAddress != null)
+          const SizedBox(height: SgSpace.s3),
+        if (o.destinationAddress != null)
+          _AreaRow(
+            address: o.destinationAddress!,
+            drop: true,
+            label: l.offerDrop,
           ),
-          label: 'Drop',
-          address: o.destinationAddress ?? 'Destination',
-          detail: o.tripLine,
+        Expanded(child: _MiniMap(offer: o, provider: widget.mapProvider)),
+        SgPrimaryButton(
+          key: const Key('offer_accept'),
+          label: l.offerAccept,
+          height: 80,
+          onPressed: widget.onAccept,
         ),
-        const SizedBox(height: SgSpace.s5),
-        SgPrimaryButton(label: 'Accept', onPressed: widget.onAccept),
-        const SizedBox(height: SgSpace.s2),
-        InkWell(
-          onTap: widget.onDecline,
-          borderRadius: BorderRadius.circular(SgRadius.md),
-          child: Container(
-            height: kSgTouch,
-            alignment: Alignment.center,
-            child: Text(
-              'Decline',
-              style: SgText.body.copyWith(
-                color: SgColors.inkMuted,
-                fontWeight: FontWeight.w700,
+        // 52px to the eye, 64px to the thumb.
+        Semantics(
+          button: true,
+          label: l.offerDecline,
+          excludeSemantics: true,
+          child: InkWell(
+            key: const Key('offer_decline'),
+            onTap: widget.onDecline,
+            borderRadius: BorderRadius.circular(SgRadius.md),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Container(
+                height: 52,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(SgRadius.md),
+                  border: Border.all(color: SgColors.lineStrong),
+                ),
+                child: Text(
+                  l.offerDecline,
+                  style: SgText.body.copyWith(
+                    color: SgColors.inkMuted,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ),
@@ -350,109 +415,253 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
   }
 }
 
-class _RouteRow extends StatelessWidget {
-  const _RouteRow({
-    required this.marker,
-    required this.label,
-    required this.address,
-    this.detail,
-  });
+/// The pickup and drop on a small map in whatever room is left; nothing when
+/// there is too little room or no pickup point.
+class _MiniMap extends StatelessWidget {
+  const _MiniMap({required this.offer, this.provider});
 
-  final Widget marker;
-  final String label;
-  final String address;
-  final String? detail;
+  final OfferData offer;
+  final MapsProvider? provider;
 
   @override
-  Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 18, right: SgSpace.s3),
-            child: marker,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label.toUpperCase(), style: SgText.label),
-                const SizedBox(height: 2),
-                Text(
-                  address,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: SgText.bodyLg,
+  Widget build(BuildContext context) {
+    final pickup = offer.pickup;
+    if (pickup == null) return const SizedBox.shrink();
+    final drop = offer.destination;
+    return LayoutBuilder(
+      builder: (context, box) {
+        if (box.maxHeight < 120) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: SgSpace.s4),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(SgRadius.lg),
+            child: SgMap(
+              provider: provider,
+              initialCenter: pickup,
+              initialZoom: 13,
+              interactive: false,
+              markers: [
+                SgMarker(
+                  id: 'pickup',
+                  point: pickup,
+                  icon: SgIconMarker(Icons.circle, SgColors.pickup, size: 20),
+                  anchor: const Offset(0.5, 0.5),
+                  label: 'Pickup',
                 ),
-                if (detail != null)
-                  Text(detail!, style: SgText.caption),
+                if (drop != null)
+                  SgMarker(
+                    id: 'drop',
+                    point: drop,
+                    icon: SgIconMarker(
+                      Icons.square_rounded,
+                      SgColors.gold500,
+                      size: 20,
+                    ),
+                    anchor: const Offset(0.5, 0.5),
+                    label: 'Drop',
+                  ),
               ],
+              padding: const EdgeInsets.all(32),
             ),
           ),
-        ],
-      );
+        );
+      },
+    );
+  }
 }
 
-class _CountdownRing extends StatelessWidget {
-  const _CountdownRing({required this.remaining, required this.total});
+class _CountdownBar extends StatelessWidget {
+  const _CountdownBar({required this.remaining, required this.total});
 
   final int remaining;
   final int total;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-        label: '$remaining seconds left to accept',
-        child: SizedBox(
-          width: 64,
-          height: 64,
-          child: TweenAnimationBuilder<double>(
-            tween: Tween(end: remaining / total),
-            duration: const Duration(seconds: 1),
-            builder: (_, value, child) => CustomPaint(
-              painter: _RingPainter(value),
-              child: child,
-            ),
-            child: Center(
-              child: Text(
-                '$remaining',
-                style: SgText.title.copyWith(fontSize: 22),
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    return Semantics(
+      label: '$remaining',
+      excludeSemantics: true,
+      child: SizedBox(
+        key: const Key('offer_countdown_bar'),
+        height: 8,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(end: remaining / total),
+          duration: reduce ? Duration.zero : const Duration(seconds: 1),
+          curve: Curves.linear,
+          builder: (_, value, _) => Stack(
+            fit: StackFit.expand,
+            children: [
+              ColoredBox(color: SgColors.bg300),
+              FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: value.clamp(0.0, 1.0),
+                child: ColoredBox(
+                  color: remaining <= 5 ? SgColors.danger : SgColors.gold500,
+                ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ClassChip extends StatelessWidget {
+  const _ClassChip(this.name, this.code);
+
+  final String name;
+  final String? code;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s3),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: SgVehicleClass.tileColorFor(code),
+          borderRadius: BorderRadius.circular(SgRadius.pill),
+        ),
+        child: Text(
+          name,
+          key: const Key('offer_class'),
+          style: SgText.body.copyWith(
+            fontWeight: FontWeight.w700,
+            color: SgVehicleClass.iconColorFor(code),
           ),
         ),
       );
 }
 
-class _RingPainter extends CustomPainter {
-  _RingPainter(this.value);
+class _RatingChip extends StatelessWidget {
+  const _RatingChip(this.rating, this.l);
 
-  final double value;
+  final double rating;
+  final AppLocalizations l;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final rect = (Offset.zero & size).deflate(4);
-    canvas.drawArc(
-      rect,
-      0,
-      math.pi * 2,
-      false,
-      Paint()
-        ..color = SgColors.bg300
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5,
-    );
-    canvas.drawArc(
-      rect,
-      -math.pi / 2,
-      math.pi * 2 * value.clamp(0.0, 1.0),
-      false,
-      Paint()
-        ..color = SgColors.gold500
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5
-        ..strokeCap = StrokeCap.round,
+  Widget build(BuildContext context) {
+    final r = rating.toStringAsFixed(1);
+    return Semantics(
+      label: l.offerRiderRating(r),
+      excludeSemantics: true,
+      child: Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s3),
+        decoration: BoxDecoration(
+          color: SgColors.bg200,
+          borderRadius: BorderRadius.circular(SgRadius.pill),
+          border: Border.all(color: SgColors.line),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SgIcon(kStarIcon, size: 16, color: SgColors.goldText),
+            const SizedBox(width: SgSpace.s1),
+            Text(
+              r,
+              key: const Key('offer_rating'),
+              style: SgText.body.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class _Tile extends StatelessWidget {
+  const _Tile({required this.label, this.value, this.detail});
+
+  final String label;
+  final String? value;
+  final String? detail;
 
   @override
-  bool shouldRepaint(_RingPainter old) => old.value != value;
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(SgSpace.s3),
+        decoration: BoxDecoration(
+          color: SgColors.bg200,
+          borderRadius: BorderRadius.circular(SgRadius.md),
+          border: Border.all(color: SgColors.line),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              maxLines: 2,
+              style: SgText.caption.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: SgSpace.s1),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(value ?? '–', style: SgText.fare),
+            ),
+            if (detail != null)
+              Text(detail!, maxLines: 1, style: SgText.caption),
+          ],
+        ),
+      );
+}
+
+/// The area at 19px with the rest of the address muted under it.
+class _AreaRow extends StatelessWidget {
+  const _AreaRow({
+    required this.address,
+    required this.drop,
+    required this.label,
+  });
+
+  final String address;
+  final bool drop;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final (area, rest) = splitArea(address);
+    return Semantics(
+      label: '$label: $address',
+      excludeSemantics: true,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: SgSpace.s3),
+            child: Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                color: drop ? SgColors.gold500 : SgColors.pickup,
+                shape: drop ? BoxShape.rectangle : BoxShape.circle,
+                borderRadius: drop ? BorderRadius.circular(3) : null,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  area,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: SgText.title.copyWith(fontSize: 19, height: 24 / 19),
+                ),
+                if (rest != null)
+                  Text(
+                    rest,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SgText.caption,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
+import '../trip_navigation.dart';
 import '../widgets/cancel_trip_sheet.dart';
 
 /// State `reached` — driver is at pickup and enters the rider's 6-digit OTP to
@@ -31,7 +34,7 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
 
   void _start() {
     final otp = _otpController.text.trim();
-    if (otp.length != 6) return;
+    if (otp.length != kTripPinLength) return;
     FocusScope.of(context).unfocus();
     ref.read(tripSessionNotifierProvider.notifier).startRide(otp);
   }
@@ -43,8 +46,13 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
     return PinCheckView(
       controller: _otpController,
       riderName: widget.trip.riderName,
+      riderRating: widget.trip.riderRating,
       pickupAddress: widget.trip.pickupAddress,
-      error: pinErrorText(session.otpError, widget.trip.riderName),
+      error: pinErrorText(
+        session.otpError,
+        widget.trip.riderName,
+        sgL10n(context),
+      ),
       busy: session.isBusy,
       onStart: _start,
       onCancel: () => showCancelTripSheet(context, ref),
@@ -54,11 +62,9 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
           ref.read(tripSessionNotifierProvider.notifier).acknowledgeError();
         }
       },
-      topActions: TripSafetyActions(
-        tripId: widget.trip.id,
-        riderName: widget.trip.riderName,
-        size: 44,
-      ),
+      // Chat moved onto the rider row as the 56px button; SOS stays on top.
+      onMessage: () => context.push(tripChatPath(widget.trip)),
+      topActions: TripSosButton(tripId: widget.trip.id, size: 56),
     );
   }
 }

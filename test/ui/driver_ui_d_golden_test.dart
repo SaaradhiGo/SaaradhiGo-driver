@@ -54,7 +54,7 @@ void main() {
     setPhoneSurface(tester);
     addTearDown(tester.view.reset);
     await tester.pumpWidget(sgApp(IncomingOfferCard(
-      payload: sampleOffer,
+      payload: sampleOfferWithEarning,
       alert: false,
       mapProvider: kPlaceholderMaps,
       onAccept: () {},

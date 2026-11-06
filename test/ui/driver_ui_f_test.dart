@@ -35,9 +35,10 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
         sgApp(homeFrame(earnings: '₹979', commission: '₹173')));
-    expect(find.text('You keep today'), findsOneWidget);
-    expect(find.text('₹979'), findsOneWidget);
-    expect(find.text('Commission ₹173'), findsOneWidget);
+    expect(find.text('You keep'), findsOneWidget);
+    expect(find.text('₹979', findRichText: true), findsOneWidget);
+    expect(find.text('Commission'), findsOneWidget);
+    expect(find.text('₹173'), findsOneWidget);
 
     await tester.pumpWidget(sgApp(homeFrame()));
     expect(find.text("Today's earnings"), findsOneWidget);

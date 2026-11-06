@@ -4,10 +4,11 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../core/market/market_config_store.dart';
 import 'driver_home_view.dart';
+import 'sg_l10n.dart';
+import '../l10n/app_localizations.dart' show lookupAppLocalizations;
 import 'sg_text.dart';
 import 'sg_tokens.dart';
 import 'sg_widgets.dart';
@@ -400,217 +401,404 @@ class ToPickupSheet extends StatelessWidget {
       );
 }
 
-/// Six boxes over one hidden field: the rider reads their PIN, the driver
-/// types it.
-class PinEntry extends StatefulWidget {
-  const PinEntry({
+/// The trip PIN's length: six digits, as the rider app shows it (rider #22)
+/// and as the backend issues it.
+const kTripPinLength = 6;
+
+/// The PIN as boxes, 72px tall, one per digit of the real length.
+class PinBoxes extends StatelessWidget {
+  const PinBoxes({
     super.key,
-    required this.controller,
-    this.length = 6,
+    required this.digits,
+    this.length = kTripPinLength,
     this.error = false,
-    this.onChanged,
-    this.onCompleted,
-    this.autofocus = true,
   });
 
-  final TextEditingController controller;
+  final String digits;
   final int length;
   final bool error;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onCompleted;
-  final bool autofocus;
-
-  @override
-  State<PinEntry> createState() => _PinEntryState();
-}
-
-class _PinEntryState extends State<PinEntry> {
-  final _focus = FocusNode();
-
-  @override
-  void dispose() {
-    _focus.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final digits = widget.controller.text;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: _focus.requestFocus,
-      child: Stack(
-        alignment: Alignment.center,
+    final l = sgL10n(context);
+    return Semantics(
+      label: l.pinDigits(digits.length, length),
+      excludeSemantics: true,
+      child: Row(
         children: [
-          Opacity(
-            opacity: 0,
-            child: SizedBox(
-              height: 1,
-              child: TextField(
-                key: const Key('trip_pin_field'),
-                controller: widget.controller,
-                focusNode: _focus,
-                autofocus: widget.autofocus,
-                keyboardType: TextInputType.number,
-                maxLength: widget.length,
-                showCursor: false,
-                enableInteractiveSelection: false,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(widget.length),
-                ],
-                decoration: const InputDecoration(counterText: ''),
-                onChanged: (v) {
-                  setState(() {});
-                  widget.onChanged?.call(v);
-                  if (v.length == widget.length) widget.onCompleted?.call(v);
-                },
+          for (var i = 0; i < length; i++) ...[
+            if (i > 0) const SizedBox(width: SgSpace.s2),
+            Expanded(
+              child: Container(
+                key: Key('pin_box_$i'),
+                height: 72,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: SgColors.bg200,
+                  borderRadius: BorderRadius.circular(SgRadius.md),
+                  border: Border.all(
+                    width: i == digits.length && !error ? 2 : 1,
+                    color: error
+                        ? SgColors.danger
+                        : i == digits.length
+                        ? SgColors.gold500
+                        : SgColors.lineStrong,
+                  ),
+                ),
+                child: Text(
+                  i < digits.length ? digits[i] : '',
+                  style: SgText.fare.copyWith(fontSize: 32, height: 36 / 32),
+                ),
               ),
             ),
-          ),
-          Semantics(
-            label: 'Trip PIN, ${digits.length} of ${widget.length} digits',
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < widget.length; i++) ...[
-                  if (i > 0) const SizedBox(width: SgSpace.s2),
-                  Container(
-                    key: Key('pin_box_$i'),
-                    width: 44,
-                    height: 56,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: SgColors.bg200,
-                      borderRadius: BorderRadius.circular(SgRadius.sm),
-                      border: Border.all(
-                        color: widget.error
-                            ? SgColors.danger
-                            : i == digits.length
-                                ? SgColors.goldLine
-                                : SgColors.lineStrong,
-                      ),
-                    ),
-                    child: Text(
-                      i < digits.length ? digits[i] : '',
-                      style: SgText.fare.copyWith(fontSize: 24),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
+          ],
         ],
       ),
     );
   }
 }
 
+/// A 64px number pad that types into [controller], so the phone keyboard
+/// never covers the screen.
+class PinKeypad extends StatelessWidget {
+  const PinKeypad({
+    super.key,
+    required this.controller,
+    this.length = kTripPinLength,
+    this.onChanged,
+    this.enabled = true,
+  });
+
+  final TextEditingController controller;
+  final int length;
+  final ValueChanged<String>? onChanged;
+  final bool enabled;
+
+  void _type(String d) {
+    final t = controller.text;
+    if (t.length >= length) return;
+    controller.text = t + d;
+    onChanged?.call(controller.text);
+  }
+
+  void _delete() {
+    final t = controller.text;
+    if (t.isEmpty) return;
+    controller.text = t.substring(0, t.length - 1);
+    onChanged?.call(controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = sgL10n(context);
+    Widget key(String d) => _Key(
+      key: Key('pin_key_$d'),
+      label: d,
+      onTap: enabled ? () => _type(d) : null,
+      child: Text(d, style: SgText.fare.copyWith(fontSize: 28)),
+    );
+    Widget row(List<Widget> keys) => Row(
+      children: [
+        for (var i = 0; i < keys.length; i++) ...[
+          if (i > 0) const SizedBox(width: SgSpace.s2),
+          Expanded(child: keys[i]),
+        ],
+      ],
+    );
+    return Column(
+      children: [
+        row([key('1'), key('2'), key('3')]),
+        const SizedBox(height: SgSpace.s2),
+        row([key('4'), key('5'), key('6')]),
+        const SizedBox(height: SgSpace.s2),
+        row([key('7'), key('8'), key('9')]),
+        const SizedBox(height: SgSpace.s2),
+        row([
+          const SizedBox(height: kSgTouch),
+          key('0'),
+          _Key(
+            key: const Key('pin_key_delete'),
+            label: l.pinDeleteDigit,
+            quiet: true,
+            onTap: enabled ? _delete : null,
+            child: SgIcon(
+              '<path d="M9 5h11v14H9l-6-7z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/>',
+              size: 28,
+              color: SgColors.ink,
+            ),
+          ),
+        ]),
+      ],
+    );
+  }
+}
+
+class _Key extends StatelessWidget {
+  const _Key({
+    super.key,
+    required this.label,
+    required this.child,
+    this.onTap,
+    this.quiet = false,
+  });
+
+  final String label;
+  final Widget child;
+  final VoidCallback? onTap;
+  final bool quiet;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: label,
+    excludeSemantics: true,
+    child: Material(
+      color: quiet ? Colors.transparent : SgColors.bg200,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(SgRadius.md),
+        child: SizedBox(height: kSgTouch, child: Center(child: child)),
+      ),
+    ),
+  );
+}
+
 /// The backend's PIN refusals, in the app's voice. Null when there is none.
-String? pinErrorText(String? raw, String? riderName) {
+String? pinErrorText(String? raw, String? riderName, [AppLocalizations? l]) {
   if (raw == null) return null;
+  final strings = l ?? lookupAppLocalizations(const Locale('en'));
   final first = firstNameOf(riderName);
-  final who = first.isEmpty ? 'the rider' : first;
-  if (raw.toLowerCase().contains('too many')) {
-    return 'Too many tries. Ask $who to read the PIN again.';
-  }
-  if (raw.toLowerCase().contains('invalid')) {
-    return 'That PIN does not match. Ask $who again.';
-  }
+  final who = first.isEmpty ? strings.riderFallback : first;
+  if (raw.toLowerCase().contains('too many')) return strings.pinTooMany(who);
+  if (raw.toLowerCase().contains('invalid')) return strings.pinMismatch(who);
   return raw;
 }
 
-/// Reached: the PIN check.
+/// Reached (Tier 3, screen 3): "At pickup" with a check, the rider with a
+/// 56px contact button, the PIN boxes, a 64px keypad and a 72px Start trip.
+///
+/// Start trip sends the PIN through the existing start flow; the trip only
+/// moves on when the API accepts it, and a refusal comes back as [error].
 class PinCheckView extends StatelessWidget {
   const PinCheckView({
     super.key,
     required this.controller,
     required this.riderName,
+    this.riderRating,
     this.pickupAddress,
     this.error,
     this.busy = false,
+    this.length = kTripPinLength,
     this.onStart,
     this.onCancel,
     this.onChanged,
+    this.onMessage,
     this.topActions,
   });
 
   final TextEditingController controller;
   final String? riderName;
+  final double? riderRating;
   final String? pickupAddress;
   final String? error;
   final bool busy;
+  final int length;
   final VoidCallback? onStart;
   final VoidCallback? onCancel;
   final ValueChanged<String>? onChanged;
+
+  /// The existing trip chat. TODO(data): a masked number to call the rider;
+  /// there is no call action today, so the 56px button is the message one.
+  final VoidCallback? onMessage;
   final Widget? topActions;
 
   @override
   Widget build(BuildContext context) {
+    final l = sgL10n(context);
     final first = firstNameOf(riderName);
-    final who = first.isEmpty ? 'the rider' : first;
-    final ready = controller.text.length == 6;
+    final who = first.isEmpty ? l.riderFallback : first;
+    final ready = controller.text.length == length;
+    final rated = riderRating != null && riderRating! > 0;
+    final initials = initialsOf(riderName);
+    // TODO(data): the free-wait timer needs the time the driver reached
+    // pickup and cancel_policy.free_wait_minutes; neither reaches this
+    // screen yet, so "At pickup" shows without a timer.
     return Scaffold(
       backgroundColor: SgColors.bg000,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            SgSpace.s4,
-            SgSpace.s3,
-            SgSpace.s4,
-            SgSpace.s4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(child: Text('AT PICKUP', style: SgText.label)),
-                  ?topActions,
-                ],
+        child: LayoutBuilder(
+          builder: (context, box) => SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              SgSpace.s4,
+              SgSpace.s2,
+              SgSpace.s4,
+              SgSpace.s3,
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
               ),
-              const SizedBox(height: SgSpace.s5),
-              Text('Ask $who for the trip PIN', style: SgText.heading),
-              const SizedBox(height: SgSpace.s2),
-              Text(
-                'Start only once the PIN matches. It keeps the right rider '
-                'in the right car.',
-                style: SgText.body.copyWith(color: SgColors.inkMuted),
-              ),
-              const SizedBox(height: SgSpace.s6),
-              PinEntry(
-                controller: controller,
-                error: error != null,
-                onChanged: onChanged,
-              ),
-              const SizedBox(height: SgSpace.s3),
-              SizedBox(
-                height: 22,
-                child: error == null
-                    ? null
-                    : Text(
-                        error!,
-                        key: const Key('trip_pin_error'),
-                        textAlign: TextAlign.center,
-                        style: SgText.body.copyWith(color: SgColors.danger),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: kSgTouch,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: SgColors.success,
+                              shape: BoxShape.circle,
+                            ),
+                            child: SgIcon(
+                              SgIcons.check,
+                              size: 20,
+                              color: SgColors.bg000,
+                            ),
+                          ),
+                          const SizedBox(width: SgSpace.s2),
+                          Expanded(
+                            child: Text(
+                              l.pinAtPickup,
+                              key: const Key('pin_at_pickup'),
+                              style: SgText.title.copyWith(
+                                fontSize: 20,
+                                color: SgColors.success,
+                              ),
+                            ),
+                          ),
+                          ?topActions,
+                        ],
                       ),
+                    ),
+                    const SizedBox(height: SgSpace.s2),
+                    Row(
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: SgColors.bg300,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: SgColors.line),
+                          ),
+                          child: initials.isEmpty
+                              ? SgIcon(SgIcons.user, color: SgColors.ink)
+                              : Text(initials, style: SgText.title),
+                        ),
+                        const SizedBox(width: SgSpace.s3),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                first.isEmpty ? l.riderFallback : first,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: SgText.title.copyWith(fontSize: 19),
+                              ),
+                              if (rated)
+                                Row(
+                                  children: [
+                                    SgIcon(
+                                      kStarIcon,
+                                      size: 14,
+                                      color: SgColors.goldText,
+                                    ),
+                                    const SizedBox(width: SgSpace.s1),
+                                    Text(
+                                      riderRating!.toStringAsFixed(1),
+                                      style: SgText.caption,
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (onMessage != null)
+                          Semantics(
+                            button: true,
+                            label: l.pinMessage(who),
+                            excludeSemantics: true,
+                            child: Material(
+                              color: SgColors.bg200,
+                              shape: CircleBorder(
+                                side: BorderSide(color: SgColors.lineStrong),
+                              ),
+                              child: InkWell(
+                                key: const Key('trip_message'),
+                                customBorder: const CircleBorder(),
+                                onTap: onMessage,
+                                child: SizedBox(
+                                  width: 56,
+                                  height: 56,
+                                  child: Center(
+                                    child: SgIcon(
+                                      SgIcons.message,
+                                      size: 24,
+                                      color: SgColors.ink,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: SgSpace.s4),
+                    Text(l.pinAsk(who), style: SgText.heading),
+                    const SizedBox(height: SgSpace.s3),
+                    PinBoxes(
+                      digits: controller.text,
+                      length: length,
+                      error: error != null,
+                    ),
+                    SizedBox(
+                      height: 48,
+                      child: error == null
+                          ? null
+                          : Center(
+                              child: Text(
+                                error!,
+                                key: const Key('trip_pin_error'),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: SgText.body.copyWith(
+                                  color: SgColors.danger,
+                                ),
+                              ),
+                            ),
+                    ),
+                    PinKeypad(
+                      controller: controller,
+                      length: length,
+                      enabled: !busy,
+                      onChanged: onChanged,
+                    ),
+                    const Spacer(),
+                    const SizedBox(height: SgSpace.s3),
+                    SgPrimaryButton(
+                      key: const Key('trip_start'),
+                      label: busy ? l.commonPleaseWait : l.pinStartTrip,
+                      height: kSgPrimaryAction,
+                      onPressed: busy || !ready ? null : onStart,
+                    ),
+                    _QuietLink(
+                      key: const Key('trip_cancel'),
+                      label: l.tripCancelRide,
+                      onTap: busy ? null : onCancel,
+                    ),
+                  ],
+                ),
               ),
-              if (pickupAddress != null) ...[
-                const SizedBox(height: SgSpace.s4),
-                PlaceLine(text: pickupAddress!, drop: false),
-              ],
-              const Spacer(),
-              SgPrimaryButton(
-                key: const Key('trip_start'),
-                label: busy ? 'Please wait' : 'Start trip',
-                onPressed: busy || !ready ? null : onStart,
-              ),
-              _QuietLink(
-                key: const Key('trip_cancel'),
-                label: 'Cancel ride',
-                onTap: busy ? null : onCancel,
-              ),
-            ],
+            ),
           ),
         ),
       ),

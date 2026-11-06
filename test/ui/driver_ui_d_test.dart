@@ -34,7 +34,7 @@ void main() {
       addTearDown(tester.view.reset);
       var tapped = 0;
       await tester.pumpWidget(sgApp(homeFrame(onGoOnline: () => tapped++)));
-      expect(find.text('Offline'), findsOneWidget);
+      expect(find.text('Offline', findRichText: true), findsOneWidget);
       expect(find.text('Go online'), findsOneWidget);
       expect(find.text('Go offline'), findsNothing);
       expect(find.text('₹1,240'), findsOneWidget);
@@ -42,20 +42,50 @@ void main() {
       expect(tapped, 1);
     });
 
-    testWidgets('online shows the pill, Go offline and the calm line',
+    testWidgets('online shows the status, Go offline and the calm line',
         (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       var tapped = 0;
       await tester.pumpWidget(
           sgApp(homeFrame(online: true, onGoOffline: () => tapped++)));
-      expect(find.text('Online'), findsOneWidget);
+      expect(find.text('Online  · 1h 12m', findRichText: true),
+          findsOneWidget);
       expect(find.text('Go offline'), findsOneWidget);
       expect(find.text('Go online'), findsNothing);
       expect(find.text('Looking for rides near you'), findsOneWidget);
-      expect(find.text('1h 12m'), findsOneWidget);
+      expect(
+          tester.getSize(find.byKey(const Key('home_go_offline'))).height, 64);
       await tester.tap(find.text('Go offline'));
       expect(tapped, 1);
+    });
+
+    testWidgets('the earnings card: trips, net with commission, Safety',
+        (tester) async {
+      setPhoneSurface(tester);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+          sgApp(homeFrame(online: true, commission: '₹310')));
+      expect(find.text('Today · 6 trips'), findsOneWidget);
+      expect(find.text('You keep'), findsOneWidget);
+      expect(find.byKey(const Key('home_commission')), findsOneWidget);
+      expect(find.text('Commission'), findsOneWidget);
+      final amount = tester.widget<Text>(find.descendant(
+          of: find.byKey(const Key('home_earnings')),
+          matching: find.byType(Text)));
+      expect(amount.textSpan!.toPlainText(), '₹1,240');
+      expect(amount.style!.fontSize, 38);
+      expect(find.bySemanticsLabel('Safety'), findsOneWidget);
+      expect(tester.getSize(find.byKey(const Key('home_safety'))),
+          const Size(64, 64));
+    });
+
+    testWidgets('Go online is the 72px gold action', (tester) async {
+      setPhoneSurface(tester);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(sgApp(homeFrame()));
+      expect(
+          tester.getSize(find.byKey(const Key('home_go_online'))).height, 72);
     });
 
     testWidgets('a blocker replaces Go online and carries its action',
@@ -84,36 +114,93 @@ void main() {
     });
   });
 
-  group('incoming offer', () {
-    testWidgets('shows the fare in whole rupees and the pickup distance',
-        (tester) async {
-      await pumpOffer(tester);
-      expect(find.text('₹248'), findsOneWidget);
-      expect(find.text('Sedan · Cash'), findsOneWidget);
-      expect(find.text('1.2 km · 4 min away'), findsOneWidget);
-      expect(find.text('8.4 km · 20 min'), findsOneWidget);
-      expect(find.text('Ameerpet Metro Station'), findsOneWidget);
-      expect(find.text('Hitech City, Madhapur'), findsOneWidget);
+  group('offer helpers', () {
+    test('the area is the part before the first comma', () {
+      expect(splitArea('Ameerpet Metro Station, Gate 2, Hyderabad'),
+          ('Ameerpet Metro Station', 'Gate 2, Hyderabad'));
+      expect(splitArea('Hitech City'), ('Hitech City', null));
+      expect(splitArea(' Madhapur , '), ('Madhapur', null));
     });
 
-    testWidgets('leaves out lines the frame does not carry', (tester) async {
+    test('commission rate reads as a percentage', () {
+      expect(percentText('20.00'), '20');
+      expect(percentText('12.50'), '12.5');
+      expect(percentText(0.2), '20');
+      expect(percentText(null), isNull);
+      expect(percentText('x'), isNull);
+    });
+
+    test('the earning is the frame\'s own, never worked out', () {
+      final none = OfferData.fromPayload(sampleOffer);
+      expect(none.earning, isNull);
+      expect(none.hasFareLine, isFalse);
+      final o = OfferData.fromPayload(sampleOfferWithEarning);
+      expect(o.earning, '₹198');
+      expect(o.fare, '₹248');
+      expect(o.commissionPercent, '20');
+      expect(o.commissionAmount, '₹50');
+      expect(o.riderRating, 4.8);
+      expect(o.hasFareLine, isTrue);
+    });
+  });
+
+  group('incoming offer', () {
+    testWidgets('without an earning: the fare is the big number',
+        (tester) async {
+      await pumpOffer(tester);
+      expect(find.text('FARE'), findsOneWidget);
+      expect(find.text('YOU EARN'), findsNothing);
+      expect(find.byKey(const Key('offer_fare_line')), findsNothing);
+      expect(find.byKey(const Key('offer_rating')), findsNothing);
+      expect(find.text('Sedan'), findsOneWidget);
+      expect(find.text('4 min'), findsOneWidget);
+      expect(find.text('1.2 km'), findsOneWidget);
+      expect(find.text('20 min'), findsOneWidget);
+      expect(find.text('8.4 km'), findsOneWidget);
+      expect(find.text('Cash'), findsOneWidget);
+      expect(find.text('Ameerpet Metro Station'), findsOneWidget);
+      expect(find.text('Hitech City'), findsOneWidget);
+      expect(find.text('Madhapur'), findsOneWidget);
+    });
+
+    testWidgets('with an earning: You earn at 96px and the fare line',
+        (tester) async {
+      await pumpOffer(tester, payload: sampleOfferWithEarning);
+      expect(find.text('YOU EARN'), findsOneWidget);
+      final amount = tester.widget<Text>(find.descendant(
+          of: find.byKey(const Key('offer_amount')),
+          matching: find.byType(Text)));
+      expect(amount.textSpan!.toPlainText(), '₹198');
+      expect(amount.style!.fontSize, 96);
+      expect(find.text('Fare ₹248 − 20% commission ₹50'), findsOneWidget);
+      expect(find.text('4.8'), findsOneWidget);
+      expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 80);
+      expect(
+          tester.getSize(find.byKey(const Key('offer_countdown_bar'))).width,
+          390);
+    });
+
+    testWidgets('leaves out what the frame does not carry', (tester) async {
       await pumpOffer(tester, payload: const {
         'trip_id': 3,
         'estimated_fare': '90',
         'pickup_address': 'A',
         'destination_address': 'B',
       });
-      expect(find.text('₹90'), findsOneWidget);
-      expect(find.textContaining('away'), findsNothing);
-      expect(find.textContaining('Cash'), findsNothing);
+      final amount = tester.widget<Text>(find.descendant(
+          of: find.byKey(const Key('offer_amount')),
+          matching: find.byType(Text)));
+      expect(amount.textSpan!.toPlainText(), '₹90');
+      expect(find.text('Cash'), findsNothing);
+      expect(find.byKey(const Key('offer_class')), findsNothing);
     });
 
     testWidgets('the countdown decreases each second', (tester) async {
       await pumpOffer(tester);
-      expect(find.text('20'), findsOneWidget);
+      expect(find.text('20s left'), findsOneWidget);
       await tester.pump(const Duration(seconds: 3));
-      expect(find.text('17'), findsOneWidget);
-      expect(find.text('20'), findsNothing);
+      expect(find.text('17s left'), findsOneWidget);
+      expect(find.text('20s left'), findsNothing);
     });
 
     testWidgets('an expires_at in the frame sets the countdown',
@@ -123,7 +210,7 @@ void main() {
         ...sampleOffer,
         'expires_at': soon.toUtc().toIso8601String(),
       });
-      expect(find.text('30'), findsOneWidget);
+      expect(find.text('30s left'), findsOneWidget);
     });
 
     testWidgets('Accept and Decline call through', (tester) async {

@@ -39,5 +39,189 @@
   "brandLogoLabel": "Saaradhi Go",
   "@brandLogoLabel": {
     "description": "needs native review"
+  },
+  "commonPleaseWait": "कृपया रुकें",
+  "@commonPleaseWait": {
+    "description": "needs native review"
+  },
+  "commonMenu": "मेनू",
+  "@commonMenu": {
+    "description": "needs native review"
+  },
+  "commonSafety": "सुरक्षा",
+  "@commonSafety": {
+    "description": "needs native review"
+  },
+  "commonMinutes": "{n} मिनट",
+  "@commonMinutes": {
+    "description": "needs native review"
+  },
+  "riderFallback": "राइडर",
+  "@riderFallback": {
+    "description": "needs native review"
+  },
+  "payCash": "नकद",
+  "@payCash": {
+    "description": "needs native review"
+  },
+  "payOnline": "ऑनलाइन",
+  "@payOnline": {
+    "description": "needs native review"
+  },
+  "homeTodayTrips": "{count, plural, other{आज · {count} ट्रिप}}",
+  "@homeTodayTrips": {
+    "description": "needs native review"
+  },
+  "homeToday": "आज",
+  "@homeToday": {
+    "description": "needs native review"
+  },
+  "homeYouKeep": "आपको मिले",
+  "@homeYouKeep": {
+    "description": "needs native review"
+  },
+  "homeTodaysEarnings": "आज की कमाई",
+  "@homeTodaysEarnings": {
+    "description": "needs native review"
+  },
+  "homeCommission": "कमीशन",
+  "@homeCommission": {
+    "description": "needs native review"
+  },
+  "homeOpenEarnings": "कमाई खोलें",
+  "@homeOpenEarnings": {
+    "description": "needs native review"
+  },
+  "statusOnline": "ऑनलाइन",
+  "@statusOnline": {
+    "description": "needs native review"
+  },
+  "statusOffline": "ऑफ़लाइन",
+  "@statusOffline": {
+    "description": "needs native review"
+  },
+  "statusGoingOnline": "ऑनलाइन हो रहे हैं",
+  "@statusGoingOnline": {
+    "description": "needs native review"
+  },
+  "statusGoingOffline": "ऑफ़लाइन हो रहे हैं",
+  "@statusGoingOffline": {
+    "description": "needs native review"
+  },
+  "statusReconnecting": "फिर से जुड़ रहे हैं",
+  "@statusReconnecting": {
+    "description": "needs native review"
+  },
+  "homeLooking": "आपके पास राइड ढूँढ रहे हैं",
+  "@homeLooking": {
+    "description": "needs native review"
+  },
+  "homeGoOnline": "ऑनलाइन जाएँ",
+  "@homeGoOnline": {
+    "description": "needs native review"
+  },
+  "homeGoOffline": "ऑफ़लाइन जाएँ",
+  "@homeGoOffline": {
+    "description": "needs native review"
+  },
+  "homeCentreOnMe": "मेरी जगह दिखाएँ",
+  "@homeCentreOnMe": {
+    "description": "needs native review"
+  },
+  "homeMessages": "संदेश",
+  "@homeMessages": {
+    "description": "needs native review"
+  },
+  "offerSecondsLeft": "{seconds} से. बाकी",
+  "@offerSecondsLeft": {
+    "description": "needs native review"
+  },
+  "offerYouEarn": "आपकी कमाई",
+  "@offerYouEarn": {
+    "description": "needs native review"
+  },
+  "offerFare": "किराया",
+  "@offerFare": {
+    "description": "needs native review"
+  },
+  "offerFareLine": "किराया {fare} − {percent}% कमीशन {commission}",
+  "@offerFareLine": {
+    "description": "needs native review"
+  },
+  "offerToPickup": "पिकअप तक",
+  "@offerToPickup": {
+    "description": "needs native review"
+  },
+  "offerTrip": "ट्रिप",
+  "@offerTrip": {
+    "description": "needs native review"
+  },
+  "offerRiderPays": "राइडर भुगतान",
+  "@offerRiderPays": {
+    "description": "needs native review"
+  },
+  "offerPickup": "पिकअप",
+  "@offerPickup": {
+    "description": "needs native review"
+  },
+  "offerDrop": "ड्रॉप",
+  "@offerDrop": {
+    "description": "needs native review"
+  },
+  "offerAccept": "स्वीकार करें",
+  "@offerAccept": {
+    "description": "needs native review"
+  },
+  "offerDecline": "मना करें",
+  "@offerDecline": {
+    "description": "needs native review"
+  },
+  "offerExpired": "ऑफ़र खत्म हो गया",
+  "@offerExpired": {
+    "description": "needs native review"
+  },
+  "offerRiderRating": "राइडर {rating}",
+  "@offerRiderRating": {
+    "description": "needs native review"
+  },
+  "pinAtPickup": "पिकअप पर",
+  "@pinAtPickup": {
+    "description": "needs native review"
+  },
+  "pinAsk": "{name} से ट्रिप PIN पूछें",
+  "@pinAsk": {
+    "description": "needs native review"
+  },
+  "pinStartTrip": "ट्रिप शुरू करें",
+  "@pinStartTrip": {
+    "description": "needs native review"
+  },
+  "tripCancelRide": "राइड रद्द करें",
+  "@tripCancelRide": {
+    "description": "needs native review"
+  },
+  "pinMessage": "{name} को मैसेज",
+  "@pinMessage": {
+    "description": "needs native review"
+  },
+  "pinDeleteDigit": "अंक हटाएँ",
+  "@pinDeleteDigit": {
+    "description": "needs native review"
+  },
+  "pinDigits": "ट्रिप PIN, {length} में से {typed} अंक",
+  "@pinDigits": {
+    "description": "needs native review"
+  },
+  "pinMismatch": "PIN मेल नहीं खाता। {name} से फिर पूछें।",
+  "@pinMismatch": {
+    "description": "needs native review"
+  },
+  "pinTooMany": "बहुत ज़्यादा कोशिशें। {name} से PIN फिर पढ़ने को कहें।",
+  "@pinTooMany": {
+    "description": "needs native review"
+  },
+  "homeJustStarted": "अभी शुरू हुआ",
+  "@homeJustStarted": {
+    "description": "needs native review"
   }
 }

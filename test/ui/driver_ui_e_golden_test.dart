@@ -49,8 +49,10 @@ void main() {
       PinCheckView(
         controller: c,
         riderName: 'Raja Kumar',
+        riderRating: 4.8,
         pickupAddress: 'Ameerpet Metro Station, Gate 2',
         topActions: sosStandIn(),
+        onMessage: () {},
         onStart: () {},
         onCancel: () {},
       ),

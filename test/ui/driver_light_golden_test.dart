@@ -94,7 +94,7 @@ void main() {
     await t.pumpWidget(
       _light(
         IncomingOfferCard(
-          payload: sampleOffer,
+          payload: sampleOfferWithEarning,
           alert: false,
           mapProvider: kPlaceholderMaps,
           onAccept: () {},
