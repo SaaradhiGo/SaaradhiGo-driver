@@ -8,6 +8,8 @@ class DailyEarning {
     required this.date,
     required this.trips,
     required this.net,
+    this.gross,
+    this.commission,
   });
 
   final DateTime date;
@@ -15,6 +17,64 @@ class DailyEarning {
 
   /// The backend's own net for the day (never worked out here).
   final double net;
+
+  /// The backend's gross fares and commission for the day, when sent.
+  final double? gross;
+  final double? commission;
+}
+
+/// The figures one Earnings tab shows: trips, net, commission and gross.
+class PeriodFigures {
+  const PeriodFigures({required this.trips, this.net, this.commission, this.gross});
+  final int trips;
+  final String? net;
+  final String? commission;
+  final String? gross;
+}
+
+String _fixed(double v) => v.toStringAsFixed(2);
+
+/// The figures for tab [period]: 0 today, 1 this week (Monday on), 2 this month.
+///
+/// Today is the summary's own `today_*` figures. Week and month are sums of the
+/// daily series the backend sends (market-local days, the last one is today),
+/// so nothing is worked out beyond adding the server's days together. Null
+/// when the source is missing: the tab then shows no figure rather than the
+/// all-time totals under a "Today" label, which is what it used to do.
+PeriodFigures? periodFigures(
+  int period, {
+  required int? todayTrips,
+  required String? todayNet,
+  required String? todayCommission,
+  required String? todayGross,
+  required List<DailyEarning>? days,
+}) {
+  if (period == 0) {
+    if (todayTrips == null) return null;
+    return PeriodFigures(
+      trips: todayTrips,
+      net: todayNet,
+      commission: todayCommission,
+      gross: todayGross,
+    );
+  }
+  if (days == null || days.isEmpty) return null;
+  final today = days.last.date;
+  final start = period == 1
+      ? DateTime(today.year, today.month, today.day)
+          .subtract(Duration(days: today.weekday - DateTime.monday))
+      : DateTime(today.year, today.month, 1);
+  final inPeriod = days.where((d) => !d.date.isBefore(start)).toList();
+  final allGross = inPeriod.every((d) => d.gross != null);
+  final allCommission = inPeriod.every((d) => d.commission != null);
+  return PeriodFigures(
+    trips: inPeriod.fold(0, (a, d) => a + d.trips),
+    net: _fixed(inPeriod.fold(0.0, (a, d) => a + d.net)),
+    commission: allCommission
+        ? _fixed(inPeriod.fold(0.0, (a, d) => a + d.commission!))
+        : null,
+    gross: allGross ? _fixed(inPeriod.fold(0.0, (a, d) => a + d.gross!)) : null,
+  );
 }
 
 Map<String, dynamic>? _unwrap(dynamic body) {
@@ -44,6 +104,8 @@ List<DailyEarning>? parseDailyEarnings(dynamic body) {
         date: date,
         trips: (_num(d['trips']) ?? 0).round(),
         net: net,
+        gross: _num(d['gross']),
+        commission: _num(d['commission']),
       ),
     );
   }
