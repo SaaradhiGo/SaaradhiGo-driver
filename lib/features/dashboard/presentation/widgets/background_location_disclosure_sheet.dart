@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/buttons.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Luxury bottom sheet providing Google Play compliant background location disclosure
 /// and escalation to `LocationPermission.always`.
@@ -211,7 +212,7 @@ class BackgroundLocationDisclosureSheet extends ConsumerWidget {
             text,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onBackground,
-              fontSize: 13,
+              fontSize: SgText.size(13),
             ),
           ),
         ),

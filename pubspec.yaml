@@ -126,6 +126,7 @@ flutter:
 
   assets:
     - assets/brand/
+    - assets/maps/sg_map_light.json
 
   # Anek (UI, variable wght 500-800, wdth pinned to 100) per script, and
   # Cinzel 600 for the brand lettering only. Bundled; never fetched at runtime.

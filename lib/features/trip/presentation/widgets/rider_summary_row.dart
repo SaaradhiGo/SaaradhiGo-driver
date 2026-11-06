@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Compact rider identity row reused across the ride-lifecycle screens.
 ///
@@ -49,7 +50,7 @@ class RiderSummaryRow extends StatelessWidget {
                   subtitle!,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 13,
+                    fontSize: SgText.size(13),
                   ),
                 ),
             ],

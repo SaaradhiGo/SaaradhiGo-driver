@@ -6,6 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../providers/trip_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Driver-cancellation reasons accepted by the backend
 /// (`POST /ride/trip/<id>/driver-cancel/` and the socket `cancel` action):
@@ -52,7 +53,7 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
                 sgL10n(sheetCtx).cancelSheetBody,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: SgText.size(13),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),

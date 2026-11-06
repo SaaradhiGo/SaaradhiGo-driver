@@ -237,6 +237,7 @@ void main() {
       fakeRepo.mockActiveTrip = const TripModel(
         id: 707,
         status: TripStatus.cancelled,
+        cancelledBy: 'rider',
       );
 
       await notifier.checkActiveTripOnResume();
@@ -245,7 +246,9 @@ void main() {
       expect(state.status, equals(TripStatus.cancelled));
       expect(state.isTerminal, isTrue);
       expect(state.isActive, isFalse);
-      expect(state.cancellationReason, contains('cancelled by the passenger'));
+      // No invented reason; the actor is the server's.
+      expect(state.cancellationReason, isNull);
+      expect(state.trip?.cancelledBy, 'rider');
       expect(LocalStorageService.getActiveTripId(), isNull);
     });
   });
@@ -268,11 +271,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Ride Cancelled by Passenger'), findsOneWidget);
-      expect(find.text('Customer changed plans'), findsOneWidget);
-      expect(find.text('RETURN TO DASHBOARD'), findsOneWidget);
+      // No actor from the server: a neutral title, never a guess.
+      expect(find.text('Trip cancelled'), findsOneWidget);
+      expect(find.text('Reason: Customer changed plans'), findsOneWidget);
+      expect(find.text('Back to home'), findsOneWidget);
 
-      await tester.tap(find.text('RETURN TO DASHBOARD'));
+      await tester.tap(find.text('Back to home'));
       await tester.pump();
 
       expect(dismissed, isTrue);

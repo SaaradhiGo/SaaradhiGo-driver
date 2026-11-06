@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../core/location/location_providers.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_l10n.dart';
 import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/route_providers.dart';
 import '../providers/trip_providers.dart';
@@ -35,7 +36,10 @@ class AcceptedRideScreen extends ConsumerWidget {
         : null;
 
     return DriverTripScaffold(
-      map: TripRouteMap(driver: driver, pickup: pickup, focus: pickup,
+      map: TripRouteMap(
+        driver: driver,
+        pickup: pickup,
+        focus: pickup,
         padding: kTripMapPadding,
       ),
       // SOS stays reachable; chat is the message button on the rider row.
@@ -46,7 +50,7 @@ class AcceptedRideScreen extends ConsumerWidget {
       sheet: ToPickupSheet(
         riderName: trip.riderName,
         riderRating: trip.riderRating,
-        pickupAddress: trip.pickupAddress ?? 'Pickup point on the map',
+        pickupAddress: trip.pickupAddress ?? sgL10n(context).tripPickupOnMap,
         awayLine: away,
         busy: session.isBusy,
         onArrived: () =>

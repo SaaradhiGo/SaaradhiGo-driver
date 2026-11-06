@@ -55,7 +55,7 @@ void main() {
       expect(find.text('Go online'), findsNothing);
       expect(find.text('Looking for rides near you'), findsOneWidget);
       expect(
-          tester.getSize(find.byKey(const Key('home_go_offline'))).height, 64);
+          tester.getSize(find.byKey(const Key('home_go_offline'))).height, 56);
       await tester.tap(find.text('Go offline'));
       expect(tapped, 1);
     });
@@ -74,18 +74,18 @@ void main() {
           of: find.byKey(const Key('home_earnings')),
           matching: find.byType(Text)));
       expect(amount.textSpan!.toPlainText(), '₹1,240');
-      expect(amount.style!.fontSize, 38);
+      expect(amount.style!.fontSize, 44);
       expect(find.bySemanticsLabel('Safety'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('home_safety'))),
-          const Size(64, 64));
+          const Size(56, 56));
     });
 
-    testWidgets('Go online is the 72px gold action', (tester) async {
+    testWidgets('Go online is the 64px gold action', (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       await tester.pumpWidget(sgApp(homeFrame()));
       expect(
-          tester.getSize(find.byKey(const Key('home_go_online'))).height, 72);
+          tester.getSize(find.byKey(const Key('home_go_online'))).height, 64);
     });
 
     testWidgets('a blocker replaces Go online and carries its action',
@@ -148,8 +148,8 @@ void main() {
     testWidgets('without an earning: the fare is the big number',
         (tester) async {
       await pumpOffer(tester);
-      expect(find.text('FARE'), findsOneWidget);
-      expect(find.text('YOU EARN'), findsNothing);
+      expect(find.text('Fare'), findsOneWidget);
+      expect(find.text('You earn'), findsNothing);
       expect(find.byKey(const Key('offer_fare_line')), findsNothing);
       expect(find.byKey(const Key('offer_rating')), findsNothing);
       expect(find.text('Sedan'), findsOneWidget);
@@ -163,18 +163,18 @@ void main() {
       expect(find.text('Madhapur'), findsOneWidget);
     });
 
-    testWidgets('with an earning: You earn at 96px and the fare line',
+    testWidgets('with an earning: You earn at 64px and the fare line',
         (tester) async {
       await pumpOffer(tester, payload: sampleOfferWithEarning);
-      expect(find.text('YOU EARN'), findsOneWidget);
+      expect(find.text('You earn'), findsOneWidget);
       final amount = tester.widget<Text>(find.descendant(
           of: find.byKey(const Key('offer_amount')),
           matching: find.byType(Text)));
       expect(amount.textSpan!.toPlainText(), '₹198');
-      expect(amount.style!.fontSize, 96);
+      expect(amount.style!.fontSize, 64);
       expect(find.text('Fare ₹248 − 20% commission ₹50'), findsOneWidget);
       expect(find.text('4.8'), findsOneWidget);
-      expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 80);
+      expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 64);
       expect(
           tester.getSize(find.byKey(const Key('offer_countdown_bar'))).width,
           390);

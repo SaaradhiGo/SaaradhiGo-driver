@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../models/kyc_checklist_item.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Checklist row in VerificationStatusScreen matching the Stitch design with
 /// dynamic status badge and inline rejection remediation CTA.
@@ -100,7 +101,7 @@ class VerificationStatusRow extends StatelessWidget {
                       item.rejectionReason!,
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.error,
-                        fontSize: 12,
+                        fontSize: SgText.size(13),
                       ),
                     ),
                   ),
@@ -125,7 +126,7 @@ class VerificationStatusRow extends StatelessWidget {
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.darkText,
                           fontWeight: FontWeight.w700,
-                          fontSize: 11,
+                          fontSize: SgText.size(13),
                         ),
                       ),
                     ),

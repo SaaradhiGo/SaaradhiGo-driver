@@ -1,17 +1,14 @@
-/// The map drawn when there is no Google Maps key: pure black, a faint street
-/// grid in the map-* tokens, the badge, and the app's own route and pins.
-/// It makes no claim to be a real map.
+/// What shows when there is no Google Maps key: a plain surface in the
+/// theme with the app's own route and pins. It makes no claim to be a map.
 library;
 
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../ui/sg_tokens.dart';
 import 'sg_map.dart';
-import 'package:saaradhigo_driver/ui/sg_brand.dart';
 
 class PlaceholderMapsProvider extends MapsProvider {
   const PlaceholderMapsProvider();
@@ -34,7 +31,8 @@ class _PlaceholderMapState extends State<_PlaceholderMap> {
   LatLng _centerFor(Offset pan) {
     final map = widget.map;
     final c = map.initialCenter;
-    final metres = 156543.03392 *
+    final metres =
+        156543.03392 *
         math.cos(c.latitude * math.pi / 180) /
         math.pow(2, map.initialZoom);
     final dLat = pan.dy * metres / 111320;
@@ -53,15 +51,6 @@ class _PlaceholderMapState extends State<_PlaceholderMap> {
           fit: StackFit.expand,
           children: [
             const CustomPaint(painter: _GroundPainter()),
-            Center(
-              child: Opacity(
-                opacity: 0.05,
-                child: SvgPicture.asset(
-                  SgBrandAssets.badgeSmall,
-                  width: 190,
-                ),
-              ),
-            ),
             CustomPaint(painter: _OverlayPainter(map)),
           ],
         ),
@@ -85,100 +74,18 @@ class _PlaceholderMapState extends State<_PlaceholderMap> {
   }
 }
 
+/// A plain surface in the active theme: no drawn streets, no grid, nothing
+/// that could pass for a map (owner gate: "a drawn map grid appears").
 class _GroundPainter extends CustomPainter {
   const _GroundPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = SgColors.mapGround);
-    canvas.save();
-    canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(-0.14);
-    canvas.translate(-size.width / 2, -size.height / 2);
-    final reach = size.longestSide * 1.4;
-    final street = Paint()
-      ..color = SgColors.mapStreet
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    for (var x = -reach; x < reach; x += 44) {
-      canvas.drawLine(Offset(x, -reach), Offset(x, reach), street);
-    }
-    for (var y = -reach; y < reach; y += 52) {
-      canvas.drawLine(Offset(-reach, y), Offset(reach, y), street);
-    }
-    final arterial = Paint()
-      ..color = SgColors.mapArterial
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    for (final fy in [0.22, 0.52, 0.8]) {
-      final p = Path()
-        ..moveTo(-40, size.height * fy)
-        ..cubicTo(
-          size.width * .3,
-          size.height * (fy - .05),
-          size.width * .6,
-          size.height * (fy + .06),
-          size.width + 40,
-          size.height * fy,
-        );
-      canvas.drawPath(p, arterial);
-    }
-    for (final fx in [0.25, 0.7]) {
-      final p = Path()
-        ..moveTo(size.width * fx, -40)
-        ..cubicTo(
-          size.width * (fx + .08),
-          size.height * .3,
-          size.width * (fx - .08),
-          size.height * .65,
-          size.width * fx,
-          size.height + 40,
-        );
-      canvas.drawPath(p, arterial);
-    }
-    final highway = Paint()
-      ..color = SgColors.mapArterial
-      ..strokeWidth = 9
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawPath(
-      Path()
-        ..moveTo(-40, size.height * .95)
-        ..quadraticBezierTo(
-          size.width * .45,
-          size.height * .3,
-          size.width + 40,
-          -20,
-        ),
-      highway,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * .55,
-          size.height * .6,
-          size.width * .3,
-          size.height * .09,
-        ),
-        const Radius.circular(14),
-      ),
-      Paint()..color = SgColors.mapPark,
-    );
-    canvas.drawOval(
-      Rect.fromLTWH(
-        size.width * .08,
-        size.height * .38,
-        size.width * .26,
-        size.height * .07,
-      ),
-      Paint()..color = SgColors.mapWater,
-    );
-    canvas.restore();
+    canvas.drawRect(Offset.zero & size, Paint()..color = SgColors.bg200);
   }
 
   @override
-  bool shouldRepaint(_GroundPainter old) => false;
+  bool shouldRepaint(_GroundPainter old) => true;
 }
 
 class _OverlayPainter extends CustomPainter {
@@ -194,9 +101,9 @@ class _OverlayPainter extends CustomPainter {
       // The visible centre sits above any bottom padding (a sheet).
       final cy = (size.height - map.padding.bottom + map.padding.top) / 2;
       return (p) => Offset(
-            size.width / 2 + (p.longitude - c.longitude) * k * perDeg,
-            cy - (p.latitude - c.latitude) * perDeg,
-          );
+        size.width / 2 + (p.longitude - c.longitude) * k * perDeg,
+        cy - (p.latitude - c.latitude) * perDeg,
+      );
     }
     final pad = map.padding;
     final area = Rect.fromLTRB(
@@ -222,9 +129,9 @@ class _OverlayPainter extends CustomPainter {
     final scale = math.min(area.width / w, area.height / h);
     final cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
     return (p) => Offset(
-          area.center.dx + (xOf(p) - cx) * scale,
-          area.center.dy - (p.latitude - cy) * scale,
-        );
+      area.center.dx + (xOf(p) - cx) * scale,
+      area.center.dy - (p.latitude - cy) * scale,
+    );
   }
 
   @override
@@ -256,6 +163,10 @@ class _OverlayPainter extends CustomPainter {
   /// other icon a heading arrow.
   void _marker(Canvas canvas, Offset c, SgMarker m) {
     final icon = m.icon;
+    if (icon is SgJourneyMarker) {
+      icon.paint(canvas, c, icon.size);
+      return;
+    }
     if (icon is! SgIconMarker) return;
     final color = icon.color;
     if (icon.icon.codePoint == Icons.circle.codePoint) {
@@ -265,7 +176,7 @@ class _OverlayPainter extends CustomPainter {
         c,
         9,
         Paint()
-          ..color = SgColors.mapGround
+          ..color = SgColors.white
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );

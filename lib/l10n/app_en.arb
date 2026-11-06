@@ -842,5 +842,91 @@
   "rateNotNow": "Not now",
   "@rateNotNow": {
     "description": "Rate sheet dismiss"
+  },
+  "tripHeadingToPickup": "Heading to pickup",
+  "@tripHeadingToPickup": {
+    "description": "Label over the pickup address after the driver accepts"
+  },
+  "tripPickupOnMap": "Pickup point on the map",
+  "@tripPickupOnMap": {
+    "description": "Pickup line when the trip has no pickup address"
+  },
+  "tripDropOnMap": "Drop point on the map",
+  "@tripDropOnMap": {
+    "description": "Drop line when the trip has no drop address"
+  },
+  "tripNoMapApp": "No map app could open the route.",
+  "@tripNoMapApp": {
+    "description": "Snackbar when no navigation app opens"
+  },
+  "tripCancelledByYou": "Cancelled by you",
+  "@tripCancelledByYou": {
+    "description": "Cancelled screen title when the server says the driver cancelled"
+  },
+  "tripCancelledByRider": "Cancelled by the rider",
+  "@tripCancelledByRider": {
+    "description": "Cancelled screen title when the server says the rider cancelled"
+  },
+  "tripCancelledNeutral": "Trip cancelled",
+  "@tripCancelledNeutral": {
+    "description": "Cancelled screen title when the server does not say who cancelled"
+  },
+  "tripCancelledNext": "You can take your next ride.",
+  "@tripCancelledNext": {
+    "description": "Body under the cancelled title"
+  },
+  "tripCancelReason": "Reason: {reason}",
+  "@tripCancelReason": {
+    "description": "The cancel reason the server sent",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "tripSupportEndedTitle": "Trip ended by SaaradhiGo",
+  "@tripSupportEndedTitle": {
+    "description": "Summary title when support ended the trip"
+  },
+  "tripSupportEndedPlatformPaid": "Trip ended by SaaradhiGo: earnings paid by SaaradhiGo",
+  "@tripSupportEndedPlatformPaid": {
+    "description": "Note when support ended the trip and the platform pays"
+  },
+  "tripSupportReleasedTitle": "Trip cancelled by SaaradhiGo",
+  "@tripSupportReleasedTitle": {
+    "description": "Title when support released the trip before pickup"
+  },
+  "tripNotConnected": "Not connected to the trip. Please retry.",
+  "@tripNotConnected": {
+    "description": "Banner when a trip action has no live channel"
+  },
+  "tripLostConnection": "Lost connection to the trip. Reopen to reconnect.",
+  "@tripLostConnection": {
+    "description": "Banner when the trip socket gave up reconnecting"
+  },
+  "tripUnconfirmed": "We could not confirm that ride. You are back online.",
+  "@tripUnconfirmed": {
+    "description": "Shown when an accept was never confirmed"
+  },
+  "tripNoLongerAvailable": "That ride is no longer available. You are back online.",
+  "@tripNoLongerAvailable": {
+    "description": "Shown when the accepted offer was already gone"
+  },
+  "tripMissingId": "Ride request is missing a trip id.",
+  "@tripMissingId": {
+    "description": "Shown when an offer has no trip id"
+  },
+  "appearanceDarkHint": "Black and gold",
+  "@appearanceDarkHint": {
+    "description": "Hint under Dark in the appearance choices"
+  },
+  "appearanceToggle": "Switch to {mode}",
+  "@appearanceToggle": {
+    "description": "Screen-reader label of the sun/moon button on home",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
   }
 }

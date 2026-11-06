@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../domain/models/trip_model.dart';
 import '../../../ui/driver_trip_views.dart';
+import '../../../ui/sg_l10n.dart';
 
 /// City speed for the pickup minutes; the backend's PICKUP_ETA_CITY_KMH.
 const double kCityKmh = 18;
@@ -34,11 +35,12 @@ Future<void> openNavigation(BuildContext context, LatLng to) async {
     '&destination=${to.latitude},${to.longitude}&travelmode=driving',
   );
   final messenger = ScaffoldMessenger.maybeOf(context);
-  final ok = await launchUrl(uri, mode: LaunchMode.externalApplication)
-      .catchError((_) => false);
+  final noApp = sgL10n(context).tripNoMapApp;
+  final ok = await launchUrl(
+    uri,
+    mode: LaunchMode.externalApplication,
+  ).catchError((_) => false);
   if (!ok) {
-    messenger?.showSnackBar(
-      const SnackBar(content: Text('No map app could open the route.')),
-    );
+    messenger?.showSnackBar(SnackBar(content: Text(noApp)));
   }
 }

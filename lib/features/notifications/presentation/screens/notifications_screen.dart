@@ -9,6 +9,7 @@ import '../../../../domain/models/notification_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/notifications_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -132,7 +133,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               color: isSelected
                   ? AppColors.darkText
                   : AppColors.onSurfaceVariant,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             ),
             selectedColor: AppColors.primary,
             backgroundColor: AppColors.surfaceContainer,
@@ -326,7 +327,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         title,
         style: AppTypography.labelCaps.copyWith(
           color: AppColors.onSurfaceVariant,
-          letterSpacing: 1.2,
+          letterSpacing: 0,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -433,7 +434,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                 formattedTime,
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: 11,
+                                  fontSize: SgText.size(13),
                                 ),
                               ),
                             ],
@@ -443,7 +444,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                             item.message,
                             style: AppTypography.bodyMd.copyWith(
                               color: AppColors.onSurfaceVariant,
-                              fontSize: 13,
+                              fontSize: SgText.size(13),
                             ),
                           ),
                         ],

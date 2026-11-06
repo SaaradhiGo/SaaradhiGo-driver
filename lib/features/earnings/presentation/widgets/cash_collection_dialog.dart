@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/buttons.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class CashCollectionDialog extends StatelessWidget {
   final double amount;
@@ -96,7 +97,7 @@ class CashCollectionDialog extends StatelessWidget {
                     '${marketSymbol()}${amount.toStringAsFixed(2)}',
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primaryText,
-                      fontSize: 36,
+                      fontSize: SgText.size(44),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

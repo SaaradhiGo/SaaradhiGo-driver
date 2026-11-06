@@ -116,12 +116,12 @@ void main() {
       expect(called, 1);
       expect(
           tester.getSize(find.byKey(const Key('docs_call_support'))).height,
-          64);
+          56);
     });
   });
 
   group('earnings views', () {
-    testWidgets('noir panel, chart and a 64px Withdraw', (tester) async {
+    testWidgets('noir panel, chart and a 56px Withdraw', (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       await tester.pumpWidget(sgApp(ListView(children: [
@@ -146,7 +146,7 @@ void main() {
       expect(find.text('₹2549'), findsOneWidget);
       expect(find.text('Withdraw ₹1,240'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('earnings_withdraw'))).height,
-          64);
+          56);
     });
 
     testWidgets('missing payout details keep Withdraw off with the reason',

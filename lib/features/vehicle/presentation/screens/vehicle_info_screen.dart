@@ -11,6 +11,7 @@ import '../../../../shared/widgets/bottom_sheet_container.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/vehicle_info_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class VehicleInfoScreen extends ConsumerStatefulWidget {
   const VehicleInfoScreen({super.key});
@@ -324,7 +325,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                         'ACTIVE VEHICLE',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.success,
-                          fontSize: 10,
+                          fontSize: SgText.size(13),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -346,7 +347,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: SgText.size(18),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -354,7 +355,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   vehicle.vehicleType.toUpperCase(),
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.primaryText,
-                    letterSpacing: 1.2,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -392,7 +393,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
             category.toUpperCase(),
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
-              letterSpacing: 2,
+              letterSpacing: 0,
             ),
           ),
         ],
@@ -440,7 +441,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   insuranceText,
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 10,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ],
@@ -480,7 +481,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   'Verified Compliant',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.success,
-                    fontSize: 10,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ],

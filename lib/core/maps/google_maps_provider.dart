@@ -10,10 +10,12 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 import 'package:latlong2/latlong.dart';
 
+import '../../ui/sg_tokens.dart';
 import 'map_style.dart';
 import 'sg_map.dart';
 
@@ -48,7 +50,10 @@ class MarkerBitmaps {
     });
   }
 
-  static Future<gm.BitmapDescriptor> _draw(SgMarkerIcon icon, double dpr) async {
+  static Future<gm.BitmapDescriptor> _draw(
+    SgMarkerIcon icon,
+    double dpr,
+  ) async {
     final px = (icon.size * dpr).round();
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
@@ -67,6 +72,8 @@ class MarkerBitmaps {
           textDirection: TextDirection.ltr,
         )..layout();
         tp.paint(canvas, Offset((px - tp.width) / 2, (px - tp.height) / 2));
+      case SgJourneyMarker():
+        icon.paint(canvas, Offset(px / 2, px / 2), px.toDouble());
     }
     final image = await recorder.endRecording().toImage(px, px);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -111,8 +118,12 @@ class _GoogleController implements SgMapController {
     _onProgrammatic();
     // The SDK takes one padding; the map's own `padding` already keeps the
     // sheet clear, so the larger side inset is enough here.
-    final inset = [padding.left, padding.right, padding.top, padding.bottom]
-        .reduce(math.max);
+    final inset = [
+      padding.left,
+      padding.right,
+      padding.top,
+      padding.bottom,
+    ].reduce(math.max);
     return _c.animateCamera(
       gm.CameraUpdate.newLatLngBounds(
         gm.LatLngBounds(southwest: gm.LatLng(s, w), northeast: gm.LatLng(n, e)),
@@ -181,7 +192,12 @@ class _GoogleSgMapState extends State<_GoogleSgMap> {
           polylineId: gm.PolylineId(p.id),
           points: [for (final pt in p.points) _g(pt)],
           color: p.color,
-          width: p.width.round(),
+          // Logical pixels; the Android SDK takes device pixels.
+          width:
+              (defaultTargetPlatform == TargetPlatform.android
+                      ? p.width * _dpr
+                      : p.width)
+                  .round(),
         ),
   };
 
@@ -193,7 +209,7 @@ class _GoogleSgMapState extends State<_GoogleSgMap> {
         target: _g(map.initialCenter),
         zoom: map.initialZoom,
       ),
-      style: kSgMapStyle,
+      style: sgMapStyleFor(dark: SgColors.isDark),
       markers: _markers(),
       polylines: _polylines(),
       padding: map.padding,

@@ -9,6 +9,7 @@ import 'core/network/environment_config.dart';
 import 'core/market/market_config_store.dart';
 import 'core/notifications/push_providers.dart';
 import 'core/utils/app_logger.dart';
+import 'core/maps/map_style.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/appearance_controller.dart';
 import 'core/theme/locale_controller.dart';
@@ -40,6 +41,7 @@ void main() async {
   // bars follow the theme from SaaradhiGoDriverApp.build.
   await AppearanceController.restore();
   await LocaleController.restore();
+  await loadSgMapStyles();
 
   // A release build that cannot say which server it talks to must not pretend
   // to work. EnvironmentConfig.misconfiguration is null for every debug build
@@ -115,6 +117,11 @@ class SaaradhiGoDriverApp extends ConsumerWidget {
     // losing any state (a trip in progress keeps its screen).
     SgColors.use(appearance.palette);
     SgText.useLanguage(locale.languageCode);
+    // The type scale's size class, from the window's shortest side (Tier 1).
+    final window = MediaQuery.maybeSizeOf(context);
+    if (window != null && SgText.useShortestSide(window.shortestSide)) {
+      _rebuildAll(context);
+    }
     ref.listen(appearanceControllerProvider, (previous, next) {
       if (previous?.brightness != next.brightness) _rebuildAll(context);
     });

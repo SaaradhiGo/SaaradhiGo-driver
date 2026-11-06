@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/appearance_controller.dart';
 import '../../../../core/theme/locale_controller.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Profile rows for Appearance (Automatic / Dark / Light) and Language
 /// (English / Telugu / Hindi). Each opens a sheet of choices; both persist.
@@ -79,7 +80,7 @@ class DisplaySettingsRows extends ConsumerWidget {
         value,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: 13,
+          fontSize: SgText.size(13),
         ),
       ),
       trailing: Icon(
@@ -98,13 +99,13 @@ class DisplaySettingsRows extends ConsumerWidget {
       title: l10n.appearanceTitle,
       current: current,
       options: [
+        (AppearanceMode.light, l10n.appearanceLight, null),
+        (AppearanceMode.dark, l10n.appearanceDark, l10n.appearanceDarkHint),
         (
           AppearanceMode.automatic,
           l10n.appearanceAutomatic,
           l10n.appearanceAutomaticHint,
         ),
-        (AppearanceMode.dark, l10n.appearanceDark, null),
-        (AppearanceMode.light, l10n.appearanceLight, null),
       ],
     );
     if (picked != null) {

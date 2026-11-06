@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/earning_model.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../earnings_display.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 const String kPromoPaidLabel = 'Promo paid by SaaradhiGo';
 
@@ -137,7 +138,7 @@ class EarningTripTile extends StatelessWidget {
                           timestamp ?? 'Completed',
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: 10,
+                            fontSize: SgText.size(13),
                           ),
                         ),
                       ],
@@ -193,7 +194,7 @@ class EarningTripTile extends StatelessWidget {
                   label,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 13,
+                    fontSize: SgText.size(13),
                   ),
                 ),
                 if (note != null)
@@ -201,7 +202,7 @@ class EarningTripTile extends StatelessWidget {
                     note,
                     style: AppTypography.labelCaps.copyWith(
                       color: AppColors.onSurfaceVariant,
-                      fontSize: 10,
+                      fontSize: SgText.size(13),
                     ),
                   ),
               ],
@@ -212,7 +213,7 @@ class EarningTripTile extends StatelessWidget {
             value,
             style: AppTypography.dataMono.copyWith(
               color: color,
-              fontSize: 13,
+              fontSize: SgText.size(13),
               fontWeight: bold ? FontWeight.bold : FontWeight.w500,
             ),
           ),

@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/chat_message_model.dart';
 import '../../../../shared/widgets/buttons.dart';
 import '../providers/support_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Live passenger chat for one active trip (`/trip-chat/:tripId`).
 ///
@@ -110,7 +111,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
                   riderName,
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: 17,
+                    fontSize: SgText.size(17),
                   ),
                 ),
                 Text(
@@ -121,7 +122,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
                         : chat.socketError
                         ? AppColors.error
                         : AppColors.onSurfaceVariant,
-                    fontSize: 10,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ],
@@ -313,7 +314,7 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
           text,
           style: AppTypography.bodyMd.copyWith(
             color: AppColors.primaryText,
-            fontSize: 13,
+            fontSize: SgText.size(13),
           ),
         ),
       ),
@@ -371,7 +372,7 @@ class _MessageBubble extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: 13,
+              fontSize: SgText.size(13),
             ),
           ),
         ),
@@ -429,7 +430,7 @@ class _MessageBubble extends StatelessWidget {
               _formatTime(message.createdAt),
               style: AppTypography.dataMono.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],

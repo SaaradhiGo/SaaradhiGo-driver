@@ -105,7 +105,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         titleTextStyle: AppTypography.headlineSm.copyWith(
-          fontSize: 18,
+          fontSize: SgText.size(18),
           color: AppColors.onBackground,
         ),
       ),
@@ -114,7 +114,7 @@ class AppTheme {
         contentTextStyle: AppTypography.bodyMd.copyWith(
           color: AppColors.onBackground,
         ),
-        actionTextColor: AppColors.primary,
+        actionTextColor: AppColors.primaryText,
         behavior: SnackBarBehavior.floating,
       ),
       bottomSheetTheme: BottomSheetThemeData(
@@ -147,7 +147,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(color: AppColors.primaryText),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -157,7 +157,7 @@ class AppTheme {
           color: AppColors.onSurfaceVariant,
         ),
         floatingLabelStyle: AppTypography.bodyMd.copyWith(
-          color: AppColors.primary,
+          color: AppColors.primaryText,
         ),
       ),
     );

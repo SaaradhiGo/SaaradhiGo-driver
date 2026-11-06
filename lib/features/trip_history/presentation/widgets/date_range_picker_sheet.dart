@@ -143,7 +143,7 @@ class DateRangePickerSheet extends StatelessWidget {
                       : AppColors.onBackground,
                   fontWeight: activePreset == DateFilterPreset.custom
                       ? FontWeight.w600
-                      : FontWeight.normal,
+                      : FontWeight.w500,
                 ),
               ),
               subtitle: activeCustomRange != null
@@ -174,7 +174,7 @@ class DateRangePickerSheet extends StatelessWidget {
         preset.label,
         style: AppTypography.bodyMd.copyWith(
           color: isSelected ? AppColors.primaryText : AppColors.onBackground,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
         ),
       ),
       trailing: isSelected

@@ -7,6 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class EarningsBreakdownCard extends StatelessWidget {
   final String grossFares;
@@ -178,7 +179,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                 rewardNote(commission: incentiveCommission, tax: incentiveTax),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 10,
+                  fontSize: SgText.size(13),
                 ),
               ),
             ),
@@ -274,7 +275,7 @@ class EarningsBreakdownCard extends StatelessWidget {
             '${marketSymbol()}$netEarnings',
             style: AppTypography.dataMono.copyWith(
               color: AppColors.onBackground,
-              fontSize: 18,
+              fontSize: SgText.size(18),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -317,7 +318,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                           note,
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: 10,
+                            fontSize: SgText.size(13),
                           ),
                         ),
                     ],

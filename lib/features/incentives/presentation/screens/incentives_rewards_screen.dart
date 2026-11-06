@@ -15,6 +15,7 @@ import '../widgets/promo_incentive_card.dart';
 import '../widgets/circular_goal_ring.dart';
 import '../widgets/quest_card.dart';
 import '../widgets/quest_celebration_sheet.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class IncentivesRewardsScreen extends ConsumerStatefulWidget {
   const IncentivesRewardsScreen({super.key});
@@ -400,7 +401,7 @@ class _IncentivesRewardsScreenState
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: SgText.size(18),
                     ),
                   ),
                   const SizedBox(width: 6),

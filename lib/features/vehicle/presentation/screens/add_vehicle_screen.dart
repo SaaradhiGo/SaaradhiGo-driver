@@ -16,6 +16,7 @@ import '../../../onboarding/data/models/picked_document.dart';
 import '../../../onboarding/data/models/vehicle_request_dto.dart';
 import '../../../profile/presentation/providers/profile_providers.dart';
 import '../providers/vehicle_info_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class AddVehicleScreen extends ConsumerStatefulWidget {
   const AddVehicleScreen({super.key});
@@ -413,7 +414,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                                 : AppColors.onSurfaceVariant,
                             fontWeight: isSelected
                                 ? FontWeight.bold
-                                : FontWeight.normal,
+                                : FontWeight.w500,
                           ),
                         ),
                         selected: isSelected,
@@ -714,7 +715,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                     color: isRequired
                         ? AppColors.primaryText
                         : AppColors.onSurfaceVariant,
-                    fontSize: 10,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ),
@@ -725,7 +726,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
             subtitle,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: SgText.size(13),
             ),
           ),
           const SizedBox(height: AppSpacing.md),

@@ -9,6 +9,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../providers/support_providers.dart';
 import '../widgets/sos_widgets.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Emergency Contacts manager (`/emergency-contacts`).
 ///
@@ -131,7 +132,7 @@ class _SavedBanner extends ConsumerWidget {
                   error,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.error,
-                    fontSize: 13,
+                    fontSize: SgText.size(13),
                   ),
                 ),
               ),
@@ -173,7 +174,7 @@ class _NoContactCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: 13,
+              fontSize: SgText.size(13),
             ),
           ),
         ],
@@ -218,7 +219,7 @@ class _ContactCard extends StatelessWidget {
                   contact,
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: 16,
+                    fontSize: SgText.size(16),
                   ),
                 ),
               ],
@@ -324,7 +325,7 @@ class _ContactSheetState extends ConsumerState<_ContactSheet> {
                 'They will receive your live trip location.',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: SgText.size(13),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),

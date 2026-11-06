@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class CircularGoalRing extends StatelessWidget {
   final String title;
@@ -61,14 +62,14 @@ class CircularGoalRing extends StatelessWidget {
                         style: AppTypography.dataMono.copyWith(
                           color: accentColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: SgText.size(14),
                         ),
                       ),
                       Text(
                         '${(clampedProgress * 100).toInt()}%',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: 10,
+                          fontSize: SgText.size(13),
                         ),
                       ),
                     ],
@@ -81,7 +82,7 @@ class CircularGoalRing extends StatelessWidget {
               title,
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                letterSpacing: 0.8,
+                letterSpacing: 0,
               ),
               textAlign: TextAlign.center,
             ),

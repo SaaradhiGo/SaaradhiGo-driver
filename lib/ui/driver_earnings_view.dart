@@ -160,11 +160,7 @@ class EarningsNoirPanel extends StatelessWidget {
 
 /// Seven bars of the backend's daily net; the last day in gold.
 class EarningsWeekChart extends StatelessWidget {
-  const EarningsWeekChart({
-    super.key,
-    required this.days,
-    required this.money,
-  });
+  const EarningsWeekChart({super.key, required this.days, required this.money});
 
   final List<DailyEarning> days;
 
@@ -209,7 +205,8 @@ class EarningsWeekChart extends StatelessWidget {
                 for (var i = 0; i < days.length; i++)
                   Expanded(
                     child: Semantics(
-                      label: '${days[i].date.day}/${days[i].date.month}: '
+                      label:
+                          '${days[i].date.day}/${days[i].date.month}: '
                           '${money(days[i].net)}',
                       excludeSemantics: true,
                       child: Column(
@@ -241,7 +238,7 @@ class EarningsWeekChart extends StatelessWidget {
                             dayLabel(days[i].date),
                             style: SgText.caption.copyWith(
                               fontWeight: i == days.length - 1
-                                  ? FontWeight.w800
+                                  ? FontWeight.w700
                                   : FontWeight.w500,
                               color: i == days.length - 1
                                   ? SgColors.ink
@@ -323,7 +320,7 @@ class WithdrawPanel extends StatelessWidget {
                   child: Text(
                     l.earnWithdraw(balance),
                     style: SgText.button.copyWith(
-                      fontSize: 18,
+                      fontSize: SgText.size(18),
                       color: enabled ? SgColors.onGold : SgColors.inkSubtle,
                     ),
                   ),

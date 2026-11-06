@@ -727,5 +727,91 @@
   "rateNotNow": "ఇప్పుడు కాదు",
   "@rateNotNow": {
     "description": "needs native review"
+  },
+  "tripHeadingToPickup": "పికప్‌కు వెళ్తున్నారు",
+  "@tripHeadingToPickup": {
+    "description": "needs native review"
+  },
+  "tripPickupOnMap": "మ్యాప్‌లో పికప్ స్థలం",
+  "@tripPickupOnMap": {
+    "description": "needs native review"
+  },
+  "tripDropOnMap": "మ్యాప్‌లో డ్రాప్ స్థలం",
+  "@tripDropOnMap": {
+    "description": "needs native review"
+  },
+  "tripNoMapApp": "మార్గాన్ని తెరవడానికి మ్యాప్ యాప్ లేదు.",
+  "@tripNoMapApp": {
+    "description": "needs native review"
+  },
+  "tripCancelledByYou": "మీరు రద్దు చేశారు",
+  "@tripCancelledByYou": {
+    "description": "needs native review"
+  },
+  "tripCancelledByRider": "రైడర్ రద్దు చేశారు",
+  "@tripCancelledByRider": {
+    "description": "needs native review"
+  },
+  "tripCancelledNeutral": "ట్రిప్ రద్దయింది",
+  "@tripCancelledNeutral": {
+    "description": "needs native review"
+  },
+  "tripCancelledNext": "మీరు తదుపరి రైడ్ తీసుకోవచ్చు.",
+  "@tripCancelledNext": {
+    "description": "needs native review"
+  },
+  "tripCancelReason": "కారణం: {reason}",
+  "@tripCancelReason": {
+    "description": "needs native review",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "tripSupportEndedTitle": "SaaradhiGo ట్రిప్‌ను ముగించింది",
+  "@tripSupportEndedTitle": {
+    "description": "needs native review"
+  },
+  "tripSupportEndedPlatformPaid": "SaaradhiGo ట్రిప్‌ను ముగించింది: సంపాదన SaaradhiGo చెల్లిస్తుంది",
+  "@tripSupportEndedPlatformPaid": {
+    "description": "needs native review"
+  },
+  "tripSupportReleasedTitle": "SaaradhiGo ట్రిప్‌ను రద్దు చేసింది",
+  "@tripSupportReleasedTitle": {
+    "description": "needs native review"
+  },
+  "tripNotConnected": "ట్రిప్‌కు కనెక్ట్ కాలేదు. మళ్లీ ప్రయత్నించండి.",
+  "@tripNotConnected": {
+    "description": "needs native review"
+  },
+  "tripLostConnection": "ట్రిప్ కనెక్షన్ పోయింది. మళ్లీ కనెక్ట్ చేయడానికి తెరవండి.",
+  "@tripLostConnection": {
+    "description": "needs native review"
+  },
+  "tripUnconfirmed": "ఆ రైడ్‌ను నిర్ధారించలేకపోయాం. మీరు మళ్లీ ఆన్‌లైన్‌లో ఉన్నారు.",
+  "@tripUnconfirmed": {
+    "description": "needs native review"
+  },
+  "tripNoLongerAvailable": "ఆ రైడ్ ఇక అందుబాటులో లేదు. మీరు మళ్లీ ఆన్‌లైన్‌లో ఉన్నారు.",
+  "@tripNoLongerAvailable": {
+    "description": "needs native review"
+  },
+  "tripMissingId": "రైడ్ అభ్యర్థనలో ట్రిప్ ఐడి లేదు.",
+  "@tripMissingId": {
+    "description": "needs native review"
+  },
+  "appearanceDarkHint": "నలుపు మరియు బంగారు",
+  "@appearanceDarkHint": {
+    "description": "needs native review"
+  },
+  "appearanceToggle": "{mode}కు మార్చండి",
+  "@appearanceToggle": {
+    "description": "needs native review",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
   }
 }

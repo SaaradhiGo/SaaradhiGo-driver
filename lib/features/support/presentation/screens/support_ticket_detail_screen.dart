@@ -10,6 +10,7 @@ import '../../../../shared/widgets/buttons.dart';
 import '../../../../shared/widgets/glass_panel.dart';
 import '../../../../shared/widgets/status_badge.dart';
 import '../providers/support_providers.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Support Ticket Detail (`/support/ticket/:id`).
 ///
@@ -112,7 +113,7 @@ class _SupportTicketDetailScreenState
           'Ticket #${widget.ticketId}',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
-            fontSize: 18,
+            fontSize: SgText.size(18),
           ),
         ),
         centerTitle: false,
@@ -201,7 +202,7 @@ class _SupportTicketDetailScreenState
                       error,
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.error,
-                        fontSize: 13,
+                        fontSize: SgText.size(13),
                       ),
                     ),
                   ),
@@ -407,7 +408,7 @@ class _ThreadBubble extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: 13,
+              fontSize: SgText.size(13),
             ),
           ),
         ),
@@ -461,7 +462,7 @@ class _ThreadBubble extends StatelessWidget {
                       color: isMine
                           ? AppColors.darkText.withValues(alpha: 0.7)
                           : AppColors.primaryText,
-                      fontSize: 11,
+                      fontSize: SgText.size(13),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -481,7 +482,7 @@ class _ThreadBubble extends StatelessWidget {
               _formatTime(message.createdAt),
               style: AppTypography.dataMono.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],

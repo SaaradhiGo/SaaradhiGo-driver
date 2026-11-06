@@ -65,11 +65,13 @@ class SgSecondaryButton extends StatelessWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.height = 56,
+    this.height = kSgTouch,
   });
 
   final String label;
   final VoidCallback? onPressed;
+
+  /// The minimum height; grows when the text wraps.
   final double height;
 
   @override
@@ -80,16 +82,20 @@ class SgSecondaryButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(SgRadius.md),
       onTap: onPressed,
       child: Container(
-        height: height,
+        constraints: BoxConstraints(minHeight: height),
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: SgSpace.s5),
+        padding: const EdgeInsets.symmetric(
+          horizontal: SgSpace.s5,
+          vertical: SgSpace.s2,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(SgRadius.md),
           border: Border.all(color: SgColors.lineStrong),
         ),
         child: Text(
           label,
-          maxLines: 1,
+          maxLines: 2,
+          textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: SgText.button.copyWith(color: SgColors.ink),
         ),
@@ -215,6 +221,7 @@ class DriverHomeView extends StatelessWidget {
     this.onGoOffline,
     this.onEarnings,
     this.mapButton,
+    this.themeButton,
   });
 
   final Widget map;
@@ -246,6 +253,9 @@ class DriverHomeView extends StatelessWidget {
   final VoidCallback? onEarnings;
   final Widget? mapButton;
 
+  /// The sun/moon switch, under the menu button.
+  final Widget? themeButton;
+
   @override
   Widget build(BuildContext context) {
     final l = sgL10n(context);
@@ -262,12 +272,21 @@ class DriverHomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SgMapButton(
-                    icon: SgIcons.menu,
-                    label: l.commonMenu,
-                    onTap: onMenu,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SgMapButton(
+                        icon: SgIcons.menu,
+                        label: l.commonMenu,
+                        onTap: onMenu,
+                      ),
+                      if (themeButton != null) ...[
+                        const SizedBox(height: SgSpace.s2),
+                        themeButton!,
+                      ],
+                    ],
                   ),
                   const SizedBox(width: SgSpace.s2),
                   Expanded(
@@ -293,31 +312,20 @@ class DriverHomeView extends StatelessWidget {
           left: 0,
           right: 0,
           bottom: 0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (mapButton != null)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: SgSpace.s4,
-                    bottom: SgSpace.s3,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: mapButton,
-                  ),
-                ),
-              SgSheetSurface(
-                padding: EdgeInsets.fromLTRB(
-                  SgSpace.s4,
-                  SgSpace.s3,
-                  SgSpace.s4,
-                  SgSpace.s4 + bottom,
-                ),
-                child: _panel(l),
+          // Landscape or a large text size: the panel scrolls under the top
+          // row rather than running off the screen.
+          top: top + kSgTouch + SgSpace.s5,
+          child: SgBottomSheetArea(
+            mapButton: mapButton,
+            child: SgSheetSurface(
+              padding: EdgeInsets.fromLTRB(
+                SgSpace.s4,
+                SgSpace.s3,
+                SgSpace.s4,
+                SgSpace.s4 + bottom,
               ),
-            ],
+              child: SingleChildScrollView(child: _panel(l)),
+            ),
           ),
         ),
       ],
@@ -359,9 +367,7 @@ class DriverHomeView extends StatelessWidget {
                   key: const Key('home_status'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: SgText.heading.copyWith(
-                    fontSize: 22,
-                    height: 26 / 22,
+                  style: SgText.screenTitle.copyWith(
                     color: online ? SgColors.ink : SgColors.inkMuted,
                   ),
                 ),
@@ -516,11 +522,7 @@ class EarningsNoirCard extends StatelessWidget {
                               earnings ?? '–',
                               key: const Key('home_earnings'),
                               symbolColor: p.goldText,
-                              style: SgText.fare.copyWith(
-                                fontSize: 38,
-                                height: 40 / 38,
-                                color: p.ink,
-                              ),
+                              style: SgText.bigFare.copyWith(color: p.ink),
                             ),
                           ),
                           Text(

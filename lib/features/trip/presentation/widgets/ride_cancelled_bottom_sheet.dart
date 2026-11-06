@@ -1,21 +1,31 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_typography.dart';
-import '../../../../shared/widgets/buttons.dart';
+import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/sg_l10n.dart';
+import '../../../../ui/sg_text.dart';
+import '../../../../ui/sg_tokens.dart';
+import '../../../../ui/sg_widgets.dart';
 
-/// Modal bottom sheet presented when a passenger cancels an in-flight ride.
+export '../../../../domain/models/trip_model.dart' show CancelActor;
+
+/// The cancelled title, naming who cancelled only when the server said so
+/// (`cancelled_by`); otherwise a neutral "Trip cancelled".
+String cancelledTitle(AppLocalizations l, CancelActor actor) => switch (actor) {
+  CancelActor.you => l.tripCancelledByYou,
+  CancelActor.rider => l.tripCancelledByRider,
+  CancelActor.unknown => l.tripCancelledNeutral,
+};
+
+/// Modal bottom sheet shown when an in-flight ride is cancelled.
 ///
-/// Provides clear sensory notice, displays the cancellation reason if
-/// provided, and features an auto-dismiss safety countdown so the driver
-/// is cleanly returned to the dashboard and marked available for new dispatches.
+/// Names who cancelled from the trip's cancel actor, shows the reason the
+/// server sent (if any), and returns the driver home after a countdown.
 class RideCancelledBottomSheet extends StatefulWidget {
   const RideCancelledBottomSheet({
     super.key,
     this.reason,
+    this.actor = CancelActor.unknown,
     required this.onDismiss,
     this.autoDismissSeconds = 10,
   });
@@ -23,8 +33,10 @@ class RideCancelledBottomSheet extends StatefulWidget {
   /// Optional cancellation message/reason received from the backend.
   final String? reason;
 
-  /// Invoked when the driver taps "RETURN TO DASHBOARD" or when the auto-dismiss
-  /// timer finishes.
+  /// Who cancelled, from the server's `cancelled_by`.
+  final CancelActor actor;
+
+  /// Invoked on "Back to home" or when the auto-dismiss timer finishes.
   final VoidCallback onDismiss;
 
   /// Duration before automatically returning to the dashboard.
@@ -77,129 +89,104 @@ class _RideCancelledBottomSheetState extends State<RideCancelledBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveReason = (widget.reason != null &&
-            widget.reason!.trim().isNotEmpty)
-        ? widget.reason!.trim()
-        : sgL10n(context).tripCancelledDefaultReason;
+    final l = sgL10n(context);
+    final reason = widget.reason?.trim();
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.9;
 
     return PopScope(
       canPop: false,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          AppSpacing.md,
-          AppSpacing.lg,
-          AppSpacing.xl,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border(
-            top: BorderSide(color: AppColors.outlineVariant, width: 1),
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle pill
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: AppColors.onSurfaceVariant.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-
-              // Alert Icon
-              Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.error.withValues(alpha: 0.3),
-                    width: 2,
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.cancel_outlined,
-                    color: AppColors.error,
-                    size: 40,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Title
-              Text(
-                sgL10n(context).tripCancelledByPassenger,
-                style: AppTypography.headlineSm.copyWith(
-                  color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-
-              // Subtitle / Reason
-              Text(
-                effectiveReason,
-                style: AppTypography.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Countdown / Online Notice Pill
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.unit,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.outlineVariant),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
+      child: Center(
+        heightFactor: 1,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 480, maxHeight: maxHeight),
+          child: SgSheetSurface(
+            padding: EdgeInsets.fromLTRB(
+              SgSpace.s5,
+              SgSpace.s3,
+              SgSpace.s5,
+              SgSpace.s5 + MediaQuery.paddingOf(context).bottom,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 64,
+                      height: 64,
                       decoration: BoxDecoration(
-                        color: AppColors.success,
+                        color: SgColors.tint(SgColors.danger),
                         shape: BoxShape.circle,
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      sgL10n(context).tripReturningOnline(_remainingSeconds),
-                      style: AppTypography.labelCaps.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
+                      child: Center(
+                        child: SgIcon(
+                          SgIcons.close,
+                          size: 28,
+                          color: SgColors.danger,
+                        ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: SgSpace.s4),
+                  Text(
+                    cancelledTitle(l, widget.actor),
+                    key: const Key('trip_cancelled_title'),
+                    style: SgText.screenTitle,
+                    textAlign: TextAlign.center,
+                  ),
+                  if (reason != null && reason.isNotEmpty) ...[
+                    const SizedBox(height: SgSpace.s2),
+                    Text(
+                      l.tripCancelReason(reason),
+                      key: const Key('trip_cancelled_reason'),
+                      style: SgText.body.copyWith(color: SgColors.inkMuted),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
-                ),
+                  const SizedBox(height: SgSpace.s4),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SgSpace.s4,
+                        vertical: SgSpace.s2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: SgColors.bg200,
+                        borderRadius: BorderRadius.circular(SgRadius.pill),
+                        border: Border.all(color: SgColors.line),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: SgColors.success,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: SgSpace.s2),
+                          Flexible(
+                            child: Text(
+                              l.tripReturningOnline(_remainingSeconds),
+                              style: SgText.caption,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: SgSpace.s5),
+                  SgPrimaryButton(
+                    key: const Key('trip_cancelled_home'),
+                    label: l.tripBackHome,
+                    onPressed: _handleDismiss,
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Return CTA Button
-              PrimaryButton(
-                text: 'RETURN TO DASHBOARD',
-                onPressed: _handleDismiss,
-              ),
-            ],
+            ),
           ),
         ),
       ),

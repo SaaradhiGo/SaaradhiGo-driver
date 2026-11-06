@@ -25,6 +25,7 @@ import '../../../../ui/driver_f_logic.dart';
 import '../../../../ui/driver_earnings_view.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_tokens.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Financials (Earnings & Wallet) Dashboard Screen (`/earnings`).
 class EarningsDashboardScreen extends ConsumerStatefulWidget {
@@ -312,7 +313,7 @@ class _EarningsDashboardScreenState
                                 'BONUS',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onBackground,
-                                  fontSize: 9,
+                                  fontSize: SgText.size(13),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -329,8 +330,8 @@ class _EarningsDashboardScreenState
                           key: const Key('incentives_card_summary'),
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: 11,
-                            fontWeight: FontWeight.normal,
+                            fontSize: SgText.size(13),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -423,7 +424,7 @@ class _EarningsDashboardScreenState
                       _formatTimestamp(withdrawal.requestedAt) ?? 'Pending',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: 10,
+                        fontSize: SgText.size(13),
                       ),
                     ),
                   ],

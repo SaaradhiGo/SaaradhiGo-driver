@@ -5,6 +5,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/promo_incentive_model.dart';
 import '../../../../shared/widgets/glass_panel.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// One incentive from `/promotions/driver/incentives/`: name, progress
 /// ("12 of 20 trips"), reward, window, status, and the standing reward note.
@@ -72,7 +73,7 @@ class PromoIncentiveCard extends StatelessWidget {
                   incentive.labelAt(at),
                   style: AppTypography.labelCaps.copyWith(
                     color: color,
-                    fontSize: 10,
+                    fontSize: SgText.size(13),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -129,7 +130,7 @@ class PromoIncentiveCard extends StatelessWidget {
               ends,
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],
@@ -139,7 +140,7 @@ class PromoIncentiveCard extends StatelessWidget {
               'This offer has used up its budget, so no more rewards are being added.',
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: 11,
+                fontSize: SgText.size(13),
               ),
             ),
           ],
@@ -149,7 +150,7 @@ class PromoIncentiveCard extends StatelessWidget {
             key: Key('promo_incentive_note_${incentive.id}'),
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: 10,
+              fontSize: SgText.size(13),
             ),
           ),
         ],

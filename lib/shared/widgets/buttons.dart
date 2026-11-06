@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// The one gold button on a screen: flat gold, black label (design system).
 class PrimaryButton extends StatelessWidget {
@@ -32,7 +33,7 @@ class PrimaryButton extends StatelessWidget {
         ),
         minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
         textStyle: AppTypography.bodyMd.copyWith(
-          fontSize: 16,
+          fontSize: SgText.size(16),
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -80,7 +81,7 @@ class SecondaryButton extends StatelessWidget {
         ),
         minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
         textStyle: AppTypography.bodyMd.copyWith(
-          fontSize: 16,
+          fontSize: SgText.size(16),
           fontWeight: FontWeight.w700,
         ),
       ),
