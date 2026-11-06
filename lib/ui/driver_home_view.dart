@@ -198,6 +198,7 @@ class DriverHomeView extends StatelessWidget {
     this.unread = 0,
     this.busy = false,
     this.earnings,
+    this.commission,
     this.trips,
     this.onlineFor,
     this.blocker,
@@ -220,6 +221,9 @@ class DriverHomeView extends StatelessWidget {
 
   /// Whole-rupee text, or null while it has not loaded.
   final String? earnings;
+
+  /// Today's commission, whole currency; when set, [earnings] is the net.
+  final String? commission;
   final int? trips;
   final Duration? onlineFor;
   final HomeBlocker? blocker;
@@ -317,7 +321,7 @@ class DriverHomeView extends StatelessWidget {
       children: [
         Semantics(
           button: onEarnings != null,
-          label: 'Today\'s earnings',
+          label: commission == null ? 'Today\'s earnings' : 'You keep today',
           child: InkWell(
             onTap: onEarnings,
             borderRadius: BorderRadius.circular(SgRadius.md),
@@ -332,7 +336,12 @@ class DriverHomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Today\'s earnings', style: SgText.caption),
+                          Text(
+                            commission == null
+                                ? 'Today\'s earnings'
+                                : 'You keep today',
+                            style: SgText.caption,
+                          ),
                           const SizedBox(height: SgSpace.s1),
                           Text(
                             earnings ?? '–',
@@ -345,6 +354,12 @@ class DriverHomeView extends StatelessWidget {
                               ],
                             ),
                           ),
+                          if (commission != null)
+                            Text(
+                              'Commission $commission',
+                              key: const Key('home_commission'),
+                              style: SgText.caption,
+                            ),
                         ],
                       ),
                     ),

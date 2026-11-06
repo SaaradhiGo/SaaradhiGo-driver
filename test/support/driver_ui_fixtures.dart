@@ -41,6 +41,8 @@ Widget homeFrame({
   HomeBlocker? blocker,
   VoidCallback? onGoOnline,
   VoidCallback? onGoOffline,
+  String? earnings,
+  String? commission,
 }) =>
     DriverHomeView(
       map: const SgMap(
@@ -57,7 +59,8 @@ Widget homeFrame({
       ),
       online: online,
       statusLabel: statusLabel ?? (online ? 'Online' : 'Offline'),
-      earnings: '₹1,240',
+      earnings: earnings ?? '₹1,240',
+      commission: commission,
       trips: 6,
       onlineFor: online ? const Duration(hours: 1, minutes: 12) : null,
       blocker: blocker,

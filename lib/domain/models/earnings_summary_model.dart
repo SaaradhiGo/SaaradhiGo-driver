@@ -31,6 +31,11 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     // The API's own net (sum of the trips' nets). Preferred over deriving it.
     @JsonKey(name: 'total_net', fromJson: nullableMoneyFromJson)
     String? totalNet,
+    // Today's net and commission, for Driver Home (null on an older API).
+    @JsonKey(name: 'today_net', fromJson: nullableMoneyFromJson)
+    String? todayNet,
+    @JsonKey(name: 'today_commission', fromJson: nullableMoneyFromJson)
+    String? todayCommission,
     // Module 12 / US pass-through / rewards. Additive: null when the API does
     // not send them, and the screens hide a line whose value is absent or zero.
     @JsonKey(name: 'promo_paid_by_platform', fromJson: nullableMoneyFromJson)
