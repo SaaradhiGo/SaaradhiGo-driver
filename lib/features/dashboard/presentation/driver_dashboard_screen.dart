@@ -1,4 +1,3 @@
-import '../../../core/maps/sg_map.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,32 +6,29 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/location/location_providers.dart';
+import '../../../core/maps/sg_map.dart';
 import '../../../core/network/connectivity_provider.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
+import '../../../core/notifications/push_providers.dart';
+import '../../../core/notifications/ride_offer_coordinator.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../domain/models/trip_model.dart';
-import '../../../shared/widgets/map_controls.dart';
+import '../../../ui/driver_home_view.dart';
+import '../../../ui/incoming_offer_card.dart';
+import '../../../ui/sg_text.dart';
+import '../../../ui/sg_tokens.dart';
+import '../../../ui/sg_widgets.dart';
+import '../../earnings/presentation/providers/earnings_providers.dart';
+import '../../notifications/presentation/providers/notifications_providers.dart';
 import '../../profile/presentation/providers/profile_providers.dart';
 import '../../trip/presentation/providers/trip_providers.dart';
 import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
-import 'widgets/dashboard_header.dart';
-import 'widgets/dashboard_status_banner.dart';
 import 'widgets/driver_map.dart';
-import '../../../core/notifications/push_providers.dart';
-import '../../../core/notifications/ride_offer_coordinator.dart';
-import 'widgets/incoming_ride_bottom_sheet.dart';
 import 'widgets/limited_background_banner.dart';
-import 'widgets/location_blocked_overlay.dart';
-import 'widgets/online_toggle.dart';
 
-/// `/` — the driver home dashboard.
-///
-/// Composition follows `driver_home_dashboard/code.html`: full-bleed map, glass
-/// header, floating map controls, and the centre status toggle. The earnings
-/// sheet, bottom nav and SOS FAB are deferred to their own phases (their target
-/// routes and endpoints do not exist yet).
+/// `/` -- the driver home: a map, the online status, today's earnings and the
+/// one control that goes online or offline. An incoming offer opens as a
+/// full-height card over it.
 class DriverDashboardScreen extends ConsumerStatefulWidget {
   const DriverDashboardScreen({super.key});
 
@@ -50,15 +46,22 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   StreamSubscription<PresentableOffer>? _offerSub;
   StreamSubscription<int>? _expiredOfferSub;
   bool _showingRideModal = false;
+  Timer? _clock;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // The online-time figure only needs minute resolution.
+    _clock = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted && ref.read(availabilityNotifierProvider).isOnline) {
+        setState(() {});
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       // Start GPS on entry so the map has a fix before the driver taps the
-      // toggle. Permission prompts are driven from here, not from goOnline().
+      // button. Permission prompts are driven from here, not from goOnline().
       ref.read(locationNotifierProvider.notifier).start();
 
       final profileState = ref.read(driverProfileNotifierProvider);
@@ -67,13 +70,17 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
       }
 
+      if (ref.read(earningsNotifierProvider).summary == null) {
+        ref.read(earningsNotifierProvider.notifier).loadInitialData();
+      }
+
       _subscribeToRideRequests();
       _checkForActiveTrip();
     });
   }
 
   /// Crash recovery: on entry, ask the backend for an in-flight trip and rejoin
-  /// it. Best-effort — a failure here must not block the dashboard.
+  /// it. Best-effort: a failure here must not block the home.
   Future<void> _checkForActiveTrip() async {
     try {
       final trip = await ref.read(tripRepositoryProvider).getActiveTrip();
@@ -91,22 +98,16 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       if (mounted) context.go('/ride');
     } catch (e, st) {
       AppLogger.w('Failed checking for active trip: $e\n$st');
-      // No active trip / transient error — stay on the dashboard.
     }
   }
 
-  /// Both channels now go through [RideOfferCoordinator].
+  /// Both channels go through [RideOfferCoordinator].
   ///
   /// Dispatch announces every offer twice -- a `ride_request` frame on this
   /// socket and an FCM push to the same driver -- so that a backgrounded or
-  /// terminated app still hears about it. Subscribing to the socket directly,
-  /// as this did, meant the push had nowhere to arrive and the same trip
-  /// could raise the sheet twice.
-  ///
-  /// The socket is still the only channel that can PRESENT an offer: the push
-  /// carries `{trip_id, type}` and `GET /ride/trip/<id>/` refuses a driver
-  /// who is not yet assigned, so there is no way to learn the rider or the
-  /// pickup from a push alone.
+  /// terminated app still hears about it. The socket is still the only
+  /// channel that can PRESENT an offer: the push carries `{trip_id, type}`
+  /// and `GET /ride/trip/<id>/` refuses a driver who is not yet assigned.
   void _subscribeToRideRequests() {
     _rideRequestSub?.cancel();
     _offerSub?.cancel();
@@ -129,25 +130,23 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     _expiredOfferSub = coordinator.expiredOffers.listen((tripId) {
       if (!mounted) return;
       // A push said a ride was coming and the socket never described it: a
-      // later wave took it, or the rider cancelled. Say so, rather than
-      // leaving the driver staring at a dashboard after tapping a
-      // notification.
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        const SnackBar(
-          content: Text('That ride is no longer available.'),
-          backgroundColor: AppColors.surfaceContainerHigh,
-        ),
-      );
+      // later wave took it, or the rider cancelled.
+      _snack('That ride is no longer available.');
     });
 
     // The terminated-app path: main() read the launch notification before any
-    // screen existed, and the socket may have described it before this screen
-    // subscribed. A retained offer is shown as soon as there is somewhere to
-    // show it.
+    // screen existed. A retained offer is shown as soon as there is
+    // somewhere to show it.
     final pending = coordinator.pendingOffer;
     if (pending != null && !_showingRideModal) {
       _showIncomingRideModal(pending);
     }
+  }
+
+  void _snack(String text) {
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(content: Text(text), backgroundColor: SgColors.bg200),
+    );
   }
 
   void _showIncomingRideModal(PresentableOffer offer) {
@@ -158,37 +157,40 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      enableDrag: false,
+      backgroundColor: SgColors.bg000,
       builder: (modalCtx) {
-        return IncomingRideBottomSheet(
-          request: request,
-          onAccept: () {
-            Navigator.pop(modalCtx);
-            _showingRideModal = false;
-            // Settle BEFORE accepting. A second wave's push or socket frame
-            // for this trip can land while the accept is in flight, and
-            // without this the sheet could come back up over the ride screen
-            // and invite a second accept of a trip the driver already has.
-            coordinator.markSettled(offer.tripId);
-            _acceptRideRequest(request);
-          },
-          onDecline: () {
-            Navigator.pop(modalCtx);
-            _showingRideModal = false;
-            coordinator.markSettled(offer.tripId);
-            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-              const SnackBar(
-                content: Text('Ride request declined.'),
-                backgroundColor: AppColors.surfaceContainerHigh,
-              ),
-            );
-          },
+        return SizedBox(
+          height: MediaQuery.sizeOf(modalCtx).height,
+          child: IncomingOfferCard(
+            payload: offer.payload,
+            onAccept: () {
+              Navigator.pop(modalCtx);
+              _showingRideModal = false;
+              // Settle BEFORE accepting. A second wave's push or socket frame
+              // for this trip can land while the accept is in flight, and
+              // without this the card could come back up over the ride screen.
+              coordinator.markSettled(offer.tripId);
+              _acceptRideRequest(request);
+            },
+            onDecline: () {
+              Navigator.pop(modalCtx);
+              _showingRideModal = false;
+              coordinator.markSettled(offer.tripId);
+              _snack('Ride request declined.');
+            },
+            onExpired: () {
+              Navigator.pop(modalCtx);
+              _showingRideModal = false;
+              coordinator.markSettled(offer.tripId);
+            },
+          ),
         );
       },
     ).then((_) {
       _showingRideModal = false;
-      // Dismissed by swiping it away: the driver has seen and ignored it, so
-      // it must not be re-presented by the other channel.
+      // Dismissed with the back button: the driver has seen and ignored it,
+      // so it must not be re-presented by the other channel.
       coordinator.markSettled(offer.tripId);
     });
   }
@@ -202,6 +204,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
   @override
   void dispose() {
+    _clock?.cancel();
     _rideRequestSub?.cancel();
     _offerSub?.cancel();
     _expiredOfferSub?.cancel();
@@ -222,7 +225,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     } else if (locationState is LocationStateTracking) {
       ref.read(locationNotifierProvider.notifier).refreshPermissions();
     }
-    // Re-check for active trip when resuming from background
     _checkForActiveTrip();
   }
 
@@ -240,40 +242,17 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final profileState = ref.watch(driverProfileNotifierProvider);
     final hasNetwork = ref.watch(isOnlineNetworkProvider);
     final position = ref.watch(driverPositionProvider);
+    final summary = ref.watch(earningsNotifierProvider).summary;
 
     _listenForSideEffects();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          _buildMapLayer(locationState, availability, position),
-          Align(
-            alignment: Alignment.topCenter,
-            child: DashboardHeader(profileState: profileState),
-          ),
-          _buildToggle(locationState, availability, profileState, hasNetwork),
-          _buildBanners(locationState, availability),
-          _buildMapControls(position),
-          ..._buildBlockingOverlay(locationState),
-        ],
-      ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Layers
-  // ---------------------------------------------------------------------------
-
-  /// Initial / Loading / Success states of the map surface.
-  ///
-  /// There is no meaningful Empty state for a map: "no data" is "no fix yet",
-  /// which is rendered as the acquiring spinner below.
-  Widget _buildMapLayer(
-    LocationState locationState,
-    AvailabilityState availability,
-    LatLng? position,
-  ) {
+    final engaged = availability.isEngaged;
+    final canStart =
+        hasNetwork &&
+        availability is! AvailabilityStateGoingOffline &&
+        locationState is! LocationStateServiceDisabled &&
+        locationState is! LocationStatePermissionDenied;
+    final blocker = engaged ? null : _blocker(profileState, locationState);
     final heading = switch (locationState) {
       LocationStateTracking(:final heading) => heading,
       _ => null,
@@ -283,245 +262,196 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
       _ => false,
     };
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: DriverMap(
-            position: position,
-            onMapCreated: (c) {
-              _mapController = c;
-              _mapReady = true;
-            },
-            onCameraMove: (camera) {
-              if (camera.byGesture && _followDriver && mounted) {
-                setState(() => _followDriver = false);
-              }
-            },
-            heading: heading,
-            weakSignal: weakSignal,
-            pulsing: availability.isEngaged,
-          ),
+    return Scaffold(
+      backgroundColor: SgColors.bg000,
+      body: DriverHomeView(
+        map: DriverMap(
+          position: position,
+          onMapCreated: (c) {
+            _mapController = c;
+            _mapReady = true;
+          },
+          onCameraMove: (camera) {
+            if (camera.byGesture && _followDriver && mounted) {
+              setState(() => _followDriver = false);
+            }
+          },
+          heading: heading,
+          weakSignal: weakSignal,
+          pulsing: engaged,
         ),
-        if (position == null)
-          Positioned.fill(child: _buildAcquiring(locationState)),
-      ],
+        online: engaged,
+        statusLabel: switch (availability) {
+          AvailabilityStateOnline() => 'Online',
+          AvailabilityStateGoingOnline() => 'Going online',
+          AvailabilityStateReconnecting() => 'Reconnecting',
+          AvailabilityStateGoingOffline() => 'Going offline',
+          _ => 'Offline',
+        },
+        busy: availability is AvailabilityStateGoingOffline,
+        earnings: summary == null ? null : wholeMoney(summary.todayEarned),
+        trips: summary?.todayTrips,
+        onlineFor: switch (availability) {
+          AvailabilityStateOnline(:final since) =>
+            DateTime.now().difference(since),
+          _ => null,
+        },
+        blocker: blocker,
+        notices: [
+          if (availability is AvailabilityStateReconnecting)
+            const HomeNotice('Reconnecting to dispatch'),
+          if (weakSignal) const HomeNotice('Weak GPS signal'),
+          if (availability.isOnline &&
+              locationState is LocationStateTracking &&
+              !locationState.hasBackgroundAccess)
+            const LimitedBackgroundBanner(),
+          if (position == null && blocker == null && !engaged)
+            const HomeNotice('Finding your location'),
+        ],
+        onMenu: _showMenu,
+        onEarnings: () => context.push('/earnings'),
+        onGoOnline: canStart ? () => _toggle(availability) : null,
+        onGoOffline: () => _toggle(availability),
+        mapButton: SgMapButton(
+          icon: SgIcons.pin,
+          label: 'Centre on me',
+          onTap: position == null ? () {} : _recenter,
+        ),
+      ),
     );
   }
 
-  Widget _buildAcquiring(LocationState locationState) {
-    final message = switch (locationState) {
-      LocationStateError(:final message) => message,
-      LocationStateServiceDisabled() =>
-        'Location services are off. Turn them on to go online.',
-      LocationStatePermissionDenied(:final permanent) => permanent
-          ? 'Location permission is blocked. Enable it in Settings to go '
-                'online.'
-          : 'SaaradhiGo needs your location to receive ride requests.',
-      _ => 'Getting your location…',
-    };
-    final isError =
-        locationState is LocationStateError ||
-        locationState is LocationStateServiceDisabled ||
-        locationState is LocationStatePermissionDenied;
+  void _toggle(AvailabilityState availability) {
+    final notifier = ref.read(availabilityNotifierProvider.notifier);
+    if (availability is AvailabilityStateBlocked ||
+        availability is AvailabilityStateError) {
+      notifier.acknowledge();
+    }
+    notifier.toggle();
+  }
 
-    return ColoredBox(
-      color: AppColors.background.withValues(alpha: 0.7),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.margin),
+  /// What stops the driver going online right now, with the action that
+  /// fixes it. Mirrors the checks goOnline() makes, so the button never
+  /// invites a tap that is certain to be refused.
+  HomeBlocker? _blocker(ProfileState profileState, LocationState location) {
+    if (profileState is ProfileStateLoaded) {
+      final profile = profileState.profile;
+      if (!profile.approved && !profile.dispatchEligible) {
+        return HomeBlocker(
+          title: 'Verification in progress',
+          body: 'You can go online once your documents are approved.',
+          actionLabel: 'Check status',
+          onAction: () => context.push('/verification-status'),
+        );
+      }
+      final hasVehicle =
+          profile.activeVehicle != null || profile.activeVehicleDetails != null;
+      if (!hasVehicle) {
+        return HomeBlocker(
+          title: 'Add your vehicle',
+          body: 'Add the vehicle you will drive to go online.',
+          actionLabel: 'Add vehicle',
+          onAction: () => context.push('/vehicle/add'),
+        );
+      }
+    }
+    final notifier = ref.read(locationNotifierProvider.notifier);
+    return switch (location) {
+      LocationStateServiceDisabled() => HomeBlocker(
+        title: 'Location is off',
+        body: 'Turn on location to receive ride requests.',
+        actionLabel: 'Turn on location',
+        onAction: notifier.openLocationSettings,
+      ),
+      LocationStatePermissionDenied(:final permanent) => HomeBlocker(
+        title: 'Location access needed',
+        body: permanent
+            ? 'Location permission is blocked. Allow it in Settings to go online.'
+            : 'SaaradhiGo needs your location to receive ride requests.',
+        actionLabel: permanent ? 'Open settings' : 'Allow location',
+        onAction: permanent ? notifier.openAppSettings : notifier.retry,
+      ),
+      _ => null,
+    };
+  }
+
+  void _showMenu() {
+    final unread = ref.read(unreadNotificationsCountProvider);
+    final items = <(String, String, String?)>[
+      ('Profile', '/profile', null),
+      ('Notifications', '/notifications', unread > 0 ? '$unread' : null),
+      ('Vehicle', '/vehicle', null),
+      ('Documents', '/documents', null),
+      ('Rewards', '/incentives', null),
+      ('Refer a driver', '/refer', null),
+      ('Safety', '/safety', null),
+      ('Help and support', '/support', null),
+    ];
+    final profile = switch (ref.read(driverProfileNotifierProvider)) {
+      ProfileStateLoaded(:final profile) => profile,
+      _ => null,
+    };
+    final name = profile?.user?.fullName?.trim();
+    final vehicle = profile?.activeVehicleDetails;
+    final facts = [
+      if (profile?.ratings != null) profile!.ratings!.toStringAsFixed(1),
+      if (vehicle != null)
+        [
+          '${vehicle['brand'] ?? ''} ${vehicle['model'] ?? ''}'.trim(),
+          '${vehicle['vehicle_number'] ?? ''}'.trim(),
+        ].where((s) => s.isNotEmpty).join(' - '),
+    ].where((s) => s.isNotEmpty).join(' \u00b7 ');
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) => SgSheetSurface(
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (isError)
-                const Icon(
-                  Icons.location_disabled_outlined,
-                  color: AppColors.error,
-                  size: 40,
-                )
-              else
-                const CircularProgressIndicator(color: AppColors.primary),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.onSurfaceVariant,
+              Padding(
+                padding: const EdgeInsets.only(bottom: SgSpace.s3),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name == null || name.isEmpty ? 'Driver' : name,
+                      style: SgText.title,
+                    ),
+                    if (facts.isNotEmpty) Text(facts, style: SgText.caption),
+                  ],
                 ),
               ),
-              // Every blocking location state now offers the action that
-              // actually resolves it. Previously only `error` had a button,
-              // so a driver whose location services were off, or whose
-              // permission was denied, was told what was wrong and given
-              // nothing to do about it.
-              if (locationState is LocationStateError) ...[
-                const SizedBox(height: AppSpacing.md),
-                TextButton(
-                  onPressed: () =>
-                      ref.read(locationNotifierProvider.notifier).retry(),
-                  child: const Text('Retry'),
-                ),
-              ] else if (locationState is LocationStateServiceDisabled) ...[
-                const SizedBox(height: AppSpacing.md),
-                TextButton(
-                  onPressed: () => ref
-                      .read(locationNotifierProvider.notifier)
-                      .openLocationSettings(),
-                  child: const Text('Turn on location'),
-                ),
-              ] else if (locationState is LocationStatePermissionDenied) ...[
-                const SizedBox(height: AppSpacing.md),
-                TextButton(
-                  onPressed: () => locationState.permanent
-                      // Permanently denied: only the system settings screen
-                      // can change this, asking again does nothing.
-                      ? ref
-                            .read(locationNotifierProvider.notifier)
-                            .openAppSettings()
-                      : ref.read(locationNotifierProvider.notifier).retry(),
-                  child: Text(
-                    locationState.permanent
-                        ? 'Open settings'
-                        : 'Grant permission',
+              for (final item in items)
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(sheetCtx);
+                    context.push(item.$2);
+                  },
+                  child: SizedBox(
+                    height: 56,
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(item.$1, style: SgText.bodyLg)),
+                        if (item.$3 != null)
+                          Text(
+                            item.$3!,
+                            style: SgText.body.copyWith(
+                              color: SgColors.goldText,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
             ],
           ),
         ),
       ),
     );
   }
-
-  /// Reconnecting / weak-GPS indicators.
-  ///
-  /// The global "No Internet Connection" strip is owned by
-  /// [AppConnectivityHost] (docs/14_ERROR_HANDLING.md:11), so it is NOT
-  /// duplicated here.
-  Widget _buildBanners(
-    LocationState locationState,
-    AvailabilityState availability,
-  ) {
-    final banners = <Widget>[];
-
-    if (availability is AvailabilityStateReconnecting) {
-      banners.add(
-        const DashboardStatusBanner(
-          message: 'RECONNECTING TO DISPATCH…',
-          icon: Icons.sync,
-          tone: DashboardBannerTone.info,
-          showProgress: true,
-        ),
-      );
-    }
-
-    if (locationState is LocationStateTracking && locationState.weakSignal) {
-      banners.add(
-        const DashboardStatusBanner(
-          message: 'WEAK GPS SIGNAL',
-          icon: Icons.gps_not_fixed,
-        ),
-      );
-    }
-
-    if (availability.isOnline &&
-        locationState is LocationStateTracking &&
-        !locationState.hasBackgroundAccess) {
-      banners.add(const LimitedBackgroundBanner());
-    }
-
-    if (banners.isEmpty) return const SizedBox.shrink();
-
-    return Positioned(
-      top: MediaQuery.paddingOf(context).top + 144,
-      left: AppSpacing.margin,
-      right: AppSpacing.margin,
-      child: Column(
-        children: [
-          for (final banner in banners)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: banner,
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMapControls(LatLng? position) {
-    return Positioned(
-      top: MediaQuery.paddingOf(context).top + 144,
-      right: AppSpacing.margin,
-      child: Column(
-        children: [
-          MapControlButton(
-            icon: Icons.my_location,
-            isActive: _followDriver,
-            onPressed: position == null ? () {} : _recenter,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggle(
-    LocationState locationState,
-    AvailabilityState availability,
-    ProfileState profileState,
-    bool hasNetwork,
-  ) {
-    // Disabled state: anything that makes the transition impossible right now.
-    final canStart =
-        hasNetwork &&
-        availability is! AvailabilityStateGoingOffline &&
-        locationState is! LocationStateServiceDisabled &&
-        locationState is! LocationStatePermissionDenied;
-    // A driver must always be able to cancel an in-flight connection or go
-    // offline, even after connectivity/GPS has degraded.
-    final enabled = availability.isEngaged || canStart;
-
-    return Positioned(
-      top: MediaQuery.paddingOf(context).top + 84,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: OnlineToggle(
-          state: availability,
-          enabled: enabled,
-          onPressed: () {
-            final notifier = ref.read(availabilityNotifierProvider.notifier);
-            if (availability is AvailabilityStateBlocked ||
-                availability is AvailabilityStateError) {
-              notifier.acknowledge();
-            }
-            notifier.toggle();
-          },
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildBlockingOverlay(LocationState locationState) {
-    final notifier = ref.read(locationNotifierProvider.notifier);
-
-    return switch (locationState) {
-      LocationStateServiceDisabled() => [
-        LocationBlockedOverlay.serviceDisabled(
-          onOpenSettings: notifier.openLocationSettings,
-          onRetry: notifier.retry,
-        ),
-      ],
-      LocationStatePermissionDenied(:final permanent) => [
-        LocationBlockedOverlay.permissionDenied(
-          permanent: permanent,
-          onOpenSettings: permanent ? notifier.openAppSettings : notifier.retry,
-          onRetry: notifier.retry,
-        ),
-      ],
-      _ => const <Widget>[],
-    };
-  }
-
-  // ---------------------------------------------------------------------------
 
   /// Keeps the camera on the driver and surfaces availability messages.
   void _listenForSideEffects() {
@@ -545,13 +475,11 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         ..showSnackBar(
           SnackBar(
             content: Text(message),
-            backgroundColor: next is AvailabilityStateError
-                ? AppColors.errorContainer
-                : AppColors.surfaceContainerHigh,
+            backgroundColor: SgColors.bg200,
             action: isNoVehicle
                 ? SnackBarAction(
-                    label: 'Add Vehicle',
-                    textColor: AppColors.primary,
+                    label: 'Add vehicle',
+                    textColor: SgColors.goldText,
                     onPressed: () => context.push('/vehicle/add'),
                   )
                 : null,

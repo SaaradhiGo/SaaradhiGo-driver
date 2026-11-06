@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'google_maps_provider.dart';
+import 'maps_availability.dart';
+import 'placeholder_maps_provider.dart';
 
 /// How a marker looks. Rasterised once per look and cached by the provider.
 @immutable
@@ -102,6 +104,10 @@ abstract class MapsProvider {
 /// The provider the app uses. Google Maps (D1).
 const MapsProvider kMapsProvider = GoogleMapsProvider();
 
+/// Google when the build has a key, else the branded placeholder.
+MapsProvider mapsProviderFor({required bool hasKey}) =>
+    hasKey ? kMapsProvider : const PlaceholderMapsProvider();
+
 class SgMap extends StatelessWidget {
   const SgMap({
     super.key,
@@ -131,9 +137,17 @@ class SgMap extends StatelessWidget {
   final bool interactive;
   final bool showMyLocation;
 
-  /// Test seam; production uses [kMapsProvider].
+  /// Test seam; production picks Google or the placeholder by key.
   final MapsProvider? provider;
 
   @override
-  Widget build(BuildContext context) => (provider ?? kMapsProvider).build(this);
+  Widget build(BuildContext context) {
+    final fixed = provider;
+    if (fixed != null) return fixed.build(this);
+    MapsAvailability.ensureResolved();
+    return ValueListenableBuilder<bool>(
+      valueListenable: MapsAvailability.hasKey,
+      builder: (_, hasKey, _) => mapsProviderFor(hasKey: hasKey).build(this),
+    );
+  }
 }
