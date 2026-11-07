@@ -2,36 +2,33 @@ import 'package:flutter/material.dart';
 
 import '../../ui/sg_text.dart';
 
-/// The older screens' type names, in Noto Sans (bundled) for the active locale.
-/// Getters, because the family follows the app language at runtime.
+/// The older screens' type names, each on one of the five sizes in SgText
+/// (Inter 400/600). Getters, because size class and language change at
+/// runtime. Colourless, so the surrounding theme colours them.
 class AppTypography {
   AppTypography._();
 
-  static TextStyle _m(
-    double size,
-    double line,
-    FontWeight w, {
-    bool figures = false,
-  }) => TextStyle(
-    fontFamily: SgText.family,
-    fontFamilyFallback: SgText.fallback,
-    fontSize: SgText.size(size),
-    height: line / size,
-    fontWeight: w,
-    fontVariations: [FontVariation('wght', w.value.toDouble())],
-    letterSpacing: 0,
+  static TextStyle _plain(TextStyle s, {bool figures = false}) => TextStyle(
+    fontFamily: s.fontFamily,
+    fontFamilyFallback: s.fontFamilyFallback,
+    fontSize: s.fontSize,
+    height: s.height,
+    fontWeight: s.fontWeight,
+    letterSpacing: s.letterSpacing,
     fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
   );
 
-  // The older names on the Tier 1 scale (SgText): same sizes, same factor.
-  static TextStyle get displayLg => _m(24, 30, FontWeight.w600);
-  static TextStyle get headlineLgMobile => _m(24, 30, FontWeight.w600);
-  static TextStyle get headlineMd => _m(24, 30, FontWeight.w600);
-  static TextStyle get headlineSm => _m(18, 24, FontWeight.w600);
-  static TextStyle get bodyLg => _m(16, 24, FontWeight.w400);
-  static TextStyle get bodyMd => _m(16, 24, FontWeight.w400);
-  static TextStyle get labelCaps => _m(13, 18, FontWeight.w600);
+  static TextStyle get displayLg => _plain(SgText.heading);
+  static TextStyle get headlineLgMobile => _plain(SgText.heading);
+  static TextStyle get headlineMd => _plain(SgText.heading);
+  static TextStyle get headlineSm => _plain(SgText.title);
+  static TextStyle get bodyLg => _plain(SgText.body);
+  static TextStyle get bodyMd => _plain(SgText.body);
 
-  /// Numbers: Noto Sans with tabular figures (no monospace family).
-  static TextStyle get dataMono => _m(16, 22, FontWeight.w600, figures: true);
+  /// Small 600 label; screens that upper-case it use SgText.eyebrow.
+  static TextStyle get labelCaps => _plain(SgText.label);
+
+  /// Numbers: Inter 600 with tabular figures (no monospace family).
+  static TextStyle get dataMono =>
+      _plain(SgText.body, figures: true).copyWith(fontWeight: FontWeight.w600);
 }

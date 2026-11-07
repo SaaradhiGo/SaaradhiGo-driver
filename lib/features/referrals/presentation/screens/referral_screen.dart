@@ -151,9 +151,8 @@ class DriverReferralScreen extends ConsumerWidget {
                 key: const Key('referral_code'),
                 style: AppTypography.dataMono.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
-                  fontSize: SgText.size(24),
-                  letterSpacing: 4,
+                  fontWeight: FontWeight.w600,
+                  fontSize: SgText.sizeHeading,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -197,7 +196,7 @@ class DriverReferralScreen extends ConsumerWidget {
               rewardNote(commission: 'none', tax: 'not configured'),
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],
@@ -251,7 +250,7 @@ class DriverReferralScreen extends ConsumerWidget {
             color: earned.isNotEmpty
                 ? AppColors.onBackground
                 : AppColors.onSurfaceVariant,
-            fontWeight: earned.isNotEmpty ? FontWeight.w600 : FontWeight.w500,
+            fontWeight: earned.isNotEmpty ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
         if (pending.isNotEmpty) ...[
@@ -301,7 +300,7 @@ class DriverReferralScreen extends ConsumerWidget {
               key: key,
               style: AppTypography.headlineSm.copyWith(
                 color: AppColors.onBackground,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 2),
@@ -310,7 +309,7 @@ class DriverReferralScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],
@@ -356,7 +355,7 @@ class DriverReferralScreen extends ConsumerWidget {
                 color: r.pendingReview
                     ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],

@@ -73,8 +73,8 @@ class PromoIncentiveCard extends StatelessWidget {
                   incentive.labelAt(at),
                   style: AppTypography.labelCaps.copyWith(
                     color: color,
-                    fontSize: SgText.size(13),
-                    fontWeight: FontWeight.bold,
+                    fontSize: SgText.sizeSmall,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -107,7 +107,7 @@ class PromoIncentiveCard extends StatelessWidget {
                 key: Key('promo_incentive_reward_${incentive.id}'),
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -130,7 +130,7 @@ class PromoIncentiveCard extends StatelessWidget {
               ends,
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],
@@ -140,7 +140,7 @@ class PromoIncentiveCard extends StatelessWidget {
               'This offer has used up its budget, so no more rewards are being added.',
               style: AppTypography.labelCaps.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],
@@ -150,7 +150,7 @@ class PromoIncentiveCard extends StatelessWidget {
             key: Key('promo_incentive_note_${incentive.id}'),
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ],

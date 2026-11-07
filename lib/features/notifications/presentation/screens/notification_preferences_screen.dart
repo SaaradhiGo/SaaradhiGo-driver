@@ -122,7 +122,7 @@ class _NotificationPreferencesScreenState
         subtitle,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: SgText.size(13),
+          fontSize: SgText.sizeSmall,
         ),
       ),
       value: _prefs!.value(channel, category),
@@ -152,7 +152,7 @@ class _NotificationPreferencesScreenState
                 note,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
             ),

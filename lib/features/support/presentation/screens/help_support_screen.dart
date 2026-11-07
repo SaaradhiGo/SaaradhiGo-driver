@@ -90,7 +90,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 'team.',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -176,7 +176,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
               textAlign: TextAlign.center,
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],
@@ -219,7 +219,7 @@ class _SupportBanner extends StatelessWidget {
                   'Support',
                   style: AppTypography.bodyLg.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -227,7 +227,7 @@ class _SupportBanner extends StatelessWidget {
                   'Raise a ticket and our team replies here.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ],
@@ -319,7 +319,7 @@ class _TicketCard extends ConsumerWidget {
                           _formatDate(ticket.createdAt!),
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: SgText.size(13),
+                            fontSize: SgText.sizeSmall,
                           ),
                         ),
                       ],

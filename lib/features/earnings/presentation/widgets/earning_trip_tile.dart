@@ -138,7 +138,7 @@ class EarningTripTile extends StatelessWidget {
                           timestamp ?? 'Completed',
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: SgText.size(13),
+                            fontSize: SgText.sizeSmall,
                           ),
                         ),
                       ],
@@ -151,7 +151,7 @@ class EarningTripTile extends StatelessWidget {
                       : '+$symbol${earning.netEarning}',
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -194,7 +194,7 @@ class EarningTripTile extends StatelessWidget {
                   label,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
                 if (note != null)
@@ -202,7 +202,7 @@ class EarningTripTile extends StatelessWidget {
                     note,
                     style: AppTypography.labelCaps.copyWith(
                       color: AppColors.onSurfaceVariant,
-                      fontSize: SgText.size(13),
+                      fontSize: SgText.sizeSmall,
                     ),
                   ),
               ],
@@ -213,8 +213,8 @@ class EarningTripTile extends StatelessWidget {
             value,
             style: AppTypography.dataMono.copyWith(
               color: color,
-              fontSize: SgText.size(13),
-              fontWeight: bold ? FontWeight.bold : FontWeight.w500,
+              fontSize: SgText.sizeSmall,
+              fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
         ],

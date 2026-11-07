@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_typography.dart';
+import '../../ui/sg_text.dart';
 import 'app_server_image.dart';
 
 /// Reusable avatar widget displaying driver photo with initials fallback and
@@ -103,10 +103,8 @@ class DriverAvatar extends StatelessWidget {
       child: Center(
         child: Text(
           initial,
-          style: AppTypography.bodyMd.copyWith(
+          style: (size >= 56 ? SgText.title : SgText.label).copyWith(
             color: AppColors.primaryText,
-            fontWeight: FontWeight.bold,
-            fontSize: size * 0.4,
           ),
         ),
       ),

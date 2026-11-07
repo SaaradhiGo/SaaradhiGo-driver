@@ -119,7 +119,7 @@ class _TripRouteMiniMapState extends State<TripRouteMiniMap> {
                 'Route coordinates unavailable for this archived trip',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
             ],

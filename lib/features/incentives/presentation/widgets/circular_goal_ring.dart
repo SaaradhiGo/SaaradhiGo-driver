@@ -61,15 +61,15 @@ class CircularGoalRing extends StatelessWidget {
                         valueText,
                         style: AppTypography.dataMono.copyWith(
                           color: accentColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: SgText.size(14),
+                          fontWeight: FontWeight.w600,
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                       Text(
                         '${(clampedProgress * 100).toInt()}%',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: SgText.size(13),
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ],

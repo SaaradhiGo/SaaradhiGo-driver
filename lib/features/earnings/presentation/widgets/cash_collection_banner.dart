@@ -49,7 +49,7 @@ class CashCollectionBanner extends StatelessWidget {
                   'CASH COLLECTION REQUIRED',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.primaryText,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),

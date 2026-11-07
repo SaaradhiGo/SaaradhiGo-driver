@@ -35,8 +35,8 @@ class UpdateRequiredScreen extends StatelessWidget {
                   key: Key('update_required_title'),
                   style: TextStyle(
                     color: AppColors.onBackground,
-                    fontSize: SgText.size(24),
-                    fontWeight: FontWeight.bold,
+                    fontSize: SgText.sizeHeading,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -46,7 +46,7 @@ class UpdateRequiredScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.secondaryGray,
-                    fontSize: SgText.size(16),
+                    fontSize: SgText.sizeBody,
                   ),
                 ),
                 if (url != null) ...[
@@ -136,7 +136,7 @@ class _NoticeBannerState extends State<NoticeBanner> {
                   Expanded(
                     child: Text(
                       n.message,
-                      style: TextStyle(color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink, fontSize: SgText.size(13)),
+                      style: TextStyle(color: n.severity == 'warning' ? SgColors.onGold : SgColors.ink, fontSize: SgText.sizeSmall),
                     ),
                   ),
                   if (!n.blocking)

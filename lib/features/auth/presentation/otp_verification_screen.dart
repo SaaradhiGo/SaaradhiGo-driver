@@ -118,8 +118,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   textAlign: TextAlign.center,
                   autofocus: true,
                   style: AppTypography.dataMono.copyWith(
-                    fontSize: SgText.size(24),
-                    letterSpacing: 14,
+                    fontSize: SgText.sizeHeading,
                   ),
                   decoration: const InputDecoration(counterText: ''),
                   validator: (value) {
@@ -147,7 +146,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         ? 'Send a new code'
                         : 'New code in ${_countdown}s',
                     style: AppTypography.bodyMd.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       color: _canResend
                           ? AppColors.onBackground
                           : AppColors.onSurfaceVariant,

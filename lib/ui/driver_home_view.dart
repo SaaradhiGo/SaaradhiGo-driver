@@ -188,7 +188,7 @@ class OnlinePill extends StatelessWidget {
         Text(
           label,
           style: SgText.body.copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             color: online ? SgColors.ink : SgColors.inkMuted,
           ),
         ),
@@ -504,7 +504,7 @@ class EarningsNoirCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: SgText.caption.copyWith(
                     color: p.inkMuted,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -627,7 +627,7 @@ class _BlockerNotice extends StatelessWidget {
                 blocker.actionLabel,
                 style: SgText.body.copyWith(
                   color: SgColors.goldText,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -681,7 +681,7 @@ class HomeNotice extends StatelessWidget {
                   actionLabel!,
                   style: SgText.body.copyWith(
                     color: SgColors.goldText,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

@@ -116,7 +116,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                         error,
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.error,
-                          fontSize: SgText.size(13),
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ),
@@ -201,7 +201,7 @@ class _ReportIncidentScreenState extends ConsumerState<ReportIncidentScreen> {
                   : 'This report will be linked to your active trip #$_tripId.',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

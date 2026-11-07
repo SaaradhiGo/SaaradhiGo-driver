@@ -127,7 +127,7 @@ class QuestCard extends StatelessWidget {
                                                     ? AppColors.primaryText
                                                     : AppColors
                                                           .onSurfaceVariant,
-                                                fontSize: SgText.size(13),
+                                                fontSize: SgText.sizeSmall,
                                               ),
                                         ),
                                       ],
@@ -156,8 +156,8 @@ class QuestCard extends StatelessWidget {
                               '${marketSymbol()}${quest.rewardAmount}',
                               style: AppTypography.dataMono.copyWith(
                                 color: AppColors.primaryText,
-                                fontWeight: FontWeight.bold,
-                                fontSize: SgText.size(13),
+                                fontWeight: FontWeight.w600,
+                                fontSize: SgText.sizeSmall,
                               ),
                             ),
                           ),
@@ -171,7 +171,7 @@ class QuestCard extends StatelessWidget {
                           quest.description,
                           style: AppTypography.bodyMd.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: SgText.size(13),
+                            fontSize: SgText.sizeSmall,
                           ),
                         ),
                       const SizedBox(height: AppSpacing.md),
@@ -190,7 +190,7 @@ class QuestCard extends StatelessWidget {
                               'Completed • Credited to Wallet',
                               style: AppTypography.labelCaps.copyWith(
                                 color: AppColors.success,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -216,7 +216,7 @@ class QuestCard extends StatelessWidget {
                                 '${quest.progressTrips} of ${quest.targetTrips} trips',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: SgText.size(13),
+                                  fontSize: SgText.sizeSmall,
                                 ),
                               ),
                             ),
@@ -228,8 +228,8 @@ class QuestCard extends StatelessWidget {
                                     : '${quest.remainingTrips} more to unlock',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: accent,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: SgText.size(13),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: SgText.sizeSmall,
                                 ),
                                 textAlign: TextAlign.end,
                               ),

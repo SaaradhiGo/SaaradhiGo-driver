@@ -97,8 +97,8 @@ class CashCollectionDialog extends StatelessWidget {
                     '${marketSymbol()}${amount.toStringAsFixed(2)}',
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primaryText,
-                      fontSize: SgText.size(44),
-                      fontWeight: FontWeight.bold,
+                      fontSize: SgText.sizeDisplay,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

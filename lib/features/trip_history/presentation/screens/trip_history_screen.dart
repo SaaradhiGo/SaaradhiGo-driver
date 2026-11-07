@@ -289,8 +289,8 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                 color: isActive
                     ? AppColors.primaryText
                     : AppColors.onSurfaceVariant,
-                fontSize: SgText.size(14),
-                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                fontSize: SgText.sizeSmall,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ],

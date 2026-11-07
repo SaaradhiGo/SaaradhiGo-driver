@@ -33,8 +33,8 @@ class PrimaryButton extends StatelessWidget {
         ),
         minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
         textStyle: AppTypography.bodyMd.copyWith(
-          fontSize: SgText.size(16),
-          fontWeight: FontWeight.w700,
+          fontSize: SgText.sizeBody,
+          fontWeight: FontWeight.w600,
         ),
       ),
       child: isLoading
@@ -81,8 +81,8 @@ class SecondaryButton extends StatelessWidget {
         ),
         minimumSize: const Size.fromHeight(AppSpacing.primaryButtonHeight),
         textStyle: AppTypography.bodyMd.copyWith(
-          fontSize: SgText.size(16),
-          fontWeight: FontWeight.w700,
+          fontSize: SgText.sizeBody,
+          fontWeight: FontWeight.w600,
         ),
       ),
       child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -103,7 +103,7 @@ class GhostButton extends StatelessWidget {
       style: TextButton.styleFrom(
         foregroundColor: AppColors.onSurfaceVariant,
         minimumSize: const Size.fromHeight(AppSpacing.touchTarget),
-        textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w700),
+        textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600),
       ),
       child: Text(text),
     );

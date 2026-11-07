@@ -152,7 +152,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
                   ),
                   labelColor: SgColors.ink,
                   unselectedLabelColor: SgColors.inkMuted,
-                  labelStyle: SgText.body.copyWith(fontWeight: FontWeight.w700),
+                  labelStyle: SgText.body.copyWith(fontWeight: FontWeight.w600),
                   tabs: const [
                     Tab(text: 'Mobile'),
                     Tab(text: 'Email'),

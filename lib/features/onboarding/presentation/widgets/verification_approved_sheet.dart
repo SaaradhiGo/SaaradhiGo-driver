@@ -80,7 +80,7 @@ class VerificationApprovedSheet extends StatelessWidget {
             'Verification Approved!',
             style: AppTypography.headlineMd.copyWith(
               color: AppColors.primaryText,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),

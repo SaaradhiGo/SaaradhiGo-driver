@@ -56,7 +56,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 'Fleet (${state.allVehicles.length})',
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               onPressed: () => _showFleetSelectorSheet(context, state),
@@ -194,7 +194,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
           'Active Fleet Vehicle',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.primaryText,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 4),
@@ -325,8 +325,8 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                         'ACTIVE VEHICLE',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.success,
-                          fontSize: SgText.size(13),
-                          fontWeight: FontWeight.bold,
+                          fontSize: SgText.sizeSmall,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -346,16 +346,15 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   displayName,
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
-                    fontSize: SgText.size(18),
+                    fontWeight: FontWeight.w600,
+                    fontSize: SgText.sizeTitle,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   vehicle.vehicleType.toUpperCase(),
-                  style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.primaryText,
-                    letterSpacing: 0,
+                  style: SgText.eyebrow.copyWith(
+                    color: AppColors.primaryText,
                   ),
                 ),
               ],
@@ -391,9 +390,8 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
           const SizedBox(height: 8),
           Text(
             category.toUpperCase(),
-            style: AppTypography.labelCaps.copyWith(
-              color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
-              letterSpacing: 0,
+            style: SgText.eyebrow.copyWith(
+              color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -441,7 +439,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   insuranceText,
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ],
@@ -481,7 +479,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                   'Verified Compliant',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.success,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ],
@@ -561,7 +559,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
             style: isMono
                 ? AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   )
                 : AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
@@ -619,7 +617,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                       '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
                       style: AppTypography.bodyLg.copyWith(
                         color: AppColors.onBackground,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     subtitle: Text(
@@ -747,7 +745,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 status,
                 style: AppTypography.labelCaps.copyWith(
                   color: passed ? AppColors.success : AppColors.error,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

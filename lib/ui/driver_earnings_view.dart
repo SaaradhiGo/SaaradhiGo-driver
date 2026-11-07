@@ -54,7 +54,7 @@ class EarningsPeriodTabs extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: SgText.body.copyWith(
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                             color: i == selected
                                 ? SgColors.ink
                                 : SgColors.inkMuted,
@@ -112,7 +112,7 @@ class EarningsNoirPanel extends StatelessWidget {
             '$periodLabel · ${l.earnTrips(trips)}',
             style: SgText.body.copyWith(
               color: p.inkMuted,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: SgSpace.s1),
@@ -238,8 +238,8 @@ class EarningsWeekChart extends StatelessWidget {
                             dayLabel(days[i].date),
                             style: SgText.caption.copyWith(
                               fontWeight: i == days.length - 1
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               color: i == days.length - 1
                                   ? SgColors.ink
                                   : SgColors.inkMuted,
@@ -320,7 +320,7 @@ class WithdrawPanel extends StatelessWidget {
                   child: Text(
                     l.earnWithdraw(balance),
                     style: SgText.button.copyWith(
-                      fontSize: SgText.size(18),
+                      fontSize: SgText.sizeTitle,
                       color: enabled ? SgColors.onGold : SgColors.inkSubtle,
                     ),
                   ),
@@ -340,7 +340,7 @@ class WithdrawPanel extends StatelessWidget {
                     l.earnAddPayout,
                     style: SgText.body.copyWith(
                       color: SgColors.goldText,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

@@ -174,7 +174,7 @@ class _OnboardingVehicleScreenState
           'SaaradhiGo',
           style: AppTypography.headlineMd.copyWith(
             color: AppColors.primaryText,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,

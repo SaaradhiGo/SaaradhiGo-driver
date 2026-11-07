@@ -50,7 +50,7 @@ class RiderSummaryRow extends StatelessWidget {
                   subtitle!,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
             ],
