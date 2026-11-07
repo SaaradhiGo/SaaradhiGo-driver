@@ -95,7 +95,7 @@ class AppTheme {
         foregroundColor: AppColors.onBackground,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTypography.headlineSm.copyWith(
+        titleTextStyle: AppTypography.headlineSm.copyWith(
           color: AppColors.onBackground,
         ),
       ),

@@ -118,7 +118,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   textAlign: TextAlign.center,
                   autofocus: true,
                   style: AppTypography.dataMono.copyWith(
-                    fontSize: SgText.sizeHeading,
+                    fontSize: SgText.sizeHeading,
                   ),
                   decoration: const InputDecoration(counterText: ''),
                   validator: (value) {

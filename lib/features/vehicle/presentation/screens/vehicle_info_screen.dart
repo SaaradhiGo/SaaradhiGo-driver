@@ -354,7 +354,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
                 Text(
                   vehicle.vehicleType.toUpperCase(),
                   style: SgText.eyebrow.copyWith(
-                    color: AppColors.primaryText,
+                    color: AppColors.primaryText,
                   ),
                 ),
               ],
@@ -391,7 +391,7 @@ class _VehicleInfoScreenState extends ConsumerState<VehicleInfoScreen> {
           Text(
             category.toUpperCase(),
             style: SgText.eyebrow.copyWith(
-              color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
+              color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
             ),
           ),
         ],
