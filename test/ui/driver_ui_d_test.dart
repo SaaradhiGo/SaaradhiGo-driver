@@ -74,7 +74,7 @@ void main() {
           of: find.byKey(const Key('home_earnings')),
           matching: find.byType(Text)));
       expect(amount.textSpan!.toPlainText(), '₹1,240');
-      expect(amount.style!.fontSize, 44);
+      expect(amount.style!.fontSize, 40);
       expect(find.bySemanticsLabel('Safety'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('home_safety'))),
           const Size(56, 56));
@@ -163,7 +163,7 @@ void main() {
       expect(find.text('Madhapur'), findsOneWidget);
     });
 
-    testWidgets('with an earning: You earn at 64px and the fare line',
+    testWidgets('with an earning: You earn at 40px and the fare line',
         (tester) async {
       await pumpOffer(tester, payload: sampleOfferWithEarning);
       expect(find.text('You earn'), findsOneWidget);
@@ -171,7 +171,7 @@ void main() {
           of: find.byKey(const Key('offer_amount')),
           matching: find.byType(Text)));
       expect(amount.textSpan!.toPlainText(), '₹198');
-      expect(amount.style!.fontSize, 64);
+      expect(amount.style!.fontSize, 40);
       expect(find.text('Fare ₹248 − 20% commission ₹50'), findsOneWidget);
       expect(find.text('4.8'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 64);

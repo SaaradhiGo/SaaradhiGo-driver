@@ -132,7 +132,7 @@ class _SavedBanner extends ConsumerWidget {
                   error,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.error,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ),
@@ -174,7 +174,7 @@ class _NoContactCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ],
@@ -219,7 +219,7 @@ class _ContactCard extends StatelessWidget {
                   contact,
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: SgText.size(16),
+                    fontSize: SgText.sizeBody,
                   ),
                 ),
               ],
@@ -325,7 +325,7 @@ class _ContactSheetState extends ConsumerState<_ContactSheet> {
                 'They will receive your live trip location.',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),

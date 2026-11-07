@@ -38,7 +38,7 @@ class VerificationRejectionBanner extends StatelessWidget {
                   'Action Required: $issuesCount ${issuesCount == 1 ? 'Item Needs' : 'Items Need'} Attention',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.error,
-                    fontSize: SgText.size(14),
+                    fontSize: SgText.sizeSmall,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -47,7 +47,7 @@ class VerificationRejectionBanner extends StatelessWidget {
                   'Please review the highlighted items below and submit updated documents to complete your verification.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                     height: 1.4,
                   ),
                 ),

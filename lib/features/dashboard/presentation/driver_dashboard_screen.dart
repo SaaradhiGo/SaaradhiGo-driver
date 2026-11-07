@@ -498,7 +498,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
                             item.$3!,
                             style: SgText.body.copyWith(
                               color: SgColors.goldText,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                       ],

@@ -105,7 +105,7 @@ class SafetyCenterScreen extends ConsumerWidget {
                                 color: AppColors.onError.withValues(
                                   alpha: 0.85,
                                 ),
-                                fontSize: SgText.size(13),
+                                fontSize: SgText.sizeSmall,
                               ),
                             ),
                           ],
@@ -271,7 +271,7 @@ class SafetyCenterScreen extends ConsumerWidget {
         subtitle,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: SgText.size(13),
+          fontSize: SgText.sizeSmall,
         ),
       ),
       trailing: Icon(

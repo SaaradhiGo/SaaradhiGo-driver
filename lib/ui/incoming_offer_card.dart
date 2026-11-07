@@ -588,7 +588,7 @@ class _ClassChip extends StatelessWidget {
       name,
       key: const Key('offer_class'),
       style: SgText.body.copyWith(
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
         color: SgVehicleClass.iconColorFor(code),
       ),
     ),
@@ -623,7 +623,7 @@ class _RatingChip extends StatelessWidget {
             Text(
               r,
               key: const Key('offer_rating'),
-              style: SgText.body.copyWith(fontWeight: FontWeight.w700),
+              style: SgText.body.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -653,7 +653,7 @@ class _Tile extends StatelessWidget {
         Text(
           label,
           maxLines: 2,
-          style: SgText.caption.copyWith(fontWeight: FontWeight.w700),
+          style: SgText.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: SgSpace.s1),
         FittedBox(

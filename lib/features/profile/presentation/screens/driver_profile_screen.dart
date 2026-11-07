@@ -212,7 +212,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                       rating,
                       style: AppTypography.dataMono.copyWith(
                         color: AppColors.primaryText,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -238,7 +238,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   trips,
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -323,7 +323,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                               'No Active Vehicle Set',
                               style: AppTypography.headlineSm.copyWith(
                                 color: AppColors.onBackground,
-                                fontSize: SgText.size(16),
+                                fontSize: SgText.sizeBody,
                               ),
                             ),
                           ),
@@ -348,8 +348,8 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                               'REQUIRED',
                               style: AppTypography.labelCaps.copyWith(
                                 color: AppColors.primaryText,
-                                fontSize: SgText.size(13),
-                                fontWeight: FontWeight.bold,
+                                fontSize: SgText.sizeSmall,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -360,7 +360,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                         'Register or assign your vehicle to start accepting rides and going online.',
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: SgText.size(13),
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ],
@@ -425,7 +425,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Active Vehicle Information',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: SgText.size(14),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ],
@@ -496,7 +496,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                         '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
                         style: AppTypography.bodyLg.copyWith(
                           color: AppColors.onBackground,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       subtitle: Text(
@@ -599,7 +599,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Personal Information',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: SgText.size(14),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ],
@@ -676,7 +676,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                 'Quality scores & qualification status',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               trailing: Icon(
@@ -832,7 +832,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
                   'Refer drivers and earn rewards',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
                 trailing: Icon(
@@ -895,7 +895,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               'Log Out',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.error,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

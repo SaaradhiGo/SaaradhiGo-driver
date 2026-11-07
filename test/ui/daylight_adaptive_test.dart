@@ -155,40 +155,41 @@ void main() {
       expect(SgSizeClass.of(600), SgSizeClass.tablet);
     });
 
-    test('the brief\'s sizes and weights per class', () {
+    test('five sizes and two weights per class', () {
       SgText.useShortestSide(390);
-      expect(SgText.screenTitle.fontSize, 24);
-      expect(SgText.sectionTitle.fontSize, 18);
+      expect(SgText.display.fontSize, 40);
+      expect(SgText.heading.fontSize, 28);
+      expect(SgText.title.fontSize, 20);
       expect(SgText.body.fontSize, 16);
-      expect(SgText.caption.fontSize, 14);
-      expect(SgText.label.fontSize, 13);
-      expect(SgText.button.fontSize, 17);
-      expect(SgText.bigFare.fontSize, 44);
-      expect(SgText.driverEarning.fontSize, 64);
+      expect(SgText.small.fontSize, 14);
+      expect(SgText.label.fontSize, 14);
+      expect(SgText.button.fontSize, 16);
+      expect(SgText.bigFare.fontSize, 40);
+      expect(SgText.driverEarning.fontSize, 40);
       SgText.useShortestSide(320);
-      expect(SgText.bigFare.fontSize, closeTo(40, 0.01));
-      expect(SgText.driverEarning.fontSize, closeTo(56, 0.01));
-      expect(SgText.body.fontSize, closeTo(16 * 0.92, 0.01));
+      expect(SgText.display.fontSize, 32);
+      expect(SgText.heading.fontSize, 22);
+      expect(SgText.title.fontSize, 20);
+      expect(SgText.body.fontSize, 16);
+      expect(SgText.small.fontSize, 14);
       SgText.useShortestSide(800);
-      expect(SgText.screenTitle.fontSize, closeTo(24 * 1.12, 0.01));
+      expect(SgText.heading.fontSize, closeTo(28 * 1.12, 0.01));
       for (final s in [
-        SgText.screenTitle,
-        SgText.sectionTitle,
+        SgText.display,
+        SgText.heading,
+        SgText.title,
         SgText.body,
-        SgText.caption,
+        SgText.small,
         SgText.label,
         SgText.button,
         SgText.bigFare,
         SgText.driverEarning,
       ]) {
-        expect([
-          FontWeight.w400,
-          FontWeight.w500,
-          FontWeight.w600,
-          FontWeight.w700,
-        ], contains(s.fontWeight));
+        expect([FontWeight.w400, FontWeight.w600], contains(s.fontWeight));
+        expect(s.fontFamily, 'Inter');
         expect(s.letterSpacing, 0);
       }
+      expect(SgText.eyebrow.letterSpacing, closeTo(0.56 * 1.12, 0.01));
     });
   });
 

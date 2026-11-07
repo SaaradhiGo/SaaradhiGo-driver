@@ -77,7 +77,7 @@ class _OnboardingPhotoBankScreenState
           'SaaradhiGo',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.primaryText,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,

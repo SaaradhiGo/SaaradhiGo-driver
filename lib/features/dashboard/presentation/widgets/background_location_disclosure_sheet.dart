@@ -212,7 +212,7 @@ class BackgroundLocationDisclosureSheet extends ConsumerWidget {
             text,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onBackground,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ),

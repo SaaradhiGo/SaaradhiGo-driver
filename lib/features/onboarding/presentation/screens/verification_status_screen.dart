@@ -378,7 +378,7 @@ class _VerificationStatusScreenState
                   'We will notify you via SMS and Email once the verification is complete.',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(14),
+                    fontSize: SgText.sizeSmall,
                   ),
                   textAlign: TextAlign.center,
                 ),

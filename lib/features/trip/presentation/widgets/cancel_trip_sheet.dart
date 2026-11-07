@@ -45,7 +45,7 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
                 sgL10n(sheetCtx).cancelSheetTitle,
                 style: AppTypography.headlineSm.copyWith(
                   color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 4),
@@ -53,7 +53,7 @@ Future<void> showCancelTripSheet(BuildContext context, WidgetRef ref) {
                 sgL10n(sheetCtx).cancelSheetBody,
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),

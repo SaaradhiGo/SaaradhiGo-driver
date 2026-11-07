@@ -161,7 +161,7 @@ class DriverDocumentsView extends StatelessWidget {
                     const SizedBox(width: SgSpace.s2),
                     Text(
                       l.docsCallSupport,
-                      style: SgText.body.copyWith(fontWeight: FontWeight.w700),
+                      style: SgText.body.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -208,7 +208,7 @@ class _DocRow extends StatelessWidget {
                 key: Key('docs_state_${item.key}'),
                 style: SgText.caption.copyWith(
                   color: color,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -253,7 +253,7 @@ class _RejectedCard extends StatelessWidget {
                 l.docsRejected,
                 style: SgText.caption.copyWith(
                   color: SgColors.danger,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -376,7 +376,7 @@ class _NoticeCard extends StatelessWidget {
                   actionLabel!,
                   style: SgText.body.copyWith(
                     color: SgColors.goldText,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

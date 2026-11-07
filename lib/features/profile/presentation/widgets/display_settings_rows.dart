@@ -80,7 +80,7 @@ class DisplaySettingsRows extends ConsumerWidget {
         value,
         style: AppTypography.bodyMd.copyWith(
           color: AppColors.onSurfaceVariant,
-          fontSize: SgText.size(13),
+          fontSize: SgText.sizeSmall,
         ),
       ),
       trailing: Icon(

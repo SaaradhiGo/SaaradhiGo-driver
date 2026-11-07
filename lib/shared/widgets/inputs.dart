@@ -53,7 +53,7 @@ class OtpField extends StatelessWidget {
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: AppTypography.dataMono.copyWith(fontSize: SgText.size(24)),
+        style: AppTypography.dataMono.copyWith(fontSize: SgText.sizeHeading),
         decoration: InputDecoration(
           counterText: '',
           fillColor: SgColors.bg300,

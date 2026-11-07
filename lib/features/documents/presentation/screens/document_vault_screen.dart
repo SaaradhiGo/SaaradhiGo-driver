@@ -165,7 +165,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
           'Your documents',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 4),
@@ -222,8 +222,8 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   '$verified/$total',
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
-                    fontSize: SgText.size(24),
+                    fontWeight: FontWeight.w600,
+                    fontSize: SgText.sizeHeading,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -259,8 +259,8 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                   '$actionReq',
                   style: AppTypography.headlineSm.copyWith(
                     color: actionReq > 0 ? AppColors.error : AppColors.primaryText,
-                    fontWeight: FontWeight.bold,
-                    fontSize: SgText.size(24),
+                    fontWeight: FontWeight.w600,
+                    fontSize: SgText.sizeHeading,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -302,7 +302,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 '$pct%',
                 style: AppTypography.dataMono.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -413,7 +413,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                             doc.title,
                             style: AppTypography.bodyLg.copyWith(
                               color: AppColors.onBackground,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -444,8 +444,8 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                                       doc.status.label,
                                       style: AppTypography.labelCaps.copyWith(
                                         color: badgeTextColor,
-                                        fontSize: SgText.size(13),
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: SgText.sizeSmall,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -455,7 +455,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                                 expiryFormatted,
                                 style: AppTypography.dataMono.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: SgText.size(13),
+                                  fontSize: SgText.sizeSmall,
                                 ),
                               ),
                             ],
@@ -492,7 +492,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                           hasFile ? 'Re-upload' : 'Upload',
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.darkText,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         onPressed: () => _showReuploadSheet(context, doc),
@@ -579,7 +579,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                         : 'No Expiration Specified',
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.onSurfaceVariant,
-                      fontSize: SgText.size(13),
+                      fontSize: SgText.sizeSmall,
                     ),
                   ),
                   TextButton.icon(
@@ -655,7 +655,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 'Use camera to capture document',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               onTap: () {
@@ -687,7 +687,7 @@ class _DocumentVaultScreenState extends ConsumerState<DocumentVaultScreen> {
                 'Select existing photo from device',
                 style: AppTypography.bodyMd.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               onTap: () {

@@ -210,9 +210,9 @@ class _BottomNavItemState extends State<_BottomNavItem> {
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
                 style: AppTypography.labelCaps.copyWith(
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                   letterSpacing: 0,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                   color: isActive
                       ? AppColors.primaryText
                       : AppColors.onSurfaceVariant.withValues(alpha: 0.7),

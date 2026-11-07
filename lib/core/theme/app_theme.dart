@@ -44,19 +44,10 @@ class AppTheme {
         error: AppColors.error,
         onError: AppColors.onError,
       ),
-      textTheme:
-          TextTheme(
-            displayLarge: AppTypography.displayLg,
-            headlineLarge: AppTypography.headlineLgMobile,
-            headlineMedium: AppTypography.headlineMd,
-            headlineSmall: AppTypography.headlineSm,
-            bodyLarge: AppTypography.bodyLg,
-            bodyMedium: AppTypography.bodyMd,
-            labelSmall: AppTypography.labelCaps,
-          ).apply(
-            bodyColor: AppColors.onBackground,
-            displayColor: AppColors.whiteText,
-          ),
+      textTheme: SgText.textTheme.apply(
+        bodyColor: AppColors.onBackground,
+        displayColor: AppColors.whiteText,
+      ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
@@ -82,7 +73,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w700),
+          textStyle: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600),
           elevation: 0,
         ),
       ),
@@ -105,7 +96,6 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         titleTextStyle: AppTypography.headlineSm.copyWith(
-          fontSize: SgText.size(18),
           color: AppColors.onBackground,
         ),
       ),

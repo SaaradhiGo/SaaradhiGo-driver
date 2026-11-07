@@ -1,16 +1,23 @@
-/// Type styles (Tier 1): Noto Sans for the interface, picked by the active locale
-/// (NotoSans / NotoSansTelugu / NotoSansDevanagari, the others as fallbacks), and
-/// Cinzel 600 for the "Saaradhi Go" lettering beside the badge only.
+/// Type styles: Inter 400 and 600 for the interface (Noto Sans Telugu and
+/// Devanagari as fallbacks) and Cinzel 600 for the "Saaradhi Go" lettering
+/// beside the badge only.
+///
+/// Five sizes only (display 40/48, heading 28/36, title 20/28, body 16/24,
+/// small 14/20; the compact class takes display 32/40 and heading 22/28) and
+/// two weights (400 body, 600 headings, buttons, labels, nav). Screens use the
+/// styles and the size tokens here, never a raw font size or weight
+/// (test/ui/type_tokens_test.dart enforces it).
 ///
 /// Every style is a getter: colours come from the active palette and the
-/// family from the active locale, both of which can change at runtime.
+/// size from the active size class, both of which can change at runtime.
 library;
 
 import 'package:flutter/material.dart';
 
 import 'sg_tokens.dart';
 
-/// Size classes from the window's shortest side (owner brief, Tier 1).
+/// Size classes from the window's shortest side. Only the tablet class
+/// enlarges text (x1.12); the compact class changes display and heading only.
 enum SgSizeClass {
   compact(0.92),
   regular(1.0),
@@ -30,7 +37,7 @@ enum SgSizeClass {
 class SgText {
   SgText._();
 
-  static const latin = 'NotoSans';
+  static const latin = 'Inter';
   static const telugu = 'NotoSansTelugu';
   static const devanagari = 'NotoSansDevanagari';
 
@@ -42,26 +49,21 @@ class SgText {
   /// Set by the locale controller when the app language changes.
   static void useLanguage(String languageCode) => _languageCode = languageCode;
 
-  /// The UI family for the active language.
-  static String get family => familyFor(_languageCode);
+  /// Inter for every language.
+  static String get family => latin;
 
   /// The active language code.
   static String get languageCode => _languageCode;
 
-  static String familyFor(String languageCode) => switch (languageCode) {
-    'te' => telugu,
-    'hi' => devanagari,
-    _ => latin,
-  };
+  static String familyFor(String languageCode) => latin;
 
-  /// The other two Noto Sans families, so mixed-script text (a Telugu street name
-  /// in an English UI) still renders.
+  /// Telugu and Devanagari, so mixed-script text (a Telugu street name in an
+  /// English UI) still renders. The active language's script comes first.
   static List<String> get fallback => fallbackFor(_languageCode);
 
-  static List<String> fallbackFor(String languageCode) => [
-    for (final f in const [latin, telugu, devanagari])
-      if (f != familyFor(languageCode)) f,
-  ];
+  static List<String> fallbackFor(String languageCode) => languageCode == 'hi'
+      ? const [devanagari, telugu]
+      : const [telugu, devanagari];
 
   /// Kept for older call sites: the UI family.
   static String get sans => family;
@@ -80,78 +82,105 @@ class SgText {
     return true;
   }
 
-  /// [base] in this size class: every size in the app goes through here.
-  static double size(double base) => base * _sizeClass.factor;
+  static bool get _compact => _sizeClass == SgSizeClass.compact;
+
+  static double _sz(double regular, [double? compactSize]) =>
+      _compact ? (compactSize ?? regular) : regular * _sizeClass.factor;
+
+  /// The five sizes, in logical pixels for the active size class.
+  static double get sizeDisplay => _sz(40, 32);
+  static double get sizeHeading => _sz(28, 22);
+  static double get sizeTitle => _sz(20);
+  static double get sizeBody => _sz(16);
+  static double get sizeSmall => _sz(14);
 
   static TextStyle _style(
     double size,
     double line,
-    double weight, {
+    FontWeight weight, {
+    double? compactSize,
+    double? compactLine,
     Color? color,
     bool figures = false,
+    double? letterSpacing,
   }) {
-    final s = SgText.size(size);
+    final s = _sz(size, compactSize);
+    final l = _sz(line, compactLine);
     return TextStyle(
       fontFamily: family,
       fontFamilyFallback: fallback,
       fontSize: s,
-      height: line / size,
-      fontWeight: FontWeight.values[((weight / 100).round() - 1).clamp(0, 8)],
-      fontVariations: [
-        FontVariation('wght', weight),
-        FontVariation('wdth', 100),
-      ],
-      letterSpacing: 0,
+      height: l / s,
+      fontWeight: weight,
+      letterSpacing: letterSpacing ?? 0,
       color: color ?? SgColors.ink,
       fontFeatures: figures ? const [FontFeature.tabularFigures()] : null,
     );
   }
 
-  // The Tier 1 scale (owner brief, 6 Nov): sizes in logical pixels times the
-  // size-class factor, weights 400 to 700 only, no tracking.
+  /// 40/48 (compact 32/40), 600, tabular: the big fare, the driver's earning.
+  static TextStyle get display => _style(
+    40,
+    48,
+    FontWeight.w600,
+    compactSize: 32,
+    compactLine: 40,
+    figures: true,
+  );
 
-  /// 24/30, 600. One per screen.
-  static TextStyle get screenTitle => _style(24, 30, 600);
+  /// 28/36 (compact 22/28), 600. One per screen.
+  static TextStyle get heading =>
+      _style(28, 36, FontWeight.w600, compactSize: 22, compactLine: 28);
 
-  /// 18/24, 600.
-  static TextStyle get sectionTitle => _style(18, 24, 600);
+  /// 20/28, 600.
+  static TextStyle get title => _style(20, 28, FontWeight.w600);
 
   /// 16/24, 400.
-  static TextStyle get body => _style(16, 24, 400);
+  static TextStyle get body => _style(16, 24, FontWeight.w400);
 
   /// 14/20, 400, ink-muted.
-  static TextStyle get caption => _style(14, 20, 400, color: SgColors.inkMuted);
+  static TextStyle get small =>
+      _style(14, 20, FontWeight.w400, color: SgColors.inkMuted);
 
-  /// 13/18, 600, ink-subtle. Sentence case; never upper-cased.
-  static TextStyle get label => _style(13, 18, 600, color: SgColors.inkSubtle);
+  /// 14/20, 600, ink-subtle. Sentence case labels.
+  static TextStyle get label =>
+      _style(14, 20, FontWeight.w600, color: SgColors.inkSubtle);
 
-  /// 17/22, 600, on-gold.
+  /// An UPPERCASE small label: label with 0.04em (0.56 at 14px) tracking.
+  /// The only letter-spaced style; use it only on text that is upper-cased.
+  static TextStyle get eyebrow =>
+      label.copyWith(letterSpacing: 0.04 * sizeSmall);
+
+  /// 16/24, 600, on-gold.
   static TextStyle get button =>
-      _style(17, 22, 600, color: SgColors.onGold, figures: true);
+      _style(16, 24, FontWeight.w600, color: SgColors.onGold, figures: true);
 
-  /// A figure in a tile or a row: section-title size at 600, tabular.
-  static TextStyle get figure => _style(18, 24, 600, figures: true);
+  /// A figure in a tile or a row: title size at 600, tabular.
+  static TextStyle get figure => _style(20, 28, FontWeight.w600, figures: true);
 
-  /// A large figure (the PIN digits, the trip-complete facts): 24/30, 600.
-  static TextStyle get figureLg => _style(24, 30, 600, figures: true);
+  /// A large figure (the PIN digits, the trip-complete facts): heading size.
+  static TextStyle get figureLg => _style(
+    28,
+    36,
+    FontWeight.w600,
+    compactSize: 22,
+    compactLine: 28,
+    figures: true,
+  );
 
-  /// The big fare: 44 (40 on compact), 700.
-  static TextStyle get bigFare => _sizeClass == SgSizeClass.compact
-      ? _style(40 / 0.92, 48 / 0.92, 700, figures: true)
-      : _style(44, 52, 700, figures: true);
+  /// The big fare: display.
+  static TextStyle get bigFare => display;
 
-  /// The driver's earning on the offer: 64 (56 on compact), 700.
-  static TextStyle get driverEarning => _sizeClass == SgSizeClass.compact
-      ? _style(56 / 0.92, 60 / 0.92, 700, figures: true)
-      : _style(64, 68, 700, figures: true);
+  /// The driver's earning on the offer: display.
+  static TextStyle get driverEarning => display;
 
   // Older names, kept so every call site lands on the scale.
-  static TextStyle get display => screenTitle;
-  static TextStyle get displayLg => screenTitle;
-  static TextStyle get heading => screenTitle;
-  static TextStyle get title => sectionTitle;
+  static TextStyle get screenTitle => heading;
+  static TextStyle get sectionTitle => title;
+  static TextStyle get caption => small;
+  static TextStyle get displayLg => heading;
   static TextStyle get bodyLg => body;
-  static TextStyle get fareXl => bigFare;
+  static TextStyle get fareXl => display;
   static TextStyle get fare => figure;
 
   /// "Saaradhi Go" beside the badge in headers: Cinzel 600, gold-text.
@@ -160,9 +189,33 @@ class SgText {
     fontSize: size,
     height: 1.1,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
     color: SgColors.logo,
   );
+
+  /// Every Material text slot on one of the five sizes: display slots take
+  /// display, headline slots heading, titleLarge title, the body slots body
+  /// and the small slots small. Weights are 400 or 600 only.
+  static TextTheme get textTheme {
+    const strong = FontWeight.w600;
+    final smallBody = body.copyWith(fontSize: sizeSmall, height: 20 / 14);
+    return TextTheme(
+      displayLarge: display,
+      displayMedium: display,
+      displaySmall: display,
+      headlineLarge: heading,
+      headlineMedium: heading,
+      headlineSmall: heading,
+      titleLarge: title,
+      titleMedium: body.copyWith(fontWeight: strong),
+      titleSmall: smallBody.copyWith(fontWeight: strong),
+      bodyLarge: body,
+      bodyMedium: body,
+      bodySmall: smallBody,
+      labelLarge: body.copyWith(fontWeight: strong),
+      labelMedium: smallBody.copyWith(fontWeight: strong),
+      labelSmall: smallBody.copyWith(fontWeight: strong),
+    );
+  }
 }
 
 /// The app theme in the active palette. Kept for older call sites; the app
@@ -185,15 +238,7 @@ ThemeData sgTheme(SgPalette p) {
           error: p.danger,
           onError: p.onDanger,
         ),
-    textTheme: base.textTheme.apply(
-      fontFamily: SgText.family,
-      fontFamilyFallback: SgText.fallback,
-      bodyColor: p.ink,
-      displayColor: p.ink,
-    ),
-    primaryTextTheme: base.primaryTextTheme.apply(
-      fontFamily: SgText.family,
-      fontFamilyFallback: SgText.fallback,
-    ),
+    textTheme: SgText.textTheme.apply(bodyColor: p.ink, displayColor: p.ink),
+    primaryTextTheme: SgText.textTheme,
   );
 }

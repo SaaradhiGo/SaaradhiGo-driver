@@ -95,7 +95,7 @@ class TripHistoryCard extends StatelessWidget {
                         _formatDate(trip.createdAt),
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: SgText.size(13),
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.unit),
@@ -103,7 +103,7 @@ class TripHistoryCard extends StatelessWidget {
                         trip.riderName ?? 'Passenger',
                         style: AppTypography.headlineSm.copyWith(
                           color: AppColors.onBackground,
-                          fontSize: SgText.size(18),
+                          fontSize: SgText.sizeTitle,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -121,8 +121,8 @@ class TripHistoryCard extends StatelessWidget {
                         color: isCompleted
                             ? AppColors.primaryText
                             : AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(18),
-                        fontWeight: FontWeight.bold,
+                        fontSize: SgText.sizeTitle,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.unit),
@@ -154,7 +154,7 @@ class TripHistoryCard extends StatelessWidget {
                           color: isCompleted
                               ? AppColors.primaryText
                               : AppColors.onSurfaceVariant,
-                          fontSize: SgText.size(13),
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ),
@@ -181,7 +181,7 @@ class TripHistoryCard extends StatelessWidget {
                       trip.cancellationReason!,
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.error,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -241,7 +241,7 @@ class TripHistoryCard extends StatelessWidget {
                         trip.pickupAddress ?? 'Pickup Location',
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onBackground,
-                          fontSize: SgText.size(14),
+                          fontSize: SgText.sizeSmall,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -251,7 +251,7 @@ class TripHistoryCard extends StatelessWidget {
                         trip.destinationAddress ?? 'Destination Location',
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onSurfaceVariant,
-                          fontSize: SgText.size(14),
+                          fontSize: SgText.sizeSmall,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -284,7 +284,7 @@ class TripHistoryCard extends StatelessWidget {
                           : '-- km',
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -300,7 +300,7 @@ class TripHistoryCard extends StatelessWidget {
                           : '--',
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ],
@@ -319,7 +319,7 @@ class TripHistoryCard extends StatelessWidget {
                       isCash ? 'Cash' : 'Digital',
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ],

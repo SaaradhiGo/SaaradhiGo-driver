@@ -206,7 +206,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
               riderInitial,
               style: AppTypography.headlineSm.copyWith(
                 color: AppColors.darkText,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -219,7 +219,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   riderName,
                   style: AppTypography.headlineSm.copyWith(
                     color: AppColors.onBackground,
-                    fontSize: SgText.size(18),
+                    fontSize: SgText.sizeTitle,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -233,8 +233,8 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                       riderRating,
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(14),
-                        fontWeight: FontWeight.w500,
+                        fontSize: SgText.sizeSmall,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -302,7 +302,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   'PICKUP',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -310,7 +310,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   trip.pickupAddress ?? 'Pickup Address',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -318,7 +318,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   'DESTINATION',
                   style: AppTypography.labelCaps.copyWith(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -326,7 +326,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   trip.destinationAddress ?? 'Destination Address',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -407,8 +407,8 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             value,
             style: AppTypography.headlineSm.copyWith(
               color: AppColors.onBackground,
-              fontSize: SgText.size(16),
-              fontWeight: FontWeight.bold,
+              fontSize: SgText.sizeBody,
+              fontWeight: FontWeight.w600,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -418,7 +418,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             label,
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ],
@@ -449,7 +449,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 'Trip Cancelled',
                 style: AppTypography.bodyLg.copyWith(
                   color: AppColors.error,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -460,7 +460,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 'This trip was cancelled before completion.',
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onBackground,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
           const SizedBox(height: 4),
@@ -495,7 +495,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             'Earnings Breakdown',
             style: AppTypography.headlineSm.copyWith(
               color: AppColors.onBackground,
-              fontSize: SgText.size(18),
+              fontSize: SgText.sizeTitle,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -556,14 +556,14 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                 'Driver Earnings',
                 style: AppTypography.headlineSm.copyWith(
                   color: AppColors.onBackground,
-                  fontSize: SgText.size(16),
+                  fontSize: SgText.sizeBody,
                 ),
               ),
               Text(
                 isCancelled ? '${marketSymbol()}0' : '${marketSymbol()}$fare',
                 style: AppTypography.headlineMd.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -597,15 +597,15 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
           label,
           style: AppTypography.bodyMd.copyWith(
             color: AppColors.onSurfaceVariant,
-            fontSize: SgText.size(14),
+            fontSize: SgText.sizeSmall,
           ),
         ),
         Text(
           value,
           style: AppTypography.dataMono.copyWith(
             color: isDeduction ? AppColors.error : AppColors.onBackground,
-            fontSize: SgText.size(14),
-            fontWeight: FontWeight.w500,
+            fontSize: SgText.sizeSmall,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -628,7 +628,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
             'YOUR RATING FOR PASSENGER',
             style: AppTypography.labelCaps.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

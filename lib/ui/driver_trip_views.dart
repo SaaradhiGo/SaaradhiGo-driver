@@ -169,7 +169,7 @@ class NavigateButton extends StatelessWidget {
             const SizedBox(width: SgSpace.s2),
             Text(
               sgL10n(context).tripNavigate,
-              style: SgText.body.copyWith(fontWeight: FontWeight.w700),
+              style: SgText.body.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -336,7 +336,7 @@ class _QuietLink extends StatelessWidget {
           label,
           style: SgText.body.copyWith(
             color: onTap == null ? SgColors.inkSubtle : SgColors.inkMuted,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -960,7 +960,7 @@ class NightModeChip extends StatelessWidget {
           sgL10n(context).tripNightMode,
           style: SgText.caption.copyWith(
             color: SgColors.ink,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

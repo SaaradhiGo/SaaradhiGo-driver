@@ -57,7 +57,7 @@ void main() {
     );
     expect(
       scan(
-        RegExp(r'Manrope|Cormorant|JetBrains|Plus Jakarta|\bInter\b'),
+        RegExp(r'Manrope|Cormorant|JetBrains|Plus Jakarta|\bAnek\b|NotoSans\.ttf'),
         skipTokenFile: false,
       ),
       isEmpty,

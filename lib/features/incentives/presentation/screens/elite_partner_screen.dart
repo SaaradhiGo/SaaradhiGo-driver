@@ -185,7 +185,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       elite.tierEnum.displayName,
                       style: AppTypography.headlineSm.copyWith(
                         color: AppColors.onBackground,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -193,7 +193,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       '${elite.totalTrips} Lifetime Completed Trips',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ],
@@ -221,14 +221,14 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onBackground,
                         fontWeight: FontWeight.w600,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                     Text(
                       '$tripsRemaining more trips',
                       style: AppTypography.labelCaps.copyWith(
                         color: accent,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -270,7 +270,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
                 'Tier Maintenance Metrics',
                 style: AppTypography.bodyLg.copyWith(
                   color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -323,7 +323,7 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           title,
           style: AppTypography.labelCaps.copyWith(
             color: AppColors.onSurfaceVariant,
-            fontSize: SgText.size(13),
+            fontSize: SgText.sizeSmall,
           ),
         ),
         const SizedBox(height: 4),
@@ -331,8 +331,8 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
           value,
           style: AppTypography.dataMono.copyWith(
             color: AppColors.onBackground,
-            fontWeight: FontWeight.bold,
-            fontSize: SgText.size(16),
+            fontWeight: FontWeight.w600,
+            fontSize: SgText.sizeBody,
           ),
         ),
         const SizedBox(height: 4),
@@ -347,8 +347,8 @@ class _ElitePartnerScreenState extends ConsumerState<ElitePartnerScreen> {
             isQualified ? 'QUALIFIED' : 'ACTION REQ',
             style: AppTypography.labelCaps.copyWith(
               color: isQualified ? AppColors.success : AppColors.error,
-              fontWeight: FontWeight.bold,
-              fontSize: SgText.size(13),
+              fontWeight: FontWeight.w600,
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ),

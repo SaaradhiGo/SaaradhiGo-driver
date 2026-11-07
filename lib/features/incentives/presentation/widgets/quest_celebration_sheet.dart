@@ -60,7 +60,7 @@ class QuestCelebrationSheet extends StatelessWidget {
               'Quest Completed!',
               style: AppTypography.headlineSm.copyWith(
                 color: AppColors.onBackground,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -96,8 +96,8 @@ class QuestCelebrationSheet extends StatelessWidget {
                     '+ ${marketSymbol()}${quest.rewardAmount}',
                     style: AppTypography.displayLg.copyWith(
                       color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SgText.size(24),
+                      fontWeight: FontWeight.w600,
+                      fontSize: SgText.sizeHeading,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -114,8 +114,8 @@ class QuestCelebrationSheet extends StatelessWidget {
                         'Automatically credited to your driver wallet',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.success,
-                          fontWeight: FontWeight.w500,
-                          fontSize: SgText.size(13),
+                          fontWeight: FontWeight.w600,
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ],

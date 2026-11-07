@@ -147,7 +147,7 @@ class _IncentivesRewardsScreenState
               'No Active Quests',
               style: AppTypography.headlineSm.copyWith(
                 color: AppColors.onBackground,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -375,7 +375,7 @@ class _IncentivesRewardsScreenState
                   'Incentives & Bonuses',
                   style: AppTypography.bodyLg.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -400,8 +400,8 @@ class _IncentivesRewardsScreenState
                     '${marketSymbol()}$formattedTotal',
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SgText.size(18),
+                      fontWeight: FontWeight.w600,
+                      fontSize: SgText.sizeTitle,
                     ),
                   ),
                   const SizedBox(width: 6),

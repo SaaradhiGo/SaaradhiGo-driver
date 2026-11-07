@@ -104,7 +104,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
               'Keep Editing',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.primaryText,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -114,7 +114,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
               'Discard',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.error,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -346,7 +346,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                     'Vehicle Details',
                     style: AppTypography.headlineSm.copyWith(
                       color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -408,13 +408,13 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                       return ChoiceChip(
                         label: Text(
                           type.toUpperCase(),
-                          style: AppTypography.labelCaps.copyWith(
+                          style: SgText.eyebrow.copyWith(
                             color: isSelected
                                 ? AppColors.primaryText
                                 : AppColors.onSurfaceVariant,
                             fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.w500,
+                                ? FontWeight.w600
+                                : FontWeight.w400,
                           ),
                         ),
                         selected: isSelected,
@@ -689,7 +689,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                   title,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -715,7 +715,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                     color: isRequired
                         ? AppColors.primaryText
                         : AppColors.onSurfaceVariant,
-                    fontSize: SgText.size(13),
+                    fontSize: SgText.sizeSmall,
                   ),
                 ),
               ),
@@ -726,7 +726,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
             subtitle,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
           const SizedBox(height: AppSpacing.md),

@@ -179,7 +179,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                 rewardNote(commission: incentiveCommission, tax: incentiveTax),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
             ),
@@ -268,15 +268,15 @@ class EarningsBreakdownCard extends StatelessWidget {
             label,
             style: AppTypography.bodyLg.copyWith(
               color: AppColors.onBackground,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Text(
             '${marketSymbol()}$netEarnings',
             style: AppTypography.dataMono.copyWith(
               color: AppColors.onBackground,
-              fontSize: SgText.size(18),
-              fontWeight: FontWeight.bold,
+              fontSize: SgText.sizeTitle,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -318,7 +318,7 @@ class EarningsBreakdownCard extends StatelessWidget {
                           note,
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: SgText.size(13),
+                            fontSize: SgText.sizeSmall,
                           ),
                         ),
                     ],

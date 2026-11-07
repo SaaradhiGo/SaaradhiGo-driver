@@ -49,7 +49,7 @@ class VerificationStatusRow extends StatelessWidget {
                         item.title,
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.onBackground,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -68,7 +68,7 @@ class VerificationStatusRow extends StatelessWidget {
                     item.status.label,
                     style: AppTypography.labelCaps.copyWith(
                       color: statusColor,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -101,7 +101,7 @@ class VerificationStatusRow extends StatelessWidget {
                       item.rejectionReason!,
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.error,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ),
@@ -125,8 +125,8 @@ class VerificationStatusRow extends StatelessWidget {
                         'Fix',
                         style: AppTypography.labelCaps.copyWith(
                           color: AppColors.darkText,
-                          fontWeight: FontWeight.w700,
-                          fontSize: SgText.size(13),
+                          fontWeight: FontWeight.w600,
+                          fontSize: SgText.sizeSmall,
                         ),
                       ),
                     ),

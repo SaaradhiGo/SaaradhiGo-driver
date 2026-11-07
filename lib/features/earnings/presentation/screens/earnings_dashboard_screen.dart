@@ -313,8 +313,8 @@ class _EarningsDashboardScreenState
                                 'BONUS',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onBackground,
-                                  fontSize: SgText.size(13),
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: SgText.sizeSmall,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -330,8 +330,8 @@ class _EarningsDashboardScreenState
                           key: const Key('incentives_card_summary'),
                           style: AppTypography.labelCaps.copyWith(
                             color: AppColors.onSurfaceVariant,
-                            fontSize: SgText.size(13),
-                            fontWeight: FontWeight.w500,
+                            fontSize: SgText.sizeSmall,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -424,7 +424,7 @@ class _EarningsDashboardScreenState
                       _formatTimestamp(withdrawal.requestedAt) ?? 'Pending',
                       style: AppTypography.labelCaps.copyWith(
                         color: AppColors.onSurfaceVariant,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ],
@@ -438,7 +438,7 @@ class _EarningsDashboardScreenState
                   '-${marketSymbol()}${withdrawal.amount}',
                   style: AppTypography.dataMono.copyWith(
                     color: AppColors.onBackground,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),

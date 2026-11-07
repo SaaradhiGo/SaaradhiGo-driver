@@ -71,7 +71,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 'Mark All Read',
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               onPressed: () => ref
@@ -133,7 +133,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               color: isSelected
                   ? AppColors.darkText
                   : AppColors.onSurfaceVariant,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             ),
             selectedColor: AppColors.primary,
             backgroundColor: AppColors.surfaceContainer,
@@ -224,7 +224,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 'All Caught Up!',
                 style: AppTypography.headlineSm.copyWith(
                   color: AppColors.onBackground,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: AppSpacing.unit),
@@ -328,7 +328,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         style: AppTypography.labelCaps.copyWith(
           color: AppColors.onSurfaceVariant,
           letterSpacing: 0,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -425,8 +425,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   style: AppTypography.bodyLg.copyWith(
                                     color: AppColors.onBackground,
                                     fontWeight: item.isRead
-                                        ? FontWeight.w500
-                                        : FontWeight.bold,
+                                        ? FontWeight.w400
+                                        : FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -434,7 +434,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                 formattedTime,
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
-                                  fontSize: SgText.size(13),
+                                  fontSize: SgText.sizeSmall,
                                 ),
                               ),
                             ],
@@ -444,7 +444,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                             item.message,
                             style: AppTypography.bodyMd.copyWith(
                               color: AppColors.onSurfaceVariant,
-                              fontSize: SgText.size(13),
+                              fontSize: SgText.sizeSmall,
                             ),
                           ),
                         ],

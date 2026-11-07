@@ -90,7 +90,7 @@ class _SupportTicketDetailScreenState
               'Close Ticket',
               style: AppTypography.bodyMd.copyWith(
                 color: AppColors.error,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -113,7 +113,7 @@ class _SupportTicketDetailScreenState
           'Ticket #${widget.ticketId}',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
-            fontSize: SgText.size(18),
+            fontSize: SgText.sizeTitle,
           ),
         ),
         centerTitle: false,
@@ -202,7 +202,7 @@ class _SupportTicketDetailScreenState
                       error,
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.error,
-                        fontSize: SgText.size(13),
+                        fontSize: SgText.sizeSmall,
                       ),
                     ),
                   ),
@@ -299,7 +299,7 @@ class _StatusHeader extends StatelessWidget {
                 if (category != null && category != title) ...[
                   Text(
                     category.toUpperCase(),
-                    style: AppTypography.labelCaps.copyWith(
+                    style: SgText.eyebrow.copyWith(
                       color: AppColors.primaryText,
                     ),
                   ),
@@ -408,7 +408,7 @@ class _ThreadBubble extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMd.copyWith(
               color: AppColors.onSurfaceVariant,
-              fontSize: SgText.size(13),
+              fontSize: SgText.sizeSmall,
             ),
           ),
         ),
@@ -462,7 +462,7 @@ class _ThreadBubble extends StatelessWidget {
                       color: isMine
                           ? AppColors.darkText.withValues(alpha: 0.7)
                           : AppColors.primaryText,
-                      fontSize: SgText.size(13),
+                      fontSize: SgText.sizeSmall,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -482,7 +482,7 @@ class _ThreadBubble extends StatelessWidget {
               _formatTime(message.createdAt),
               style: AppTypography.dataMono.copyWith(
                 color: AppColors.onSurfaceVariant,
-                fontSize: SgText.size(13),
+                fontSize: SgText.sizeSmall,
               ),
             ),
           ],

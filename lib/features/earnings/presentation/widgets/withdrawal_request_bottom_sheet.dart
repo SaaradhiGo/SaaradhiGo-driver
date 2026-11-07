@@ -174,7 +174,7 @@ class _WithdrawalRequestBottomSheetState
                       formatMoney(availBalance, currency),
                       style: AppTypography.displayLg.copyWith(
                         color: AppColors.primaryText,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     if (isBlocked) ...[
@@ -284,7 +284,7 @@ class _WithdrawalRequestBottomSheetState
                 ],
                 style: AppTypography.displayLg.copyWith(
                   color: AppColors.onBackground,
-                  fontSize: SgText.size(24),
+                  fontSize: SgText.sizeHeading,
                 ),
                 onChanged: (_) => _validate(null),
                 decoration: InputDecoration(
@@ -300,7 +300,7 @@ class _WithdrawalRequestBottomSheetState
                       currencySymbol(currency).trim(),
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.primaryText,
-                        fontSize: SgText.size(18),
+                        fontSize: SgText.sizeTitle,
                       ),
                     ),
                   ),
@@ -323,7 +323,7 @@ class _WithdrawalRequestBottomSheetState
                 ].join(' '),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontSize: SgText.size(13),
+                  fontSize: SgText.sizeSmall,
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
