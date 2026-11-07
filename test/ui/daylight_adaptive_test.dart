@@ -18,64 +18,64 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../support/driver_ui_fixtures.dart';
 
 Widget _pin() => PinCheckView(
-      controller: TextEditingController(text: '12'),
-      riderName: 'Raja Kumar',
-      riderRating: 4.8,
-      pickupAddress: 'Ameerpet Metro Station',
-      onStart: () {},
-      onCancel: () {},
-      onMessage: () {},
-    );
+  controller: TextEditingController(text: '12'),
+  riderName: 'Raja Kumar',
+  riderRating: 4.8,
+  pickupAddress: 'Ameerpet Metro Station',
+  onStart: () {},
+  onCancel: () {},
+  onMessage: () {},
+);
 
 Widget _earnings() => ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const EarningsNoirPanel(
-          periodLabel: 'Today',
-          trips: 3,
-          amount: '₹12,364',
-          isNet: true,
-          commission: '₹1,864',
-          commissionRate: '15%',
-        ),
-        const SizedBox(height: 16),
-        EarningsWeekChart(
-          days: parseDailyEarnings(sampleDailyBody)!,
-          money: (v) => '₹${v.round()}',
-        ),
-        const SizedBox(height: 16),
-        WithdrawPanel(
-          balance: '₹1,240',
-          canWithdraw: true,
-          payoutMissing: true,
-          onWithdraw: () {},
-          onAddPayout: () {},
-        ),
-      ],
-    );
+  padding: const EdgeInsets.all(16),
+  children: [
+    const EarningsNoirPanel(
+      periodLabel: 'Today',
+      trips: 3,
+      amount: '₹12,364',
+      isNet: true,
+      commission: '₹1,864',
+      commissionRate: '15%',
+    ),
+    const SizedBox(height: 16),
+    EarningsWeekChart(
+      days: parseDailyEarnings(sampleDailyBody)!,
+      money: (v) => '₹${v.round()}',
+    ),
+    const SizedBox(height: 16),
+    WithdrawPanel(
+      balance: '₹1,240',
+      canWithdraw: true,
+      payoutMissing: true,
+      onWithdraw: () {},
+      onAddPayout: () {},
+    ),
+  ],
+);
 
 final _screens = <String, Widget Function()>{
   'home online': () => homeFrame(online: true),
   'home offline': () => homeFrame(),
   'offer': () => IncomingOfferCard(
-        payload: sampleOfferWithEarning,
-        alert: false,
-        mapProvider: kPlaceholderMaps,
-        onAccept: () {},
-        onDecline: () {},
-        onExpired: () {},
-      ),
+    payload: sampleOfferWithEarning,
+    alert: false,
+    mapProvider: kPlaceholderMaps,
+    onAccept: () {},
+    onDecline: () {},
+    onExpired: () {},
+  ),
   'to pickup': () => toPickupFrame(),
   'PIN': _pin,
   'on trip': () => inTripFrame(),
   'complete': () => completeFrame(),
   'earnings': _earnings,
   'cancelled': () => RideCancelledBottomSheet(
-        reason: 'Rider changed plans',
-        actor: CancelActor.rider,
-        autoDismissSeconds: 0,
-        onDismiss: () {},
-      ),
+    reason: 'Rider changed plans',
+    actor: CancelActor.rider,
+    autoDismissSeconds: 0,
+    onDismiss: () {},
+  ),
 };
 
 Future<void> _pump(
@@ -106,28 +106,33 @@ void main() {
 
   for (final palette in [SgPalette.light, SgPalette.dark]) {
     for (final entry in _screens.entries) {
-      testWidgets(
-          '${entry.key} at 320 wide and 1.3x text, '
+      testWidgets('${entry.key} at 320 wide and 1.3x text, '
           '${palette.isDark ? 'dark' : 'light'}: no overflow', (tester) async {
         SgColors.use(palette);
-        await _pump(tester, entry.value(),
-            logical: const Size(320, 640), textScale: 1.3);
+        await _pump(
+          tester,
+          entry.value(),
+          logical: const Size(320, 640),
+          textScale: 1.3,
+        );
         expect(tester.takeException(), isNull);
       });
     }
   }
 
   for (final entry in _screens.entries) {
-    testWidgets('${entry.key} on a landscape phone: no overflow',
-        (tester) async {
+    testWidgets('${entry.key} on a landscape phone: no overflow', (
+      tester,
+    ) async {
       SgColors.use(SgPalette.light);
       await _pump(tester, entry.value(), logical: const Size(844, 390));
       expect(tester.takeException(), isNull);
     });
   }
 
-  testWidgets('tablet: the offer and the PIN are centred cards, 480 wide',
-      (tester) async {
+  testWidgets('tablet: the offer and the PIN are centred cards, 480 wide', (
+    tester,
+  ) async {
     SgColors.use(SgPalette.light);
     await _pump(tester, _screens['offer']!(), logical: const Size(800, 1280));
     expect(tester.takeException(), isNull);
@@ -176,10 +181,12 @@ void main() {
         SgText.bigFare,
         SgText.driverEarning,
       ]) {
-        expect(
-          [FontWeight.w500, FontWeight.w600, FontWeight.w700],
-          contains(s.fontWeight),
-        );
+        expect([
+          FontWeight.w400,
+          FontWeight.w500,
+          FontWeight.w600,
+          FontWeight.w700,
+        ], contains(s.fontWeight));
         expect(s.letterSpacing, 0);
       }
     });
@@ -212,11 +219,15 @@ void main() {
       (CancelActor.unknown, 'Trip cancelled'),
     ]) {
       testWidgets('the cancelled sheet says "$title"', (tester) async {
-        await tester.pumpWidget(sgApp(RideCancelledBottomSheet(
-          actor: actor,
-          autoDismissSeconds: 0,
-          onDismiss: () {},
-        )));
+        await tester.pumpWidget(
+          sgApp(
+            RideCancelledBottomSheet(
+              actor: actor,
+              autoDismissSeconds: 0,
+              onDismiss: () {},
+            ),
+          ),
+        );
         expect(find.text(title), findsOneWidget);
       });
     }
@@ -225,33 +236,47 @@ void main() {
   group('cancel reason (Tier 4)', () {
     test('only a known code becomes a reason line', () {
       final l = lookupAppLocalizations(const Locale('en'));
-      expect(cancelReasonText(l, 'too_long', CancelActor.rider),
-          'Waited too long');
-      expect(cancelReasonText(l, 'no_driver_accepted', CancelActor.unknown),
-          'No driver accepted in time');
-      expect(cancelReasonText(l, 'no_show', CancelActor.rider),
-          'The driver did not arrive');
-      expect(cancelReasonText(l, 'no_show', CancelActor.you),
-          'Rider is a no-show');
+      expect(
+        cancelReasonText(l, 'too_long', CancelActor.rider),
+        'Waited too long',
+      );
+      expect(
+        cancelReasonText(l, 'no_driver_accepted', CancelActor.unknown),
+        'No driver accepted in time',
+      );
+      expect(
+        cancelReasonText(l, 'no_show', CancelActor.rider),
+        'The driver did not arrive',
+      );
+      expect(
+        cancelReasonText(l, 'no_show', CancelActor.you),
+        'Rider is a no-show',
+      );
       for (final c in [null, '', 'other', 'Your ride has been cancelled.']) {
         expect(cancelReasonText(l, c, CancelActor.rider), isNull);
       }
     });
 
-    testWidgets('the generic server message is never shown as a reason',
-        (tester) async {
-      await tester.pumpWidget(sgApp(RideCancelledBottomSheet(
-        reason: 'Your ride has been cancelled.',
-        actor: CancelActor.rider,
-        autoDismissSeconds: 0,
-        onDismiss: () {},
-      )));
+    testWidgets('the generic server message is never shown as a reason', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        sgApp(
+          RideCancelledBottomSheet(
+            reason: 'Your ride has been cancelled.',
+            actor: CancelActor.rider,
+            autoDismissSeconds: 0,
+            onDismiss: () {},
+          ),
+        ),
+      );
       expect(find.textContaining('Reason'), findsNothing);
     });
   });
 
-  testWidgets('PIN at 360x640: Start trip is on screen without a scroll',
-      (tester) async {
+  testWidgets('PIN at 360x640: Start trip is on screen without a scroll', (
+    tester,
+  ) async {
     SgColors.use(SgPalette.light);
     await _pump(tester, _pin(), logical: const Size(360, 640));
     final start = tester.getRect(find.byKey(const Key('trip_start')));
@@ -281,8 +306,11 @@ void main() {
         isFalse,
       );
       expect(
-        TripModel.fromJson({'id': 2, 'status': 'in_progress', 'is_active': false})
-            .isActiveOnServer,
+        TripModel.fromJson({
+          'id': 2,
+          'status': 'in_progress',
+          'is_active': false,
+        }).isActiveOnServer,
         isFalse,
       );
       expect(
@@ -292,8 +320,11 @@ void main() {
     });
 
     test('the trip detail carries cancelled_by', () {
-      final t = TripModel.fromJson(
-          {'id': 4, 'status': 'cancelled', 'cancelled_by': 'driver'});
+      final t = TripModel.fromJson({
+        'id': 4,
+        'status': 'cancelled',
+        'cancelled_by': 'driver',
+      });
       expect(CancelActor.fromServer(t.cancelledBy), CancelActor.you);
     });
   });

@@ -128,19 +128,19 @@ flutter:
     - assets/brand/
     - assets/maps/sg_map_light.json
 
-  # Anek (UI, variable wght 500-800, wdth pinned to 100) per script, and
+  # Noto Sans (UI, variable wght 400-700, wdth pinned to 100) per script, and
   # Cinzel 600 for the brand lettering only. Bundled; never fetched at runtime.
   # OFL licences alongside in assets/fonts/.
   fonts:
-    - family: AnekLatin
+    - family: NotoSans
       fonts:
-        - asset: assets/fonts/AnekLatin.ttf
-    - family: AnekTelugu
+        - asset: assets/fonts/NotoSans.ttf
+    - family: NotoSansTelugu
       fonts:
-        - asset: assets/fonts/AnekTelugu.ttf
-    - family: AnekDevanagari
+        - asset: assets/fonts/NotoSansTelugu.ttf
+    - family: NotoSansDevanagari
       fonts:
-        - asset: assets/fonts/AnekDevanagari.ttf
+        - asset: assets/fonts/NotoSansDevanagari.ttf
     - family: Cinzel
       fonts:
         - asset: assets/fonts/Cinzel-SemiBold.ttf

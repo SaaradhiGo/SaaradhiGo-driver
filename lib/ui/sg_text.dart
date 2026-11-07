@@ -1,5 +1,5 @@
-/// Type styles (Tier 1): Anek for the interface, picked by the active locale
-/// (AnekLatin / AnekTelugu / AnekDevanagari, the others as fallbacks), and
+/// Type styles (Tier 1): Noto Sans for the interface, picked by the active locale
+/// (NotoSans / NotoSansTelugu / NotoSansDevanagari, the others as fallbacks), and
 /// Cinzel 600 for the "Saaradhi Go" lettering beside the badge only.
 ///
 /// Every style is a getter: colours come from the active palette and the
@@ -30,9 +30,9 @@ enum SgSizeClass {
 class SgText {
   SgText._();
 
-  static const latin = 'AnekLatin';
-  static const telugu = 'AnekTelugu';
-  static const devanagari = 'AnekDevanagari';
+  static const latin = 'NotoSans';
+  static const telugu = 'NotoSansTelugu';
+  static const devanagari = 'NotoSansDevanagari';
 
   /// Brand lettering only. Never headings or body.
   static const brand = 'Cinzel';
@@ -54,7 +54,7 @@ class SgText {
     _ => latin,
   };
 
-  /// The other two Anek families, so mixed-script text (a Telugu street name
+  /// The other two Noto Sans families, so mixed-script text (a Telugu street name
   /// in an English UI) still renders.
   static List<String> get fallback => fallbackFor(_languageCode);
 
@@ -83,7 +83,7 @@ class SgText {
   /// [base] in this size class: every size in the app goes through here.
   static double size(double base) => base * _sizeClass.factor;
 
-  static TextStyle _anek(
+  static TextStyle _style(
     double size,
     double line,
     double weight, {
@@ -108,42 +108,42 @@ class SgText {
   }
 
   // The Tier 1 scale (owner brief, 6 Nov): sizes in logical pixels times the
-  // size-class factor, weights 500, 600 and 700 only, no tracking.
+  // size-class factor, weights 400 to 700 only, no tracking.
 
-  /// 24/30, 700. One per screen.
-  static TextStyle get screenTitle => _anek(24, 30, 700);
+  /// 24/30, 600. One per screen.
+  static TextStyle get screenTitle => _style(24, 30, 600);
 
   /// 18/24, 600.
-  static TextStyle get sectionTitle => _anek(18, 24, 600);
+  static TextStyle get sectionTitle => _style(18, 24, 600);
 
-  /// 16/24, 500.
-  static TextStyle get body => _anek(16, 24, 500);
+  /// 16/24, 400.
+  static TextStyle get body => _style(16, 24, 400);
 
-  /// 14/20, 500, ink-muted.
-  static TextStyle get caption => _anek(14, 20, 500, color: SgColors.inkMuted);
+  /// 14/20, 400, ink-muted.
+  static TextStyle get caption => _style(14, 20, 400, color: SgColors.inkMuted);
 
   /// 13/18, 600, ink-subtle. Sentence case; never upper-cased.
-  static TextStyle get label => _anek(13, 18, 600, color: SgColors.inkSubtle);
+  static TextStyle get label => _style(13, 18, 600, color: SgColors.inkSubtle);
 
   /// 17/22, 600, on-gold.
   static TextStyle get button =>
-      _anek(17, 22, 600, color: SgColors.onGold, figures: true);
+      _style(17, 22, 600, color: SgColors.onGold, figures: true);
 
-  /// A figure in a tile or a row: section-title size at 700, tabular.
-  static TextStyle get figure => _anek(18, 24, 700, figures: true);
+  /// A figure in a tile or a row: section-title size at 600, tabular.
+  static TextStyle get figure => _style(18, 24, 600, figures: true);
 
-  /// A large figure (the PIN digits, the trip-complete facts): 24/30, 700.
-  static TextStyle get figureLg => _anek(24, 30, 700, figures: true);
+  /// A large figure (the PIN digits, the trip-complete facts): 24/30, 600.
+  static TextStyle get figureLg => _style(24, 30, 600, figures: true);
 
   /// The big fare: 44 (40 on compact), 700.
   static TextStyle get bigFare => _sizeClass == SgSizeClass.compact
-      ? _anek(40 / 0.92, 48 / 0.92, 700, figures: true)
-      : _anek(44, 52, 700, figures: true);
+      ? _style(40 / 0.92, 48 / 0.92, 700, figures: true)
+      : _style(44, 52, 700, figures: true);
 
   /// The driver's earning on the offer: 64 (56 on compact), 700.
   static TextStyle get driverEarning => _sizeClass == SgSizeClass.compact
-      ? _anek(56 / 0.92, 60 / 0.92, 700, figures: true)
-      : _anek(64, 68, 700, figures: true);
+      ? _style(56 / 0.92, 60 / 0.92, 700, figures: true)
+      : _style(64, 68, 700, figures: true);
 
   // Older names, kept so every call site lands on the scale.
   static TextStyle get display => screenTitle;
