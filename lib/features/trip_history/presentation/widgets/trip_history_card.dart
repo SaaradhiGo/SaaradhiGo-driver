@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
+import 'package:saaradhigo_driver/ui/sg_format.dart';
 import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 
@@ -14,36 +15,11 @@ class TripHistoryCard extends StatelessWidget {
 
   const TripHistoryCard({super.key, required this.trip, required this.onTap});
 
+  /// "Sun, 8 Nov · 1:15 am" (the year when it is not this year).
   String _formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return 'Recent Trip';
-    try {
-      final date = DateTime.parse(dateStr).toLocal();
-      const months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ];
-      final month = months[date.month - 1];
-      final day = date.day;
-      int hour = date.hour;
-      final minute = date.minute.toString().padLeft(2, '0');
-      final ampm = hour >= 12 ? 'PM' : 'AM';
-      if (hour > 12) hour -= 12;
-      if (hour == 0) hour = 12;
-
-      return '$month $day, $hour:$minute $ampm';
-    } catch (_) {
-      return dateStr;
-    }
+    final date = DateTime.tryParse(dateStr)?.toLocal();
+    return date == null ? dateStr : sgDayTime(date);
   }
 
   @override
