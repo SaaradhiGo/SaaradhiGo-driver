@@ -829,5 +829,120 @@
   "cancelWhyNoDriver": "समय पर किसी ड्राइवर ने स्वीकार नहीं किया",
   "@cancelWhyNoDriver": {
     "description": "needs native review"
+  },
+  "navDocuments": "दस्तावेज़",
+  "@navDocuments": {
+    "description": "needs native review"
+  },
+  "shellDriverBadge": "ड्राइवर",
+  "@shellDriverBadge": {
+    "description": "needs native review"
+  },
+  "homeOfflineTitle": "आप ऑफ़लाइन हैं",
+  "@homeOfflineTitle": {
+    "description": "needs native review"
+  },
+  "homeOnlineTitle": "आप ऑनलाइन हैं",
+  "@homeOnlineTitle": {
+    "description": "needs native review"
+  },
+  "homeOfflineHint": "ऑनलाइन होने पर राइड अनुरोध यहाँ दिखेंगे।",
+  "@homeOfflineHint": {
+    "description": "needs native review"
+  },
+  "homeTodayEarned": "आज आपकी कमाई",
+  "@homeTodayEarned": {
+    "description": "needs native review"
+  },
+  "homeTripsToday": "आज की ट्रिप",
+  "@homeTripsToday": {
+    "description": "needs native review"
+  },
+  "offerNewRequest": "नया राइड अनुरोध",
+  "@offerNewRequest": {
+    "description": "needs native review"
+  },
+  "offerToPickupDistance": "पिकअप तक {distance}",
+  "@offerToPickupDistance": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripDistance": "{distance} की ट्रिप",
+  "@offerTripDistance": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripFare": "ट्रिप किराया",
+  "@offerTripFare": {
+    "description": "needs native review"
+  },
+  "codeAsk": "राइडर से उनका राइड कोड पूछें",
+  "@codeAsk": {
+    "description": "needs native review"
+  },
+  "codeHint": "कोड मिलने पर ही ट्रिप शुरू होगी।",
+  "@codeHint": {
+    "description": "needs native review"
+  },
+  "codeYouEarn": "इस ट्रिप पर आपकी कमाई",
+  "@codeYouEarn": {
+    "description": "needs native review"
+  },
+  "codeChecking": "कोड जाँचा जा रहा है…",
+  "@codeChecking": {
+    "description": "needs native review"
+  },
+  "earnChipWeek": "सप्ताह",
+  "@earnChipWeek": {
+    "description": "needs native review"
+  },
+  "earnChipMonth": "महीना",
+  "@earnChipMonth": {
+    "description": "needs native review"
+  },
+  "earnHeroToday": "आज आपने कमाया",
+  "@earnHeroToday": {
+    "description": "needs native review"
+  },
+  "earnTripsCount": "{count, plural, =1{1 ट्रिप} other{{count} ट्रिप}}",
+  "@earnTripsCount": {
+    "description": "needs native review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnAfterCommission": "कमीशन के बाद",
+  "@earnAfterCommission": {
+    "description": "needs native review"
+  },
+  "earnTips": "टिप",
+  "@earnTips": {
+    "description": "needs native review"
+  },
+  "earnYouEarned": "आपकी कमाई",
+  "@earnYouEarned": {
+    "description": "needs native review"
+  },
+  "earnCashCollected": "आपने लिया नकद",
+  "@earnCashCollected": {
+    "description": "needs native review"
+  },
+  "earnReadyToWithdraw": "निकालने के लिए तैयार",
+  "@earnReadyToWithdraw": {
+    "description": "needs native review"
+  },
+  "earnAllHistory": "सारी कमाई और भुगतान",
+  "@earnAllHistory": {
+    "description": "needs native review"
   }
 }

@@ -316,3 +316,41 @@ const double kSgPrimaryAction = 64;
 /// Motion: press feedback and sheets, ease-out.
 const Duration kSgPress = Duration(milliseconds: 140);
 const Duration kSgSheet = Duration(milliseconds: 240);
+
+/// The signed-in designs (2026-11-08): the dark chrome -- the top bar with the
+/// DRIVER badge, the home sheet and the tab bar -- is the same in both themes.
+class SgNoir {
+  SgNoir._();
+  static const bar = Color(0xFF0B0B0B);
+  static const sheet = Color(0xFF1B1A17);
+  static const tile = Color(0xFF262420);
+  static const pill = Color(0xFF2E2C28);
+  static const ink = Color(0xFFF3EEE6);
+  static const inkMuted = Color(0xFFA8A29A);
+  static const pillInk = Color(0xFFD8D2C6);
+  static const gold = Color(0xFFF5C451);
+  static const line = Color(0xFF3A3A3A);
+  static const amber = Color(0xFFF5A623);
+  static const onAmber = Color(0xFF1B1A17);
+}
+
+/// Status tints from the designs (ok, warn, err), per theme.
+class SgStatus {
+  SgStatus._();
+  static Color get okBg =>
+      SgColors.isDark ? const Color(0xFF12332A) : const Color(0xFFDDF1E6);
+  static Color get okInk =>
+      SgColors.isDark ? const Color(0xFF46C98B) : const Color(0xFF0B6B57);
+  static Color get warnBg =>
+      SgColors.isDark ? const Color(0xFF3A2C10) : const Color(0xFFFCEFD3);
+  static Color get warnLine =>
+      SgColors.isDark ? const Color(0xFF5A4518) : const Color(0xFFF0D9A8);
+  static Color get warnInk =>
+      SgColors.isDark ? const Color(0xFFF5C451) : const Color(0xFF7A4A00);
+  static Color get rowFill =>
+      SgColors.isDark ? const Color(0xFF242424) : const Color(0xFFF3EEE6);
+  static Color get disabledBg =>
+      SgColors.isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE7E1D7);
+  static Color get disabledInk =>
+      SgColors.isDark ? const Color(0xFF8C8579) : const Color(0xFF8A857C);
+}

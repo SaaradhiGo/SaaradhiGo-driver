@@ -1,35 +1,28 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_typography.dart';
 import 'package:saaradhigo_driver/ui/sg_l10n.dart';
-import 'package:saaradhigo_driver/ui/sg_tokens.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
+import 'package:saaradhigo_driver/ui/sg_tokens.dart';
+import 'package:saaradhigo_driver/ui/sg_widgets.dart';
 
 /// Item metadata for the main driver bottom navigation bar.
 class AppBottomNavItemData {
   const AppBottomNavItemData({
     required this.route,
     required this.icon,
-    required this.activeIcon,
     required this.label,
   });
 
   final String route;
-  final IconData icon;
-  final IconData activeIcon;
+
+  /// SVG path body (24x24, stroked), as in the designs.
+  final String icon;
   final String label;
 }
 
-/// Glassmorphism Bottom Navigation Bar for the SaaradhiGo Driver App.
-///
-/// Features:
-/// - Distinct press/tap scale spring animation (`0.92x` shrink on press).
-/// - Dynamic active tab indicator with animated pill background, gold color
-///   transition (`#D4AF37`), icon scale boost (`1.15x`), and glowing indicator dot.
+/// The driver tab bar (signed-in designs, 2026-11-08): Home, Earnings, Trips,
+/// Documents on the dark sheet colour, gold for the active tab. It continues
+/// the Home sheet, so the two read as one surface.
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
@@ -43,27 +36,25 @@ class AppBottomNav extends StatelessWidget {
   static const List<AppBottomNavItemData> items = [
     AppBottomNavItemData(
       route: '/',
-      icon: Icons.home_outlined,
-      activeIcon: Icons.home_rounded,
+      icon: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
       label: 'Home',
     ),
     AppBottomNavItemData(
-      route: '/history',
-      icon: Icons.route_outlined,
-      activeIcon: Icons.route_rounded,
-      label: 'Trips',
-    ),
-    AppBottomNavItemData(
       route: '/earnings',
-      icon: Icons.payments_outlined,
-      activeIcon: Icons.payments_rounded,
+      icon: '<rect x="3" y="6" width="18" height="14" rx="2"/>'
+          '<path d="M3 10h18M16 15h2"/>',
       label: 'Earnings',
     ),
     AppBottomNavItemData(
-      route: '/profile',
-      icon: Icons.person_outline_rounded,
-      activeIcon: Icons.person_rounded,
-      label: 'Profile',
+      route: '/history',
+      icon: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+      label: 'Trips',
+    ),
+    AppBottomNavItemData(
+      route: '/documents',
+      icon: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 '
+          '2-2V9z"/><path d="M14 3v6h6"/>',
+      label: 'Documents',
     ),
   ];
 
@@ -73,7 +64,7 @@ class AppBottomNav extends StatelessWidget {
         '/' => l.navHome,
         '/history' => l.navTrips,
         '/earnings' => l.navEarnings,
-        '/profile' => l.navProfile,
+        '/documents' => l.navDocuments,
         _ => item.label,
       };
 
@@ -81,143 +72,71 @@ class AppBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = sgL10n(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
-
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(
-        top: Radius.circular(AppSpacing.radiusLg),
+    return Container(
+      key: const Key('driver_tab_bar'),
+      color: SgNoir.sheet,
+      padding: EdgeInsets.fromLTRB(
+        SgSpace.s2,
+        SgSpace.s1,
+        SgSpace.s2,
+        SgSpace.s3 + bottomInset,
       ),
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          height: 68 + bottomInset,
-          padding: EdgeInsets.only(
-            bottom: bottomInset,
-            left: AppSpacing.sm,
-            right: AppSpacing.sm,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            border: Border(
-              top: BorderSide(color: AppColors.outlineVariant),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: SgColors.shadow,
-                blurRadius: 20,
-                offset: const Offset(0, -4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          for (var i = 0; i < items.length; i++)
+            Expanded(
+              child: _Tab(
+                key: ValueKey(items[i].route),
+                icon: items[i].icon,
+                label: _label(l, items[i]),
+                active: currentIndex == i,
+                onTap: () => onTap(i),
               ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (index) {
-              final item = items[index];
-              return _BottomNavItem(
-                key: ValueKey(item.route),
-                data: AppBottomNavItemData(
-                  route: item.route,
-                  icon: item.icon,
-                  activeIcon: item.activeIcon,
-                  label: _label(l, item),
-                ),
-                isActive: currentIndex == index,
-                onTap: () => onTap(index),
-              );
-            }),
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }
 }
 
-class _BottomNavItem extends StatefulWidget {
-  const _BottomNavItem({
+class _Tab extends StatelessWidget {
+  const _Tab({
     super.key,
-    required this.data,
-    required this.isActive,
+    required this.icon,
+    required this.label,
+    required this.active,
     required this.onTap,
   });
 
-  final AppBottomNavItemData data;
-  final bool isActive;
+  final String icon;
+  final String label;
+  final bool active;
   final VoidCallback onTap;
 
   @override
-  State<_BottomNavItem> createState() => _BottomNavItemState();
-}
-
-class _BottomNavItemState extends State<_BottomNavItem> {
-  bool _isPressed = false;
-
-  void _onTapDown(TapDownDetails details) {
-    setState(() => _isPressed = true);
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    setState(() => _isPressed = false);
-  }
-
-  void _onTapCancel() {
-    setState(() => _isPressed = false);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isActive = widget.isActive;
-
-    return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
-      onTap: widget.onTap,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.92 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeOutCubic,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm + 2,
-            vertical: AppSpacing.unit,
-          ),
-          // decoration: BoxDecoration(
-          //   color: isActive
-          //       ? AppColors.primary.withValues(alpha: 0.12)
-          //       : Colors.transparent,
-          //   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          // ),
+    final color = active ? SgNoir.gold : SgNoir.inkMuted;
+    return Semantics(
+      button: true,
+      selected: active,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              AnimatedScale(
-                scale: isActive ? 1.15 : 1.0,
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeOutCubic,
-                child: Icon(
-                  isActive ? widget.data.activeIcon : widget.data.icon,
-                  size: 22,
-                  color: isActive
-                      ? AppColors.primaryText
-                      : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
-                ),
-              ),
-              const SizedBox(height: 3),
-              AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeOutCubic,
-                style: AppTypography.labelCaps.copyWith(
-                  fontSize: SgText.sizeSmall,
-                  letterSpacing: 0,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                  color: isActive
-                      ? AppColors.primaryText
-                      : AppColors.onSurfaceVariant.withValues(alpha: 0.7),
-                ),
-                child: Text(widget.data.label),
+              SgIcon(icon, size: 22, color: color),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: SgText.small.copyWith(color: color),
               ),
             ],
           ),

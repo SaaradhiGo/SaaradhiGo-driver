@@ -7,6 +7,7 @@ import '../features/auth/presentation/otp_verification_screen.dart';
 import '../features/auth/presentation/providers/auth_notifier.dart';
 import '../features/auth/presentation/providers/auth_state.dart';
 import '../features/dashboard/presentation/driver_dashboard_screen.dart';
+import '../features/earnings/presentation/screens/driver_earnings_tab.dart';
 import '../features/earnings/presentation/screens/earnings_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/trip_history_screen.dart';
 import '../features/trip_history/presentation/screens/trip_details_screen.dart';
@@ -192,6 +193,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/earnings',
+                builder: (context, state) => const DriverEarningsTab(),
+                routes: [
+                  // The full earnings screen: settlements, payouts and the
+                  // existing withdrawal flow.
+                  GoRoute(
+                    path: 'all',
+                    builder: (context, state) =>
+                        const EarningsDashboardScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/history',
                 builder: (context, state) => const TripHistoryScreen(),
                 routes: [
@@ -210,16 +228,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/earnings',
-                builder: (context, state) => const EarningsDashboardScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (context, state) => const DriverProfileScreen(),
+                path: '/documents',
+                builder: (context, state) => const DocumentsScreen(),
               ),
             ],
           ),
@@ -290,9 +300,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return SupportTicketDetailScreen(ticketId: ticketId);
         },
       ),
+      // Profile left the tab bar (Documents took its place); the menu opens it.
       GoRoute(
-        path: '/documents',
-        builder: (context, state) => const DocumentsScreen(),
+        path: '/profile',
+        builder: (context, state) => const DriverProfileScreen(),
       ),
       GoRoute(
         path: '/vehicle',

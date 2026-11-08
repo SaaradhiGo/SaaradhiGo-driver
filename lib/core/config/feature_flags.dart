@@ -35,3 +35,20 @@ String? _rawFlag(String key) {
     return null;
   }
 }
+
+/// Signed-in designs (2026-11-08): parts of the driver earnings design that
+/// wait on the API or on a product decision. All off.
+class DriverDesignFlags {
+  DriverDesignFlags._();
+
+  /// "Tips" row: needs a tips amount from the earnings API (none today).
+  static const tipsRow = false;
+
+  /// "Withdraw ₹X" button: no new in-app money flow tonight; the existing
+  /// withdrawal screen stays under "All earnings and payouts".
+  static const withdrawButton = false;
+
+  /// "To bank account ending 1234": needs the payout account's last digits
+  /// from the balance API.
+  static const bankLast4 = false;
+}

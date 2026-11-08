@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../core/market/market_config_store.dart';
+import 'driver_shell.dart';
 import 'sg_text.dart';
 import 'sg_tokens.dart';
 import 'sg_widgets.dart';
@@ -197,9 +198,10 @@ class OnlinePill extends StatelessWidget {
   );
 }
 
-/// The driver home (Tier 3, screen 1): a noir earnings card at the top with
-/// the menu on its left and a red Safety button on its right, the plain map,
-/// and a short panel with the status and the one control.
+/// The driver home (signed-in designs, 2026-11-08): the map, the dark top bar
+/// with the DRIVER badge, warn cards under it, and one dark sheet with the
+/// status, today's figures and the one control. The tab bar continues the
+/// sheet underneath.
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({
     super.key,
@@ -230,81 +232,71 @@ class DriverHomeView extends StatelessWidget {
   final bool busy;
   final VoidCallback onMenu;
 
-  /// The red Safety button beside the earnings card (the safety centre).
+  /// Kept for callers; Safety lives in the menu on this home.
   final VoidCallback? onSafety;
 
-  /// The bell: messages and notices (Messages left the tab bar in group E).
+  /// Kept for callers; messages live in the menu on this home.
   final VoidCallback? onInbox;
   final int unread;
 
-  /// Whole-rupee text, or null while it has not loaded.
+  /// Today's figure as formatted text (net when [commission] is known), or
+  /// null while it has not loaded.
   final String? earnings;
 
-  /// Today's commission, whole currency; when set, [earnings] is the net.
+  /// Today's commission; when set, [earnings] is after commission.
   final String? commission;
   final int? trips;
   final Duration? onlineFor;
   final HomeBlocker? blocker;
 
-  /// Calm lines under the card: reconnecting, weak GPS.
+  /// Notices under the top bar: reconnecting, weak GPS.
   final List<Widget> notices;
   final VoidCallback? onGoOnline;
   final VoidCallback? onGoOffline;
   final VoidCallback? onEarnings;
   final Widget? mapButton;
 
-  /// The sun/moon switch, under the menu button.
+  /// Unused on this home (appearance is in the profile); kept for callers.
   final Widget? themeButton;
 
   @override
   Widget build(BuildContext context) {
     final l = sgL10n(context);
-    final top = MediaQuery.paddingOf(context).top;
-    final bottom = MediaQuery.paddingOf(context).bottom;
     return Stack(
       children: [
         Positioned.fill(child: map),
         Positioned(
-          top: top + SgSpace.s3,
-          left: SgSpace.s4,
-          right: SgSpace.s4,
+          top: 0,
+          left: 0,
+          right: 0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SgMapButton(
-                        icon: SgIcons.menu,
-                        label: l.commonMenu,
-                        onTap: onMenu,
+              DriverTopBar(onMenu: onMenu),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SgSpace.s4,
+                  SgSpace.s4,
+                  SgSpace.s4,
+                  0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (blocker != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: SgSpace.s2),
+                        child: DriverWarnCard(
+                          key: const Key('home_blocker'),
+                          title: blocker!.title,
+                          body: blocker!.actionLabel,
+                          onTap: blocker!.onAction,
+                        ),
                       ),
-                      if (themeButton != null) ...[
-                        const SizedBox(height: SgSpace.s2),
-                        themeButton!,
-                      ],
-                    ],
-                  ),
-                  const SizedBox(width: SgSpace.s2),
-                  Expanded(
-                    child: EarningsNoirCard(
-                      earnings: earnings,
-                      commission: commission,
-                      trips: trips,
-                      onTap: onEarnings,
-                    ),
-                  ),
-                  if (onSafety != null) ...[
-                    const SizedBox(width: SgSpace.s2),
-                    SafetyButton(onTap: onSafety!),
+                    for (final n in notices) n,
                   ],
-                ],
+                ),
               ),
-              if (notices.isNotEmpty) const SizedBox(height: SgSpace.s2),
-              for (final n in notices) n,
             ],
           ),
         ),
@@ -312,104 +304,280 @@ class DriverHomeView extends StatelessWidget {
           left: 0,
           right: 0,
           bottom: 0,
-          // Landscape or a large text size: the panel scrolls under the top
-          // row rather than running off the screen.
-          top: top + kSgTouch + SgSpace.s5,
-          child: SgBottomSheetArea(
-            mapButton: mapButton,
-            child: SgSheetSurface(
-              padding: EdgeInsets.fromLTRB(
-                SgSpace.s4,
-                SgSpace.s3,
-                SgSpace.s4,
-                SgSpace.s4 + bottom,
-              ),
-              child: SingleChildScrollView(child: _panel(l)),
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (mapButton != null)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: SgSpace.s4,
+                    bottom: SgSpace.s3,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: mapButton,
+                  ),
+                ),
+              _sheet(context, l),
+            ],
           ),
         ),
       ],
     );
   }
 
-  Widget _panel(AppLocalizations l) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          height: kSgTouch,
-          child: Row(
+  Widget _sheet(BuildContext context, AppLocalizations l) {
+    final hint = online
+        ? (onlineFor == null
+              ? l.homeLooking
+              : '${l.homeLooking} · '
+                    '${onlineTimeLabel(onlineFor!, justStarted: l.homeJustStarted)}')
+        : (blocker?.body ?? l.homeOfflineHint);
+    return Container(
+      key: const Key('home_sheet'),
+      decoration: const BoxDecoration(
+        color: SgNoir.sheet,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, SgSpace.s4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
             children: [
-              Container(
-                key: const Key('home_status_dot'),
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: online ? SgColors.success : SgColors.lineStrong,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      online ? l.homeOnlineTitle : l.homeOfflineTitle,
+                      key: const Key('home_status'),
+                      style: SgText.title.copyWith(color: SgNoir.ink),
+                    ),
+                    Text(
+                      hint,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: SgText.small.copyWith(color: SgNoir.inkMuted),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: SgSpace.s3),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: statusLabel),
-                      if (online && onlineFor != null)
-                        TextSpan(
-                          text:
-                              '  · ${onlineTimeLabel(onlineFor!, justStarted: l.homeJustStarted)}',
-                          style: SgText.body.copyWith(color: SgColors.inkMuted),
-                        ),
-                    ],
-                  ),
-                  key: const Key('home_status'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: SgText.screenTitle.copyWith(
-                    color: online ? SgColors.ink : SgColors.inkMuted,
-                  ),
-                ),
-              ),
-              if (onInbox != null)
-                InboxBell(
-                  unread: unread,
-                  onTap: onInbox!,
-                  label: l.homeMessages,
-                ),
+              _StatusPill(label: statusLabel, online: online),
             ],
           ),
-        ),
-        if (blocker != null) ...[
-          const SizedBox(height: SgSpace.s2),
-          _BlockerNotice(blocker: blocker!),
-        ] else if (online) ...[
-          Text(
-            l.homeLooking,
-            style: SgText.body.copyWith(color: SgColors.inkMuted),
+          const SizedBox(height: SgSpace.s4),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _NoirTile(
+                    key: const Key('home_earnings_card'),
+                    label: l.homeTodayEarned,
+                    value: earnings ?? '–',
+                    valueKey: const Key('home_earnings'),
+                    gold: true,
+                    onTap: onEarnings,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _NoirTile(
+                    label: l.homeTripsToday,
+                    value: trips == null ? '–' : '$trips',
+                    valueKey: const Key('home_trips'),
+                    onTap: onEarnings,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: SgSpace.s3),
-          SgSecondaryButton(
-            key: const Key('home_go_offline'),
-            label: busy ? l.commonPleaseWait : l.homeGoOffline,
-            height: kSgTouch,
-            onPressed: busy ? null : onGoOffline,
-          ),
-        ] else ...[
-          const SizedBox(height: SgSpace.s2),
-          SgPrimaryButton(
-            key: const Key('home_go_online'),
-            label: busy ? l.commonPleaseWait : l.homeGoOnline,
-            height: kSgPrimaryAction,
-            onPressed: busy ? null : onGoOnline,
-          ),
+          const SizedBox(height: SgSpace.s4),
+          if (online)
+            _NoirButton(
+              key: const Key('home_go_offline'),
+              label: busy ? l.commonPleaseWait : l.homeGoOffline,
+              onPressed: busy ? null : onGoOffline,
+              primary: false,
+            )
+          else
+            _NoirButton(
+              key: const Key('home_go_online'),
+              label: busy ? l.commonPleaseWait : l.homeGoOnline,
+              onPressed: busy || blocker != null ? null : onGoOnline,
+              primary: true,
+            ),
         ],
-      ],
+      ),
     );
   }
 }
 
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.label, required this.online});
+
+  final String label;
+  final bool online;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    key: const Key('home_status_pill'),
+    height: 28,
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+      color: online ? SgStatus.okBg : SgNoir.pill,
+      borderRadius: BorderRadius.circular(SgRadius.pill),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (online) ...[
+          Container(
+            key: const Key('home_status_dot'),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: SgStatus.okInk,
+            ),
+          ),
+          const SizedBox(width: 6),
+        ],
+        Text(
+          label,
+          style: SgText.small.copyWith(
+            fontWeight: FontWeight.w600,
+            color: online ? SgStatus.okInk : SgNoir.pillInk,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _NoirTile extends StatelessWidget {
+  const _NoirTile({
+    super.key,
+    required this.label,
+    required this.value,
+    this.valueKey,
+    this.gold = false,
+    this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final Key? valueKey;
+  final bool gold;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: SgNoir.tile,
+    borderRadius: BorderRadius.circular(14),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              maxLines: 2,
+              style: SgText.small.copyWith(color: SgNoir.inkMuted),
+            ),
+            const SizedBox(height: 4),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                key: valueKey,
+                maxLines: 1,
+                style: SgText.heading.copyWith(
+                  color: gold ? SgNoir.gold : SgNoir.ink,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// 72px, radius 18: amber "Go online" with the power icon, or an outlined
+/// "Go offline" on the dark sheet.
+class _NoirButton extends StatelessWidget {
+  const _NoirButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    required this.primary,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool primary;
+
+  @override
+  Widget build(BuildContext context) {
+    final on = onPressed != null;
+    final fg = primary
+        ? (on ? SgNoir.onAmber : SgNoir.inkMuted)
+        : (on ? SgNoir.ink : SgNoir.inkMuted);
+    return Semantics(
+      button: true,
+      enabled: on,
+      label: label,
+      excludeSemantics: true,
+      child: Material(
+        color: primary ? (on ? SgNoir.amber : SgNoir.pill) : SgNoir.sheet,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(18),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 72),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            decoration: primary
+                ? null
+                : BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: SgNoir.line),
+                  ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SgIcon(
+                  '<path d="M12 3v9"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/>',
+                  size: 24,
+                  color: fg,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: SgText.title.copyWith(color: fg),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 /// "₹1,240" with the currency symbol in gold-text. Falls back to plain text
 /// when the amount carries no known symbol.
 class GoldSymbolAmount extends StatelessWidget {
@@ -595,49 +763,6 @@ class SafetyButton extends StatelessWidget {
   }
 }
 
-class _BlockerNotice extends StatelessWidget {
-  const _BlockerNotice({required this.blocker});
-
-  final HomeBlocker blocker;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(SgSpace.s4),
-    decoration: BoxDecoration(
-      color: SgColors.bg200,
-      borderRadius: BorderRadius.circular(SgRadius.md),
-      border: Border.all(color: SgColors.line),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(blocker.title, style: SgText.title),
-        const SizedBox(height: SgSpace.s1),
-        Text(blocker.body, style: SgText.caption),
-        const SizedBox(height: SgSpace.s3),
-        InkWell(
-          onTap: blocker.onAction,
-          borderRadius: BorderRadius.circular(SgRadius.sm),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: kSgTouch),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                blocker.actionLabel,
-                style: SgText.body.copyWith(
-                  color: SgColors.goldText,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
 /// A calm notice above the sheet (reconnecting, weak GPS), with an optional
 /// action.
 class HomeNotice extends StatelessWidget {
@@ -656,16 +781,19 @@ class HomeNotice extends StatelessWidget {
     ),
     constraints: const BoxConstraints(minHeight: kSgTouch),
     decoration: BoxDecoration(
-      color: SgColors.bgGlass,
+      color: SgStatus.warnBg,
       borderRadius: BorderRadius.circular(SgRadius.md),
-      border: Border.all(color: SgColors.line),
+      border: Border.all(color: SgStatus.warnLine),
     ),
     child: Row(
       children: [
         Expanded(
           child: Text(
             text,
-            style: SgText.caption.copyWith(color: SgColors.ink),
+            style: SgText.small.copyWith(
+              color: SgColors.ink,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         if (actionLabel != null)

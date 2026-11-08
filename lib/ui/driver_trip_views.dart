@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/market/market_config_store.dart';
 import 'driver_home_view.dart';
@@ -440,15 +441,15 @@ class PinBoxes extends StatelessWidget {
                 height: height,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: SgColors.bg200,
-                  borderRadius: BorderRadius.circular(SgRadius.md),
+                  color: SgColors.bg100,
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    width: i == digits.length && !error ? 2 : 1,
+                    width: 2,
                     color: error
                         ? SgColors.danger
                         : i == digits.length
-                        ? SgColors.goldText
-                        : SgColors.lineStrong,
+                        ? SgColors.ink
+                        : SgColors.line,
                   ),
                 ),
                 child: Text(
@@ -584,18 +585,24 @@ String? pinErrorText(String? raw, String? riderName, [AppLocalizations? l]) {
   return raw;
 }
 
-/// Reached (Tier 3, screen 3): "At pickup" with a check, the rider with a
-/// 56px contact button, the PIN boxes, a 64px keypad and a 72px Start trip.
+/// At pickup (signed-in designs, 2026-11-08): the map, SOS, and a white sheet
+/// with "At pickup", the rider and class, six code boxes, "You earn on this
+/// trip" when the API sent it, and Start trip.
 ///
-/// Start trip sends the PIN through the existing start flow; the trip only
-/// moves on when the API accepts it, and a refusal comes back as [error].
-class PinCheckView extends StatelessWidget {
+/// The code goes to the server as soon as the sixth digit is typed (the
+/// `start` command with the `otp`). Start trip stays disabled throughout: the
+/// trip starts only when the server accepts the code, and a refusal comes
+/// back as [error].
+class PinCheckView extends StatefulWidget {
   const PinCheckView({
     super.key,
     required this.controller,
     required this.riderName,
     this.riderRating,
     this.pickupAddress,
+    this.vehicleClass,
+    this.earning,
+    this.map,
     this.error,
     this.busy = false,
     this.length = kTripPinLength,
@@ -610,262 +617,279 @@ class PinCheckView extends StatelessWidget {
   final String? riderName;
   final double? riderRating;
   final String? pickupAddress;
+
+  /// "Mini", "Sedan": Latin, as the API names the class.
+  final String? vehicleClass;
+
+  /// The driver's earning for this trip as formatted text, only when the API
+  /// returned one.
+  final String? earning;
+
+  /// The map above the sheet; plain ground when null.
+  final Widget? map;
   final String? error;
+
+  /// True while the server checks the code.
   final bool busy;
   final int length;
+
+  /// Sends the code; called when the last digit is typed.
   final VoidCallback? onStart;
   final VoidCallback? onCancel;
   final ValueChanged<String>? onChanged;
-
-  /// The existing trip chat. TODO(data): a masked number to call the rider;
-  /// there is no call action today, so the 56px button is the message one.
   final VoidCallback? onMessage;
   final Widget? topActions;
 
   @override
+  State<PinCheckView> createState() => _PinCheckViewState();
+}
+
+class _PinCheckViewState extends State<PinCheckView> {
+  final _focus = FocusNode();
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _changed(String v) {
+    widget.onChanged?.call(v);
+    setState(() {});
+    if (v.length == widget.length && !widget.busy) widget.onStart?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = sgL10n(context);
-    final first = firstNameOf(riderName);
+    final first = firstNameOf(widget.riderName);
     final who = first.isEmpty ? l.riderFallback : first;
-    final ready = controller.text.length == length;
-    final rated = riderRating != null && riderRating! > 0;
-    final initials = initialsOf(riderName);
-    // TODO(data): the free-wait timer needs the time the driver reached
-    // pickup and cancel_policy.free_wait_minutes; neither reaches this
-    // screen yet, so "At pickup" shows without a timer.
-    final tablet = SgText.sizeClass == SgSizeClass.tablet;
-    return Scaffold(
-      backgroundColor: SgColors.bg000,
-      body: SafeArea(
-        // Tablets: a centred card at most 480 wide (owner brief).
-        child: _CentredCard(
-          tablet: tablet,
-          cardKey: const Key('pin_tablet_card'),
-          child: LayoutBuilder(
-            builder: (context, box) {
-              // A short window (a 360x640 phone, a landscape phone, a large
-              // text size): fold the rider row into the header and tighten
-              // the gaps so Start trip stays on screen without a scroll.
-              final short = box.maxHeight < 700;
-              final Widget? message = onMessage == null
-                  ? null
-                  : Semantics(
-                      button: true,
-                      label: l.pinMessage(who),
-                      excludeSemantics: true,
-                      child: Material(
-                        color: SgColors.bg200,
-                        shape: CircleBorder(
-                          side: BorderSide(color: SgColors.lineStrong),
-                        ),
-                        child: InkWell(
-                          key: const Key('trip_message'),
-                          customBorder: const CircleBorder(),
-                          onTap: onMessage,
-                          child: SizedBox(
-                            width: 56,
-                            height: 56,
-                            child: Center(
-                              child: SgIcon(
-                                SgIcons.message,
-                                size: 24,
-                                color: SgColors.ink,
-                              ),
-                            ),
+    final digits = widget.controller.text;
+    final title = [
+      who,
+      if (widget.vehicleClass != null && widget.vehicleClass!.isNotEmpty)
+        widget.vehicleClass!,
+    ].join(' · ');
+    final sheet = Container(
+      key: const Key('pin_sheet'),
+      decoration: BoxDecoration(
+        color: SgColors.bg100,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: SgColors.shadow,
+            blurRadius: 30,
+            offset: const Offset(0, -10),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: SgColors.line,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.pinAtPickup.toUpperCase(),
+                        key: const Key('pin_at_pickup'),
+                        style: SgText.eyebrow.copyWith(color: SgColors.inkMuted),
+                      ),
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: SgText.title,
+                      ),
+                    ],
+                  ),
+                ),
+                if (widget.onMessage != null)
+                  Semantics(
+                    button: true,
+                    label: l.pinMessage(who),
+                    excludeSemantics: true,
+                    child: Material(
+                      color: SgStatus.rowFill,
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        key: const Key('trip_message'),
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: widget.onMessage,
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: Center(
+                            child: SgIcon(SgIcons.message, color: SgColors.ink),
                           ),
                         ),
                       ),
-                    );
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  SgSpace.s4,
-                  SgSpace.s2,
-                  SgSpace.s4,
-                  SgSpace.s3,
-                ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: box.maxHeight - SgSpace.s2 - SgSpace.s3,
+                    ),
                   ),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: kSgTouch,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 32,
-                                height: 32,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: SgColors.success,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: SgIcon(
-                                  SgIcons.check,
-                                  size: 20,
-                                  color: SgColors.bg000,
-                                ),
-                              ),
-                              const SizedBox(width: SgSpace.s2),
-                              Expanded(
-                                child: Text(
-                                  l.pinAtPickup,
-                                  key: const Key('pin_at_pickup'),
-                                  style: SgText.sectionTitle.copyWith(
-                                    color: SgColors.success,
-                                  ),
-                                ),
-                              ),
-                              if (short) ?message,
-                              if (short) const SizedBox(width: SgSpace.s2),
-                              ?topActions,
-                            ],
-                          ),
-                        ),
-                        if (!short) const SizedBox(height: SgSpace.s2),
-                        if (!short)
-                          Row(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: SgColors.bg300,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: SgColors.line),
-                                ),
-                                child: initials.isEmpty
-                                    ? SgIcon(SgIcons.user, color: SgColors.ink)
-                                    : Text(initials, style: SgText.title),
-                              ),
-                              const SizedBox(width: SgSpace.s3),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      first.isEmpty ? l.riderFallback : first,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: SgText.sectionTitle,
-                                    ),
-                                    if (rated)
-                                      Row(
-                                        children: [
-                                          SgIcon(
-                                            kStarIcon,
-                                            size: 14,
-                                            color: SgColors.goldText,
-                                          ),
-                                          const SizedBox(width: SgSpace.s1),
-                                          Text(
-                                            riderRating!.toStringAsFixed(1),
-                                            style: SgText.caption,
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              if (!short) ?message,
-                            ],
-                          ),
-                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s4),
-                        Text(l.pinAsk(who), style: SgText.heading),
-                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
-                        PinBoxes(
-                          digits: controller.text,
-                          length: length,
-                          error: error != null,
-                          height: short ? 56 : 72,
-                        ),
-                        SizedBox(
-                          height: short ? 32 : 48,
-                          child: error == null
-                              ? null
-                              : Center(
-                                  child: Text(
-                                    error!,
-                                    key: const Key('trip_pin_error'),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: SgText.body.copyWith(
-                                      color: SgColors.danger,
-                                    ),
-                                  ),
-                                ),
-                        ),
-                        PinKeypad(
-                          controller: controller,
-                          length: length,
-                          enabled: !busy,
-                          onChanged: onChanged,
-                        ),
-                        const Spacer(),
-                        SizedBox(height: short ? SgSpace.s2 : SgSpace.s3),
-                        SgPrimaryButton(
-                          key: const Key('trip_start'),
-                          label: busy ? l.commonPleaseWait : l.pinStartTrip,
-                          height: kSgPrimaryAction,
-                          onPressed: busy || !ready ? null : onStart,
-                        ),
-                        _QuietLink(
-                          key: const Key('trip_cancel'),
-                          label: l.tripCancelRide,
-                          onTap: busy ? null : onCancel,
-                        ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l.codeAsk,
+              style: SgText.body.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            Stack(
+              children: [
+                PinBoxes(
+                  digits: digits,
+                  length: widget.length,
+                  error: widget.error != null,
+                  height: 56,
+                ),
+                // The real input: an invisible field over the boxes, so the
+                // phone's number pad types into them.
+                Positioned.fill(
+                  child: Opacity(
+                    opacity: 0,
+                    child: TextField(
+                      key: const Key('pin_input'),
+                      controller: widget.controller,
+                      focusNode: _focus,
+                      enabled: !widget.busy,
+                      keyboardType: TextInputType.number,
+                      maxLength: widget.length,
+                      showCursor: false,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
                       ],
+                      decoration: const InputDecoration(
+                        counterText: '',
+                        border: InputBorder.none,
+                      ),
+                      onChanged: _changed,
                     ),
                   ),
                 ),
-              );
-            },
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              widget.error ?? l.codeHint,
+              key: widget.error == null ? null : const Key('trip_pin_error'),
+              style: SgText.small.copyWith(
+                color: widget.error == null
+                    ? SgColors.inkMuted
+                    : SgColors.danger,
+              ),
+            ),
+            if (widget.earning != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                key: const Key('pin_earn_row'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: SgStatus.okBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l.codeYouEarn,
+                        style: SgText.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: SgStatus.okInk,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      widget.earning!,
+                      style: SgText.title.copyWith(color: SgStatus.okInk),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 12),
+            Semantics(
+              button: true,
+              enabled: false,
+              label: widget.busy ? l.codeChecking : l.pinStartTrip,
+              excludeSemantics: true,
+              child: Container(
+                key: const Key('trip_start'),
+                height: 64,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: SgStatus.disabledBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  widget.busy ? l.codeChecking : l.pinStartTrip,
+                  style: SgText.title.copyWith(color: SgStatus.disabledInk),
+                ),
+              ),
+            ),
+            _QuietLink(
+              key: const Key('trip_cancel'),
+              label: l.tripCancelRide,
+              onTap: widget.busy ? null : widget.onCancel,
+            ),
+          ],
+        ),
+      ),
+    );
+    return Scaffold(
+      backgroundColor: SgColors.bg000,
+      body: Center(
+        child: ConstrainedBox(
+          key: SgText.sizeClass == SgSizeClass.tablet
+              ? const Key('pin_tablet_card')
+              : null,
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: widget.map ?? ColoredBox(color: SgColors.bg200),
+                    ),
+                    if (widget.topActions != null)
+                      Positioned(
+                        top: MediaQuery.paddingOf(context).top + SgSpace.s4,
+                        right: SgSpace.s4,
+                        child: widget.topActions!,
+                      ),
+                  ],
+                ),
+              ),
+              sheet,
+            ],
           ),
         ),
       ),
     );
   }
-}
-
-/// Phones: the child, at most 480 wide. Tablets: a bordered card, centred.
-class _CentredCard extends StatelessWidget {
-  const _CentredCard({required this.tablet, required this.child, this.cardKey});
-
-  final bool tablet;
-  final Widget child;
-  final Key? cardKey;
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 480,
-        maxHeight: tablet ? 900 : double.infinity,
-      ),
-      child: tablet
-          ? Padding(
-              padding: const EdgeInsets.all(SgSpace.s5),
-              child: DecoratedBox(
-                key: cardKey,
-                decoration: BoxDecoration(
-                  color: SgColors.bg100,
-                  borderRadius: BorderRadius.circular(SgRadius.xl),
-                  border: Border.all(color: SgColors.line),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(SgRadius.xl),
-                  child: child,
-                ),
-              ),
-            )
-          : child,
-    ),
-  );
 }
 
 /// The large light banner over the trip map. There is no turn-by-turn data,
