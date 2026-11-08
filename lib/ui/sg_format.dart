@@ -15,25 +15,23 @@ String sgNumberLocale(String currency, [String? languageCode]) {
 }
 
 /// An amount the API returned, formatted in [currency] (default: the
-/// market's). Whole units unless the amount has paise/cents and [whole] is
-/// false. Null when [raw] is missing or does not parse: nothing is invented.
+/// market's). Whole units, or the currency's decimals when [whole] is false.
+/// Null when [raw] is missing or does not parse: nothing is invented.
 String? sgMoney(Object? raw, {String? currency, bool whole = true}) {
   if (raw == null) return null;
   final market = MarketConfigStore.instance.current;
   final value = raw is num
       ? raw.toDouble()
-      : double.tryParse(
-          market.stripSymbol('$raw').replaceAll(',', '').trim(),
-        );
+      : double.tryParse(market.stripSymbol('$raw').replaceAll(',', '').trim());
   if (value == null) return null;
   final code = (currency == null || currency.trim().isEmpty)
       ? market.currencyCode
       : currency.trim().toUpperCase();
-  final hasFraction = (value - value.truncateToDouble()).abs() > 0.004;
+  // whole: false keeps the currency's own decimals (₹0.00, ₹631.55).
   final f = NumberFormat.simpleCurrency(
     locale: sgNumberLocale(code),
     name: code,
-    decimalDigits: whole || !hasFraction ? 0 : 2,
+    decimalDigits: whole ? 0 : null,
   );
   return f.format(whole ? value.roundToDouble() : value);
 }

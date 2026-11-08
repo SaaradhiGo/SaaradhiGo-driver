@@ -22,5 +22,11 @@ abstract class EarningsState with _$EarningsState {
     String? errorMessage,
     String? withdrawalSuccessMessage,
     double? cashToCollect,
+    // Per-section outcome of the last load, so each card can show its own
+    // error with Try again instead of waiting forever.
+    @Default(false) bool summaryFailed,
+    @Default(false) bool balanceFailed,
+    @Default(false) bool listLoaded,
+    @Default(false) bool historyLoaded,
   }) = _EarningsState;
 }

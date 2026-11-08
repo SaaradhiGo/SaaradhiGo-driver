@@ -69,6 +69,8 @@ abstract class EarningsSummaryModel with _$EarningsSummaryModel {
     @JsonKey(name: 'reward_recovery_label') String? rewardRecoveryLabel,
     @JsonKey(name: 'reward_recovery_remaining', fromJson: nullableMoneyFromJson)
     String? rewardRecoveryRemaining,
+    // The currency of every amount here (backend #186); null on older APIs.
+    @JsonKey(name: 'currency') String? currency,
   }) = _EarningsSummaryModel;
 
   factory EarningsSummaryModel.fromJson(Map<String, dynamic> json) =>

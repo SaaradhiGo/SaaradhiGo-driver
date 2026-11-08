@@ -50,6 +50,7 @@ _EarningsSummaryModel _$EarningsSummaryModelFromJson(
   rewardRecoveryRemaining: nullableMoneyFromJson(
     json['reward_recovery_remaining'],
   ),
+  currency: json['currency'] as String?,
 );
 
 Map<String, dynamic> _$EarningsSummaryModelToJson(
@@ -80,4 +81,5 @@ Map<String, dynamic> _$EarningsSummaryModelToJson(
   'reward_recovery': instance.rewardRecovery,
   'reward_recovery_label': instance.rewardRecoveryLabel,
   'reward_recovery_remaining': instance.rewardRecoveryRemaining,
+  'currency': instance.currency,
 };

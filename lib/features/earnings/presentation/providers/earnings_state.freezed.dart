@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EarningsState {
 
- EarningsSummaryModel? get summary; List<EarningModel> get earningsList; WithdrawalBalanceModel? get withdrawalBalance; List<WithdrawalModel> get withdrawalHistory; int get selectedPeriodIndex; bool get isLoading; bool get isRefreshing; bool get isSubmittingWithdrawal; String? get errorMessage; String? get withdrawalSuccessMessage; double? get cashToCollect;
+ EarningsSummaryModel? get summary; List<EarningModel> get earningsList; WithdrawalBalanceModel? get withdrawalBalance; List<WithdrawalModel> get withdrawalHistory; int get selectedPeriodIndex; bool get isLoading; bool get isRefreshing; bool get isSubmittingWithdrawal; String? get errorMessage; String? get withdrawalSuccessMessage; double? get cashToCollect; bool get summaryFailed; bool get balanceFailed; bool get listLoaded; bool get historyLoaded;
 /// Create a copy of EarningsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $EarningsStateCopyWith<EarningsState> get copyWith => _$EarningsStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsState&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other.earningsList, earningsList)&&(identical(other.withdrawalBalance, withdrawalBalance) || other.withdrawalBalance == withdrawalBalance)&&const DeepCollectionEquality().equals(other.withdrawalHistory, withdrawalHistory)&&(identical(other.selectedPeriodIndex, selectedPeriodIndex) || other.selectedPeriodIndex == selectedPeriodIndex)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.isSubmittingWithdrawal, isSubmittingWithdrawal) || other.isSubmittingWithdrawal == isSubmittingWithdrawal)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.withdrawalSuccessMessage, withdrawalSuccessMessage) || other.withdrawalSuccessMessage == withdrawalSuccessMessage)&&(identical(other.cashToCollect, cashToCollect) || other.cashToCollect == cashToCollect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsState&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other.earningsList, earningsList)&&(identical(other.withdrawalBalance, withdrawalBalance) || other.withdrawalBalance == withdrawalBalance)&&const DeepCollectionEquality().equals(other.withdrawalHistory, withdrawalHistory)&&(identical(other.selectedPeriodIndex, selectedPeriodIndex) || other.selectedPeriodIndex == selectedPeriodIndex)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.isSubmittingWithdrawal, isSubmittingWithdrawal) || other.isSubmittingWithdrawal == isSubmittingWithdrawal)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.withdrawalSuccessMessage, withdrawalSuccessMessage) || other.withdrawalSuccessMessage == withdrawalSuccessMessage)&&(identical(other.cashToCollect, cashToCollect) || other.cashToCollect == cashToCollect)&&(identical(other.summaryFailed, summaryFailed) || other.summaryFailed == summaryFailed)&&(identical(other.balanceFailed, balanceFailed) || other.balanceFailed == balanceFailed)&&(identical(other.listLoaded, listLoaded) || other.listLoaded == listLoaded)&&(identical(other.historyLoaded, historyLoaded) || other.historyLoaded == historyLoaded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(earningsList),withdrawalBalance,const DeepCollectionEquality().hash(withdrawalHistory),selectedPeriodIndex,isLoading,isRefreshing,isSubmittingWithdrawal,errorMessage,withdrawalSuccessMessage,cashToCollect);
+int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(earningsList),withdrawalBalance,const DeepCollectionEquality().hash(withdrawalHistory),selectedPeriodIndex,isLoading,isRefreshing,isSubmittingWithdrawal,errorMessage,withdrawalSuccessMessage,cashToCollect,summaryFailed,balanceFailed,listLoaded,historyLoaded);
 
 @override
 String toString() {
-  return 'EarningsState(summary: $summary, earningsList: $earningsList, withdrawalBalance: $withdrawalBalance, withdrawalHistory: $withdrawalHistory, selectedPeriodIndex: $selectedPeriodIndex, isLoading: $isLoading, isRefreshing: $isRefreshing, isSubmittingWithdrawal: $isSubmittingWithdrawal, errorMessage: $errorMessage, withdrawalSuccessMessage: $withdrawalSuccessMessage, cashToCollect: $cashToCollect)';
+  return 'EarningsState(summary: $summary, earningsList: $earningsList, withdrawalBalance: $withdrawalBalance, withdrawalHistory: $withdrawalHistory, selectedPeriodIndex: $selectedPeriodIndex, isLoading: $isLoading, isRefreshing: $isRefreshing, isSubmittingWithdrawal: $isSubmittingWithdrawal, errorMessage: $errorMessage, withdrawalSuccessMessage: $withdrawalSuccessMessage, cashToCollect: $cashToCollect, summaryFailed: $summaryFailed, balanceFailed: $balanceFailed, listLoaded: $listLoaded, historyLoaded: $historyLoaded)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $EarningsStateCopyWith<$Res>  {
   factory $EarningsStateCopyWith(EarningsState value, $Res Function(EarningsState) _then) = _$EarningsStateCopyWithImpl;
 @useResult
 $Res call({
- EarningsSummaryModel? summary, List<EarningModel> earningsList, WithdrawalBalanceModel? withdrawalBalance, List<WithdrawalModel> withdrawalHistory, int selectedPeriodIndex, bool isLoading, bool isRefreshing, bool isSubmittingWithdrawal, String? errorMessage, String? withdrawalSuccessMessage, double? cashToCollect
+ EarningsSummaryModel? summary, List<EarningModel> earningsList, WithdrawalBalanceModel? withdrawalBalance, List<WithdrawalModel> withdrawalHistory, int selectedPeriodIndex, bool isLoading, bool isRefreshing, bool isSubmittingWithdrawal, String? errorMessage, String? withdrawalSuccessMessage, double? cashToCollect, bool summaryFailed, bool balanceFailed, bool listLoaded, bool historyLoaded
 });
 
 
@@ -63,7 +63,7 @@ class _$EarningsStateCopyWithImpl<$Res>
 
 /// Create a copy of EarningsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? summary = freezed,Object? earningsList = null,Object? withdrawalBalance = freezed,Object? withdrawalHistory = null,Object? selectedPeriodIndex = null,Object? isLoading = null,Object? isRefreshing = null,Object? isSubmittingWithdrawal = null,Object? errorMessage = freezed,Object? withdrawalSuccessMessage = freezed,Object? cashToCollect = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? summary = freezed,Object? earningsList = null,Object? withdrawalBalance = freezed,Object? withdrawalHistory = null,Object? selectedPeriodIndex = null,Object? isLoading = null,Object? isRefreshing = null,Object? isSubmittingWithdrawal = null,Object? errorMessage = freezed,Object? withdrawalSuccessMessage = freezed,Object? cashToCollect = freezed,Object? summaryFailed = null,Object? balanceFailed = null,Object? listLoaded = null,Object? historyLoaded = null,}) {
   return _then(EarningsState(
 summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as EarningsSummaryModel?,earningsList: null == earningsList ? _self.earningsList : earningsList // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,11 @@ as bool,isSubmittingWithdrawal: null == isSubmittingWithdrawal ? _self.isSubmitt
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,withdrawalSuccessMessage: freezed == withdrawalSuccessMessage ? _self.withdrawalSuccessMessage : withdrawalSuccessMessage // ignore: cast_nullable_to_non_nullable
 as String?,cashToCollect: freezed == cashToCollect ? _self.cashToCollect : cashToCollect // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,summaryFailed: null == summaryFailed ? _self.summaryFailed : summaryFailed // ignore: cast_nullable_to_non_nullable
+as bool,balanceFailed: null == balanceFailed ? _self.balanceFailed : balanceFailed // ignore: cast_nullable_to_non_nullable
+as bool,listLoaded: null == listLoaded ? _self.listLoaded : listLoaded // ignore: cast_nullable_to_non_nullable
+as bool,historyLoaded: null == historyLoaded ? _self.historyLoaded : historyLoaded // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of EarningsState
@@ -185,10 +189,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect,  bool summaryFailed,  bool balanceFailed,  bool listLoaded,  bool historyLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EarningsState() when $default != null:
-return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect);case _:
+return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect,_that.summaryFailed,_that.balanceFailed,_that.listLoaded,_that.historyLoaded);case _:
   return orElse();
 
 }
@@ -206,10 +210,10 @@ return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.w
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect,  bool summaryFailed,  bool balanceFailed,  bool listLoaded,  bool historyLoaded)  $default,) {final _that = this;
 switch (_that) {
 case _EarningsState():
-return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect);case _:
+return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect,_that.summaryFailed,_that.balanceFailed,_that.listLoaded,_that.historyLoaded);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +230,10 @@ return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.w
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EarningsSummaryModel? summary,  List<EarningModel> earningsList,  WithdrawalBalanceModel? withdrawalBalance,  List<WithdrawalModel> withdrawalHistory,  int selectedPeriodIndex,  bool isLoading,  bool isRefreshing,  bool isSubmittingWithdrawal,  String? errorMessage,  String? withdrawalSuccessMessage,  double? cashToCollect,  bool summaryFailed,  bool balanceFailed,  bool listLoaded,  bool historyLoaded)?  $default,) {final _that = this;
 switch (_that) {
 case _EarningsState() when $default != null:
-return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect);case _:
+return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.withdrawalHistory,_that.selectedPeriodIndex,_that.isLoading,_that.isRefreshing,_that.isSubmittingWithdrawal,_that.errorMessage,_that.withdrawalSuccessMessage,_that.cashToCollect,_that.summaryFailed,_that.balanceFailed,_that.listLoaded,_that.historyLoaded);case _:
   return null;
 
 }
@@ -241,7 +245,7 @@ return $default(_that.summary,_that.earningsList,_that.withdrawalBalance,_that.w
 
 
 class _EarningsState implements EarningsState {
-  const _EarningsState({this.summary,  List<EarningModel> earningsList = const [], this.withdrawalBalance,  List<WithdrawalModel> withdrawalHistory = const [], this.selectedPeriodIndex = 0, this.isLoading = false, this.isRefreshing = false, this.isSubmittingWithdrawal = false, this.errorMessage, this.withdrawalSuccessMessage, this.cashToCollect}): _earningsList = earningsList,_withdrawalHistory = withdrawalHistory;
+  const _EarningsState({this.summary,  List<EarningModel> earningsList = const [], this.withdrawalBalance,  List<WithdrawalModel> withdrawalHistory = const [], this.selectedPeriodIndex = 0, this.isLoading = false, this.isRefreshing = false, this.isSubmittingWithdrawal = false, this.errorMessage, this.withdrawalSuccessMessage, this.cashToCollect, this.summaryFailed = false, this.balanceFailed = false, this.listLoaded = false, this.historyLoaded = false}): _earningsList = earningsList,_withdrawalHistory = withdrawalHistory;
   
 
 @override final  EarningsSummaryModel? summary;
@@ -267,6 +271,10 @@ class _EarningsState implements EarningsState {
 @override final  String? errorMessage;
 @override final  String? withdrawalSuccessMessage;
 @override final  double? cashToCollect;
+@override@JsonKey() final  bool summaryFailed;
+@override@JsonKey() final  bool balanceFailed;
+@override@JsonKey() final  bool listLoaded;
+@override@JsonKey() final  bool historyLoaded;
 
 /// Create a copy of EarningsState
 /// with the given fields replaced by the non-null parameter values.
@@ -278,16 +286,16 @@ _$EarningsStateCopyWith<_EarningsState> get copyWith => __$EarningsStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsState&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other._earningsList, _earningsList)&&(identical(other.withdrawalBalance, withdrawalBalance) || other.withdrawalBalance == withdrawalBalance)&&const DeepCollectionEquality().equals(other._withdrawalHistory, _withdrawalHistory)&&(identical(other.selectedPeriodIndex, selectedPeriodIndex) || other.selectedPeriodIndex == selectedPeriodIndex)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.isSubmittingWithdrawal, isSubmittingWithdrawal) || other.isSubmittingWithdrawal == isSubmittingWithdrawal)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.withdrawalSuccessMessage, withdrawalSuccessMessage) || other.withdrawalSuccessMessage == withdrawalSuccessMessage)&&(identical(other.cashToCollect, cashToCollect) || other.cashToCollect == cashToCollect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsState&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other._earningsList, _earningsList)&&(identical(other.withdrawalBalance, withdrawalBalance) || other.withdrawalBalance == withdrawalBalance)&&const DeepCollectionEquality().equals(other._withdrawalHistory, _withdrawalHistory)&&(identical(other.selectedPeriodIndex, selectedPeriodIndex) || other.selectedPeriodIndex == selectedPeriodIndex)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.isSubmittingWithdrawal, isSubmittingWithdrawal) || other.isSubmittingWithdrawal == isSubmittingWithdrawal)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.withdrawalSuccessMessage, withdrawalSuccessMessage) || other.withdrawalSuccessMessage == withdrawalSuccessMessage)&&(identical(other.cashToCollect, cashToCollect) || other.cashToCollect == cashToCollect)&&(identical(other.summaryFailed, summaryFailed) || other.summaryFailed == summaryFailed)&&(identical(other.balanceFailed, balanceFailed) || other.balanceFailed == balanceFailed)&&(identical(other.listLoaded, listLoaded) || other.listLoaded == listLoaded)&&(identical(other.historyLoaded, historyLoaded) || other.historyLoaded == historyLoaded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(_earningsList),withdrawalBalance,const DeepCollectionEquality().hash(_withdrawalHistory),selectedPeriodIndex,isLoading,isRefreshing,isSubmittingWithdrawal,errorMessage,withdrawalSuccessMessage,cashToCollect);
+int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(_earningsList),withdrawalBalance,const DeepCollectionEquality().hash(_withdrawalHistory),selectedPeriodIndex,isLoading,isRefreshing,isSubmittingWithdrawal,errorMessage,withdrawalSuccessMessage,cashToCollect,summaryFailed,balanceFailed,listLoaded,historyLoaded);
 
 @override
 String toString() {
-  return 'EarningsState(summary: $summary, earningsList: $earningsList, withdrawalBalance: $withdrawalBalance, withdrawalHistory: $withdrawalHistory, selectedPeriodIndex: $selectedPeriodIndex, isLoading: $isLoading, isRefreshing: $isRefreshing, isSubmittingWithdrawal: $isSubmittingWithdrawal, errorMessage: $errorMessage, withdrawalSuccessMessage: $withdrawalSuccessMessage, cashToCollect: $cashToCollect)';
+  return 'EarningsState(summary: $summary, earningsList: $earningsList, withdrawalBalance: $withdrawalBalance, withdrawalHistory: $withdrawalHistory, selectedPeriodIndex: $selectedPeriodIndex, isLoading: $isLoading, isRefreshing: $isRefreshing, isSubmittingWithdrawal: $isSubmittingWithdrawal, errorMessage: $errorMessage, withdrawalSuccessMessage: $withdrawalSuccessMessage, cashToCollect: $cashToCollect, summaryFailed: $summaryFailed, balanceFailed: $balanceFailed, listLoaded: $listLoaded, historyLoaded: $historyLoaded)';
 }
 
 
@@ -298,7 +306,7 @@ abstract mixin class _$EarningsStateCopyWith<$Res> implements $EarningsStateCopy
   factory _$EarningsStateCopyWith(_EarningsState value, $Res Function(_EarningsState) _then) = __$EarningsStateCopyWithImpl;
 @override @useResult
 $Res call({
- EarningsSummaryModel? summary, List<EarningModel> earningsList, WithdrawalBalanceModel? withdrawalBalance, List<WithdrawalModel> withdrawalHistory, int selectedPeriodIndex, bool isLoading, bool isRefreshing, bool isSubmittingWithdrawal, String? errorMessage, String? withdrawalSuccessMessage, double? cashToCollect
+ EarningsSummaryModel? summary, List<EarningModel> earningsList, WithdrawalBalanceModel? withdrawalBalance, List<WithdrawalModel> withdrawalHistory, int selectedPeriodIndex, bool isLoading, bool isRefreshing, bool isSubmittingWithdrawal, String? errorMessage, String? withdrawalSuccessMessage, double? cashToCollect, bool summaryFailed, bool balanceFailed, bool listLoaded, bool historyLoaded
 });
 
 
@@ -315,7 +323,7 @@ class __$EarningsStateCopyWithImpl<$Res>
 
 /// Create a copy of EarningsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? summary = freezed,Object? earningsList = null,Object? withdrawalBalance = freezed,Object? withdrawalHistory = null,Object? selectedPeriodIndex = null,Object? isLoading = null,Object? isRefreshing = null,Object? isSubmittingWithdrawal = null,Object? errorMessage = freezed,Object? withdrawalSuccessMessage = freezed,Object? cashToCollect = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? summary = freezed,Object? earningsList = null,Object? withdrawalBalance = freezed,Object? withdrawalHistory = null,Object? selectedPeriodIndex = null,Object? isLoading = null,Object? isRefreshing = null,Object? isSubmittingWithdrawal = null,Object? errorMessage = freezed,Object? withdrawalSuccessMessage = freezed,Object? cashToCollect = freezed,Object? summaryFailed = null,Object? balanceFailed = null,Object? listLoaded = null,Object? historyLoaded = null,}) {
   return _then(_EarningsState(
 summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as EarningsSummaryModel?,earningsList: null == earningsList ? _self._earningsList : earningsList // ignore: cast_nullable_to_non_nullable
@@ -328,7 +336,11 @@ as bool,isSubmittingWithdrawal: null == isSubmittingWithdrawal ? _self.isSubmitt
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,withdrawalSuccessMessage: freezed == withdrawalSuccessMessage ? _self.withdrawalSuccessMessage : withdrawalSuccessMessage // ignore: cast_nullable_to_non_nullable
 as String?,cashToCollect: freezed == cashToCollect ? _self.cashToCollect : cashToCollect // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,summaryFailed: null == summaryFailed ? _self.summaryFailed : summaryFailed // ignore: cast_nullable_to_non_nullable
+as bool,balanceFailed: null == balanceFailed ? _self.balanceFailed : balanceFailed // ignore: cast_nullable_to_non_nullable
+as bool,listLoaded: null == listLoaded ? _self.listLoaded : listLoaded // ignore: cast_nullable_to_non_nullable
+as bool,historyLoaded: null == historyLoaded ? _self.historyLoaded : historyLoaded // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

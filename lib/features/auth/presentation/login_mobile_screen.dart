@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../core/theme/app_spacing.dart';
 import '../../../ui/sg_text.dart';
 import '../../../ui/sg_tokens.dart';
@@ -10,6 +9,7 @@ import '../../../core/market/market_providers.dart';
 import 'providers/auth_notifier.dart';
 import 'providers/auth_state.dart';
 import 'package:saaradhigo_driver/ui/sg_brand.dart';
+import '../../../ui/sg_l10n.dart';
 
 /// The login screen: phone + OTP, or email + password.
 ///
@@ -120,7 +120,7 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
           next.reason != null &&
           (previous == null || previous is! AuthUnauthenticated);
       if (arrivedWithExpiredSession) {
-        _show(next.reason!, isError: true);
+        _show(sgL10n(context).authSessionExpired, isError: true);
       }
     });
 

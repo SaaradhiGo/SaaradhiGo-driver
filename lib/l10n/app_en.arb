@@ -1059,5 +1059,29 @@
   "earnAllHistory": "All earnings and payouts",
   "@earnAllHistory": {
     "description": "Link to the full earnings screen"
+  },
+  "loadErrEarnings": "We couldn't load your earnings.",
+  "@loadErrEarnings": {
+    "description": "Error state of an earnings card"
+  },
+  "loadErrBalance": "We couldn't load your balance.",
+  "@loadErrBalance": {
+    "description": "Error state of the withdrawable balance"
+  },
+  "earnNoTrips": "No trips yet",
+  "@earnNoTrips": {
+    "description": "Empty state title, new driver"
+  },
+  "earnNoTripsHint": "Go online to get your first ride request.",
+  "@earnNoTripsHint": {
+    "description": "Empty state body, new driver"
+  },
+  "earnNoPayouts": "No payouts yet",
+  "@earnNoPayouts": {
+    "description": "Empty state of the payouts list"
+  },
+  "authSessionExpired": "Your session has expired. Please log in again.",
+  "@authSessionExpired": {
+    "description": "Shown on Log in after the session ended"
   }
 }
