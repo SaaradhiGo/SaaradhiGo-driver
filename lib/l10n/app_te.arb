@@ -829,5 +829,120 @@
   "cancelWhyNoDriver": "సమయానికి ఏ డ్రైవర్ అంగీకరించలేదు",
   "@cancelWhyNoDriver": {
     "description": "needs native review"
+  },
+  "navDocuments": "పత్రాలు",
+  "@navDocuments": {
+    "description": "needs native review"
+  },
+  "shellDriverBadge": "డ్రైవర్",
+  "@shellDriverBadge": {
+    "description": "needs native review"
+  },
+  "homeOfflineTitle": "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు",
+  "@homeOfflineTitle": {
+    "description": "needs native review"
+  },
+  "homeOnlineTitle": "మీరు ఆన్‌లైన్‌లో ఉన్నారు",
+  "@homeOnlineTitle": {
+    "description": "needs native review"
+  },
+  "homeOfflineHint": "మీరు ఆన్‌లైన్‌కి వెళ్లినప్పుడు రైడ్ అభ్యర్థనలు ఇక్కడ కనిపిస్తాయి.",
+  "@homeOfflineHint": {
+    "description": "needs native review"
+  },
+  "homeTodayEarned": "ఈ రోజు మీ సంపాదన",
+  "@homeTodayEarned": {
+    "description": "needs native review"
+  },
+  "homeTripsToday": "ఈ రోజు ట్రిప్‌లు",
+  "@homeTripsToday": {
+    "description": "needs native review"
+  },
+  "offerNewRequest": "కొత్త రైడ్ అభ్యర్థన",
+  "@offerNewRequest": {
+    "description": "needs native review"
+  },
+  "offerToPickupDistance": "పికప్‌కు {distance}",
+  "@offerToPickupDistance": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripDistance": "{distance} ట్రిప్",
+  "@offerTripDistance": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripFare": "ట్రిప్ ఛార్జీ",
+  "@offerTripFare": {
+    "description": "needs native review"
+  },
+  "codeAsk": "రైడర్‌ను వారి రైడ్ కోడ్ అడగండి",
+  "@codeAsk": {
+    "description": "needs native review"
+  },
+  "codeHint": "కోడ్ సరిపోలినప్పుడే ట్రిప్ ప్రారంభమవుతుంది.",
+  "@codeHint": {
+    "description": "needs native review"
+  },
+  "codeYouEarn": "ఈ ట్రిప్‌లో మీ సంపాదన",
+  "@codeYouEarn": {
+    "description": "needs native review"
+  },
+  "codeChecking": "కోడ్ తనిఖీ చేస్తోంది…",
+  "@codeChecking": {
+    "description": "needs native review"
+  },
+  "earnChipWeek": "వారం",
+  "@earnChipWeek": {
+    "description": "needs native review"
+  },
+  "earnChipMonth": "నెల",
+  "@earnChipMonth": {
+    "description": "needs native review"
+  },
+  "earnHeroToday": "ఈ రోజు మీరు సంపాదించింది",
+  "@earnHeroToday": {
+    "description": "needs native review"
+  },
+  "earnTripsCount": "{count, plural, =1{1 ట్రిప్} other{{count} ట్రిప్‌లు}}",
+  "@earnTripsCount": {
+    "description": "needs native review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnAfterCommission": "కమీషన్ తర్వాత",
+  "@earnAfterCommission": {
+    "description": "needs native review"
+  },
+  "earnTips": "టిప్స్",
+  "@earnTips": {
+    "description": "needs native review"
+  },
+  "earnYouEarned": "మీ సంపాదన",
+  "@earnYouEarned": {
+    "description": "needs native review"
+  },
+  "earnCashCollected": "మీరు వసూలు చేసిన నగదు",
+  "@earnCashCollected": {
+    "description": "needs native review"
+  },
+  "earnReadyToWithdraw": "విత్‌డ్రా చేయడానికి సిద్ధం",
+  "@earnReadyToWithdraw": {
+    "description": "needs native review"
+  },
+  "earnAllHistory": "అన్ని సంపాదనలు, చెల్లింపులు",
+  "@earnAllHistory": {
+    "description": "needs native review"
   }
 }

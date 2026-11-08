@@ -944,5 +944,120 @@
   "cancelWhyNoDriver": "No driver accepted in time",
   "@cancelWhyNoDriver": {
     "description": "Cancel reason code no_driver_accepted"
+  },
+  "navDocuments": "Documents",
+  "@navDocuments": {
+    "description": "Bottom tab"
+  },
+  "shellDriverBadge": "DRIVER",
+  "@shellDriverBadge": {
+    "description": "Badge beside the logo in the top bar"
+  },
+  "homeOfflineTitle": "You're offline",
+  "@homeOfflineTitle": {
+    "description": "Home sheet title while offline"
+  },
+  "homeOnlineTitle": "You're online",
+  "@homeOnlineTitle": {
+    "description": "Home sheet title while online"
+  },
+  "homeOfflineHint": "Requests appear here when you go online.",
+  "@homeOfflineHint": {
+    "description": "Home sheet line while offline"
+  },
+  "homeTodayEarned": "Today you earned",
+  "@homeTodayEarned": {
+    "description": "Home tile label"
+  },
+  "homeTripsToday": "Trips today",
+  "@homeTripsToday": {
+    "description": "Home tile label"
+  },
+  "offerNewRequest": "New ride request",
+  "@offerNewRequest": {
+    "description": "Offer card eyebrow"
+  },
+  "offerToPickupDistance": "{distance} to pickup",
+  "@offerToPickupDistance": {
+    "description": "Offer headline after the vehicle class",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripDistance": "{distance} trip",
+  "@offerTripDistance": {
+    "description": "Offer drop line when no address",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripFare": "Trip fare",
+  "@offerTripFare": {
+    "description": "Offer fare row"
+  },
+  "codeAsk": "Ask the rider for their ride code",
+  "@codeAsk": {
+    "description": "Code entry heading"
+  },
+  "codeHint": "The trip starts only when the code matches.",
+  "@codeHint": {
+    "description": "Under the code boxes"
+  },
+  "codeYouEarn": "You earn on this trip",
+  "@codeYouEarn": {
+    "description": "Code screen earning row"
+  },
+  "codeChecking": "Checking the code…",
+  "@codeChecking": {
+    "description": "Start trip button while the server checks the code"
+  },
+  "earnChipWeek": "Week",
+  "@earnChipWeek": {
+    "description": "Earnings period chip"
+  },
+  "earnChipMonth": "Month",
+  "@earnChipMonth": {
+    "description": "Earnings period chip"
+  },
+  "earnHeroToday": "You earned today",
+  "@earnHeroToday": {
+    "description": "Earnings hero label"
+  },
+  "earnTripsCount": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@earnTripsCount": {
+    "description": "Trip count in the earnings hero",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnAfterCommission": "after commission",
+  "@earnAfterCommission": {
+    "description": "Earnings hero suffix"
+  },
+  "earnTips": "Tips",
+  "@earnTips": {
+    "description": "Earnings row (flag off)"
+  },
+  "earnYouEarned": "You earned",
+  "@earnYouEarned": {
+    "description": "Earnings row"
+  },
+  "earnCashCollected": "Cash you collected",
+  "@earnCashCollected": {
+    "description": "Earnings row"
+  },
+  "earnReadyToWithdraw": "Ready to withdraw",
+  "@earnReadyToWithdraw": {
+    "description": "Earnings row"
+  },
+  "earnAllHistory": "All earnings and payouts",
+  "@earnAllHistory": {
+    "description": "Link to the full earnings screen"
   }
 }

@@ -1,0 +1,103 @@
+# Signed-in redesign (2026-11-08): te/hi drafts that need native review.
+# Each key is also marked "needs native review" in app_te.arb and app_hi.arb.
+
+navDocuments
+  en: Documents
+  te: పత్రాలు
+  hi: दस्तावेज़
+shellDriverBadge
+  en: DRIVER
+  te: డ్రైవర్
+  hi: ड्राइवर
+homeOfflineTitle
+  en: You're offline
+  te: మీరు ఆఫ్‌లైన్‌లో ఉన్నారు
+  hi: आप ऑफ़लाइन हैं
+homeOnlineTitle
+  en: You're online
+  te: మీరు ఆన్‌లైన్‌లో ఉన్నారు
+  hi: आप ऑनलाइन हैं
+homeOfflineHint
+  en: Requests appear here when you go online.
+  te: మీరు ఆన్‌లైన్‌కి వెళ్లినప్పుడు రైడ్ అభ్యర్థనలు ఇక్కడ కనిపిస్తాయి.
+  hi: ऑनलाइन होने पर राइड अनुरोध यहाँ दिखेंगे।
+homeTodayEarned
+  en: Today you earned
+  te: ఈ రోజు మీ సంపాదన
+  hi: आज आपकी कमाई
+homeTripsToday
+  en: Trips today
+  te: ఈ రోజు ట్రిప్‌లు
+  hi: आज की ट्रिप
+offerNewRequest
+  en: New ride request
+  te: కొత్త రైడ్ అభ్యర్థన
+  hi: नया राइड अनुरोध
+offerToPickupDistance
+  en: {distance} to pickup
+  te: పికప్‌కు {distance}
+  hi: पिकअप तक {distance}
+offerTripDistance
+  en: {distance} trip
+  te: {distance} ట్రిప్
+  hi: {distance} की ट्रिप
+offerTripFare
+  en: Trip fare
+  te: ట్రిప్ ఛార్జీ
+  hi: ट्रिप किराया
+codeAsk
+  en: Ask the rider for their ride code
+  te: రైడర్‌ను వారి రైడ్ కోడ్ అడగండి
+  hi: राइडर से उनका राइड कोड पूछें
+codeHint
+  en: The trip starts only when the code matches.
+  te: కోడ్ సరిపోలినప్పుడే ట్రిప్ ప్రారంభమవుతుంది.
+  hi: कोड मिलने पर ही ट्रिप शुरू होगी।
+codeYouEarn
+  en: You earn on this trip
+  te: ఈ ట్రిప్‌లో మీ సంపాదన
+  hi: इस ट्रिप पर आपकी कमाई
+codeChecking
+  en: Checking the code…
+  te: కోడ్ తనిఖీ చేస్తోంది…
+  hi: कोड जाँचा जा रहा है…
+earnChipWeek
+  en: Week
+  te: వారం
+  hi: सप्ताह
+earnChipMonth
+  en: Month
+  te: నెల
+  hi: महीना
+earnHeroToday
+  en: You earned today
+  te: ఈ రోజు మీరు సంపాదించింది
+  hi: आज आपने कमाया
+earnTripsCount
+  en: {count, plural, =1{1 trip} other{{count} trips}}
+  te: {count, plural, =1{1 ట్రిప్} other{{count} ట్రిప్‌లు}}
+  hi: {count, plural, =1{1 ट्रिप} other{{count} ट्रिप}}
+earnAfterCommission
+  en: after commission
+  te: కమీషన్ తర్వాత
+  hi: कमीशन के बाद
+earnTips
+  en: Tips
+  te: టిప్స్
+  hi: टिप
+earnYouEarned
+  en: You earned
+  te: మీ సంపాదన
+  hi: आपकी कमाई
+earnCashCollected
+  en: Cash you collected
+  te: మీరు వసూలు చేసిన నగదు
+  hi: आपने लिया नकद
+earnReadyToWithdraw
+  en: Ready to withdraw
+  te: విత్‌డ్రా చేయడానికి సిద్ధం
+  hi: निकालने के लिए तैयार
+earnAllHistory
+  en: All earnings and payouts
+  te: అన్ని సంపాదనలు, చెల్లింపులు
+  hi: सारी कमाई और भुगतान

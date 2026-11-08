@@ -29,71 +29,68 @@ void main() {
   setUpAll(loadSgFonts);
 
   group('home', () {
-    testWidgets('offline shows the pill and a gold Go online', (tester) async {
+    testWidgets('offline: the dark sheet, the pill and Go online',
+        (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       var tapped = 0;
       await tester.pumpWidget(sgApp(homeFrame(onGoOnline: () => tapped++)));
-      expect(find.text('Offline', findRichText: true), findsOneWidget);
+      expect(find.text("You're offline"), findsOneWidget);
+      expect(find.text('Requests appear here when you go online.'),
+          findsOneWidget);
+      expect(find.text('Offline'), findsOneWidget);
+      expect(find.text('DRIVER'), findsOneWidget);
       expect(find.text('Go online'), findsOneWidget);
       expect(find.text('Go offline'), findsNothing);
       expect(find.text('₹1,240'), findsOneWidget);
+      expect(find.text('6'), findsOneWidget);
       await tester.tap(find.text('Go online'));
       expect(tapped, 1);
     });
 
-    testWidgets('online shows the status, Go offline and the calm line',
+    testWidgets('online: the title, the calm line and Go offline',
         (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       var tapped = 0;
       await tester.pumpWidget(
           sgApp(homeFrame(online: true, onGoOffline: () => tapped++)));
-      expect(find.text('Online  · 1h 12m', findRichText: true),
-          findsOneWidget);
+      expect(find.text("You're online"), findsOneWidget);
+      expect(find.text('Looking for rides near you · 1h 12m'), findsOneWidget);
+      expect(find.text('Online'), findsOneWidget);
       expect(find.text('Go offline'), findsOneWidget);
       expect(find.text('Go online'), findsNothing);
-      expect(find.text('Looking for rides near you'), findsOneWidget);
-      expect(
-          tester.getSize(find.byKey(const Key('home_go_offline'))).height, 56);
       await tester.tap(find.text('Go offline'));
       expect(tapped, 1);
     });
 
-    testWidgets('the earnings card: trips, net with commission, Safety',
+    testWidgets('today: earned in gold at 28, trips beside it',
         (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
-      await tester.pumpWidget(
-          sgApp(homeFrame(online: true, commission: '₹310')));
-      expect(find.text('Today · 6 trips'), findsOneWidget);
-      expect(find.text('You keep'), findsOneWidget);
-      expect(find.byKey(const Key('home_commission')), findsOneWidget);
-      expect(find.text('Commission'), findsOneWidget);
-      final amount = tester.widget<Text>(find.descendant(
-          of: find.byKey(const Key('home_earnings')),
-          matching: find.byType(Text)));
-      expect(amount.textSpan!.toPlainText(), '₹1,240');
-      expect(amount.style!.fontSize, 40);
-      expect(find.bySemanticsLabel('Safety'), findsOneWidget);
-      expect(tester.getSize(find.byKey(const Key('home_safety'))),
-          const Size(56, 56));
+      await tester.pumpWidget(sgApp(homeFrame(commission: '₹310')));
+      expect(find.text('Today you earned'), findsOneWidget);
+      expect(find.text('Trips today'), findsOneWidget);
+      final amount = tester.widget<Text>(find.byKey(const Key('home_earnings')));
+      expect(amount.data, '₹1,240');
+      expect(amount.style!.fontSize, 28);
     });
 
-    testWidgets('Go online is the 64px gold action', (tester) async {
+    testWidgets('Go online is 72px', (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       await tester.pumpWidget(sgApp(homeFrame()));
       expect(
-          tester.getSize(find.byKey(const Key('home_go_online'))).height, 64);
+          tester.getSize(find.byKey(const Key('home_go_online'))).height, 72);
     });
 
-    testWidgets('a blocker replaces Go online and carries its action',
+    testWidgets('a blocker shows as a card and disables Go online',
         (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
-      var acted = 0;
+      var acted = 0, online = 0;
       await tester.pumpWidget(sgApp(homeFrame(
+        onGoOnline: () => online++,
         blocker: HomeBlocker(
           title: 'Verification in progress',
           body: 'You can go online once your documents are approved.',
@@ -101,8 +98,9 @@ void main() {
           onAction: () => acted++,
         ),
       )));
-      expect(find.text('Go online'), findsNothing);
       expect(find.text('Verification in progress'), findsOneWidget);
+      await tester.tap(find.text('Go online'));
+      expect(online, 0);
       await tester.tap(find.text('Check status'));
       expect(acted, 1);
     });
@@ -145,39 +143,27 @@ void main() {
   });
 
   group('incoming offer', () {
-    testWidgets('without an earning: the fare is the big number',
+    testWidgets('without an earning: the fare row, no You earn',
         (tester) async {
       await pumpOffer(tester);
-      expect(find.text('Fare'), findsOneWidget);
+      expect(find.text('NEW RIDE REQUEST'), findsOneWidget);
+      expect(find.text('Sedan · 1.2 km to pickup'), findsOneWidget);
+      expect(find.text('Trip fare'), findsOneWidget);
       expect(find.text('You earn'), findsNothing);
-      expect(find.byKey(const Key('offer_fare_line')), findsNothing);
-      expect(find.byKey(const Key('offer_rating')), findsNothing);
-      expect(find.text('Sedan'), findsOneWidget);
-      expect(find.text('4 min'), findsOneWidget);
-      expect(find.text('1.2 km'), findsOneWidget);
-      expect(find.text('20 min'), findsOneWidget);
-      expect(find.text('8.4 km'), findsOneWidget);
-      expect(find.text('Cash'), findsOneWidget);
-      expect(find.text('Ameerpet Metro Station'), findsOneWidget);
-      expect(find.text('Hitech City'), findsOneWidget);
-      expect(find.text('Madhapur'), findsOneWidget);
+      expect(find.byKey(const Key('offer_commission_row')), findsNothing);
+      expect(find.text('Pickup · Ameerpet Metro Station'), findsOneWidget);
+      expect(find.text('Drop · Hitech City'), findsOneWidget);
     });
 
-    testWidgets('with an earning: You earn at 40px and the fare line',
+    testWidgets('with an earning: fare, commission and You earn',
         (tester) async {
       await pumpOffer(tester, payload: sampleOfferWithEarning);
       expect(find.text('You earn'), findsOneWidget);
-      final amount = tester.widget<Text>(find.descendant(
-          of: find.byKey(const Key('offer_amount')),
-          matching: find.byType(Text)));
-      expect(amount.textSpan!.toPlainText(), '₹198');
-      expect(amount.style!.fontSize, 40);
-      expect(find.text('Fare ₹248 − 20% commission ₹50'), findsOneWidget);
-      expect(find.text('4.8'), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('offer_amount'))).data,
+          '₹198');
+      expect(find.text('₹248'), findsOneWidget);
+      expect(find.text('− ₹50'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 64);
-      expect(
-          tester.getSize(find.byKey(const Key('offer_countdown_bar'))).width,
-          390);
     });
 
     testWidgets('leaves out what the frame does not carry', (tester) async {
@@ -187,20 +173,18 @@ void main() {
         'pickup_address': 'A',
         'destination_address': 'B',
       });
-      final amount = tester.widget<Text>(find.descendant(
-          of: find.byKey(const Key('offer_amount')),
-          matching: find.byType(Text)));
-      expect(amount.textSpan!.toPlainText(), '₹90');
-      expect(find.text('Cash'), findsNothing);
-      expect(find.byKey(const Key('offer_class')), findsNothing);
+      expect(tester.widget<Text>(find.byKey(const Key('offer_amount'))).data,
+          '₹90');
+      expect(find.byKey(const Key('offer_headline')), findsNothing);
+      expect(find.byKey(const Key('offer_earn_row')), findsNothing);
     });
 
     testWidgets('the countdown decreases each second', (tester) async {
       await pumpOffer(tester);
-      expect(find.text('20s left'), findsOneWidget);
+      expect(find.text('20s'), findsOneWidget);
       await tester.pump(const Duration(seconds: 3));
-      expect(find.text('17s left'), findsOneWidget);
-      expect(find.text('20s left'), findsNothing);
+      expect(find.text('17s'), findsOneWidget);
+      expect(find.text('20s'), findsNothing);
     });
 
     testWidgets('an expires_at in the frame sets the countdown',
@@ -210,7 +194,7 @@ void main() {
         ...sampleOffer,
         'expires_at': soon.toUtc().toIso8601String(),
       });
-      expect(find.text('30s left'), findsOneWidget);
+      expect(find.text('30s'), findsOneWidget);
     });
 
     testWidgets('Accept and Decline call through', (tester) async {

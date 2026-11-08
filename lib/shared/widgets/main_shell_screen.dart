@@ -12,7 +12,7 @@ class MainShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       body: navigationShell,
       bottomNavigationBar: AppBottomNav(
         currentIndex: navigationShell.currentIndex,

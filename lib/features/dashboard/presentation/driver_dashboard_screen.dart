@@ -13,11 +13,14 @@ import '../../../core/notifications/ride_offer_coordinator.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../ui/driver_home_view.dart';
 import '../../../ui/incoming_offer_card.dart';
+import '../../../ui/sg_format.dart';
 import '../../../ui/sg_l10n.dart';
 import '../../../ui/sg_text.dart';
 import '../../../ui/sg_tokens.dart';
 import '../../../ui/sg_widgets.dart';
+import '../../earnings/presentation/earnings_display.dart';
 import '../../earnings/presentation/providers/earnings_providers.dart';
+import '../../support/presentation/widgets/sos_widgets.dart';
 import '../../notifications/presentation/providers/notifications_providers.dart';
 import '../../profile/presentation/providers/profile_providers.dart';
 import '../../trip/presentation/providers/trip_providers.dart';
@@ -25,7 +28,6 @@ import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
 import 'widgets/driver_map.dart';
 import 'widgets/limited_background_banner.dart';
-import '../../profile/presentation/widgets/appearance_toggle.dart';
 
 /// `/` -- the driver home: a map, the online status, today's earnings and the
 /// one control that goes online or offline. An incoming offer opens as a
@@ -187,6 +189,14 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           height: MediaQuery.sizeOf(modalCtx).height,
           child: IncomingOfferCard(
             payload: offer.payload,
+            commissionRate: commissionRateLabel(
+              ref.read(earningsNotifierProvider).summary?.commissionPercent,
+              mixed: ref
+                  .read(earningsNotifierProvider)
+                  .summary
+                  ?.commissionPercentMixed,
+            ),
+            topAction: const TripSosButton(size: 48),
             onAccept: () {
               Navigator.pop(modalCtx);
               _showingRideModal = false;
@@ -316,7 +326,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           weakSignal: weakSignal,
           pulsing: engaged,
         ),
-        themeButton: const AppearanceToggle(),
         online: engaged,
         statusLabel: switch (availability) {
           AvailabilityStateOnline() => l.statusOnline,
@@ -329,14 +338,14 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         // Net with commission beside it; gross only from an older API.
         earnings: summary == null
             ? null
-            : wholeMoney(
+            : sgMoney(
                 (summary.todayCommission == null ? null : summary.todayNet) ??
                     summary.todayEarned,
               ),
         commission:
             summary?.todayNet == null || summary?.todayCommission == null
             ? null
-            : wholeMoney(summary!.todayCommission),
+            : sgMoney(summary!.todayCommission),
         trips: summary?.todayTrips,
         onlineFor: switch (availability) {
           AvailabilityStateOnline(:final since) =>
@@ -359,7 +368,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         onSafety: () => context.push('/safety'),
         onInbox: () => context.push('/notifications'),
         unread: ref.watch(unreadNotificationsCountProvider),
-        onEarnings: () => context.push('/earnings'),
+        onEarnings: () => context.go('/earnings'),
         onGoOnline: canStart ? () => _toggle(availability) : null,
         onGoOffline: () => _toggle(availability),
         mapButton: SgMapButton(
@@ -436,7 +445,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   void _showMenu() {
     // Notifications are the bell on Home now, not a menu row.
     final l = sgL10n(context);
+    final unread = ref.read(unreadNotificationsCountProvider);
     final items = <(String, String, String?)>[
+      (l.homeMessages, '/notifications', unread > 0 ? '$unread' : null),
       (l.menuProfile, '/profile', null),
       (l.menuVehicle, '/vehicle', null),
       (l.menuDocuments, '/documents', null),

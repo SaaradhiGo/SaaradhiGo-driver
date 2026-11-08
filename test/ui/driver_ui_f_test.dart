@@ -29,19 +29,12 @@ void main() {
     expect(ledgerMoney('172.69', symbol: '₹'), '₹172.69');
   });
 
-  testWidgets('Home shows what the driver keeps, with commission beside it',
-      (tester) async {
+  testWidgets('Home shows today as the API sent it', (tester) async {
     setPhoneSurface(tester);
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
         sgApp(homeFrame(earnings: '₹979', commission: '₹173')));
-    expect(find.text('You keep'), findsOneWidget);
-    expect(find.text('₹979', findRichText: true), findsOneWidget);
-    expect(find.text('Commission'), findsOneWidget);
-    expect(find.text('₹173'), findsOneWidget);
-
-    await tester.pumpWidget(sgApp(homeFrame()));
-    expect(find.text("Today's earnings"), findsOneWidget);
-    expect(find.byKey(const Key('home_commission')), findsNothing);
+    expect(find.text('Today you earned'), findsOneWidget);
+    expect(find.text('₹979'), findsOneWidget);
   });
 }

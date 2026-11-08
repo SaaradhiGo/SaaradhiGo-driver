@@ -13,9 +13,9 @@ import '../support/driver_ui_fixtures.dart';
 void main() {
   setUpAll(loadSgFonts);
 
-  test('the tab bar is Home, Trips, Earnings, Profile', () {
+  test('the tab bar is Home, Earnings, Trips, Documents', () {
     expect(AppBottomNav.items.map((i) => i.label),
-        ['Home', 'Trips', 'Earnings', 'Profile']);
+        ['Home', 'Earnings', 'Trips', 'Documents']);
   });
 
   testWidgets('the Home bell carries a dot only when something is unread',
@@ -107,40 +107,35 @@ void main() {
       return c;
     }
 
-    testWidgets('Start stays off until all six digits are in',
-        (tester) async {
+    testWidgets('the code goes to the server on the sixth digit; Start '
+        'trip stays disabled', (tester) async {
       var started = 0;
       await pump(tester, onStart: () => started++);
-      expect(find.text('Ask Raja for the trip PIN'), findsOneWidget);
-      expect(find.text('At pickup'), findsOneWidget);
+      expect(find.text('Ask the rider for their ride code'), findsOneWidget);
+      expect(find.text('AT PICKUP'), findsOneWidget);
+      expect(find.text('The trip starts only when the code matches.'),
+          findsOneWidget);
       expect(find.byKey(const Key('pin_box_5')), findsOneWidget);
       expect(find.byKey(const Key('pin_box_6')), findsNothing);
-      expect(tester.getSize(find.byKey(const Key('pin_box_0'))).height, 72);
-      expect(tester.getSize(find.byKey(const Key('pin_key_1'))).height, 56);
+      expect(tester.getSize(find.byKey(const Key('pin_box_0'))).height, 56);
       expect(tester.getSize(find.byKey(const Key('trip_start'))).height, 64);
-      for (final d in '1234'.split('')) {
-        await tester.tap(find.byKey(Key('pin_key_$d')));
-      }
+      await tester.enterText(find.byKey(const Key('pin_input')), '12345');
       await tester.pump();
       await tester.tap(find.text('Start trip'));
       expect(started, 0);
-      await tester.tap(find.byKey(const Key('pin_key_5')));
-      await tester.tap(find.byKey(const Key('pin_key_delete')));
-      await tester.tap(find.byKey(const Key('pin_key_5')));
-      await tester.tap(find.byKey(const Key('pin_key_6')));
-      await tester.tap(find.byKey(const Key('pin_key_7')));
+      await tester.enterText(find.byKey(const Key('pin_input')), '123456');
       await tester.pump();
       expect(c.text, '123456');
+      expect(started, 1);
       await tester.tap(find.text('Start trip'));
       expect(started, 1);
     });
 
-    testWidgets('the rider row carries a 56px message button',
-        (tester) async {
+    testWidgets('the header carries a message button', (tester) async {
       var messaged = 0;
       await pump(tester, onMessage: () => messaged++);
       expect(tester.getSize(find.byKey(const Key('trip_message'))),
-          const Size(56, 56));
+          const Size(48, 48));
       await tester.tap(find.byKey(const Key('trip_message')));
       expect(messaged, 1);
     });
