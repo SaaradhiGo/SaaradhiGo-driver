@@ -96,8 +96,10 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
       _ => l.earnHeroToday,
     };
     final meta = [
-      if (_period == 'today') sgDay(DateTime.now()),
-      if (_period != 'today' && period != null) ?_range(period),
+      if (period != null)
+        ?_range(period)
+      else if (_period == 'today')
+        sgDay(DateTime.now()),
       if (trips != null) l.earnTripsCount(trips),
       if (net != null && commission != null) l.earnAfterCommission,
     ].join(' · ');
@@ -237,18 +239,21 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
     );
   }
 
+  /// `start` and `end` are the period's first and last local days.
   String? _range(Map<String, dynamic> p) {
     final s = DateTime.tryParse('${p['start']}');
     final e = DateTime.tryParse('${p['end']}');
     if (s == null) return null;
     final start = sgDay(s);
-    if (e == null) return start;
-    // `end` is exclusive (the start of the next period).
-    final last = e.subtract(const Duration(seconds: 1));
-    return last.isAfter(s) ? '$start – ${sgDay(last)}' : start;
+    if (e == null || !e.isAfter(s)) return start;
+    return '$start – ${sgDay(e)}';
   }
 
-  String? _minus(String? v) => v == null ? null : '− $v';
+  /// "− ₹860"; a zero amount carries no minus.
+  String? _minus(String? v) {
+    if (v == null) return null;
+    return RegExp(r'[1-9]').hasMatch(v) ? '− $v' : v;
+  }
 
   Widget? _row(String label, String? value, {bool strong = false, Color? color}) {
     if (value == null) return null;

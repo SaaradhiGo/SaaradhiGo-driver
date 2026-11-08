@@ -701,7 +701,9 @@ class _FareRow extends StatelessWidget {
     ),
     child: Row(
       children: [
-        Expanded(child: Text(label, style: SgText.small)),
+        Expanded(
+          child: Text(label, style: SgText.small.copyWith(color: SgColors.ink)),
+        ),
         Text(
           value,
           key: valueKey,
