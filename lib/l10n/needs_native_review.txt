@@ -101,3 +101,27 @@ earnAllHistory
   en: All earnings and payouts
   te: అన్ని సంపాదనలు, చెల్లింపులు
   hi: सारी कमाई और भुगतान
+loadErrEarnings
+  en: We couldn't load your earnings.
+  te: మీ సంపాదనను లోడ్ చేయలేకపోయాము.
+  hi: हम आपकी कमाई लोड नहीं कर सके।
+loadErrBalance
+  en: We couldn't load your balance.
+  te: మీ బ్యాలెన్స్‌ను లోడ్ చేయలేకపోయాము.
+  hi: हम आपका बैलेंस लोड नहीं कर सके।
+earnNoTrips
+  en: No trips yet
+  te: ఇంకా ట్రిప్‌లు లేవు
+  hi: अभी तक कोई ट्रिप नहीं
+earnNoTripsHint
+  en: Go online to get your first ride request.
+  te: మీ మొదటి రైడ్ అభ్యర్థన కోసం ఆన్‌లైన్‌కి వెళ్లండి.
+  hi: अपनी पहली राइड रिक्वेस्ट पाने के लिए ऑनलाइन जाएँ।
+earnNoPayouts
+  en: No payouts yet
+  te: ఇంకా చెల్లింపులు లేవు
+  hi: अभी तक कोई भुगतान नहीं
+authSessionExpired
+  en: Your session has expired. Please log in again.
+  te: మీ సెషన్ ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.
+  hi: आपका सत्र समाप्त हो गया है। कृपया फिर से लॉग इन करें।

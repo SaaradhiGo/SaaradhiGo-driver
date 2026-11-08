@@ -63,8 +63,14 @@ class AuthInterceptor extends Interceptor {
     if (statusCode != 401 ||
         _unauthenticatedPaths.contains(requestOptions.path) ||
         isRefreshRequest ||
-        requestOptions.extra[_skipRefreshExtra] == true ||
-        hasAlreadyRefreshed) {
+        requestOptions.extra[_skipRefreshExtra] == true) {
+      handler.next(err);
+      return;
+    }
+    if (hasAlreadyRefreshed) {
+      // Still 401 with a freshly refreshed token: one refresh is all we try.
+      await SecureStorageService.clearTokens();
+      AuthSessionEvents.emitSessionExpired();
       handler.next(err);
       return;
     }
@@ -216,7 +222,14 @@ class AuthInterceptor extends Interceptor {
     } on DioException catch (error) {
       final statusCode = error.response?.statusCode;
       AppLogger.e('Token refresh failed', error.type);
-      if (statusCode == 401 || statusCode == 403) {
+      // A used or rotated refresh token comes back 400, not 401. Any 4xx
+      // means the session cannot be recovered: end it, so no screen keeps
+      // waiting on calls that will only fail again.
+      if (statusCode != null &&
+          statusCode >= 400 &&
+          statusCode < 500 &&
+          statusCode != 408 &&
+          statusCode != 429) {
         await SecureStorageService.clearTokens();
         AuthSessionEvents.emitSessionExpired();
       }

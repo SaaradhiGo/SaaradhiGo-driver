@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/load_timeout.dart';
 import '../../../../core/utils/app_logger.dart';
 import '../../../../core/utils/money_format.dart';
 import '../../../../domain/models/earning_model.dart';
@@ -30,7 +31,9 @@ class _SectionFailed<T> extends _SectionResult<T> {
 
 Future<_SectionResult<T>> _guardSection<T>(Future<T> Function() run) async {
   try {
-    return _SectionOk(await run());
+    // A section that has not answered in kLoadTimeout counts as failed, so
+    // its card leaves the skeleton for the error state.
+    return _SectionOk(await run().timeout(kLoadTimeout));
   } catch (e) {
     // Logged (never user-facing) so a healthy section can still be shown.
     AppLogger.w('Earnings section failed to load', e);
@@ -88,18 +91,23 @@ class EarningsNotifier extends Notifier<EarningsState> {
   >
   _loadAllSections() async {
     final periodStr = _getPeriodString(state.selectedPeriodIndex);
-    final summary = await _guardSection<EarningsSummaryModel?>(
+    // In parallel: four sequential waits could keep a card loading 40 s.
+    final summaryF = _guardSection<EarningsSummaryModel?>(
       () => _repository.getEarningsSummary(period: periodStr),
     );
-    final earningsList = await _guardSection<List<EarningModel>>(
+    final earningsListF = _guardSection<List<EarningModel>>(
       () => _repository.getEarningsList(),
     );
-    final withdrawalBalance = await _guardSection<WithdrawalBalanceModel?>(
+    final withdrawalBalanceF = _guardSection<WithdrawalBalanceModel?>(
       () => _repository.getWithdrawalBalance(),
     );
-    final withdrawalHistory = await _guardSection<List<WithdrawalModel>>(
+    final withdrawalHistoryF = _guardSection<List<WithdrawalModel>>(
       () => _repository.getWithdrawalHistory(),
     );
+    final summary = await summaryF;
+    final earningsList = await earningsListF;
+    final withdrawalBalance = await withdrawalBalanceF;
+    final withdrawalHistory = await withdrawalHistoryF;
     return (
       summary: summary,
       earningsList: earningsList,
@@ -109,7 +117,12 @@ class EarningsNotifier extends Notifier<EarningsState> {
   }
 
   Future<void> loadInitialData() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      summaryFailed: false,
+      balanceFailed: false,
+    );
     final hadSummary = state.summary != null;
     final sections = await _loadAllSections();
 
@@ -144,6 +157,14 @@ class EarningsNotifier extends Notifier<EarningsState> {
       withdrawalBalance: nextBalance,
       withdrawalHistory: nextHistory,
       errorMessage: fatalError,
+      summaryFailed: nextSummary == null,
+      balanceFailed: nextBalance == null,
+      listLoaded:
+          state.listLoaded ||
+          sections.earningsList is _SectionOk<List<EarningModel>>,
+      historyLoaded:
+          state.historyLoaded ||
+          sections.withdrawalHistory is _SectionOk<List<WithdrawalModel>>,
     );
   }
 
@@ -209,6 +230,14 @@ class EarningsNotifier extends Notifier<EarningsState> {
       errorMessage: (!hadSummary && nothingLoaded && nextSummary == null)
           ? 'Unable to refresh earnings data. Check your connection.'
           : null,
+      summaryFailed: nextSummary == null,
+      balanceFailed: nextBalance == null,
+      listLoaded:
+          state.listLoaded ||
+          sections.earningsList is _SectionOk<List<EarningModel>>,
+      historyLoaded:
+          state.historyLoaded ||
+          sections.withdrawalHistory is _SectionOk<List<WithdrawalModel>>,
     );
   }
 

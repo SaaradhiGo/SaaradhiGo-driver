@@ -944,5 +944,29 @@
   "earnAllHistory": "అన్ని సంపాదనలు, చెల్లింపులు",
   "@earnAllHistory": {
     "description": "needs native review"
+  },
+  "loadErrEarnings": "మీ సంపాదనను లోడ్ చేయలేకపోయాము.",
+  "@loadErrEarnings": {
+    "description": "needs native review"
+  },
+  "loadErrBalance": "మీ బ్యాలెన్స్‌ను లోడ్ చేయలేకపోయాము.",
+  "@loadErrBalance": {
+    "description": "needs native review"
+  },
+  "earnNoTrips": "ఇంకా ట్రిప్‌లు లేవు",
+  "@earnNoTrips": {
+    "description": "needs native review"
+  },
+  "earnNoTripsHint": "మీ మొదటి రైడ్ అభ్యర్థన కోసం ఆన్‌లైన్‌కి వెళ్లండి.",
+  "@earnNoTripsHint": {
+    "description": "needs native review"
+  },
+  "earnNoPayouts": "ఇంకా చెల్లింపులు లేవు",
+  "@earnNoPayouts": {
+    "description": "needs native review"
+  },
+  "authSessionExpired": "మీ సెషన్ ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.",
+  "@authSessionExpired": {
+    "description": "needs native review"
   }
 }

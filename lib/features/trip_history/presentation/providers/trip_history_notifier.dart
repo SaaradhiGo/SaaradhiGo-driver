@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/load_timeout.dart';
 import '../../../../core/utils/date_range_utils.dart';
 import '../../domain/repositories/trip_history_repository.dart';
 import 'trip_history_providers.dart';
@@ -30,12 +31,14 @@ class TripHistoryNotifier extends Notifier<TripHistoryState> {
 
     try {
       final range = state.effectiveDateRange;
-      final trips = await _repository.getDriverHistory(
-        status: state.filter.toApiStatus(),
-        dateRange: range,
-        page: 1,
-        pageSize: 10,
-      );
+      final trips = await _repository
+          .getDriverHistory(
+            status: state.filter.toApiStatus(),
+            dateRange: range,
+            page: 1,
+            pageSize: 10,
+          )
+          .timeout(kLoadTimeout);
 
       final visible = trips
           .where((t) => tripCreatedAtWithin(t.createdAt, range))

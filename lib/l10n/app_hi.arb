@@ -944,5 +944,29 @@
   "earnAllHistory": "सारी कमाई और भुगतान",
   "@earnAllHistory": {
     "description": "needs native review"
+  },
+  "loadErrEarnings": "हम आपकी कमाई लोड नहीं कर सके।",
+  "@loadErrEarnings": {
+    "description": "needs native review"
+  },
+  "loadErrBalance": "हम आपका बैलेंस लोड नहीं कर सके।",
+  "@loadErrBalance": {
+    "description": "needs native review"
+  },
+  "earnNoTrips": "अभी तक कोई ट्रिप नहीं",
+  "@earnNoTrips": {
+    "description": "needs native review"
+  },
+  "earnNoTripsHint": "अपनी पहली राइड रिक्वेस्ट पाने के लिए ऑनलाइन जाएँ।",
+  "@earnNoTripsHint": {
+    "description": "needs native review"
+  },
+  "earnNoPayouts": "अभी तक कोई भुगतान नहीं",
+  "@earnNoPayouts": {
+    "description": "needs native review"
+  },
+  "authSessionExpired": "आपका सत्र समाप्त हो गया है। कृपया फिर से लॉग इन करें।",
+  "@authSessionExpired": {
+    "description": "needs native review"
   }
 }

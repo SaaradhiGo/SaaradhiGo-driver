@@ -10,6 +10,7 @@ import 'sg_text.dart';
 import 'sg_tokens.dart';
 import 'sg_widgets.dart';
 import 'sg_l10n.dart';
+import 'sg_load_state.dart';
 
 /// Whole currency units: "₹248". Null for an amount that does not parse.
 String? wholeMoney(String? raw) {
@@ -216,6 +217,8 @@ class DriverHomeView extends StatelessWidget {
     this.earnings,
     this.commission,
     this.trips,
+    this.earningsFailed = false,
+    this.onRetryEarnings,
     this.onlineFor,
     this.blocker,
     this.notices = const [],
@@ -246,6 +249,11 @@ class DriverHomeView extends StatelessWidget {
   /// Today's commission; when set, [earnings] is after commission.
   final String? commission;
   final int? trips;
+
+  /// Today's figures failed or timed out: the tiles give way to the error
+  /// line and Try again ([onRetryEarnings]); the rest of the sheet stays.
+  final bool earningsFailed;
+  final VoidCallback? onRetryEarnings;
   final Duration? onlineFor;
   final HomeBlocker? blocker;
 
@@ -370,32 +378,40 @@ class DriverHomeView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: SgSpace.s4),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: _NoirTile(
-                    key: const Key('home_earnings_card'),
-                    label: l.homeTodayEarned,
-                    value: earnings ?? '–',
-                    valueKey: const Key('home_earnings'),
-                    gold: true,
-                    onTap: onEarnings,
+          if (earningsFailed)
+            _NoirLoadError(
+              key: const Key('home_earnings_error'),
+              message: l.loadErrEarnings,
+              retryLabel: l.earnRetry,
+              onRetry: onRetryEarnings,
+            )
+          else
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _NoirTile(
+                      key: const Key('home_earnings_card'),
+                      label: l.homeTodayEarned,
+                      value: earnings,
+                      valueKey: const Key('home_earnings'),
+                      gold: true,
+                      onTap: onEarnings,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _NoirTile(
-                    label: l.homeTripsToday,
-                    value: trips == null ? '–' : '$trips',
-                    valueKey: const Key('home_trips'),
-                    onTap: onEarnings,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _NoirTile(
+                      label: l.homeTripsToday,
+                      value: trips == null ? null : '$trips',
+                      valueKey: const Key('home_trips'),
+                      onTap: onEarnings,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: SgSpace.s4),
           if (online)
             _NoirButton(
@@ -470,7 +486,9 @@ class _NoirTile extends StatelessWidget {
   });
 
   final String label;
-  final String value;
+
+  /// Null while loading: a skeleton bar the size of the figure.
+  final String? value;
   final Key? valueKey;
   final bool gold;
   final VoidCallback? onTap;
@@ -493,21 +511,76 @@ class _NoirTile extends StatelessWidget {
               style: SgText.small.copyWith(color: SgNoir.inkMuted),
             ),
             const SizedBox(height: 4),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value,
-                key: valueKey,
-                maxLines: 1,
-                style: SgText.heading.copyWith(
-                  color: gold ? SgNoir.gold : SgNoir.ink,
+            if (value == null)
+              SgSkeletonBar(
+                key: valueKey == null
+                    ? null
+                    : Key('${_keyName(valueKey!)}_loading'),
+                width: 88,
+                height: 28,
+                color: SgNoir.inkMuted.withValues(alpha: 0.25),
+              )
+            else
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value!,
+                  key: valueKey,
+                  maxLines: 1,
+                  style: SgText.heading.copyWith(
+                    color: gold ? SgNoir.gold : SgNoir.ink,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
+    ),
+  );
+
+  static String _keyName(Key k) =>
+      k is ValueKey<String> ? k.value : k.toString();
+}
+
+/// A section that failed to load, on the dark sheet: what failed and a
+/// Try again that refetches.
+class _NoirLoadError extends StatelessWidget {
+  const _NoirLoadError({
+    super.key,
+    required this.message,
+    required this.retryLabel,
+    this.onRetry,
+  });
+
+  final String message;
+  final String retryLabel;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
+    decoration: BoxDecoration(
+      color: SgNoir.tile,
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(message, style: SgText.body.copyWith(color: SgNoir.ink)),
+        ),
+        TextButton(
+          key: const Key('home_earnings_retry'),
+          onPressed: onRetry,
+          child: Text(
+            retryLabel,
+            style: SgText.body.copyWith(
+              color: SgNoir.gold,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }
@@ -578,6 +651,7 @@ class _NoirButton extends StatelessWidget {
     );
   }
 }
+
 /// "₹1,240" with the currency symbol in gold-text. Falls back to plain text
 /// when the amount carries no known symbol.
 class GoldSymbolAmount extends StatelessWidget {
@@ -683,16 +757,19 @@ class EarningsNoirCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
-                            child: GoldSymbolAmount(
-                              earnings ?? '–',
-                              key: const Key('home_earnings'),
-                              symbolColor: p.goldText,
-                              style: SgText.bigFare.copyWith(color: p.ink),
+                          if (earnings == null)
+                            const SgSkeletonBar(width: 120, height: 32)
+                          else
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: GoldSymbolAmount(
+                                earnings!,
+                                key: const Key('home_earnings'),
+                                symbolColor: p.goldText,
+                                style: SgText.bigFare.copyWith(color: p.ink),
+                              ),
                             ),
-                          ),
                           Text(
                             caption,
                             maxLines: 1,

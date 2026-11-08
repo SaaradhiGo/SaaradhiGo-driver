@@ -287,7 +287,12 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
     final profileState = ref.watch(driverProfileNotifierProvider);
     final hasNetwork = ref.watch(isOnlineNetworkProvider);
     final position = ref.watch(driverPositionProvider);
-    final summary = ref.watch(earningsNotifierProvider).summary;
+    final earningsState = ref.watch(earningsNotifierProvider);
+    final summary = earningsState.summary;
+    // The summary names its currency from backend #186; until then the
+    // balance does. Either way the market's is the last resort, never a dot.
+    final currency =
+        summary?.currency ?? earningsState.withdrawalBalance?.currency;
 
     _listenForSideEffects();
 
@@ -341,15 +346,25 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
             : sgMoney(
                 (summary.todayCommission == null ? null : summary.todayNet) ??
                     summary.todayEarned,
+                currency: currency,
+                whole: false,
               ),
         commission:
             summary?.todayNet == null || summary?.todayCommission == null
             ? null
-            : sgMoney(summary!.todayCommission),
+            : sgMoney(
+                summary!.todayCommission,
+                currency: currency,
+                whole: false,
+              ),
         trips: summary?.todayTrips,
+        earningsFailed: summary == null && earningsState.summaryFailed,
+        onRetryEarnings: () =>
+            ref.read(earningsNotifierProvider.notifier).loadInitialData(),
         onlineFor: switch (availability) {
-          AvailabilityStateOnline(:final since) =>
-            DateTime.now().difference(since),
+          AvailabilityStateOnline(:final since) => DateTime.now().difference(
+            since,
+          ),
           _ => null,
         },
         blocker: blocker,
@@ -486,7 +501,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name == null || name.isEmpty ? l.menuDriverFallback : name,
+                      name == null || name.isEmpty
+                          ? l.menuDriverFallback
+                          : name,
                       style: SgText.title,
                     ),
                     if (facts.isNotEmpty) Text(facts, style: SgText.caption),
