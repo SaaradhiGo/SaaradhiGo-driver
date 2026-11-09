@@ -141,3 +141,29 @@ callUnavailable
   en: Calling is not available right now.
   te: ప్రస్తుతం కాల్ చేయడం అందుబాటులో లేదు.
   hi: अभी कॉल करना उपलब्ध नहीं है।
+
+# Payouts (2026-11-09): next payout and Withdraw now.
+earnNextPayout
+  en: Next payout: {date} · estimated {amount}
+earnPayoutsOnRequest
+  en: Payouts here are on request.
+instantTitle
+  en: Withdraw now
+instantAmount
+  en: Amount
+instantSaaradhigoFee
+  en: SaaradhiGo fee
+instantYouReceive
+  en: You receive
+instantTo
+  en: To
+instantArrives
+  en: Arrives
+instantSeeFee
+  en: See the fee
+instantConfirm
+  en: Withdraw {amount}
+instantFailed
+  en: That did not go through. Nothing was changed.
+instantSent
+  en: Your withdrawal is on its way.

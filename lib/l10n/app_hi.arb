@@ -997,5 +997,53 @@
   "callUnavailable": "अभी कॉल करना उपलब्ध नहीं है।",
   "@callUnavailable": {
     "description": "needs native review"
+  },
+  "earnNextPayout": "अगला भुगतान: {date} · अनुमानित {amount}",
+  "@earnNextPayout": {
+    "description": "needs native review"
+  },
+  "earnPayoutsOnRequest": "यहाँ भुगतान आपके अनुरोध पर होते हैं।",
+  "@earnPayoutsOnRequest": {
+    "description": "needs native review"
+  },
+  "instantTitle": "अभी निकालें",
+  "@instantTitle": {
+    "description": "needs native review"
+  },
+  "instantAmount": "राशि",
+  "@instantAmount": {
+    "description": "needs native review"
+  },
+  "instantSaaradhigoFee": "SaaradhiGo शुल्क",
+  "@instantSaaradhigoFee": {
+    "description": "needs native review"
+  },
+  "instantYouReceive": "आपको मिलेगा",
+  "@instantYouReceive": {
+    "description": "needs native review"
+  },
+  "instantTo": "को",
+  "@instantTo": {
+    "description": "needs native review"
+  },
+  "instantArrives": "पहुँचेगा",
+  "@instantArrives": {
+    "description": "needs native review"
+  },
+  "instantSeeFee": "शुल्क देखें",
+  "@instantSeeFee": {
+    "description": "needs native review"
+  },
+  "instantConfirm": "{amount} निकालें",
+  "@instantConfirm": {
+    "description": "needs native review"
+  },
+  "instantFailed": "यह नहीं हो पाया। कुछ भी नहीं बदला।",
+  "@instantFailed": {
+    "description": "needs native review"
+  },
+  "instantSent": "आपकी निकासी भेजी जा रही है।",
+  "@instantSent": {
+    "description": "needs native review"
   }
 }

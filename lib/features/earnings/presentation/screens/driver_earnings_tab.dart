@@ -9,6 +9,7 @@ import '../../../../core/network/load_timeout.dart';
 import '../../../../ui/driver_shell.dart';
 import '../../../../ui/sg_format.dart';
 import '../../../../ui/sg_l10n.dart';
+import '../widgets/payout_plan_line.dart';
 import '../../../../ui/sg_load_state.dart';
 import '../../../../ui/sg_text.dart';
 import '../../../../ui/sg_tokens.dart';
@@ -282,6 +283,7 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
                     const SizedBox(height: SgSpace.s3),
                     Text(l.earnWithdraw(ready)),
                   ],
+                  PayoutPlanLine(available: balance?.availableBalance),
                   if (noTrips) ...[
                     const SizedBox(height: SgSpace.s3),
                     _EmptyNote(
