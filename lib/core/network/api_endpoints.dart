@@ -66,6 +66,7 @@ class ApiEndpoints {
   static const String walletBalance = '/rider/wallet/balance/';
   static const String driverWithdrawalBalance = '/driver/withdrawals/balance/';
   static const String driverWithdrawalRequest = '/driver/withdrawals/request/';
+  static const String driverInstantQuote = '/driver/withdrawals/instant/quote/';
   static const String driverWithdrawalHistory = '/driver/withdrawals/history/';
   static const String driverWithdrawalBlockStatus =
       '/driver/withdrawals/block-status/';
