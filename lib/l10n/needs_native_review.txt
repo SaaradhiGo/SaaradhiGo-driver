@@ -125,3 +125,19 @@ authSessionExpired
   en: Your session has expired. Please log in again.
   te: మీ సెషన్ ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.
   hi: आपका सत्र समाप्त हो गया है। कृपया फिर से लॉग इन करें।
+offerToPickupDistanceMinutes
+  en: {distance} · {minutes} min to pickup
+  te: పికప్‌కు {distance} · {minutes} నిమి
+  hi: पिकअप तक {distance} · {minutes} मिनट
+callRider
+  en: Call {name}
+  te: {name}కు కాల్ చేయి
+  hi: {name} को कॉल करें
+callAction
+  en: Call
+  te: కాల్
+  hi: कॉल
+callUnavailable
+  en: Calling is not available right now.
+  te: ప్రస్తుతం కాల్ చేయడం అందుబాటులో లేదు.
+  hi: अभी कॉल करना उपलब्ध नहीं है।

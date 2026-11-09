@@ -968,5 +968,34 @@
   "authSessionExpired": "మీ సెషన్ ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.",
   "@authSessionExpired": {
     "description": "needs native review"
+  },
+  "offerToPickupDistanceMinutes": "పికప్‌కు {distance} · {minutes} నిమి",
+  "@offerToPickupDistanceMinutes": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "callRider": "{name}కు కాల్ చేయి",
+  "@callRider": {
+    "description": "needs native review",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "కాల్",
+  "@callAction": {
+    "description": "needs native review"
+  },
+  "callUnavailable": "ప్రస్తుతం కాల్ చేయడం అందుబాటులో లేదు.",
+  "@callUnavailable": {
+    "description": "needs native review"
   }
 }

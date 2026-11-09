@@ -387,7 +387,13 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         : market.formatDistanceKm(o.pickupKm!);
     final headline = [
       ?o.className,
-      if (pickupDistance != null) l.offerToPickupDistance(pickupDistance),
+      if (pickupDistance != null)
+        o.pickupMin == null
+            ? l.offerToPickupDistance(pickupDistance)
+            : l.offerToPickupDistanceMinutes(
+                pickupDistance,
+                o.pickupMin!.round().clamp(1, 999),
+              ),
     ].join(' · ');
     String place(String label, String? address, String? fallback) {
       final area = address == null ? null : splitArea(address).$1;

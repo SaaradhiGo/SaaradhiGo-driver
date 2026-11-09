@@ -147,7 +147,7 @@ void main() {
         (tester) async {
       await pumpOffer(tester);
       expect(find.text('NEW RIDE REQUEST'), findsOneWidget);
-      expect(find.text('Sedan · 1.2 km to pickup'), findsOneWidget);
+      expect(find.text('Sedan · 1.2 km · 4 min to pickup'), findsOneWidget);
       expect(find.text('Trip fare'), findsOneWidget);
       expect(find.text('You earn'), findsNothing);
       expect(find.byKey(const Key('offer_commission_row')), findsNothing);
@@ -164,6 +164,12 @@ void main() {
       expect(find.text('₹248'), findsOneWidget);
       expect(find.text('− ₹50'), findsOneWidget);
       expect(tester.getSize(find.byKey(const Key('offer_accept'))).height, 64);
+    });
+
+    testWidgets('without minutes the headline keeps the distance only',
+        (tester) async {
+      await pumpOffer(tester, payload: {...sampleOffer, 'pickup_eta_min': ''});
+      expect(find.text('Sedan · 1.2 km to pickup'), findsOneWidget);
     });
 
     testWidgets('leaves out what the frame does not carry', (tester) async {

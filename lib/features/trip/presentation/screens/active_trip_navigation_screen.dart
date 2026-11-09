@@ -12,6 +12,7 @@ import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../trip_navigation.dart';
 import '../widgets/trip_route_map.dart';
+import '../masked_call.dart';
 
 /// State `in_progress` — trip is underway toward the destination.
 class ActiveTripNavigationScreen extends ConsumerWidget {
@@ -78,6 +79,7 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
         busy: session.isBusy,
         onComplete: () =>
             ref.read(tripSessionNotifierProvider.notifier).completeRide(),
+        onCall: () => callRider(context, ref, trip.id),
       ),
     );
   }
