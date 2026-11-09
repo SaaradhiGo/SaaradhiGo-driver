@@ -191,12 +191,16 @@ class RiderRow extends StatelessWidget {
     this.rating,
     this.subtitle,
     this.onMessage,
+    this.onCall,
   });
 
   final String? name;
   final double? rating;
   final String? subtitle;
   final VoidCallback? onMessage;
+
+  /// Calls the rider through the masked bridge; their number is never shown.
+  final VoidCallback? onCall;
 
   @override
   Widget build(BuildContext context) {
@@ -250,6 +254,31 @@ class RiderRow extends StatelessWidget {
             ],
           ),
         ),
+        if (onCall != null) ...[
+          Semantics(
+            button: true,
+            label: sgL10n(context).callRider(
+              first.isEmpty ? sgL10n(context).riderFallback : first,
+            ),
+            child: InkWell(
+              key: const Key('trip_call'),
+              customBorder: const CircleBorder(),
+              onTap: onCall,
+              child: Container(
+                width: kSgTouch,
+                height: kSgTouch,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: SgColors.bg200,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: SgColors.line),
+                ),
+                child: SgIcon(SgIcons.call, color: SgColors.ink),
+              ),
+            ),
+          ),
+          const SizedBox(width: SgSpace.s2),
+        ],
         if (onMessage != null)
           Semantics(
             button: true,
@@ -357,11 +386,13 @@ class ToPickupSheet extends StatelessWidget {
     this.onArrived,
     this.onCancel,
     this.onMessage,
+    this.onCall,
   });
 
   final String? riderName;
   final double? riderRating;
   final String pickupAddress;
+  final VoidCallback? onCall;
 
   /// "1.2 km · 4 min".
   final String? awayLine;
@@ -386,7 +417,12 @@ class ToPickupSheet extends StatelessWidget {
         ),
       ],
       const SizedBox(height: SgSpace.s4),
-      RiderRow(name: riderName, rating: riderRating, onMessage: onMessage),
+      RiderRow(
+        name: riderName,
+        rating: riderRating,
+        onMessage: onMessage,
+        onCall: onCall,
+      ),
       const SizedBox(height: SgSpace.s4),
       SgPrimaryButton(
         key: const Key('trip_arrived'),
@@ -610,6 +646,7 @@ class PinCheckView extends StatefulWidget {
     this.onCancel,
     this.onChanged,
     this.onMessage,
+    this.onCall,
     this.topActions,
   });
 
@@ -638,6 +675,9 @@ class PinCheckView extends StatefulWidget {
   final VoidCallback? onCancel;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onMessage;
+
+  /// Calls the rider through the masked bridge.
+  final VoidCallback? onCall;
   final Widget? topActions;
 
   @override
@@ -721,6 +761,30 @@ class _PinCheckViewState extends State<PinCheckView> {
                     ],
                   ),
                 ),
+                if (widget.onCall != null) ...[
+                  Semantics(
+                    button: true,
+                    label: l.callRider(who),
+                    excludeSemantics: true,
+                    child: Material(
+                      color: SgStatus.rowFill,
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        key: const Key('trip_call'),
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: widget.onCall,
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: Center(
+                            child: SgIcon(SgIcons.call, color: SgColors.ink),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: SgSpace.s2),
+                ],
                 if (widget.onMessage != null)
                   Semantics(
                     button: true,
@@ -1005,10 +1069,14 @@ class InTripSheet extends StatelessWidget {
     this.payment,
     this.busy = false,
     this.onComplete,
+    this.onCall,
   });
 
   final String destination;
   final String? riderName;
+
+  /// Calls the rider through the masked bridge during the trip.
+  final VoidCallback? onCall;
 
   /// "6.2 km · 14 min".
   final String? leftLine;
@@ -1032,10 +1100,23 @@ class InTripSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l.tripDropping(first.isEmpty ? l.riderFallback : first),
-          key: const Key('trip_dropping'),
-          style: SgText.label.copyWith(color: SgColors.goldText),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l.tripDropping(first.isEmpty ? l.riderFallback : first),
+                key: const Key('trip_dropping'),
+                style: SgText.label.copyWith(color: SgColors.goldText),
+              ),
+            ),
+            if (onCall != null)
+              TextButton.icon(
+                key: const Key('trip_call'),
+                onPressed: onCall,
+                icon: SgIcon(SgIcons.call, size: 18, color: SgColors.ink),
+                label: Text(l.callAction, style: SgText.label),
+              ),
+          ],
         ),
         const SizedBox(height: SgSpace.s2),
         Row(

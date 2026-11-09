@@ -13,6 +13,7 @@ import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/trip_providers.dart';
 import '../trip_navigation.dart';
 import '../widgets/cancel_trip_sheet.dart';
+import '../masked_call.dart';
 
 /// State `reached` — driver is at pickup and enters the rider's 6-digit OTP to
 /// start the trip. The OTP is validated server-side; the driver never sees it
@@ -93,6 +94,7 @@ class _ArrivedAtPickupScreenState extends ConsumerState<ArrivedAtPickupScreen> {
       },
       // Chat moved onto the rider row as the 56px button; SOS stays on top.
       onMessage: () => context.push(tripChatPath(widget.trip)),
+      onCall: () => callRider(context, ref, widget.trip.id),
       topActions: TripSosButton(tripId: widget.trip.id, size: 48),
     );
   }

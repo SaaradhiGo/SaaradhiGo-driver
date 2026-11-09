@@ -82,6 +82,11 @@ class ApiEndpoints {
   static String driverCancelTrip(String tripId) =>
       '/ride/trip/$tripId/driver-cancel/';
 
+  // Masked rider-driver calls (backend /calls/, 9 Nov).
+  static String startTripCall(String tripId) => '/calls/trips/$tripId/start/';
+  static String endTripCall(String sessionId) =>
+      '/calls/sessions/$sessionId/end/';
+
   // Ride Chat & Support, Safety
   static String tripChatHistory(String tripId) => '/ride/trip/$tripId/chat/';
   static const String sosRaise = '/sos/';

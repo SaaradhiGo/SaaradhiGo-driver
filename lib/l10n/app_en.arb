@@ -1083,5 +1083,34 @@
   "authSessionExpired": "Your session has expired. Please log in again.",
   "@authSessionExpired": {
     "description": "Shown on Log in after the session ended"
+  },
+  "offerToPickupDistanceMinutes": "{distance} · {minutes} min to pickup",
+  "@offerToPickupDistanceMinutes": {
+    "description": "Offer headline after the vehicle class, with minutes",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "callRider": "Call {name}",
+  "@callRider": {
+    "description": "Masked call button label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Call",
+  "@callAction": {
+    "description": "Masked call button on the trip sheet"
+  },
+  "callUnavailable": "Calling is not available right now.",
+  "@callUnavailable": {
+    "description": "Masked call failed"
   }
 }

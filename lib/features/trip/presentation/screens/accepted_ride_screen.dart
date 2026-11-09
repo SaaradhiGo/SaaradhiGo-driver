@@ -10,6 +10,7 @@ import '../../../../ui/sg_l10n.dart';
 import '../../../support/presentation/widgets/sos_widgets.dart';
 import '../providers/route_providers.dart';
 import '../providers/trip_providers.dart';
+import '../masked_call.dart';
 import '../trip_navigation.dart';
 import '../widgets/cancel_trip_sheet.dart';
 import '../widgets/trip_route_map.dart';
@@ -57,6 +58,7 @@ class AcceptedRideScreen extends ConsumerWidget {
             ref.read(tripSessionNotifierProvider.notifier).markReached(),
         onCancel: () => showCancelTripSheet(context, ref),
         onMessage: () => context.push(tripChatPath(trip)),
+        onCall: () => callRider(context, ref, trip.id),
       ),
     );
   }

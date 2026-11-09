@@ -968,5 +968,34 @@
   "authSessionExpired": "आपका सत्र समाप्त हो गया है। कृपया फिर से लॉग इन करें।",
   "@authSessionExpired": {
     "description": "needs native review"
+  },
+  "offerToPickupDistanceMinutes": "पिकअप तक {distance} · {minutes} मिनट",
+  "@offerToPickupDistanceMinutes": {
+    "description": "needs native review",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "callRider": "{name} को कॉल करें",
+  "@callRider": {
+    "description": "needs native review",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "कॉल",
+  "@callAction": {
+    "description": "needs native review"
+  },
+  "callUnavailable": "अभी कॉल करना उपलब्ध नहीं है।",
+  "@callUnavailable": {
+    "description": "needs native review"
   }
 }
