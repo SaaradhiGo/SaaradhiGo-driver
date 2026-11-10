@@ -596,10 +596,7 @@ class _Chart extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         overflow: TextOverflow.visible,
-                        style: SgText.small.copyWith(
-                          fontSize: 10,
-                          color: SgColors.inkMuted,
-                        ),
+                        style: SgText.small.copyWith(color: SgColors.inkMuted),
                       ),
                     ),
                   ],
