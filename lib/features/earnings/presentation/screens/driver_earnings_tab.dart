@@ -304,6 +304,19 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
                   const SizedBox(height: SgSpace.s3),
                   Center(
                     child: TextButton(
+                      key: const Key('earn_by_period'),
+                      onPressed: () => context.push('/earnings/history'),
+                      child: Text(
+                        l.earnHistOpen,
+                        style: SgText.body.copyWith(
+                          color: SgColors.goldText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: TextButton(
                       key: const Key('earn_all_history'),
                       onPressed: () => context.push('/earnings/all'),
                       child: Text(

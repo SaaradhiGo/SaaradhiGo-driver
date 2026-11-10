@@ -8,23 +8,22 @@ import '../../ui/sg_text.dart';
 import '../../ui/sg_tokens.dart';
 import '../../ui/sg_widgets.dart';
 import 'requirements_api.dart';
+import 'setup_steps.dart';
 
-/// `/onboarding/ready` (10 Nov): every item the driver's market asks for, its status and where
-/// to fix it, and how far along they are. Going online waits for the items marked as blocking.
+/// `/onboarding/ready` (10 Nov v2): the six setup steps the server sends, each with its state,
+/// how many are done, and Continue setup to the next one. Any step opens in any order.
 class GetReadyScreen extends ConsumerWidget {
   const GetReadyScreen({super.key});
-
-  static const _fixAt = {
-    'personal': '/onboarding/req/personal',
-    'identity': '/onboarding/req/identity',
-    'vehicle': '/onboarding/req/vehicle',
-    'payouts': '/onboarding/req/payouts',
-  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final req = ref.watch(requirementsProvider);
+    Future<void> open(String key) async {
+      await context.push('/onboarding/step/$key');
+      ref.invalidate(requirementsProvider);
+    }
+
     return Scaffold(
       backgroundColor: SgColors.bg000,
       appBar: AppBar(title: Text(l.reqTitle)),
@@ -52,77 +51,134 @@ class GetReadyScreen extends ConsumerWidget {
               ],
             ),
             data: (r) {
-              final blocking = r.items
-                  .where((i) => r.blocking.contains(i.key))
-                  .map((i) => i.label)
-                  .join(', ');
-              final sections = [
-                ('personal', l.reqSectionPersonal),
-                ('identity', l.reqSectionIdentity),
-                ('vehicle', l.reqSectionVehicle),
-                ('payouts', l.reqSectionPayouts),
-              ];
+              final total = r.steps.length;
+              final done = r.stepsDone;
               return ListView(
                 key: const Key('req_list'),
                 padding: const EdgeInsets.all(SgSpace.s4),
                 children: [
                   Text(
-                    l.reqProgress(r.done.toString(), r.total.toString()),
+                    l.setupStepsProgress('$done', '$total'),
                     key: const Key('req_progress'),
                     style: SgText.title,
                   ),
                   const SizedBox(height: SgSpace.s2),
                   LinearProgressIndicator(
-                    value: r.total == 0 ? 0 : r.done / r.total,
+                    value: total == 0 ? 0 : done / total,
                     color: SgColors.gold500,
                     backgroundColor: SgColors.bg200,
                   ),
-                  const SizedBox(height: SgSpace.s3),
-                  Text(
-                    r.approved
-                        ? l.reqApproved
-                        : blocking.isNotEmpty
-                        ? l.reqBlocking(blocking)
-                        : l.reqAllIn,
-                    style: SgText.body,
-                  ),
-                  for (final (section, title) in sections)
-                    if (r.items.any((i) => i.section == section)) ...[
-                      const SizedBox(height: SgSpace.s5),
-                      Text(title, style: SgText.title),
-                      for (final i in r.items.where(
-                        (i) => i.section == section,
-                      ))
-                        ListTile(
-                          key: Key('req_item_${i.key}'),
-                          contentPadding: EdgeInsets.zero,
-                          minTileHeight: kSgTouch,
-                          title: Text(
-                            i.need == 'optional'
-                                ? '${i.label} · ${l.reqOptional}'
-                                : i.label,
-                            style: SgText.body,
+                  if (r.approved) ...[
+                    const SizedBox(height: SgSpace.s3),
+                    Container(
+                      key: const Key('setup_approved'),
+                      padding: const EdgeInsets.all(SgSpace.s3),
+                      decoration: BoxDecoration(
+                        color: SgStatus.okBg,
+                        borderRadius: BorderRadius.circular(SgRadius.md),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.verified_rounded, color: SgStatus.okInk),
+                          const SizedBox(width: SgSpace.s2),
+                          Expanded(
+                            child: Text(
+                              l.setupApproved,
+                              style: SgText.body.copyWith(
+                                color: SgStatus.okInk,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                          subtitle: i.reason != null && !i.isDone
-                              ? Text(
-                                  i.reason!,
-                                  style: SgText.small.copyWith(
-                                    color: SgColors.danger,
-                                  ),
-                                )
-                              : null,
-                          trailing: StatusChip(item: i),
-                          onTap: i.isDone || i.status == 'in_review'
-                              ? null
-                              : () async {
-                                  await context.push(_fixAt[section]!);
-                                  ref.invalidate(requirementsProvider);
-                                },
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: SgSpace.s4),
+                  for (final st in r.steps)
+                    _StepRow(
+                      step: st,
+                      current: st.key == r.nextStep,
+                      onTap: () => open(st.key),
+                    ),
+                  if (r.nextStep != null) ...[
+                    const SizedBox(height: SgSpace.s4),
+                    SgPrimaryButton(
+                      key: const Key('setup_continue'),
+                      label: l.setupContinue,
+                      onPressed: () => open(r.nextStep!),
+                    ),
+                  ],
                 ],
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StepRow extends StatelessWidget {
+  const _StepRow({
+    required this.step,
+    required this.current,
+    required this.onTap,
+  });
+  final SetupStep step;
+  final bool current;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final (String? state, Color color) = switch (step.status) {
+      'done' => (l.reqStatusDone, SgStatus.okInk),
+      'in_review' => (l.reqStatusInReview, SgStatus.warnInk),
+      'action' => (l.setupNeedsAction, SgColors.danger),
+      _ => (null, SgColors.inkMuted),
+    };
+    return Material(
+      color: current ? SgColors.bg100 : Colors.transparent,
+      borderRadius: BorderRadius.circular(SgRadius.md),
+      child: InkWell(
+        key: Key('setup_row_${step.key}'),
+        borderRadius: BorderRadius.circular(SgRadius.md),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SgSpace.s2,
+            vertical: SgSpace.s3,
+          ),
+          child: Row(
+            children: [
+              SetupStepMarker(step: step, current: current),
+              const SizedBox(width: SgSpace.s3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      setupStepTitle(l, step.key),
+                      style: SgText.body.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      setupStepDescription(l, step),
+                      style: SgText.small.copyWith(color: SgColors.inkMuted),
+                    ),
+                    if (state != null)
+                      Text(
+                        state,
+                        style: SgText.small.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: SgColors.inkMuted),
+            ],
           ),
         ),
       ),

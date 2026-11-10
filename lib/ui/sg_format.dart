@@ -50,3 +50,33 @@ String sgDayTime(DateTime d, {DateTime? now, String? languageCode}) {
   final time = DateFormat('h:mm a', lang).format(d).toLowerCase();
   return '${sgDay(d, now: now, languageCode: lang)} · $time';
 }
+
+/// Driver area v2 (10 Nov): money always with two decimals, in [currency]
+/// (the driver's). Null when [raw] does not parse.
+String? sgMoney2(Object? raw, {String? currency}) {
+  if (raw == null) return null;
+  final value = raw is num ? raw.toDouble() : double.tryParse('$raw'.trim());
+  if (value == null) return null;
+  final code = (currency == null || currency.trim().isEmpty)
+      ? MarketConfigStore.instance.current.currencyCode
+      : currency.trim().toUpperCase();
+  final locale = sgNumberLocale(code);
+  final symbol = NumberFormat.simpleCurrency(
+    locale: locale,
+    name: code,
+  ).currencySymbol;
+  return NumberFormat.currency(
+    locale: locale,
+    name: code,
+    symbol: symbol,
+    decimalDigits: 2,
+  ).format(value);
+}
+
+/// The market's numeric date: dd/MM/yyyy in India, MM/dd/yyyy in the USA.
+String sgMarketDate(DateTime d, String? country) =>
+    DateFormat(country == 'US' ? 'MM/dd/yyyy' : 'dd/MM/yyyy').format(d);
+
+/// The hint for a date input in the market's order.
+String sgDateHint(String? country) =>
+    country == 'US' ? 'mm/dd/yyyy' : 'dd/mm/yyyy';

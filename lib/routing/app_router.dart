@@ -9,6 +9,7 @@ import '../features/auth/presentation/providers/auth_state.dart';
 import '../features/dashboard/presentation/driver_dashboard_screen.dart';
 import '../features/earnings/presentation/screens/driver_earnings_tab.dart';
 import '../features/earnings/presentation/screens/earnings_dashboard_screen.dart';
+import '../features/earnings/presentation/screens/earnings_history_screen.dart';
 import '../features/dashboard/presentation/screens/trip_history_screen.dart';
 import '../features/trip_history/presentation/screens/trip_details_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_licence_screen.dart';
@@ -37,6 +38,7 @@ import '../features/trip/presentation/providers/trip_providers.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
 import '../features/requirements/get_ready_screen.dart';
 import '../features/requirements/requirement_forms.dart';
+import '../features/requirements/setup_steps.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
 
@@ -201,6 +203,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   // The full earnings screen: settlements, payouts and the
                   // existing withdrawal flow.
                   GoRoute(
+                    path: 'history',
+                    builder: (context, state) => const EarningsHistoryScreen(),
+                  ),
+                  GoRoute(
                     path: 'all',
                     builder: (context, state) =>
                         const EarningsDashboardScreen(),
@@ -261,6 +267,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding/ready',
         builder: (context, state) => const GetReadyScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/step/:key',
+        builder: (context, state) =>
+            SetupStepScreen(stepKey: state.pathParameters['key'] ?? ''),
       ),
       GoRoute(
         path: '/onboarding/req/personal',
