@@ -145,6 +145,14 @@ class _InstantWithdrawSheetState extends ConsumerState<InstantWithdrawSheet> {
               _line(l.instantYouReceive, m(q.youReceive), strong: true),
               if (q.destination != null) _line(l.instantTo, q.destination!),
               _line(l.instantArrives, q.arrival),
+              if (q.limitReached && q.limitMessage.isNotEmpty) ...[
+                const SizedBox(height: SgSpace.s2),
+                Text(
+                  q.limitMessage,
+                  key: const Key('instant_limit'),
+                  style: SgText.small.copyWith(color: SgColors.danger),
+                ),
+              ],
             ],
             if (_error != null) ...[
               const SizedBox(height: SgSpace.s2),
@@ -160,7 +168,7 @@ class _InstantWithdrawSheetState extends ConsumerState<InstantWithdrawSheet> {
               label: q != null && q.valid
                   ? l.instantConfirm(m(q.youReceive))
                   : l.instantSeeFee,
-              onPressed: _busy
+              onPressed: _busy || (q != null && q.limitReached)
                   ? null
                   : (q != null && q.valid ? _confirm : _check),
             ),

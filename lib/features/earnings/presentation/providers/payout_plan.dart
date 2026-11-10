@@ -67,6 +67,8 @@ class InstantQuote {
     required this.destination,
     required this.arrival,
     required this.valid,
+    this.limitReached = false,
+    this.limitMessage = '',
   });
 
   final String amount;
@@ -78,6 +80,10 @@ class InstantQuote {
   final String? destination;
   final String arrival;
   final bool valid;
+
+  /// The daily Withdraw now limit (10 Nov): the reason, shown before the driver taps.
+  final bool limitReached;
+  final String limitMessage;
 }
 
 InstantQuote? parseInstantQuote(Object? body) {
@@ -93,5 +99,7 @@ InstantQuote? parseInstantQuote(Object? body) {
     destination: d['destination']?.toString(),
     arrival: (d['arrival'] ?? '').toString(),
     valid: d['valid'] == true,
+    limitReached: d['limit_reached'] == true,
+    limitMessage: (d['limit_message'] ?? '').toString(),
   );
 }

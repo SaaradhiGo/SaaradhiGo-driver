@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WithdrawalModel {
 
-@JsonKey(fromJson: intFromJson) int get id;@JsonKey(fromJson: moneyFromJson) String get amount; String get status;@JsonKey(name: 'requested_at') String? get requestedAt;
+@JsonKey(fromJson: intFromJson) int get id;@JsonKey(fromJson: moneyFromJson) String get amount; String get status;@JsonKey(name: 'requested_at') String? get requestedAt; String get origin;@JsonKey(name: 'fee_minor', fromJson: intFromJson) int get feeMinor;
 /// Create a copy of WithdrawalModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $WithdrawalModelCopyWith<WithdrawalModel> get copyWith => _$WithdrawalModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WithdrawalModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.status, status) || other.status == status)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WithdrawalModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.status, status) || other.status == status)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.feeMinor, feeMinor) || other.feeMinor == feeMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,status,requestedAt);
+int get hashCode => Object.hash(runtimeType,id,amount,status,requestedAt,origin,feeMinor);
 
 @override
 String toString() {
-  return 'WithdrawalModel(id: $id, amount: $amount, status: $status, requestedAt: $requestedAt)';
+  return 'WithdrawalModel(id: $id, amount: $amount, status: $status, requestedAt: $requestedAt, origin: $origin, feeMinor: $feeMinor)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $WithdrawalModelCopyWith<$Res>  {
   factory $WithdrawalModelCopyWith(WithdrawalModel value, $Res Function(WithdrawalModel) _then) = _$WithdrawalModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: intFromJson) int id,@JsonKey(fromJson: moneyFromJson) String amount, String status,@JsonKey(name: 'requested_at') String? requestedAt
+@JsonKey(fromJson: intFromJson) int id,@JsonKey(fromJson: moneyFromJson) String amount, String status,@JsonKey(name: 'requested_at') String? requestedAt, String origin,@JsonKey(name: 'fee_minor', fromJson: intFromJson) int feeMinor
 });
 
 
@@ -66,13 +66,15 @@ class _$WithdrawalModelCopyWithImpl<$Res>
 
 /// Create a copy of WithdrawalModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? amount = null,Object? status = null,Object? requestedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? amount = null,Object? status = null,Object? requestedAt = freezed,Object? origin = null,Object? feeMinor = null,}) {
   return _then(WithdrawalModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,requestedAt: freezed == requestedAt ? _self.requestedAt : requestedAt // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as String,feeMinor: null == feeMinor ? _self.feeMinor : feeMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -157,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt,  String origin, @JsonKey(name: 'fee_minor', fromJson: intFromJson)  int feeMinor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WithdrawalModel() when $default != null:
-return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
+return $default(_that.id,_that.amount,_that.status,_that.requestedAt,_that.origin,_that.feeMinor);case _:
   return orElse();
 
 }
@@ -178,10 +180,10 @@ return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt,  String origin, @JsonKey(name: 'fee_minor', fromJson: intFromJson)  int feeMinor)  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalModel():
-return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
+return $default(_that.id,_that.amount,_that.status,_that.requestedAt,_that.origin,_that.feeMinor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +200,10 @@ return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: intFromJson)  int id, @JsonKey(fromJson: moneyFromJson)  String amount,  String status, @JsonKey(name: 'requested_at')  String? requestedAt,  String origin, @JsonKey(name: 'fee_minor', fromJson: intFromJson)  int feeMinor)?  $default,) {final _that = this;
 switch (_that) {
 case _WithdrawalModel() when $default != null:
-return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
+return $default(_that.id,_that.amount,_that.status,_that.requestedAt,_that.origin,_that.feeMinor);case _:
   return null;
 
 }
@@ -213,13 +215,15 @@ return $default(_that.id,_that.amount,_that.status,_that.requestedAt);case _:
 @JsonSerializable()
 
 class _WithdrawalModel implements WithdrawalModel {
-  const _WithdrawalModel({@JsonKey(fromJson: intFromJson) this.id = 0, @JsonKey(fromJson: moneyFromJson) this.amount = '0.00', this.status = 'pending', @JsonKey(name: 'requested_at') this.requestedAt});
+  const _WithdrawalModel({@JsonKey(fromJson: intFromJson) this.id = 0, @JsonKey(fromJson: moneyFromJson) this.amount = '0.00', this.status = 'pending', @JsonKey(name: 'requested_at') this.requestedAt, this.origin = '', @JsonKey(name: 'fee_minor', fromJson: intFromJson) this.feeMinor = 0});
   factory _WithdrawalModel.fromJson(Map<String, dynamic> json) => _$WithdrawalModelFromJson(json);
 
 @override@JsonKey(fromJson: intFromJson) final  int id;
 @override@JsonKey(fromJson: moneyFromJson) final  String amount;
 @override@JsonKey() final  String status;
 @override@JsonKey(name: 'requested_at') final  String? requestedAt;
+@override@JsonKey() final  String origin;
+@override@JsonKey(name: 'fee_minor', fromJson: intFromJson) final  int feeMinor;
 
 /// Create a copy of WithdrawalModel
 /// with the given fields replaced by the non-null parameter values.
@@ -234,16 +238,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WithdrawalModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.status, status) || other.status == status)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WithdrawalModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.status, status) || other.status == status)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.feeMinor, feeMinor) || other.feeMinor == feeMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,status,requestedAt);
+int get hashCode => Object.hash(runtimeType,id,amount,status,requestedAt,origin,feeMinor);
 
 @override
 String toString() {
-  return 'WithdrawalModel(id: $id, amount: $amount, status: $status, requestedAt: $requestedAt)';
+  return 'WithdrawalModel(id: $id, amount: $amount, status: $status, requestedAt: $requestedAt, origin: $origin, feeMinor: $feeMinor)';
 }
 
 
@@ -254,7 +258,7 @@ abstract mixin class _$WithdrawalModelCopyWith<$Res> implements $WithdrawalModel
   factory _$WithdrawalModelCopyWith(_WithdrawalModel value, $Res Function(_WithdrawalModel) _then) = __$WithdrawalModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: intFromJson) int id,@JsonKey(fromJson: moneyFromJson) String amount, String status,@JsonKey(name: 'requested_at') String? requestedAt
+@JsonKey(fromJson: intFromJson) int id,@JsonKey(fromJson: moneyFromJson) String amount, String status,@JsonKey(name: 'requested_at') String? requestedAt, String origin,@JsonKey(name: 'fee_minor', fromJson: intFromJson) int feeMinor
 });
 
 
@@ -271,13 +275,15 @@ class __$WithdrawalModelCopyWithImpl<$Res>
 
 /// Create a copy of WithdrawalModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? amount = null,Object? status = null,Object? requestedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? amount = null,Object? status = null,Object? requestedAt = freezed,Object? origin = null,Object? feeMinor = null,}) {
   return _then(_WithdrawalModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,requestedAt: freezed == requestedAt ? _self.requestedAt : requestedAt // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as String,feeMinor: null == feeMinor ? _self.feeMinor : feeMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

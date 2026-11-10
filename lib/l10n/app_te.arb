@@ -1093,5 +1093,9 @@
   "feeOncePerDay": "ఫీజు రోజు ముగిసిన తర్వాత, రోజుకు ఒకసారి తీసుకుంటారు.",
   "@feeOncePerDay": {
     "description": "needs native review"
+  },
+  "withdrawInstantFeeLine": "{amount} ఉపసంహరించారు · ప్రొవైడర్ ఫీజు {fee} · అందింది {received}",
+  "@withdrawInstantFeeLine": {
+    "description": "needs native review"
   }
 }
