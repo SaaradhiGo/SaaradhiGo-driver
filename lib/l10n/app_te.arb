@@ -1461,5 +1461,364 @@
   "reqAdd": "జోడించు",
   "@reqAdd": {
     "description": "needs native review"
+  },
+  "setupSavedAuto": "ఆటోమేటిక్‌గా సేవ్ అయింది",
+  "@setupSavedAuto": {
+    "description": "needs native review"
+  },
+  "setupStepPersonal": "వ్యక్తిగత వివరాలు",
+  "@setupStepPersonal": {
+    "description": "needs native review"
+  },
+  "setupStepPersonalDesc": "ఫోటో, పేరు, పుట్టిన తేదీ, చిరునామా",
+  "@setupStepPersonalDesc": {
+    "description": "needs native review"
+  },
+  "setupStepContact": "అత్యవసర సంప్రదింపు",
+  "@setupStepContact": {
+    "description": "needs native review"
+  },
+  "setupStepContactDesc": "SOS సమయంలో మేము కాల్ చేయగల వ్యక్తి",
+  "@setupStepContactDesc": {
+    "description": "needs native review"
+  },
+  "setupStepIdentity": "లైసెన్స్, గుర్తింపు",
+  "@setupStepIdentity": {
+    "description": "needs native review"
+  },
+  "setupItemLicence": "లైసెన్స్",
+  "@setupItemLicence": {
+    "description": "needs native review"
+  },
+  "setupItemAadhaar": "ఆధార్",
+  "@setupItemAadhaar": {
+    "description": "needs native review"
+  },
+  "setupItemPan": "PAN",
+  "@setupItemPan": {
+    "description": "needs native review"
+  },
+  "setupItemPolice": "పోలీస్ తనిఖీ",
+  "@setupItemPolice": {
+    "description": "needs native review"
+  },
+  "setupItemBackground": "బ్యాక్‌గ్రౌండ్ తనిఖీ",
+  "@setupItemBackground": {
+    "description": "needs native review"
+  },
+  "setupStepVehicle": "మీ వాహనం",
+  "@setupStepVehicle": {
+    "description": "needs native review"
+  },
+  "setupStepVehicleDesc": "రకం, కంపెనీ, మోడల్, సంవత్సరం, నంబర్ ప్లేట్",
+  "@setupStepVehicleDesc": {
+    "description": "needs native review"
+  },
+  "setupStepVehicleDocs": "వాహన ఫోటోలు, పత్రాలు",
+  "@setupStepVehicleDocs": {
+    "description": "needs native review"
+  },
+  "setupStepVehicleDocsDesc": "5 ఫోటోలు, RC, బీమా, పర్మిట్…",
+  "@setupStepVehicleDocsDesc": {
+    "description": "needs native review"
+  },
+  "setupStepPayouts": "బ్యాంక్, చెల్లింపులు",
+  "@setupStepPayouts": {
+    "description": "needs native review"
+  },
+  "setupStepPayoutsDesc": "మీ సంపాదన ఎక్కడికి పంపాలి",
+  "@setupStepPayoutsDesc": {
+    "description": "needs native review"
+  },
+  "setupStepHeader": "దశ {number}/{total} · సుమారు {minutes} నిమిషాలు మిగిలాయి",
+  "@setupStepHeader": {
+    "description": "needs native review",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepHeaderNoTime": "దశ {number}/{total}",
+  "@setupStepHeaderNoTime": {
+    "description": "needs native review",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepsProgress": "{total}లో {done} దశలు",
+  "@setupStepsProgress": {
+    "description": "needs native review",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupUploadedOn": "{date}న అప్‌లోడ్ అయింది",
+  "@setupUploadedOn": {
+    "description": "needs native review",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "setupBack": "వెనుకకు",
+  "@setupBack": {
+    "description": "needs native review"
+  },
+  "setupSaveContinue": "సేవ్ చేసి కొనసాగించండి",
+  "@setupSaveContinue": {
+    "description": "needs native review"
+  },
+  "setupContinue": "సెటప్ కొనసాగించండి",
+  "@setupContinue": {
+    "description": "needs native review"
+  },
+  "setupApproved": "మీకు డ్రైవ్ చేయడానికి ఆమోదం లభించింది",
+  "@setupApproved": {
+    "description": "needs native review"
+  },
+  "setupNeedsAction": "చర్య అవసరం",
+  "@setupNeedsAction": {
+    "description": "needs native review"
+  },
+  "setupToDo": "చేయాల్సింది",
+  "@setupToDo": {
+    "description": "needs native review"
+  },
+  "profApproved": "డ్రైవ్ చేయడానికి ఆమోదం ఉంది",
+  "@profApproved": {
+    "description": "needs native review"
+  },
+  "profSetupInProgress": "సెటప్ జరుగుతోంది",
+  "@profSetupInProgress": {
+    "description": "needs native review"
+  },
+  "profNew": "కొత్త",
+  "@profNew": {
+    "description": "needs native review"
+  },
+  "profRatingTrips": "{rating} ★ · {count, plural, =1{1 ట్రిప్} other{{count} ట్రిప్‌లు}}",
+  "@profRatingTrips": {
+    "description": "needs native review",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profSecPersonal": "వ్యక్తిగత వివరాలు",
+  "@profSecPersonal": {
+    "description": "needs native review"
+  },
+  "profSecContacts": "అత్యవసర సంప్రదింపులు",
+  "@profSecContacts": {
+    "description": "needs native review"
+  },
+  "profSecIdentity": "లైసెన్స్, గుర్తింపు",
+  "@profSecIdentity": {
+    "description": "needs native review"
+  },
+  "profSecVehicle": "వాహనం",
+  "@profSecVehicle": {
+    "description": "needs native review"
+  },
+  "profSecBank": "బ్యాంక్, చెల్లింపులు",
+  "@profSecBank": {
+    "description": "needs native review"
+  },
+  "profSecLanguage": "భాష, ప్రాధాన్యతలు",
+  "@profSecLanguage": {
+    "description": "needs native review"
+  },
+  "profLicence": "లైసెన్స్ {number}",
+  "@profLicence": {
+    "description": "needs native review",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "profAadhaar": "ఆధార్ {masked}",
+  "@profAadhaar": {
+    "description": "needs native review",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profPan": "PAN {masked}",
+  "@profPan": {
+    "description": "needs native review",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profStripeReady": "Stripe ద్వారా చెల్లింపు",
+  "@profStripeReady": {
+    "description": "needs native review"
+  },
+  "profNotAdded": "ఇంకా జోడించలేదు",
+  "@profNotAdded": {
+    "description": "needs native review"
+  },
+  "profEdit": "మార్చు",
+  "@profEdit": {
+    "description": "needs native review"
+  },
+  "profOpen": "తెరువు",
+  "@profOpen": {
+    "description": "needs native review"
+  },
+  "earnHistTitle": "సంపాదన చరిత్ర",
+  "@earnHistTitle": {
+    "description": "needs native review"
+  },
+  "earnHistOpen": "రోజు, వారం, నెల లేదా సంవత్సరం వారీగా సంపాదన",
+  "@earnHistOpen": {
+    "description": "needs native review"
+  },
+  "earnPerDay": "రోజు",
+  "@earnPerDay": {
+    "description": "needs native review"
+  },
+  "earnPerWeek": "వారం",
+  "@earnPerWeek": {
+    "description": "needs native review"
+  },
+  "earnPerMonth": "నెల",
+  "@earnPerMonth": {
+    "description": "needs native review"
+  },
+  "earnPerYear": "సంవత్సరం",
+  "@earnPerYear": {
+    "description": "needs native review"
+  },
+  "earnPerCustom": "మీకు నచ్చిన తేదీలు",
+  "@earnPerCustom": {
+    "description": "needs native review"
+  },
+  "earnCalendarYear": "క్యాలెండర్ సంవత్సరం",
+  "@earnCalendarYear": {
+    "description": "needs native review"
+  },
+  "earnTaxYear": "భారత పన్ను సంవత్సరం (ఏప్రి–మార్చి)",
+  "@earnTaxYear": {
+    "description": "needs native review"
+  },
+  "earnTaxYearLabel": "పన్ను సంవత్సరం {from}–{to}",
+  "@earnTaxYearLabel": {
+    "description": "needs native review",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPrev": "మునుపటి",
+  "@earnPrev": {
+    "description": "needs native review"
+  },
+  "earnNext": "తదుపరి",
+  "@earnNext": {
+    "description": "needs native review"
+  },
+  "earnAvgPerTrip": "ఒక్కో ట్రిప్‌కు సగటు {amount}",
+  "@earnAvgPerTrip": {
+    "description": "needs native review",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnTipsFrom": "{count, plural, =1{1 రైడర్ నుండి} other{{count} రైడర్ల నుండి}}",
+  "@earnTipsFrom": {
+    "description": "needs native review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnTipsOff": "టిప్స్ ఇంకా ప్రారంభం కాలేదు",
+  "@earnTipsOff": {
+    "description": "needs native review"
+  },
+  "earnPaidToBank": "మీ బ్యాంక్‌కు చెల్లించింది",
+  "@earnPaidToBank": {
+    "description": "needs native review"
+  },
+  "earnPayoutsCount": "{count, plural, =1{1 చెల్లింపు} other{{count} చెల్లింపులు}}",
+  "@earnPayoutsCount": {
+    "description": "needs native review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnRestInCash": "మిగతాది నగదుగా",
+  "@earnRestInCash": {
+    "description": "needs native review"
+  },
+  "earnAllMonths": "అన్ని నెలలు",
+  "@earnAllMonths": {
+    "description": "needs native review"
+  },
+  "earnSoFar": "(ఇప్పటివరకు)",
+  "@earnSoFar": {
+    "description": "needs native review"
+  },
+  "earnColTrips": "ట్రిప్‌లు",
+  "@earnColTrips": {
+    "description": "needs native review"
+  },
+  "earnStatement": "స్టేట్‌మెంట్ (PDF)",
+  "@earnStatement": {
+    "description": "needs native review"
+  },
+  "earnStatementFailed": "స్టేట్‌మెంట్ డౌన్‌లోడ్ కాలేదు. మళ్లీ ప్రయత్నించండి.",
+  "@earnStatementFailed": {
+    "description": "needs native review"
+  },
+  "earnTripsOnDay": "{date} నాటి ట్రిప్‌లు",
+  "@earnTripsOnDay": {
+    "description": "needs native review",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "earnNoTripsDay": "ఈ రోజు ట్రిప్‌లు లేవు.",
+  "@earnNoTripsDay": {
+    "description": "needs native review"
   }
 }

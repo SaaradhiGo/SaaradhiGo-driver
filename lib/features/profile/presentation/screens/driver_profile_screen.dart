@@ -17,6 +17,7 @@ import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../vehicle/presentation/providers/vehicle_info_providers.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/display_settings_rows.dart';
+import '../widgets/profile_sections.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Driver Profile / Account Suite screen (`/profile`).
@@ -131,8 +132,10 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               child: Column(
                 children: [
                   _buildHeader(context, profile),
+                  const SizedBox(height: AppSpacing.sm),
+                  ProfileSummary(profile: profile),
                   const SizedBox(height: AppSpacing.lg),
-                  _buildMetricsRow(profile),
+                  ProfileSections(profile: profile),
                   const SizedBox(height: AppSpacing.lg),
                   _buildActiveVehicleDetails(profile),
                   const SizedBox(height: AppSpacing.lg),
@@ -183,102 +186,6 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
           // or not they were. The Elite Tier row below says what is true.
         ],
       ),
-    );
-  }
-
-  Widget _buildMetricsRow(DriverProfileModel profile) {
-    // A driver with no ratings yet is "New", never an invented score.
-    final r = profile.ratings;
-    final rating = (r == null || r <= 0) ? 'New' : r.toStringAsFixed(1);
-    final trips = profile.totalTrips?.toString() ?? '0';
-
-    return Row(
-      children: [
-        Expanded(
-          child: GlassPanel(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star_rounded,
-                      size: 18,
-                      color: AppColors.primaryText,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      rating,
-                      style: AppTypography.dataMono.copyWith(
-                        color: AppColors.primaryText,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Rating',
-                  style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: GlassPanel(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            child: Column(
-              children: [
-                Text(
-                  trips,
-                  style: AppTypography.dataMono.copyWith(
-                    color: AppColors.onBackground,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Trips',
-                  style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: GlassPanel(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            child: Column(
-              children: [
-                Icon(
-                  profile.approved
-                      ? Icons.check_circle_rounded
-                      : Icons.pending_rounded,
-                  size: 18,
-                  color: profile.approved
-                      ? AppColors.primaryText
-                      : AppColors.primaryText,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  profile.approved ? 'Approved' : 'Pending',
-                  style: AppTypography.labelCaps.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -766,10 +673,7 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
             color: Colors.transparent,
             child: ListTile(
               key: const Key('profile_notification_preferences'),
-              leading: Icon(
-                Icons.tune_rounded,
-                color: AppColors.primaryText,
-              ),
+              leading: Icon(Icons.tune_rounded, color: AppColors.primaryText),
               title: Text(
                 'Notification preferences',
                 style: AppTypography.bodyMd.copyWith(

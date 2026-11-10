@@ -1429,5 +1429,364 @@
   "reqStripeHint": "Payouts in the USA go through Stripe. Stripe asks for your bank and tax details; SaaradhiGo never sees them.",
   "reqStripeSetup": "Set up payouts",
   "reqFix": "Fix",
-  "reqAdd": "Add"
+  "reqAdd": "Add",
+  "setupSavedAuto": "Saved automatically",
+  "@setupSavedAuto": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPersonal": "Personal details",
+  "@setupStepPersonal": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPersonalDesc": "Photo, name, date of birth, address",
+  "@setupStepPersonalDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepContact": "Emergency contact",
+  "@setupStepContact": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepContactDesc": "Someone we can call in an SOS",
+  "@setupStepContactDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepIdentity": "Licence and identity",
+  "@setupStepIdentity": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemLicence": "Licence",
+  "@setupItemLicence": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemAadhaar": "Aadhaar",
+  "@setupItemAadhaar": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemPan": "PAN",
+  "@setupItemPan": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemPolice": "police check",
+  "@setupItemPolice": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemBackground": "background check",
+  "@setupItemBackground": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicle": "Your vehicle",
+  "@setupStepVehicle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDesc": "Type, make, model, year, plate",
+  "@setupStepVehicleDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDocs": "Vehicle photos and papers",
+  "@setupStepVehicleDocs": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDocsDesc": "5 photos, RC, insurance, permit…",
+  "@setupStepVehicleDocsDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPayouts": "Bank and payouts",
+  "@setupStepPayouts": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPayoutsDesc": "Where we send your earnings",
+  "@setupStepPayoutsDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepHeader": "Step {number} of {total} · about {minutes} minutes left",
+  "@setupStepHeader": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepHeaderNoTime": "Step {number} of {total}",
+  "@setupStepHeaderNoTime": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepsProgress": "{done} of {total} steps",
+  "@setupStepsProgress": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupUploadedOn": "Uploaded {date}",
+  "@setupUploadedOn": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "setupBack": "Back",
+  "@setupBack": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupSaveContinue": "Save and continue",
+  "@setupSaveContinue": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupContinue": "Continue setup",
+  "@setupContinue": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupApproved": "You're approved to drive",
+  "@setupApproved": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupNeedsAction": "Needs action",
+  "@setupNeedsAction": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupToDo": "To do",
+  "@setupToDo": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profApproved": "Approved to drive",
+  "@profApproved": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSetupInProgress": "Setup in progress",
+  "@profSetupInProgress": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profNew": "New",
+  "@profNew": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profRatingTrips": "{rating} ★ · {count, plural, =1{1 trip} other{{count} trips}}",
+  "@profRatingTrips": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profSecPersonal": "Personal details",
+  "@profSecPersonal": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecContacts": "Emergency contacts",
+  "@profSecContacts": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecIdentity": "Licence and identity",
+  "@profSecIdentity": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecVehicle": "Vehicle",
+  "@profSecVehicle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecBank": "Bank and payouts",
+  "@profSecBank": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecLanguage": "Language and preferences",
+  "@profSecLanguage": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profLicence": "Licence {number}",
+  "@profLicence": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "profAadhaar": "Aadhaar {masked}",
+  "@profAadhaar": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profPan": "PAN {masked}",
+  "@profPan": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profStripeReady": "Paid through Stripe",
+  "@profStripeReady": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profNotAdded": "Not added yet",
+  "@profNotAdded": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profEdit": "Edit",
+  "@profEdit": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profOpen": "Open",
+  "@profOpen": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnHistTitle": "Earnings history",
+  "@earnHistTitle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnHistOpen": "Earnings by day, week, month or year",
+  "@earnHistOpen": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerDay": "Day",
+  "@earnPerDay": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerWeek": "Week",
+  "@earnPerWeek": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerMonth": "Month",
+  "@earnPerMonth": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerYear": "Year",
+  "@earnPerYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerCustom": "Custom range",
+  "@earnPerCustom": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnCalendarYear": "Calendar year",
+  "@earnCalendarYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTaxYear": "Indian tax year (Apr–Mar)",
+  "@earnTaxYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTaxYearLabel": "Tax year {from}–{to}",
+  "@earnTaxYearLabel": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPrev": "Previous",
+  "@earnPrev": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnNext": "Next",
+  "@earnNext": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnAvgPerTrip": "Avg {amount} per trip",
+  "@earnAvgPerTrip": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnTipsFrom": "{count, plural, =1{From 1 rider} other{From {count} riders}}",
+  "@earnTipsFrom": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnTipsOff": "Tips are not on yet",
+  "@earnTipsOff": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPaidToBank": "Paid to your bank",
+  "@earnPaidToBank": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPayoutsCount": "{count, plural, =1{1 payout} other{{count} payouts}}",
+  "@earnPayoutsCount": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnRestInCash": "rest in cash",
+  "@earnRestInCash": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnAllMonths": "All months",
+  "@earnAllMonths": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnSoFar": "(so far)",
+  "@earnSoFar": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnColTrips": "Trips",
+  "@earnColTrips": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnStatement": "Statement (PDF)",
+  "@earnStatement": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnStatementFailed": "Could not download the statement. Try again.",
+  "@earnStatementFailed": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTripsOnDay": "Trips on {date}",
+  "@earnTripsOnDay": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "earnNoTripsDay": "No trips this day.",
+  "@earnNoTripsDay": {
+    "description": "Driver area v2 (10 Nov)"
+  }
 }

@@ -24,13 +24,52 @@ class ChecklistItem {
       blocksOnline = j['blocks_online'] == true,
       status = j['status'] as String,
       reason = j['reason'] as String?,
-      expires = j['expires'] as String?;
+      expires = j['expires'] as String?,
+      step = j['step'] as String?,
+      files = [
+        for (final f in (j['files'] as List? ?? const []))
+          ReqFile.fromJson(f as Json),
+      ];
 
   final String key, section, label, help, need, status;
   final bool blocksOnline;
-  final String? reason, expires;
+  final String? reason, expires, step;
+  final List<ReqFile> files;
 
   bool get isDone => const {'approved', 'done', 'expiring'}.contains(status);
+}
+
+/// One file behind an item (v2): its own status, reviewer reason and upload time.
+class ReqFile {
+  ReqFile.fromJson(Json j)
+    : key = j['key'] as String,
+      label = (j['label'] as String?) ?? j['key'] as String,
+      rawStatus = (j['status'] as String?) ?? 'missing',
+      reason = j['reason'] as String?,
+      uploadedAt = DateTime.tryParse('${j['uploaded_at']}'),
+      vehicle = j['vehicle'] == true;
+
+  final String key, label, rawStatus;
+  final String? reason;
+  final DateTime? uploadedAt;
+  final bool vehicle;
+
+  /// A file that is on the server and not yet decided is in review, never missing.
+  String get status =>
+      rawStatus == 'missing' && uploadedAt != null ? 'in_review' : rawStatus;
+}
+
+/// One of the six setup steps the server sends, in order; absent steps are not shown.
+class SetupStep {
+  SetupStep.fromJson(Json j)
+    : key = j['key'] as String,
+      number = j['number'] as int,
+      items = List<String>.from(j['items'] as List? ?? const []),
+      status = (j['status'] as String?) ?? 'todo';
+
+  final String key, status;
+  final int number;
+  final List<String> items;
 }
 
 class Requirements {
@@ -48,9 +87,34 @@ class Requirements {
       blocking = List<String>.from(
         (raw['checklist'] as Json)['blocking'] as List,
       ),
-      approved = (raw['checklist'] as Json)['approved'] == true;
+      approved = (raw['checklist'] as Json)['approved'] == true,
+      steps = [
+        for (final st in ((raw['checklist'] as Json)['steps'] as List? ?? []))
+          SetupStep.fromJson(st as Json),
+      ],
+      nextStep = (raw['checklist'] as Json)['next_step'] as String?,
+      minutesLeft = ((raw['checklist'] as Json)['minutes_left'] as int?) ?? 0;
 
   final Json raw;
+  final List<SetupStep> steps;
+  final String? nextStep;
+  final int minutesLeft;
+  int get stepsDone => steps.where((s) => s.status == 'done').length;
+
+  SetupStep? step(String key) {
+    for (final s in steps) {
+      if (s.key == key) return s;
+    }
+    return null;
+  }
+
+  List<ChecklistItem> itemsOf(SetupStep s) => [
+    for (final k in s.items) ?item(k),
+  ];
+
+  /// File key -> the upload field, from the server's `upload_kinds`.
+  Map<String, String> get uploadKinds =>
+      Map<String, String>.from(raw['upload_kinds'] as Map? ?? const {});
   final String country;
   final List<String> languages;
   final List<ChecklistItem> items;

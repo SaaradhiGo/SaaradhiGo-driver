@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:saaradhigo_driver/features/requirements/get_ready_screen.dart';
 import 'package:saaradhigo_driver/features/requirements/requirement_forms.dart';
 import 'package:saaradhigo_driver/features/requirements/requirements_api.dart';
+import 'package:saaradhigo_driver/features/requirements/setup_steps.dart';
+import 'package:saaradhigo_driver/ui/sg_widgets.dart';
 import 'package:saaradhigo_driver/l10n/app_localizations.dart';
 
 /// Driver requirements in the app (10 Nov): the same market config as the web decides the
@@ -54,7 +56,62 @@ Json _market(String country) {
       : k == 'payout_method'
       ? 'payouts'
       : 'personal';
+  const stepOf = {
+    'profile_photo': 'personal',
+    'legal_name': 'personal',
+    'address': 'personal',
+    'emergency_contact': 'contact',
+    'driving_licence': 'identity',
+    'aadhaar': 'identity',
+    'pan': 'identity',
+    'police_verification': 'identity',
+    'background_check': 'identity',
+    'vehicle': 'vehicle',
+    'vehicle_photos': 'vehicle_docs',
+    'rc': 'vehicle_docs',
+    'registration': 'vehicle_docs',
+    'payout_method': 'payouts',
+  };
+  Json file(String key, {String status = 'missing', bool vehicle = false}) => {
+    'key': key,
+    'label': key,
+    'status': status,
+    'reason': status == 'rejected' ? 'Copy is blurred' : null,
+    'uploaded_at': null,
+    'vehicle': vehicle,
+  };
+  List<Json> files(String k) => switch (k) {
+    'profile_photo' => [file('profile_photo')],
+    // Uploaded and not yet reviewed, though the status says missing.
+    'driving_licence' => [
+      {...file('license_front'), 'uploaded_at': '2026-11-10T09:00:00Z'},
+      file('license_back'),
+    ],
+    'aadhaar' => [file('aadhaar', status: 'rejected')],
+    'pan' => [file('pan')],
+    'police_verification' => [file('police_verification')],
+    'vehicle_photos' => [
+      for (final side in ['front', 'back', 'left', 'right', 'interior'])
+        file('vehicle_photo_$side', vehicle: true),
+    ],
+    'rc' || 'registration' => [file(k, vehicle: true)],
+    _ => [],
+  };
+  final stepKeys = [
+    'personal',
+    'contact',
+    'identity',
+    'vehicle',
+    'vehicle_docs',
+    'payouts',
+  ];
   return {
+    'upload_kinds': {
+      'license_front': 'license_doc',
+      'license_back': 'license_doc_back',
+      'aadhaar': 'aadhaar_doc',
+      'pan': 'pan_doc',
+    },
     'config': {
       'country': country,
       'languages': india ? ['en', 'te', 'hi'] : ['en', 'es'],
@@ -77,8 +134,25 @@ Json _market(String country) {
                 : 'missing',
             'reason': k == 'aadhaar' ? 'Copy is blurred' : null,
             'expires': null,
+            'step': stepOf[k],
+            'files': files(k),
           },
       ],
+      'steps': [
+        for (final (i, st) in stepKeys.indexed)
+          {
+            'key': st,
+            'number': i + 1,
+            'items': [
+              for (final k in keys)
+                if (stepOf[k] == st) k,
+            ],
+            'status': st == 'identity' && india ? 'action' : 'todo',
+          },
+      ],
+      'steps_done': 0,
+      'next_step': 'personal',
+      'minutes_left': 9,
       'done': 1,
       'total': keys.length,
       'blocking': ['profile_photo', 'address'],
@@ -156,20 +230,66 @@ Widget _app(Widget child, String country, {RequirementsApi? api}) =>
     );
 
 void main() {
-  testWidgets(
-    'the checklist shows progress, what blocks, and a rejection reason',
-    (t) async {
-      await t.pumpWidget(_app(const GetReadyScreen(), 'IN'));
-      await t.pumpAndSettle();
-      expect(find.text('1 of 12 done'), findsOneWidget);
-      expect(find.textContaining('profile_photo, address'), findsOneWidget);
-      expect(
-        find.byKey(const Key('req_status_aadhaar_rejected')),
-        findsOneWidget,
-      );
-      expect(find.text('Copy is blurred'), findsOneWidget);
-    },
-  );
+  testWidgets('the setup lists six steps with their states and one primary', (
+    t,
+  ) async {
+    await t.pumpWidget(_app(const GetReadyScreen(), 'IN'));
+    await t.pumpAndSettle();
+    expect(find.text('0 of 6 steps'), findsOneWidget);
+    expect(
+      find.byKey(const Key('setup_marker_identity_action')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('setup_marker_personal_todo')), findsOneWidget);
+    expect(find.text('Licence, Aadhaar, PAN, police check'), findsOneWidget);
+    expect(find.text("You're approved to drive"), findsNothing);
+    expect(find.byType(SgPrimaryButton), findsOneWidget);
+  });
+
+  testWidgets('an uploaded, unreviewed file shows In review, never Missing', (
+    t,
+  ) async {
+    await t.pumpWidget(_app(const SetupStepScreen(stepKey: 'identity'), 'IN'));
+    await t.pumpAndSettle();
+    expect(find.text('Step 3 of 6 · about 9 minutes left'), findsOneWidget);
+    expect(
+      find.byKey(const Key('setup_pill_license_front_in_review')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('setup_pill_license_front_missing')),
+      findsNothing,
+    );
+    expect(find.text('Uploaded 10 Nov'), findsOneWidget);
+    expect(
+      find.byKey(const Key('setup_pill_aadhaar_rejected')),
+      findsOneWidget,
+    );
+    expect(find.text('Copy is blurred'), findsOneWidget);
+    expect(find.byType(SgPrimaryButton), findsOneWidget);
+    expect(find.text('Save and continue'), findsOneWidget);
+  });
+
+  testWidgets('a US identity step has no Aadhaar or PAN', (t) async {
+    await t.pumpWidget(_app(const SetupStepScreen(stepKey: 'identity'), 'US'));
+    await t.pumpAndSettle();
+    expect(find.text('Licence, background check'), findsOneWidget);
+    expect(find.byKey(const Key('setup_file_aadhaar')), findsNothing);
+    expect(find.byKey(const Key('req_aadhaar')), findsNothing);
+    expect(find.byKey(const Key('req_pan')), findsNothing);
+    expect(find.byKey(const Key('req_licence_state')), findsOneWidget);
+    expect(find.text('mm/dd/yyyy'), findsOneWidget);
+  });
+
+  test('a file uploaded but marked missing reads as in review', () {
+    final f = ReqFile.fromJson({
+      'key': 'pan',
+      'label': 'PAN card',
+      'status': 'missing',
+      'uploaded_at': '2026-11-10T09:00:00Z',
+    });
+    expect(f.status, 'in_review');
+  });
 
   testWidgets('India asks for Aadhaar and PAN; the USA never does', (t) async {
     await t.pumpWidget(_app(const IdentityReqScreen(), 'IN'));
