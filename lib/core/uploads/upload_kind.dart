@@ -15,7 +15,11 @@ enum UploadKind {
   // `license_doc_back` field on PATCH /driver/driver/update/ (not required
   // for KYC).
   licenseDocBack('license_doc_back'),
-  rcDoc('rc_doc');
+  rcDoc('rc_doc'),
+  // MVAG 2025 driver records (9 Nov): optional, reviewed in the console.
+  healthInsuranceDoc('health_insurance_doc'),
+  termInsuranceDoc('term_insurance_doc'),
+  inductionTrainingCertificate('induction_training_certificate');
 
   const UploadKind(this.wireName);
 
@@ -39,7 +43,13 @@ enum UploadKind {
     UploadKind.avatar || UploadKind.vehiclePic => _imageMimeTypes,
     UploadKind.licenseDoc ||
     UploadKind.licenseDocBack ||
-    UploadKind.rcDoc => {..._imageMimeTypes, ..._documentExtraMimeTypes},
+    UploadKind.rcDoc ||
+    UploadKind.healthInsuranceDoc ||
+    UploadKind.termInsuranceDoc ||
+    UploadKind.inductionTrainingCertificate => {
+      ..._imageMimeTypes,
+      ..._documentExtraMimeTypes,
+    },
   };
 
   bool allowsMimeType(String mimeType) =>
@@ -50,7 +60,11 @@ enum UploadKind {
     UploadKind.vehiclePic => 'JPG, PNG, WebP or GIF images',
     UploadKind.licenseDoc ||
     UploadKind.licenseDocBack ||
-    UploadKind.rcDoc => 'JPG, PNG, WebP or GIF images, or PDF documents',
+    UploadKind.rcDoc ||
+    UploadKind.healthInsuranceDoc ||
+    UploadKind.termInsuranceDoc ||
+    UploadKind.inductionTrainingCertificate =>
+      'JPG, PNG, WebP or GIF images, or PDF documents',
   };
 }
 

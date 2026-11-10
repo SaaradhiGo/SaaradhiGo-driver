@@ -1045,5 +1045,53 @@
   "instantSent": "మీ డబ్బు పంపబడుతోంది.",
   "@instantSent": {
     "description": "needs native review"
+  },
+  "offerPlatformFeeToday": "ఈరోజు ఇప్పటివరకు ప్లాట్‌ఫామ్ ఫీజు: {cap} లో {amount}",
+  "@offerPlatformFeeToday": {
+    "description": "needs native review"
+  },
+  "offerPlatformFeeTodayNoCap": "ఈరోజు ఇప్పటివరకు ప్లాట్‌ఫామ్ ఫీజు: {amount}",
+  "@offerPlatformFeeTodayNoCap": {
+    "description": "needs native review"
+  },
+  "earnPlatformFee": "ప్లాట్‌ఫామ్ ఫీజు",
+  "@earnPlatformFee": {
+    "description": "needs native review"
+  },
+  "earnPlatformFeeToday": "ఈరోజు ఇప్పటివరకు: {amount}",
+  "@earnPlatformFeeToday": {
+    "description": "needs native review"
+  },
+  "earnHowFeeWorks": "మా ఫీజు ఎలా పనిచేస్తుంది",
+  "@earnHowFeeWorks": {
+    "description": "needs native review"
+  },
+  "feePerTrip": "ప్రతి ప్రయాణానికి {fee}.",
+  "@feePerTrip": {
+    "description": "needs native review"
+  },
+  "feeDailyPass": "కనీసం ఒక ప్రయాణం ఉన్న రోజుకు {fee}.",
+  "@feeDailyPass": {
+    "description": "needs native review"
+  },
+  "feeCap": "రోజుకు {cap} కంటే ఎక్కువ ఎప్పుడూ కాదు.",
+  "@feeCap": {
+    "description": "needs native review"
+  },
+  "feeFloor": "మీ ఛార్జీలు {floor} కంటే తక్కువ ఉన్న రోజున ఫీజు లేదు.",
+  "@feeFloor": {
+    "description": "needs native review"
+  },
+  "feeWaiver": "మీ మొదటి {days} రోజుల్లో ఫీజు లేదు.",
+  "@feeWaiver": {
+    "description": "needs native review"
+  },
+  "feeKeep80": "ప్రతి ఛార్జీలో కనీసం 80% ఎప్పుడూ మీదే.",
+  "@feeKeep80": {
+    "description": "needs native review"
+  },
+  "feeOncePerDay": "ఫీజు రోజు ముగిసిన తర్వాత, రోజుకు ఒకసారి తీసుకుంటారు.",
+  "@feeOncePerDay": {
+    "description": "needs native review"
   }
 }

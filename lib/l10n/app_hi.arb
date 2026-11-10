@@ -1045,5 +1045,53 @@
   "instantSent": "आपकी निकासी भेजी जा रही है।",
   "@instantSent": {
     "description": "needs native review"
+  },
+  "offerPlatformFeeToday": "आज अब तक प्लेटफ़ॉर्म शुल्क: {cap} में से {amount}",
+  "@offerPlatformFeeToday": {
+    "description": "needs native review"
+  },
+  "offerPlatformFeeTodayNoCap": "आज अब तक प्लेटफ़ॉर्म शुल्क: {amount}",
+  "@offerPlatformFeeTodayNoCap": {
+    "description": "needs native review"
+  },
+  "earnPlatformFee": "प्लेटफ़ॉर्म शुल्क",
+  "@earnPlatformFee": {
+    "description": "needs native review"
+  },
+  "earnPlatformFeeToday": "आज अब तक: {amount}",
+  "@earnPlatformFeeToday": {
+    "description": "needs native review"
+  },
+  "earnHowFeeWorks": "हमारा शुल्क कैसे काम करता है",
+  "@earnHowFeeWorks": {
+    "description": "needs native review"
+  },
+  "feePerTrip": "हर यात्रा के लिए {fee}।",
+  "@feePerTrip": {
+    "description": "needs native review"
+  },
+  "feeDailyPass": "कम से कम एक यात्रा वाले दिन के लिए {fee}।",
+  "@feeDailyPass": {
+    "description": "needs native review"
+  },
+  "feeCap": "एक दिन में कभी भी {cap} से ज़्यादा नहीं।",
+  "@feeCap": {
+    "description": "needs native review"
+  },
+  "feeFloor": "जिस दिन आपका किराया {floor} से कम हो, उस दिन कोई शुल्क नहीं।",
+  "@feeFloor": {
+    "description": "needs native review"
+  },
+  "feeWaiver": "आपके पहले {days} दिनों में कोई शुल्क नहीं।",
+  "@feeWaiver": {
+    "description": "needs native review"
+  },
+  "feeKeep80": "हर किराए का कम से कम 80% हमेशा आपका।",
+  "@feeKeep80": {
+    "description": "needs native review"
+  },
+  "feeOncePerDay": "शुल्क दिन खत्म होने के बाद, दिन में एक बार लिया जाता है।",
+  "@feeOncePerDay": {
+    "description": "needs native review"
   }
 }

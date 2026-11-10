@@ -196,6 +196,8 @@ DocState docStateOf(Map<String, dynamic> item, String? docStatus) {
       : DocState.uploaded;
 }
 
+const _mvagRecords = {'health_insurance', 'term_insurance', 'induction_training'};
+
 /// Parses `GET /driver/driver/onboarding/`. Null when the body has no lists.
 DocsOverview? parseDocsOverview(dynamic body) {
   final m = _unwrap(body);
@@ -210,7 +212,13 @@ DocsOverview? parseDocsOverview(dynamic body) {
     for (final raw in list) {
       if (raw is! Map) continue;
       final item = Map<String, dynamic>.from(raw);
-      if (item['required'] == false && item['present'] != true) continue;
+      // Optional documents show once uploaded, except the MVAG 2025 records
+      // (9 Nov), which a driver can add before they are ever required.
+      if (item['required'] == false &&
+          item['present'] != true &&
+          !_mvagRecords.contains('${item['key']}')) {
+        continue;
+      }
       final reason = item['reason']?.toString().trim();
       items.add(
         DocItem(
@@ -243,5 +251,9 @@ String? uploadKeyFor(String key) => switch (key) {
   'license_front' => 'license_doc',
   'license_back' => 'license_doc_back',
   'rc' || 'registration' => 'rc_doc',
+  // MVAG 2025 records (9 Nov), uploaded to the driver's own record.
+  'health_insurance' => 'health_insurance_doc',
+  'term_insurance' => 'term_insurance_doc',
+  'induction_training' => 'induction_training_certificate',
   _ => null,
 };
