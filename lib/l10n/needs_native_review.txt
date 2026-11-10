@@ -193,3 +193,7 @@ feeKeep80
   en: You always keep at least 80% of every fare.
 feeOncePerDay
   en: The fee is taken once a day, after the day ends.
+
+# Daily instant limit (2026-11-10).
+withdrawInstantFeeLine
+  en: Withdrawn {amount} · provider fee {fee} · received {received}

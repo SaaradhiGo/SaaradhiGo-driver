@@ -1093,5 +1093,9 @@
   "feeOncePerDay": "शुल्क दिन खत्म होने के बाद, दिन में एक बार लिया जाता है।",
   "@feeOncePerDay": {
     "description": "needs native review"
+  },
+  "withdrawInstantFeeLine": "{amount} निकाले · प्रदाता शुल्क {fee} · मिले {received}",
+  "@withdrawInstantFeeLine": {
+    "description": "needs native review"
   }
 }

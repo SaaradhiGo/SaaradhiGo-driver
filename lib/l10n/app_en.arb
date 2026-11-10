@@ -1264,5 +1264,20 @@
   "feeOncePerDay": "The fee is taken once a day, after the day ends.",
   "@feeOncePerDay": {
     "description": "Driver fee plans (9 Nov)"
+  },
+  "withdrawInstantFeeLine": "Withdrawn {amount} · provider fee {fee} · received {received}",
+  "@withdrawInstantFeeLine": {
+    "description": "Daily instant limit (10 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      },
+      "received": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -28,6 +28,18 @@ import '../../../../ui/sg_tokens.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 /// Financials (Earnings & Wallet) Dashboard Screen (`/earnings`).
+/// Withdraw now (10 Nov): "Withdrawn ₹200.00 · provider fee ₹4.72 · received ₹195.28".
+String instantFeeLine(AppLocalizations l, WithdrawalModel w) {
+  final amount = double.tryParse(w.amount) ?? 0;
+  final fee = w.feeMinor / 100;
+  String m(double v) => '${marketSymbol()}${v.toStringAsFixed(2)}';
+  return l.withdrawInstantFeeLine(
+    m(amount),
+    m(fee),
+    m(amount - fee < 0 ? 0 : amount - fee),
+  );
+}
+
 class EarningsDashboardScreen extends ConsumerStatefulWidget {
   const EarningsDashboardScreen({super.key});
 
@@ -242,19 +254,16 @@ class _EarningsDashboardScreenState
           ),
           const SizedBox(height: AppSpacing.md),
 
-
           // TODO(data): cash in hand. The summary model carries no
           // cash_collected yet, so the breakdown has no cash line.
 
           // Withdrawable and the 64px Withdraw; blocked with its reason when
           // payout details are missing.
           WithdrawPanel(
-            balance: exactBalance(
-              balance?.availableBalance,
-              balance?.currency,
-            ),
+            balance: exactBalance(balance?.availableBalance, balance?.currency),
             canWithdraw: (balance?.availableBalance ?? 0) > 0,
-            payoutMissing: ref.watch(payoutDetailsOnFileProvider).value == false,
+            payoutMissing:
+                ref.watch(payoutDetailsOnFileProvider).value == false,
             onWithdraw: () => WithdrawalRequestBottomSheet.show(context),
             onAddPayout: () => context.push('/onboarding/photo-bank'),
           ),
@@ -427,6 +436,14 @@ class _EarningsDashboardScreenState
                         fontSize: SgText.sizeSmall,
                       ),
                     ),
+                    if (withdrawal.origin == 'instant')
+                      Text(
+                        instantFeeLine(sgL10n(context), withdrawal),
+                        key: const Key('instant_fee_line'),
+                        style: SgText.small.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
                   ],
                 ),
               ],
