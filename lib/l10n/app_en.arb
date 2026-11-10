@@ -1279,5 +1279,155 @@
         "type": "String"
       }
     }
-  }
+  },
+  "reqTitle": "Get ready to drive",
+  "reqProgress": "{done} of {total} done",
+  "@reqProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "reqBlocking": "You can go online once these are done and approved: {list}.",
+  "@reqBlocking": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAllIn": "Everything is in. Our team reviews it, usually the same day.",
+  "reqApproved": "You are approved. Keep your documents up to date to stay online.",
+  "reqLoadFailed": "We couldn't load your checklist.",
+  "reqSectionPersonal": "About you",
+  "reqSectionIdentity": "Identity and checks",
+  "reqSectionVehicle": "Your vehicle",
+  "reqSectionPayouts": "Payouts",
+  "reqStatusMissing": "Missing",
+  "reqStatusInReview": "In review",
+  "reqStatusApproved": "Approved",
+  "reqStatusRejected": "Rejected",
+  "reqStatusExpiring": "Expiring {date}",
+  "@reqStatusExpiring": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reqStatusDone": "Done",
+  "reqOptional": "optional",
+  "reqSave": "Save",
+  "reqSaved": "Saved.",
+  "reqSaveFailed": "We could not save that. Try again.",
+  "reqUploaded": "Uploaded. Our team will review it.",
+  "reqUpload": "Upload",
+  "reqReplace": "Replace",
+  "reqTakePhoto": "Take photo",
+  "reqChoose": "Choose",
+  "reqOther": "Other",
+  "reqPersonalTitle": "Personal details",
+  "reqFullName": "Full name as on your licence",
+  "reqNameInReview": "Your new name is in review.",
+  "reqDob": "Date of birth",
+  "reqMinAge": "You must be at least {n}.",
+  "@reqMinAge": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAddress": "Current address",
+  "reqLine1": "Address line 1",
+  "reqLine2": "Address line 2 (optional)",
+  "reqCity": "City",
+  "reqState": "State",
+  "reqPin": "PIN code",
+  "reqZip": "ZIP code",
+  "reqPermanentSame": "Permanent address is the same",
+  "reqPhoto": "Profile photo",
+  "reqPhotoGuide": "Hold the phone at eye level. Fit your face inside the oval, in good light, with nothing covering it. Riders see this photo once approved.",
+  "reqContactsTitle": "Emergency contacts",
+  "reqContactsHint": "Support and our safety team call them only if you need help on a trip. Riders never see them.",
+  "reqContact": "Contact {n}",
+  "@reqContact": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reqName": "Name",
+  "reqRelationship": "Relationship",
+  "reqMobile": "Mobile number",
+  "reqIdentityTitle": "Identity and checks",
+  "reqLicenceNumber": "Driving licence number",
+  "reqLicenceState": "Issuing state",
+  "reqLicenceExpiry": "Licence expiry date",
+  "reqLicenceFront": "Licence (front)",
+  "reqLicenceBack": "Licence (back)",
+  "reqAadhaarLast4": "Last 4 digits of your Aadhaar",
+  "reqAadhaarNever": "We never store your full Aadhaar number.",
+  "reqAadhaarCopy": "Aadhaar copy",
+  "reqPan": "PAN",
+  "reqPanCard": "PAN card",
+  "reqPolice": "Police verification certificate",
+  "reqAddressProof": "Address proof",
+  "reqBackground": "Background check: {status}",
+  "@reqBackground": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "reqOnFile": "On file: {value}",
+  "@reqOnFile": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reqVehicleTitle": "Vehicle",
+  "reqVehicleType": "Vehicle type",
+  "reqMake": "Make",
+  "reqModel": "Model",
+  "reqYear": "Year",
+  "reqColour": "Colour",
+  "reqPlate": "Number plate",
+  "reqVehicleReview": "Saving sends your vehicle for review. You can go online again once it is approved.",
+  "reqPhotosTitle": "Vehicle photos",
+  "reqSideFront": "Front",
+  "reqSideBack": "Back",
+  "reqSideLeft": "Left side",
+  "reqSideRight": "Right side",
+  "reqSideInside": "Inside",
+  "reqSideGuide": "Stand back so the whole {side} fits in the frame, with the number plate readable where it shows.",
+  "@reqSideGuide": {
+    "placeholders": {
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAddVehicleFirst": "Add your vehicle first.",
+  "reqPayoutsTitle": "Bank and payouts",
+  "reqBank": "Bank account",
+  "reqUpi": "UPI ID",
+  "reqHolder": "Account holder name",
+  "reqAccount": "Account number",
+  "reqAccountAgain": "Account number again",
+  "reqIfsc": "IFSC",
+  "reqIfscUnknown": "We could not find that IFSC.",
+  "reqHoldNote": "Changing your payout details pauses payouts for 24 hours, and we text you about the change.",
+  "reqStripeHint": "Payouts in the USA go through Stripe. Stripe asks for your bank and tax details; SaaradhiGo never sees them.",
+  "reqStripeSetup": "Set up payouts",
+  "reqFix": "Fix",
+  "reqAdd": "Add"
 }
