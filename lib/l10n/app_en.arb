@@ -1173,5 +1173,96 @@
   "instantSent": "Your withdrawal is on its way.",
   "@instantSent": {
     "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "offerPlatformFeeToday": "Platform fee today so far: {amount} of {cap}",
+  "@offerPlatformFeeToday": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "offerPlatformFeeTodayNoCap": "Platform fee today so far: {amount}",
+  "@offerPlatformFeeTodayNoCap": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPlatformFee": "Platform fee",
+  "@earnPlatformFee": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "earnPlatformFeeToday": "Today so far: {amount}",
+  "@earnPlatformFeeToday": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnHowFeeWorks": "How our fee works",
+  "@earnHowFeeWorks": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "feePerTrip": "{fee} for each trip.",
+  "@feePerTrip": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "feeDailyPass": "{fee} for a day with at least one trip.",
+  "@feeDailyPass": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "feeCap": "Never more than {cap} in a day.",
+  "@feeCap": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "feeFloor": "No fee on a day when your fares are under {floor}.",
+  "@feeFloor": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "floor": {
+        "type": "String"
+      }
+    }
+  },
+  "feeWaiver": "No fee in your first {days} days.",
+  "@feeWaiver": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "feeKeep80": "You always keep at least 80% of every fare.",
+  "@feeKeep80": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "feeOncePerDay": "The fee is taken once a day, after the day ends.",
+  "@feeOncePerDay": {
+    "description": "Driver fee plans (9 Nov)"
   }
 }

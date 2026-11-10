@@ -51,6 +51,9 @@ class OfferData {
     this.earning,
     this.commissionPercent,
     this.commissionAmount,
+    this.feePlanType,
+    this.platformFeeToday,
+    this.platformFeeCap,
     this.riderRating,
     this.classCode,
     this.className,
@@ -77,6 +80,17 @@ class OfferData {
 
   /// Whole currency from `commission_amount`.
   final String? commissionAmount;
+
+  /// Driver fee plans (9 Nov): `fee_plan_type`, and for a non-commission plan
+  /// this driver's platform fee today so far and the daily cap (whole money).
+  final String? feePlanType;
+  final String? platformFeeToday;
+  final String? platformFeeCap;
+
+  bool get onDailyFee =>
+      feePlanType != null &&
+      feePlanType!.isNotEmpty &&
+      feePlanType != 'percent_commission';
   final double? riderRating;
   final String? classCode;
   final String? className;
@@ -138,6 +152,9 @@ class OfferData {
       earning: wholeMoney(text(['earning'])),
       commissionPercent: percentText(p['commission_rate']),
       commissionAmount: wholeMoney(text(['commission_amount'])),
+      feePlanType: text(['fee_plan_type']),
+      platformFeeToday: wholeMoney(text(['platform_fee_today'])),
+      platformFeeCap: wholeMoney(text(['platform_fee_cap'])),
       riderRating: rating != null && rating > 0 ? rating : null,
       classCode: klass,
       className: klass == null || klass.isEmpty
@@ -406,9 +423,18 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
         : l.offerTripDistance(market.formatDistanceKm(o.tripKm!));
     // Commission: the frame's own amount, else the rate the earnings API
     // reports (the fee rule: shown as the API sent it, never computed here).
-    final commission = o.commissionAmount != null
-        ? '− ${o.commissionAmount}'
-        : widget.commissionRate;
+    final commission = o.onDailyFee
+        ? null
+        : (o.commissionAmount != null
+              ? '− ${o.commissionAmount}'
+              : widget.commissionRate);
+    // Under a daily fee plan the trip's earning is the whole fare; the card says
+    // what today's platform fee stands at instead of a commission.
+    final feeLine = !o.onDailyFee
+        ? null
+        : (o.platformFeeCap != null
+              ? l.offerPlatformFeeToday(o.platformFeeToday ?? '0', o.platformFeeCap!)
+              : l.offerPlatformFeeTodayNoCap(o.platformFeeToday ?? '0'));
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -473,6 +499,14 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             label: l.homeCommission,
             value: commission,
             valueColor: SgColors.danger,
+          ),
+        ],
+        if (feeLine != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            feeLine,
+            key: const Key('offer_platform_fee_today'),
+            style: SgText.small.copyWith(color: SgColors.inkMuted),
           ),
         ],
         if (o.earning != null) ...[

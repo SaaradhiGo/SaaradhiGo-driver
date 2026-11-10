@@ -64,6 +64,12 @@ class DocumentVaultNotifier extends Notifier<DocumentVaultState> {
         return UploadKind.licenseDoc;
       case 'license_doc_back':
         return UploadKind.licenseDocBack;
+      case 'health_insurance_doc':
+        return UploadKind.healthInsuranceDoc;
+      case 'term_insurance_doc':
+        return UploadKind.termInsuranceDoc;
+      case 'induction_training_certificate':
+        return UploadKind.inductionTrainingCertificate;
       case 'rc_doc':
       default:
         return UploadKind.rcDoc;

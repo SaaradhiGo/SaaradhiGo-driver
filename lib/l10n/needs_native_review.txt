@@ -167,3 +167,29 @@ instantFailed
   en: That did not go through. Nothing was changed.
 instantSent
   en: Your withdrawal is on its way.
+
+# Driver fee plans (2026-11-09).
+offerPlatformFeeToday
+  en: Platform fee today so far: {amount} of {cap}
+offerPlatformFeeTodayNoCap
+  en: Platform fee today so far: {amount}
+earnPlatformFee
+  en: Platform fee
+earnPlatformFeeToday
+  en: Today so far: {amount}
+earnHowFeeWorks
+  en: How our fee works
+feePerTrip
+  en: {fee} for each trip.
+feeDailyPass
+  en: {fee} for a day with at least one trip.
+feeCap
+  en: Never more than {cap} in a day.
+feeFloor
+  en: No fee on a day when your fares are under {floor}.
+feeWaiver
+  en: No fee in your first {days} days.
+feeKeep80
+  en: You always keep at least 80% of every fare.
+feeOncePerDay
+  en: The fee is taken once a day, after the day ends.
