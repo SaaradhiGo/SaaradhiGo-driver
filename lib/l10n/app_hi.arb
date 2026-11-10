@@ -1097,5 +1097,369 @@
   "withdrawInstantFeeLine": "{amount} निकाले · प्रदाता शुल्क {fee} · मिले {received}",
   "@withdrawInstantFeeLine": {
     "description": "needs native review"
+  },
+  "reqTitle": "ड्राइव के लिए तैयार हों",
+  "@reqTitle": {
+    "description": "needs native review"
+  },
+  "reqProgress": "{total} में से {done} पूरे",
+  "@reqProgress": {
+    "description": "needs native review"
+  },
+  "reqBlocking": "ये पूरे होकर मंज़ूर होने के बाद आप ऑनलाइन जा सकते हैं: {list}.",
+  "@reqBlocking": {
+    "description": "needs native review"
+  },
+  "reqAllIn": "सब कुछ मिल गया है। हमारी टीम आमतौर पर उसी दिन समीक्षा करती है।",
+  "@reqAllIn": {
+    "description": "needs native review"
+  },
+  "reqApproved": "आपको मंज़ूरी मिल गई है। ऑनलाइन रहने के लिए दस्तावेज़ अपडेट रखें।",
+  "@reqApproved": {
+    "description": "needs native review"
+  },
+  "reqLoadFailed": "आपकी चेकलिस्ट लोड नहीं हो सकी।",
+  "@reqLoadFailed": {
+    "description": "needs native review"
+  },
+  "reqSectionPersonal": "आपके बारे में",
+  "@reqSectionPersonal": {
+    "description": "needs native review"
+  },
+  "reqSectionIdentity": "पहचान और जांच",
+  "@reqSectionIdentity": {
+    "description": "needs native review"
+  },
+  "reqSectionVehicle": "आपका वाहन",
+  "@reqSectionVehicle": {
+    "description": "needs native review"
+  },
+  "reqSectionPayouts": "भुगतान",
+  "@reqSectionPayouts": {
+    "description": "needs native review"
+  },
+  "reqStatusMissing": "नहीं है",
+  "@reqStatusMissing": {
+    "description": "needs native review"
+  },
+  "reqStatusInReview": "समीक्षा में",
+  "@reqStatusInReview": {
+    "description": "needs native review"
+  },
+  "reqStatusApproved": "मंज़ूर",
+  "@reqStatusApproved": {
+    "description": "needs native review"
+  },
+  "reqStatusRejected": "अस्वीकृत",
+  "@reqStatusRejected": {
+    "description": "needs native review"
+  },
+  "reqStatusExpiring": "{date} को समाप्त",
+  "@reqStatusExpiring": {
+    "description": "needs native review"
+  },
+  "reqStatusDone": "हो गया",
+  "@reqStatusDone": {
+    "description": "needs native review"
+  },
+  "reqOptional": "वैकल्पिक",
+  "@reqOptional": {
+    "description": "needs native review"
+  },
+  "reqSave": "सेव करें",
+  "@reqSave": {
+    "description": "needs native review"
+  },
+  "reqSaved": "सेव हो गया।",
+  "@reqSaved": {
+    "description": "needs native review"
+  },
+  "reqSaveFailed": "सेव नहीं हो सका। फिर से कोशिश करें।",
+  "@reqSaveFailed": {
+    "description": "needs native review"
+  },
+  "reqUploaded": "अपलोड हो गया। हमारी टीम समीक्षा करेगी।",
+  "@reqUploaded": {
+    "description": "needs native review"
+  },
+  "reqUpload": "अपलोड",
+  "@reqUpload": {
+    "description": "needs native review"
+  },
+  "reqReplace": "बदलें",
+  "@reqReplace": {
+    "description": "needs native review"
+  },
+  "reqTakePhoto": "फ़ोटो लें",
+  "@reqTakePhoto": {
+    "description": "needs native review"
+  },
+  "reqChoose": "चुनें",
+  "@reqChoose": {
+    "description": "needs native review"
+  },
+  "reqOther": "अन्य",
+  "@reqOther": {
+    "description": "needs native review"
+  },
+  "reqPersonalTitle": "व्यक्तिगत विवरण",
+  "@reqPersonalTitle": {
+    "description": "needs native review"
+  },
+  "reqFullName": "लाइसेंस के अनुसार पूरा नाम",
+  "@reqFullName": {
+    "description": "needs native review"
+  },
+  "reqNameInReview": "आपका नया नाम समीक्षा में है।",
+  "@reqNameInReview": {
+    "description": "needs native review"
+  },
+  "reqDob": "जन्म तिथि",
+  "@reqDob": {
+    "description": "needs native review"
+  },
+  "reqMinAge": "आपकी उम्र कम से कम {n} होनी चाहिए।",
+  "@reqMinAge": {
+    "description": "needs native review"
+  },
+  "reqAddress": "वर्तमान पता",
+  "@reqAddress": {
+    "description": "needs native review"
+  },
+  "reqLine1": "पता पंक्ति 1",
+  "@reqLine1": {
+    "description": "needs native review"
+  },
+  "reqLine2": "पता पंक्ति 2 (वैकल्पिक)",
+  "@reqLine2": {
+    "description": "needs native review"
+  },
+  "reqCity": "शहर",
+  "@reqCity": {
+    "description": "needs native review"
+  },
+  "reqState": "राज्य",
+  "@reqState": {
+    "description": "needs native review"
+  },
+  "reqPin": "पिन कोड",
+  "@reqPin": {
+    "description": "needs native review"
+  },
+  "reqZip": "ZIP कोड",
+  "@reqZip": {
+    "description": "needs native review"
+  },
+  "reqPermanentSame": "स्थायी पता यही है",
+  "@reqPermanentSame": {
+    "description": "needs native review"
+  },
+  "reqPhoto": "प्रोफ़ाइल फ़ोटो",
+  "@reqPhoto": {
+    "description": "needs native review"
+  },
+  "reqPhotoGuide": "फ़ोन आँखों की ऊँचाई पर रखें। अच्छी रोशनी में, बिना कुछ ढके, चेहरा अंडाकार में रखें। मंज़ूरी के बाद राइडर यह फ़ोटो देखते हैं।",
+  "@reqPhotoGuide": {
+    "description": "needs native review"
+  },
+  "reqContactsTitle": "आपातकालीन संपर्क",
+  "@reqContactsTitle": {
+    "description": "needs native review"
+  },
+  "reqContactsHint": "ट्रिप पर मदद चाहिए तभी सपोर्ट टीम उन्हें कॉल करती है। राइडर उन्हें नहीं देखते।",
+  "@reqContactsHint": {
+    "description": "needs native review"
+  },
+  "reqContact": "संपर्क {n}",
+  "@reqContact": {
+    "description": "needs native review"
+  },
+  "reqName": "नाम",
+  "@reqName": {
+    "description": "needs native review"
+  },
+  "reqRelationship": "रिश्ता",
+  "@reqRelationship": {
+    "description": "needs native review"
+  },
+  "reqMobile": "मोबाइल नंबर",
+  "@reqMobile": {
+    "description": "needs native review"
+  },
+  "reqIdentityTitle": "पहचान और जांच",
+  "@reqIdentityTitle": {
+    "description": "needs native review"
+  },
+  "reqLicenceNumber": "ड्राइविंग लाइसेंस नंबर",
+  "@reqLicenceNumber": {
+    "description": "needs native review"
+  },
+  "reqLicenceState": "जारी करने वाला राज्य",
+  "@reqLicenceState": {
+    "description": "needs native review"
+  },
+  "reqLicenceExpiry": "लाइसेंस समाप्ति तिथि",
+  "@reqLicenceExpiry": {
+    "description": "needs native review"
+  },
+  "reqLicenceFront": "लाइसेंस (आगे)",
+  "@reqLicenceFront": {
+    "description": "needs native review"
+  },
+  "reqLicenceBack": "लाइसेंस (पीछे)",
+  "@reqLicenceBack": {
+    "description": "needs native review"
+  },
+  "reqAadhaarLast4": "आपके आधार के आखिरी 4 अंक",
+  "@reqAadhaarLast4": {
+    "description": "needs native review"
+  },
+  "reqAadhaarNever": "हम आपका पूरा आधार नंबर कभी नहीं रखते।",
+  "@reqAadhaarNever": {
+    "description": "needs native review"
+  },
+  "reqAadhaarCopy": "आधार की कॉपी",
+  "@reqAadhaarCopy": {
+    "description": "needs native review"
+  },
+  "reqPan": "पैन",
+  "@reqPan": {
+    "description": "needs native review"
+  },
+  "reqPanCard": "पैन कार्ड",
+  "@reqPanCard": {
+    "description": "needs native review"
+  },
+  "reqPolice": "पुलिस सत्यापन प्रमाणपत्र",
+  "@reqPolice": {
+    "description": "needs native review"
+  },
+  "reqAddressProof": "पते का प्रमाण",
+  "@reqAddressProof": {
+    "description": "needs native review"
+  },
+  "reqBackground": "बैकग्राउंड जांच: {status}",
+  "@reqBackground": {
+    "description": "needs native review"
+  },
+  "reqOnFile": "दर्ज: {value}",
+  "@reqOnFile": {
+    "description": "needs native review"
+  },
+  "reqVehicleTitle": "वाहन",
+  "@reqVehicleTitle": {
+    "description": "needs native review"
+  },
+  "reqVehicleType": "वाहन का प्रकार",
+  "@reqVehicleType": {
+    "description": "needs native review"
+  },
+  "reqMake": "कंपनी",
+  "@reqMake": {
+    "description": "needs native review"
+  },
+  "reqModel": "मॉडल",
+  "@reqModel": {
+    "description": "needs native review"
+  },
+  "reqYear": "साल",
+  "@reqYear": {
+    "description": "needs native review"
+  },
+  "reqColour": "रंग",
+  "@reqColour": {
+    "description": "needs native review"
+  },
+  "reqPlate": "नंबर प्लेट",
+  "@reqPlate": {
+    "description": "needs native review"
+  },
+  "reqVehicleReview": "सेव करने पर वाहन समीक्षा के लिए जाएगा। मंज़ूरी के बाद आप फिर ऑनलाइन जा सकते हैं।",
+  "@reqVehicleReview": {
+    "description": "needs native review"
+  },
+  "reqPhotosTitle": "वाहन की फ़ोटो",
+  "@reqPhotosTitle": {
+    "description": "needs native review"
+  },
+  "reqSideFront": "आगे",
+  "@reqSideFront": {
+    "description": "needs native review"
+  },
+  "reqSideBack": "पीछे",
+  "@reqSideBack": {
+    "description": "needs native review"
+  },
+  "reqSideLeft": "बायाँ हिस्सा",
+  "@reqSideLeft": {
+    "description": "needs native review"
+  },
+  "reqSideRight": "दायाँ हिस्सा",
+  "@reqSideRight": {
+    "description": "needs native review"
+  },
+  "reqSideInside": "अंदर",
+  "@reqSideInside": {
+    "description": "needs native review"
+  },
+  "reqSideGuide": "पूरा {side} फ़्रेम में आए इतना पीछे खड़े हों, नंबर प्लेट पढ़ी जा सके।",
+  "@reqSideGuide": {
+    "description": "needs native review"
+  },
+  "reqAddVehicleFirst": "पहले अपना वाहन जोड़ें।",
+  "@reqAddVehicleFirst": {
+    "description": "needs native review"
+  },
+  "reqPayoutsTitle": "बैंक और भुगतान",
+  "@reqPayoutsTitle": {
+    "description": "needs native review"
+  },
+  "reqBank": "बैंक खाता",
+  "@reqBank": {
+    "description": "needs native review"
+  },
+  "reqUpi": "UPI आईडी",
+  "@reqUpi": {
+    "description": "needs native review"
+  },
+  "reqHolder": "खाताधारक का नाम",
+  "@reqHolder": {
+    "description": "needs native review"
+  },
+  "reqAccount": "खाता संख्या",
+  "@reqAccount": {
+    "description": "needs native review"
+  },
+  "reqAccountAgain": "खाता संख्या दोबारा",
+  "@reqAccountAgain": {
+    "description": "needs native review"
+  },
+  "reqIfsc": "IFSC कोड",
+  "@reqIfsc": {
+    "description": "needs native review"
+  },
+  "reqIfscUnknown": "वह IFSC नहीं मिला।",
+  "@reqIfscUnknown": {
+    "description": "needs native review"
+  },
+  "reqHoldNote": "भुगतान विवरण बदलने पर 24 घंटे भुगतान रुकते हैं, और हम SMS भेजते हैं।",
+  "@reqHoldNote": {
+    "description": "needs native review"
+  },
+  "reqStripeHint": "अमेरिका में भुगतान Stripe से होते हैं। Stripe बैंक और टैक्स विवरण मांगता है; SaaradhiGo नहीं देखता।",
+  "@reqStripeHint": {
+    "description": "needs native review"
+  },
+  "reqStripeSetup": "भुगतान सेट करें",
+  "@reqStripeSetup": {
+    "description": "needs native review"
+  },
+  "reqFix": "ठीक करें",
+  "@reqFix": {
+    "description": "needs native review"
+  },
+  "reqAdd": "जोड़ें",
+  "@reqAdd": {
+    "description": "needs native review"
   }
 }

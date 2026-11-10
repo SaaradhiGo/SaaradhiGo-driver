@@ -1097,5 +1097,369 @@
   "withdrawInstantFeeLine": "{amount} ఉపసంహరించారు · ప్రొవైడర్ ఫీజు {fee} · అందింది {received}",
   "@withdrawInstantFeeLine": {
     "description": "needs native review"
+  },
+  "reqTitle": "డ్రైవ్ చేయడానికి సిద్ధం అవ్వండి",
+  "@reqTitle": {
+    "description": "needs native review"
+  },
+  "reqProgress": "{total}లో {done} పూర్తయ్యాయి",
+  "@reqProgress": {
+    "description": "needs native review"
+  },
+  "reqBlocking": "ఇవి పూర్తయి ఆమోదం పొందిన తర్వాత మీరు ఆన్‌లైన్‌కు వెళ్లవచ్చు: {list}.",
+  "@reqBlocking": {
+    "description": "needs native review"
+  },
+  "reqAllIn": "అన్నీ అందాయి. మా బృందం సాధారణంగా అదే రోజు సమీక్షిస్తుంది.",
+  "@reqAllIn": {
+    "description": "needs native review"
+  },
+  "reqApproved": "మీకు ఆమోదం లభించింది. ఆన్‌లైన్‌లో ఉండేందుకు పత్రాలను తాజాగా ఉంచండి.",
+  "@reqApproved": {
+    "description": "needs native review"
+  },
+  "reqLoadFailed": "మీ చెక్‌లిస్ట్ లోడ్ కాలేదు.",
+  "@reqLoadFailed": {
+    "description": "needs native review"
+  },
+  "reqSectionPersonal": "మీ గురించి",
+  "@reqSectionPersonal": {
+    "description": "needs native review"
+  },
+  "reqSectionIdentity": "గుర్తింపు మరియు తనిఖీలు",
+  "@reqSectionIdentity": {
+    "description": "needs native review"
+  },
+  "reqSectionVehicle": "మీ వాహనం",
+  "@reqSectionVehicle": {
+    "description": "needs native review"
+  },
+  "reqSectionPayouts": "చెల్లింపులు",
+  "@reqSectionPayouts": {
+    "description": "needs native review"
+  },
+  "reqStatusMissing": "లేదు",
+  "@reqStatusMissing": {
+    "description": "needs native review"
+  },
+  "reqStatusInReview": "సమీక్షలో ఉంది",
+  "@reqStatusInReview": {
+    "description": "needs native review"
+  },
+  "reqStatusApproved": "ఆమోదించబడింది",
+  "@reqStatusApproved": {
+    "description": "needs native review"
+  },
+  "reqStatusRejected": "తిరస్కరించబడింది",
+  "@reqStatusRejected": {
+    "description": "needs native review"
+  },
+  "reqStatusExpiring": "{date}న గడువు ముగుస్తుంది",
+  "@reqStatusExpiring": {
+    "description": "needs native review"
+  },
+  "reqStatusDone": "పూర్తయింది",
+  "@reqStatusDone": {
+    "description": "needs native review"
+  },
+  "reqOptional": "ఐచ్ఛికం",
+  "@reqOptional": {
+    "description": "needs native review"
+  },
+  "reqSave": "సేవ్ చేయి",
+  "@reqSave": {
+    "description": "needs native review"
+  },
+  "reqSaved": "సేవ్ అయింది.",
+  "@reqSaved": {
+    "description": "needs native review"
+  },
+  "reqSaveFailed": "సేవ్ కాలేదు. మళ్లీ ప్రయత్నించండి.",
+  "@reqSaveFailed": {
+    "description": "needs native review"
+  },
+  "reqUploaded": "అప్‌లోడ్ అయింది. మా బృందం సమీక్షిస్తుంది.",
+  "@reqUploaded": {
+    "description": "needs native review"
+  },
+  "reqUpload": "అప్‌లోడ్",
+  "@reqUpload": {
+    "description": "needs native review"
+  },
+  "reqReplace": "మార్చు",
+  "@reqReplace": {
+    "description": "needs native review"
+  },
+  "reqTakePhoto": "ఫోటో తీయండి",
+  "@reqTakePhoto": {
+    "description": "needs native review"
+  },
+  "reqChoose": "ఎంచుకోండి",
+  "@reqChoose": {
+    "description": "needs native review"
+  },
+  "reqOther": "ఇతర",
+  "@reqOther": {
+    "description": "needs native review"
+  },
+  "reqPersonalTitle": "వ్యక్తిగత వివరాలు",
+  "@reqPersonalTitle": {
+    "description": "needs native review"
+  },
+  "reqFullName": "లైసెన్స్‌లో ఉన్నట్టు పూర్తి పేరు",
+  "@reqFullName": {
+    "description": "needs native review"
+  },
+  "reqNameInReview": "మీ కొత్త పేరు సమీక్షలో ఉంది.",
+  "@reqNameInReview": {
+    "description": "needs native review"
+  },
+  "reqDob": "పుట్టిన తేదీ",
+  "@reqDob": {
+    "description": "needs native review"
+  },
+  "reqMinAge": "మీకు కనీసం {n} సంవత్సరాలు ఉండాలి.",
+  "@reqMinAge": {
+    "description": "needs native review"
+  },
+  "reqAddress": "ప్రస్తుత చిరునామా",
+  "@reqAddress": {
+    "description": "needs native review"
+  },
+  "reqLine1": "చిరునామా లైన్ 1",
+  "@reqLine1": {
+    "description": "needs native review"
+  },
+  "reqLine2": "చిరునామా లైన్ 2 (ఐచ్ఛికం)",
+  "@reqLine2": {
+    "description": "needs native review"
+  },
+  "reqCity": "నగరం",
+  "@reqCity": {
+    "description": "needs native review"
+  },
+  "reqState": "రాష్ట్రం",
+  "@reqState": {
+    "description": "needs native review"
+  },
+  "reqPin": "పిన్ కోడ్",
+  "@reqPin": {
+    "description": "needs native review"
+  },
+  "reqZip": "ZIP కోడ్",
+  "@reqZip": {
+    "description": "needs native review"
+  },
+  "reqPermanentSame": "శాశ్వత చిరునామా అదే",
+  "@reqPermanentSame": {
+    "description": "needs native review"
+  },
+  "reqPhoto": "ప్రొఫైల్ ఫోటో",
+  "@reqPhoto": {
+    "description": "needs native review"
+  },
+  "reqPhotoGuide": "ఫోన్‌ను కంటి ఎత్తులో పట్టుకోండి. మంచి వెలుతురులో, ఏదీ కప్పకుండా మీ ముఖాన్ని అండాకారంలో ఉంచండి. ఆమోదం తర్వాత రైడర్లు ఈ ఫోటో చూస్తారు.",
+  "@reqPhotoGuide": {
+    "description": "needs native review"
+  },
+  "reqContactsTitle": "అత్యవసర సంప్రదింపులు",
+  "@reqContactsTitle": {
+    "description": "needs native review"
+  },
+  "reqContactsHint": "ట్రిప్‌లో మీకు సహాయం అవసరమైతేనే సపోర్ట్ బృందం వారికి కాల్ చేస్తుంది. రైడర్లు వారిని చూడరు.",
+  "@reqContactsHint": {
+    "description": "needs native review"
+  },
+  "reqContact": "సంప్రదింపు {n}",
+  "@reqContact": {
+    "description": "needs native review"
+  },
+  "reqName": "పేరు",
+  "@reqName": {
+    "description": "needs native review"
+  },
+  "reqRelationship": "సంబంధం",
+  "@reqRelationship": {
+    "description": "needs native review"
+  },
+  "reqMobile": "మొబైల్ నంబర్",
+  "@reqMobile": {
+    "description": "needs native review"
+  },
+  "reqIdentityTitle": "గుర్తింపు మరియు తనిఖీలు",
+  "@reqIdentityTitle": {
+    "description": "needs native review"
+  },
+  "reqLicenceNumber": "డ్రైవింగ్ లైసెన్స్ నంబర్",
+  "@reqLicenceNumber": {
+    "description": "needs native review"
+  },
+  "reqLicenceState": "జారీ చేసిన రాష్ట్రం",
+  "@reqLicenceState": {
+    "description": "needs native review"
+  },
+  "reqLicenceExpiry": "లైసెన్స్ గడువు తేదీ",
+  "@reqLicenceExpiry": {
+    "description": "needs native review"
+  },
+  "reqLicenceFront": "లైసెన్స్ (ముందు)",
+  "@reqLicenceFront": {
+    "description": "needs native review"
+  },
+  "reqLicenceBack": "లైసెన్స్ (వెనుక)",
+  "@reqLicenceBack": {
+    "description": "needs native review"
+  },
+  "reqAadhaarLast4": "మీ ఆధార్ చివరి 4 అంకెలు",
+  "@reqAadhaarLast4": {
+    "description": "needs native review"
+  },
+  "reqAadhaarNever": "మీ పూర్తి ఆధార్ నంబర్‌ను మేము ఎప్పుడూ నిల్వ చేయము.",
+  "@reqAadhaarNever": {
+    "description": "needs native review"
+  },
+  "reqAadhaarCopy": "ఆధార్ కాపీ",
+  "@reqAadhaarCopy": {
+    "description": "needs native review"
+  },
+  "reqPan": "పాన్",
+  "@reqPan": {
+    "description": "needs native review"
+  },
+  "reqPanCard": "పాన్ కార్డ్",
+  "@reqPanCard": {
+    "description": "needs native review"
+  },
+  "reqPolice": "పోలీస్ ధృవీకరణ పత్రం",
+  "@reqPolice": {
+    "description": "needs native review"
+  },
+  "reqAddressProof": "చిరునామా రుజువు",
+  "@reqAddressProof": {
+    "description": "needs native review"
+  },
+  "reqBackground": "నేపథ్య తనిఖీ: {status}",
+  "@reqBackground": {
+    "description": "needs native review"
+  },
+  "reqOnFile": "నమోదైనది: {value}",
+  "@reqOnFile": {
+    "description": "needs native review"
+  },
+  "reqVehicleTitle": "వాహనం",
+  "@reqVehicleTitle": {
+    "description": "needs native review"
+  },
+  "reqVehicleType": "వాహన రకం",
+  "@reqVehicleType": {
+    "description": "needs native review"
+  },
+  "reqMake": "తయారీదారు",
+  "@reqMake": {
+    "description": "needs native review"
+  },
+  "reqModel": "మోడల్",
+  "@reqModel": {
+    "description": "needs native review"
+  },
+  "reqYear": "సంవత్సరం",
+  "@reqYear": {
+    "description": "needs native review"
+  },
+  "reqColour": "రంగు",
+  "@reqColour": {
+    "description": "needs native review"
+  },
+  "reqPlate": "నంబర్ ప్లేట్",
+  "@reqPlate": {
+    "description": "needs native review"
+  },
+  "reqVehicleReview": "సేవ్ చేస్తే మీ వాహనం సమీక్షకు వెళ్తుంది. ఆమోదం వచ్చాక మళ్లీ ఆన్‌లైన్‌కు వెళ్లవచ్చు.",
+  "@reqVehicleReview": {
+    "description": "needs native review"
+  },
+  "reqPhotosTitle": "వాహన ఫోటోలు",
+  "@reqPhotosTitle": {
+    "description": "needs native review"
+  },
+  "reqSideFront": "ముందు",
+  "@reqSideFront": {
+    "description": "needs native review"
+  },
+  "reqSideBack": "వెనుక",
+  "@reqSideBack": {
+    "description": "needs native review"
+  },
+  "reqSideLeft": "ఎడమ వైపు",
+  "@reqSideLeft": {
+    "description": "needs native review"
+  },
+  "reqSideRight": "కుడి వైపు",
+  "@reqSideRight": {
+    "description": "needs native review"
+  },
+  "reqSideInside": "లోపల",
+  "@reqSideInside": {
+    "description": "needs native review"
+  },
+  "reqSideGuide": "{side} మొత్తం ఫ్రేమ్‌లో కనిపించేలా వెనక్కి నిలబడండి, నంబర్ ప్లేట్ చదవగలిగేలా.",
+  "@reqSideGuide": {
+    "description": "needs native review"
+  },
+  "reqAddVehicleFirst": "ముందుగా మీ వాహనాన్ని జోడించండి.",
+  "@reqAddVehicleFirst": {
+    "description": "needs native review"
+  },
+  "reqPayoutsTitle": "బ్యాంక్ మరియు చెల్లింపులు",
+  "@reqPayoutsTitle": {
+    "description": "needs native review"
+  },
+  "reqBank": "బ్యాంక్ ఖాతా",
+  "@reqBank": {
+    "description": "needs native review"
+  },
+  "reqUpi": "UPI ఐడి",
+  "@reqUpi": {
+    "description": "needs native review"
+  },
+  "reqHolder": "ఖాతాదారు పేరు",
+  "@reqHolder": {
+    "description": "needs native review"
+  },
+  "reqAccount": "ఖాతా నంబర్",
+  "@reqAccount": {
+    "description": "needs native review"
+  },
+  "reqAccountAgain": "ఖాతా నంబర్ మళ్లీ",
+  "@reqAccountAgain": {
+    "description": "needs native review"
+  },
+  "reqIfsc": "IFSC కోడ్",
+  "@reqIfsc": {
+    "description": "needs native review"
+  },
+  "reqIfscUnknown": "ఆ IFSC కనుగొనలేకపోయాం.",
+  "@reqIfscUnknown": {
+    "description": "needs native review"
+  },
+  "reqHoldNote": "చెల్లింపు వివరాలు మారిస్తే 24 గంటలు చెల్లింపులు ఆగుతాయి, మేము SMS పంపుతాము.",
+  "@reqHoldNote": {
+    "description": "needs native review"
+  },
+  "reqStripeHint": "USAలో చెల్లింపులు Stripe ద్వారా. Stripe మీ బ్యాంక్, పన్ను వివరాలు అడుగుతుంది; SaaradhiGo చూడదు.",
+  "@reqStripeHint": {
+    "description": "needs native review"
+  },
+  "reqStripeSetup": "చెల్లింపులు సెటప్ చేయండి",
+  "@reqStripeSetup": {
+    "description": "needs native review"
+  },
+  "reqFix": "సరిచేయి",
+  "@reqFix": {
+    "description": "needs native review"
+  },
+  "reqAdd": "జోడించు",
+  "@reqAdd": {
+    "description": "needs native review"
   }
 }
