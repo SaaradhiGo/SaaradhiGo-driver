@@ -197,3 +197,368 @@ feeOncePerDay
 # Daily instant limit (2026-11-10).
 withdrawInstantFeeLine
   en: Withdrawn {amount} · provider fee {fee} · received {received}
+# Driver requirements (2026-11-10): te/hi drafts that need native review.
+reqTitle
+  en: Get ready to drive
+  te: డ్రైవ్ చేయడానికి సిద్ధం అవ్వండి
+  hi: ड्राइव के लिए तैयार हों
+reqProgress
+  en: {done} of {total} done
+  te: {total}లో {done} పూర్తయ్యాయి
+  hi: {total} में से {done} पूरे
+reqBlocking
+  en: You can go online once these are done and approved: {list}.
+  te: ఇవి పూర్తయి ఆమోదం పొందిన తర్వాత మీరు ఆన్‌లైన్‌కు వెళ్లవచ్చు: {list}.
+  hi: ये पूरे होकर मंज़ूर होने के बाद आप ऑनलाइन जा सकते हैं: {list}.
+reqAllIn
+  en: Everything is in. Our team reviews it, usually the same day.
+  te: అన్నీ అందాయి. మా బృందం సాధారణంగా అదే రోజు సమీక్షిస్తుంది.
+  hi: सब कुछ मिल गया है। हमारी टीम आमतौर पर उसी दिन समीक्षा करती है।
+reqApproved
+  en: You are approved. Keep your documents up to date to stay online.
+  te: మీకు ఆమోదం లభించింది. ఆన్‌లైన్‌లో ఉండేందుకు పత్రాలను తాజాగా ఉంచండి.
+  hi: आपको मंज़ूरी मिल गई है। ऑनलाइन रहने के लिए दस्तावेज़ अपडेट रखें।
+reqLoadFailed
+  en: We couldn't load your checklist.
+  te: మీ చెక్‌లిస్ట్ లోడ్ కాలేదు.
+  hi: आपकी चेकलिस्ट लोड नहीं हो सकी।
+reqSectionPersonal
+  en: About you
+  te: మీ గురించి
+  hi: आपके बारे में
+reqSectionIdentity
+  en: Identity and checks
+  te: గుర్తింపు మరియు తనిఖీలు
+  hi: पहचान और जांच
+reqSectionVehicle
+  en: Your vehicle
+  te: మీ వాహనం
+  hi: आपका वाहन
+reqSectionPayouts
+  en: Payouts
+  te: చెల్లింపులు
+  hi: भुगतान
+reqStatusMissing
+  en: Missing
+  te: లేదు
+  hi: नहीं है
+reqStatusInReview
+  en: In review
+  te: సమీక్షలో ఉంది
+  hi: समीक्षा में
+reqStatusApproved
+  en: Approved
+  te: ఆమోదించబడింది
+  hi: मंज़ूर
+reqStatusRejected
+  en: Rejected
+  te: తిరస్కరించబడింది
+  hi: अस्वीकृत
+reqStatusExpiring
+  en: Expiring {date}
+  te: {date}న గడువు ముగుస్తుంది
+  hi: {date} को समाप्त
+reqStatusDone
+  en: Done
+  te: పూర్తయింది
+  hi: हो गया
+reqOptional
+  en: optional
+  te: ఐచ్ఛికం
+  hi: वैकल्पिक
+reqSave
+  en: Save
+  te: సేవ్ చేయి
+  hi: सेव करें
+reqSaved
+  en: Saved.
+  te: సేవ్ అయింది.
+  hi: सेव हो गया।
+reqSaveFailed
+  en: We could not save that. Try again.
+  te: సేవ్ కాలేదు. మళ్లీ ప్రయత్నించండి.
+  hi: सेव नहीं हो सका। फिर से कोशिश करें।
+reqUploaded
+  en: Uploaded. Our team will review it.
+  te: అప్‌లోడ్ అయింది. మా బృందం సమీక్షిస్తుంది.
+  hi: अपलोड हो गया। हमारी टीम समीक्षा करेगी।
+reqUpload
+  en: Upload
+  te: అప్‌లోడ్
+  hi: अपलोड
+reqReplace
+  en: Replace
+  te: మార్చు
+  hi: बदलें
+reqTakePhoto
+  en: Take photo
+  te: ఫోటో తీయండి
+  hi: फ़ोटो लें
+reqChoose
+  en: Choose
+  te: ఎంచుకోండి
+  hi: चुनें
+reqOther
+  en: Other
+  te: ఇతర
+  hi: अन्य
+reqPersonalTitle
+  en: Personal details
+  te: వ్యక్తిగత వివరాలు
+  hi: व्यक्तिगत विवरण
+reqFullName
+  en: Full name as on your licence
+  te: లైసెన్స్‌లో ఉన్నట్టు పూర్తి పేరు
+  hi: लाइसेंस के अनुसार पूरा नाम
+reqNameInReview
+  en: Your new name is in review.
+  te: మీ కొత్త పేరు సమీక్షలో ఉంది.
+  hi: आपका नया नाम समीक्षा में है।
+reqDob
+  en: Date of birth
+  te: పుట్టిన తేదీ
+  hi: जन्म तिथि
+reqMinAge
+  en: You must be at least {n}.
+  te: మీకు కనీసం {n} సంవత్సరాలు ఉండాలి.
+  hi: आपकी उम्र कम से कम {n} होनी चाहिए।
+reqAddress
+  en: Current address
+  te: ప్రస్తుత చిరునామా
+  hi: वर्तमान पता
+reqLine1
+  en: Address line 1
+  te: చిరునామా లైన్ 1
+  hi: पता पंक्ति 1
+reqLine2
+  en: Address line 2 (optional)
+  te: చిరునామా లైన్ 2 (ఐచ్ఛికం)
+  hi: पता पंक्ति 2 (वैकल्पिक)
+reqCity
+  en: City
+  te: నగరం
+  hi: शहर
+reqState
+  en: State
+  te: రాష్ట్రం
+  hi: राज्य
+reqPin
+  en: PIN code
+  te: పిన్ కోడ్
+  hi: पिन कोड
+reqZip
+  en: ZIP code
+  te: ZIP కోడ్
+  hi: ZIP कोड
+reqPermanentSame
+  en: Permanent address is the same
+  te: శాశ్వత చిరునామా అదే
+  hi: स्थायी पता यही है
+reqPhoto
+  en: Profile photo
+  te: ప్రొఫైల్ ఫోటో
+  hi: प्रोफ़ाइल फ़ोटो
+reqPhotoGuide
+  en: Hold the phone at eye level. Fit your face inside the oval, in good light, with nothing covering it. Riders see this photo once approved.
+  te: ఫోన్‌ను కంటి ఎత్తులో పట్టుకోండి. మంచి వెలుతురులో, ఏదీ కప్పకుండా మీ ముఖాన్ని అండాకారంలో ఉంచండి. ఆమోదం తర్వాత రైడర్లు ఈ ఫోటో చూస్తారు.
+  hi: फ़ोन आँखों की ऊँचाई पर रखें। अच्छी रोशनी में, बिना कुछ ढके, चेहरा अंडाकार में रखें। मंज़ूरी के बाद राइडर यह फ़ोटो देखते हैं।
+reqContactsTitle
+  en: Emergency contacts
+  te: అత్యవసర సంప్రదింపులు
+  hi: आपातकालीन संपर्क
+reqContactsHint
+  en: Support and our safety team call them only if you need help on a trip. Riders never see them.
+  te: ట్రిప్‌లో మీకు సహాయం అవసరమైతేనే సపోర్ట్ బృందం వారికి కాల్ చేస్తుంది. రైడర్లు వారిని చూడరు.
+  hi: ट्रिप पर मदद चाहिए तभी सपोर्ट टीम उन्हें कॉल करती है। राइडर उन्हें नहीं देखते।
+reqContact
+  en: Contact {n}
+  te: సంప్రదింపు {n}
+  hi: संपर्क {n}
+reqName
+  en: Name
+  te: పేరు
+  hi: नाम
+reqRelationship
+  en: Relationship
+  te: సంబంధం
+  hi: रिश्ता
+reqMobile
+  en: Mobile number
+  te: మొబైల్ నంబర్
+  hi: मोबाइल नंबर
+reqIdentityTitle
+  en: Identity and checks
+  te: గుర్తింపు మరియు తనిఖీలు
+  hi: पहचान और जांच
+reqLicenceNumber
+  en: Driving licence number
+  te: డ్రైవింగ్ లైసెన్స్ నంబర్
+  hi: ड्राइविंग लाइसेंस नंबर
+reqLicenceState
+  en: Issuing state
+  te: జారీ చేసిన రాష్ట్రం
+  hi: जारी करने वाला राज्य
+reqLicenceExpiry
+  en: Licence expiry date
+  te: లైసెన్స్ గడువు తేదీ
+  hi: लाइसेंस समाप्ति तिथि
+reqLicenceFront
+  en: Licence (front)
+  te: లైసెన్స్ (ముందు)
+  hi: लाइसेंस (आगे)
+reqLicenceBack
+  en: Licence (back)
+  te: లైసెన్స్ (వెనుక)
+  hi: लाइसेंस (पीछे)
+reqAadhaarLast4
+  en: Last 4 digits of your Aadhaar
+  te: మీ ఆధార్ చివరి 4 అంకెలు
+  hi: आपके आधार के आखिरी 4 अंक
+reqAadhaarNever
+  en: We never store your full Aadhaar number.
+  te: మీ పూర్తి ఆధార్ నంబర్‌ను మేము ఎప్పుడూ నిల్వ చేయము.
+  hi: हम आपका पूरा आधार नंबर कभी नहीं रखते।
+reqAadhaarCopy
+  en: Aadhaar copy
+  te: ఆధార్ కాపీ
+  hi: आधार की कॉपी
+reqPan
+  en: PAN
+  te: పాన్
+  hi: पैन
+reqPanCard
+  en: PAN card
+  te: పాన్ కార్డ్
+  hi: पैन कार्ड
+reqPolice
+  en: Police verification certificate
+  te: పోలీస్ ధృవీకరణ పత్రం
+  hi: पुलिस सत्यापन प्रमाणपत्र
+reqAddressProof
+  en: Address proof
+  te: చిరునామా రుజువు
+  hi: पते का प्रमाण
+reqBackground
+  en: Background check: {status}
+  te: నేపథ్య తనిఖీ: {status}
+  hi: बैकग्राउंड जांच: {status}
+reqOnFile
+  en: On file: {value}
+  te: నమోదైనది: {value}
+  hi: दर्ज: {value}
+reqVehicleTitle
+  en: Vehicle
+  te: వాహనం
+  hi: वाहन
+reqVehicleType
+  en: Vehicle type
+  te: వాహన రకం
+  hi: वाहन का प्रकार
+reqMake
+  en: Make
+  te: తయారీదారు
+  hi: कंपनी
+reqModel
+  en: Model
+  te: మోడల్
+  hi: मॉडल
+reqYear
+  en: Year
+  te: సంవత్సరం
+  hi: साल
+reqColour
+  en: Colour
+  te: రంగు
+  hi: रंग
+reqPlate
+  en: Number plate
+  te: నంబర్ ప్లేట్
+  hi: नंबर प्लेट
+reqVehicleReview
+  en: Saving sends your vehicle for review. You can go online again once it is approved.
+  te: సేవ్ చేస్తే మీ వాహనం సమీక్షకు వెళ్తుంది. ఆమోదం వచ్చాక మళ్లీ ఆన్‌లైన్‌కు వెళ్లవచ్చు.
+  hi: सेव करने पर वाहन समीक्षा के लिए जाएगा। मंज़ूरी के बाद आप फिर ऑनलाइन जा सकते हैं।
+reqPhotosTitle
+  en: Vehicle photos
+  te: వాహన ఫోటోలు
+  hi: वाहन की फ़ोटो
+reqSideFront
+  en: Front
+  te: ముందు
+  hi: आगे
+reqSideBack
+  en: Back
+  te: వెనుక
+  hi: पीछे
+reqSideLeft
+  en: Left side
+  te: ఎడమ వైపు
+  hi: बायाँ हिस्सा
+reqSideRight
+  en: Right side
+  te: కుడి వైపు
+  hi: दायाँ हिस्सा
+reqSideInside
+  en: Inside
+  te: లోపల
+  hi: अंदर
+reqSideGuide
+  en: Stand back so the whole {side} fits in the frame, with the number plate readable where it shows.
+  te: {side} మొత్తం ఫ్రేమ్‌లో కనిపించేలా వెనక్కి నిలబడండి, నంబర్ ప్లేట్ చదవగలిగేలా.
+  hi: पूरा {side} फ़्रेम में आए इतना पीछे खड़े हों, नंबर प्लेट पढ़ी जा सके।
+reqAddVehicleFirst
+  en: Add your vehicle first.
+  te: ముందుగా మీ వాహనాన్ని జోడించండి.
+  hi: पहले अपना वाहन जोड़ें।
+reqPayoutsTitle
+  en: Bank and payouts
+  te: బ్యాంక్ మరియు చెల్లింపులు
+  hi: बैंक और भुगतान
+reqBank
+  en: Bank account
+  te: బ్యాంక్ ఖాతా
+  hi: बैंक खाता
+reqUpi
+  en: UPI ID
+  te: UPI ఐడి
+  hi: UPI आईडी
+reqHolder
+  en: Account holder name
+  te: ఖాతాదారు పేరు
+  hi: खाताधारक का नाम
+reqAccount
+  en: Account number
+  te: ఖాతా నంబర్
+  hi: खाता संख्या
+reqAccountAgain
+  en: Account number again
+  te: ఖాతా నంబర్ మళ్లీ
+  hi: खाता संख्या दोबारा
+reqIfsc
+  en: IFSC
+  te: IFSC కోడ్
+  hi: IFSC कोड
+reqIfscUnknown
+  en: We could not find that IFSC.
+  te: ఆ IFSC కనుగొనలేకపోయాం.
+  hi: वह IFSC नहीं मिला।
+reqHoldNote
+  en: Changing your payout details pauses payouts for 24 hours, and we text you about the change.
+  te: చెల్లింపు వివరాలు మారిస్తే 24 గంటలు చెల్లింపులు ఆగుతాయి, మేము SMS పంపుతాము.
+  hi: भुगतान विवरण बदलने पर 24 घंटे भुगतान रुकते हैं, और हम SMS भेजते हैं।
+reqStripeHint
+  en: Payouts in the USA go through Stripe. Stripe asks for your bank and tax details; SaaradhiGo never sees them.
+  te: USAలో చెల్లింపులు Stripe ద్వారా. Stripe మీ బ్యాంక్, పన్ను వివరాలు అడుగుతుంది; SaaradhiGo చూడదు.
+  hi: अमेरिका में भुगतान Stripe से होते हैं। Stripe बैंक और टैक्स विवरण मांगता है; SaaradhiGo नहीं देखता।
+reqStripeSetup
+  en: Set up payouts
+  te: చెల్లింపులు సెటప్ చేయండి
+  hi: भुगतान सेट करें
+reqFix
+  en: Fix
+  te: సరిచేయి
+  hi: ठीक करें
+reqAdd
+  en: Add
+  te: జోడించు
+  hi: जोड़ें

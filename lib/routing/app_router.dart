@@ -35,6 +35,8 @@ import '../features/support/presentation/screens/support_ticket_detail_screen.da
 import '../features/support/presentation/screens/trip_chat_screen.dart';
 import '../features/trip/presentation/providers/trip_providers.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
+import '../features/requirements/get_ready_screen.dart';
+import '../features/requirements/requirement_forms.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
 
@@ -254,6 +256,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/verification-status',
         builder: (context, state) => const VerificationStatusScreen(),
+      ),
+      // What the driver's market asks for (10 Nov), and one screen per section.
+      GoRoute(
+        path: '/onboarding/ready',
+        builder: (context, state) => const GetReadyScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/req/personal',
+        builder: (context, state) => const PersonalReqScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/req/identity',
+        builder: (context, state) => const IdentityReqScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/req/vehicle',
+        builder: (context, state) => const VehicleReqScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/req/payouts',
+        builder: (context, state) => const PayoutsReqScreen(),
       ),
       // Full-screen ride lifecycle, deliberately OUTSIDE the tab shell: an
       // active trip owns the whole screen. A single route renders the correct

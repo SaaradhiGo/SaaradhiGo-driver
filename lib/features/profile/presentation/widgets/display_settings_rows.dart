@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../requirements/requirements_api.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -116,14 +118,19 @@ class DisplaySettingsRows extends ConsumerWidget {
   Future<void> _pickLanguage(BuildContext context, WidgetRef ref) async {
     final l10n = _l10n(context);
     final current = ref.read(localeControllerProvider).languageCode;
+    final offered = ref.read(requirementsProvider).value?.languages;
     final picked = await _choose<String>(
       context,
       title: l10n.languageTitle,
       current: current,
+      // Only the market's languages (10 Nov), from the driver's requirements; the app has en/te/hi.
       options: [
-        ('en', l10n.languageEnglish, null),
-        ('te', l10n.languageTelugu, null),
-        ('hi', l10n.languageHindi, null),
+        for (final o in [
+          ('en', l10n.languageEnglish, null),
+          ('te', l10n.languageTelugu, null),
+          ('hi', l10n.languageHindi, null),
+        ])
+          if (offered == null || offered.contains(o.$1)) o,
       ],
     );
     if (picked != null) {

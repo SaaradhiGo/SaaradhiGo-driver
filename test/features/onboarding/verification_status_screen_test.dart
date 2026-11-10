@@ -7,6 +7,7 @@ import 'package:saaradhigo_driver/domain/models/user_model.dart';
 import 'package:saaradhigo_driver/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:saaradhigo_driver/features/auth/presentation/providers/auth_state.dart';
 import 'package:saaradhigo_driver/features/onboarding/presentation/screens/verification_status_screen.dart';
+import 'package:saaradhigo_driver/l10n/app_localizations.dart';
 import 'package:saaradhigo_driver/features/onboarding/presentation/widgets/verification_approved_sheet.dart';
 import 'package:saaradhigo_driver/features/onboarding/presentation/widgets/verification_rejection_banner.dart';
 import 'package:saaradhigo_driver/features/profile/presentation/providers/profile_notifier.dart';
@@ -125,7 +126,11 @@ void main() {
         driverProfileNotifierProvider.overrideWith(() => profileNotifier),
         authNotifierProvider.overrideWith(() => authNotifier),
       ],
-      child: MaterialApp.router(routerConfig: router ?? defaultRouter),
+      child: MaterialApp.router(
+        routerConfig: router ?? defaultRouter,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
   }
 

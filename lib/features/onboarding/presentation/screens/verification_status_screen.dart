@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -167,10 +169,7 @@ class _VerificationStatusScreenState
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert,
-              color: AppColors.onSurfaceVariant,
-            ),
+            icon: Icon(Icons.more_vert, color: AppColors.onSurfaceVariant),
             color: AppColors.surfaceContainerHigh,
             onSelected: (value) async {
               if (value == 'logout') {
@@ -358,7 +357,13 @@ class _VerificationStatusScreenState
                 ),
                 const SizedBox(height: AppSpacing.xxl),
 
-                // Bottom CTAs
+                // Bottom CTAs. The market's full checklist (10 Nov) comes first.
+                PrimaryButton(
+                  key: const Key('open_get_ready'),
+                  text: AppLocalizations.of(context).reqTitle,
+                  onPressed: () => context.push('/onboarding/ready'),
+                ),
+                const SizedBox(height: AppSpacing.md),
                 PrimaryButton(
                   text: 'Refresh Status',
                   isLoading: isLoading,
