@@ -1,0 +1,334 @@
+/// The market the app is running in: dialling code, currency, distance unit,
+/// service area, emergency number, notices.
+///
+/// Source of truth is the backend's public app-config document
+/// (`GET /api/v1/app-config/?country=XX&app=driver`, platform_ops/app_config.py).
+/// Field names here are exactly the ones that document returns.
+///
+/// [MarketConfig.builtIn] is TODAY'S behaviour (India: +91, INR/₹, km, 112).
+/// It is what the app uses when there is neither a fresh nor a cached
+/// response, so a failed fetch can never change what a driver sees.
+library;
+
+import 'dart:math' as math;
+
+import 'package:latlong2/latlong.dart';
+
+class CurrencyConfig {
+  const CurrencyConfig({
+    required this.code,
+    required this.symbol,
+    this.symbolPosition = 'prefix',
+    this.minorUnits = 2,
+  });
+
+  final String code;
+  final String symbol;
+  final String symbolPosition;
+  final int minorUnits;
+}
+
+class EmergencyConfig {
+  const EmergencyConfig({required this.number, this.label});
+
+  /// What to dial.
+  final String number;
+
+  /// "Police", "Emergency services"... as the backend labels the first number.
+  final String? label;
+}
+
+class BoundsConfig {
+  const BoundsConfig({
+    required this.south,
+    required this.west,
+    required this.north,
+    required this.east,
+  });
+
+  final double south;
+  final double west;
+  final double north;
+  final double east;
+
+  bool contains(LatLng p) =>
+      p.latitude >= south &&
+      p.latitude <= north &&
+      p.longitude >= west &&
+      p.longitude <= east;
+
+  /// The box grown by roughly [km] on every side.
+  BoundsConfig grownByKm(double km) {
+    final dLat = km / 110.574;
+    final midLat = (south + north) / 2;
+    final cosLat = math.cos(midLat * math.pi / 180).abs();
+    final dLng = cosLat < 0.01 ? 0.0 : km / (111.320 * cosLat);
+    return BoundsConfig(
+      south: south - dLat,
+      west: west - dLng,
+      north: north + dLat,
+      east: east + dLng,
+    );
+  }
+}
+
+class CityConfig {
+  const CityConfig({
+    required this.code,
+    required this.name,
+    this.center,
+    this.bounds,
+  });
+
+  final String code;
+  final String name;
+  final LatLng? center;
+  final BoundsConfig? bounds;
+}
+
+class AppNotice {
+  const AppNotice({
+    required this.id,
+    required this.message,
+    this.severity = 'info',
+    this.blocking = false,
+  });
+
+  final int id;
+  final String message;
+
+  /// `info` or `warning`.
+  final String severity;
+
+  /// The backend does not send this today; a notice blocks only if one day it
+  /// says so (`blocking: true`).
+  final bool blocking;
+}
+
+class MarketConfig {
+  const MarketConfig({
+    required this.countryCode,
+    required this.countryName,
+    required this.callingCode,
+    required this.currency,
+    required this.distanceUnit,
+    required this.emergency,
+    required this.cities,
+    this.notices = const [],
+    this.referralsAvailable = false,
+    this.isBuiltIn = false,
+    this.supportPhone,
+  });
+
+  /// `country.support.phone`: SaaradhiGo's support line, or null while none
+  /// is configured (the safety centre then hides the row).
+  final String? supportPhone;
+
+  /// ISO country code, upper case ("IN", "US").
+  final String countryCode;
+  final String countryName;
+
+  /// Digits only, no plus ("91", "1").
+  final String callingCode;
+  final CurrencyConfig currency;
+
+  /// `km` or `mi`.
+  final String distanceUnit;
+  final EmergencyConfig emergency;
+
+  /// Live cities. Empty means "the server named none": the service-area check
+  /// then falls back to the built-in Hyderabad polygon.
+  final List<CityConfig> cities;
+  final List<AppNotice> notices;
+
+  /// `referrals_available` from app-config (named with `app=driver`): true only
+  /// while a referral offer is live for drivers in this market. The referral
+  /// entry is hidden unless it is true; a document without the key reads as
+  /// false, which is how the app behaved before referrals existed.
+  final bool referralsAvailable;
+  final bool isBuiltIn;
+
+  /// `+91`, `+1`: what the phone field shows and E.164 numbers start with.
+  String get dialPrefix => '+$callingCode';
+
+  String get currencySymbol => currency.symbol;
+  String get currencyCode => currency.code;
+
+  /// "Hyderabad", "Hyderabad and Warangal", "Hyderabad, Vijayawada and Warangal".
+  String get cityNames {
+    final names = cities.map((c) => c.name).toList();
+    if (names.isEmpty) return '';
+    if (names.length == 1) return names.first;
+    return '${names.sublist(0, names.length - 1).join(', ')} and ${names.last}';
+  }
+
+  /// Names of the live cities, in the order the server sent them. Empty when the
+  /// server named none (callers then use their built-in list).
+  List<String> get liveCityNames => [for (final c in cities) c.name];
+
+  /// Safety centre row: built-in text is exactly what shipped (Police (India),
+  /// Dial 112 / 100); a configured market uses its own label and number.
+  String get emergencyTitle =>
+      isBuiltIn ? 'Police (India)' : (emergency.label ?? 'Emergency services');
+  String get emergencySubtitle =>
+      isBuiltIn ? 'Dial 112 / 100' : 'Dial ${emergency.number}';
+
+  /// [raw] with this market's currency symbol in front, unless it already has one.
+  String withSymbol(String raw) {
+    final t = raw.trim();
+    if (t.startsWith(currencySymbol) || t.startsWith('₹') || t.startsWith(r'$')) {
+      return t;
+    }
+    return '$currencySymbol$t';
+  }
+
+  /// [raw] without any currency symbol or spaces, for parsing.
+  String stripSymbol(String raw) =>
+      raw.replaceAll(currencySymbol, '').replaceAll('₹', '').replaceAll(r'$', '').trim();
+
+  /// A short distance string in this market's unit: "12.3 km" / "7.6 mi".
+  String formatDistanceKm(double km, {int decimals = 1}) {
+    if (distanceUnit == 'mi') {
+      return '${(km * 0.621371).toStringAsFixed(decimals)} mi';
+    }
+    return '${km.toStringAsFixed(decimals)} km';
+  }
+
+  /// Display form of the app's internal distance string ("12.3 km"). The
+  /// pipeline (fare requests, ETA maths) stays in km; only what the rider READS
+  /// changes unit. Null in, null out. India (km) returns the string untouched.
+  String? displayDistance(String? raw) {
+    if (raw == null || distanceUnit != 'mi') return raw;
+    final m = RegExp(r'(\d+\.?\d*)').firstMatch(raw);
+    if (m == null) return raw;
+    return formatDistanceKm(double.parse(m.group(1)!));
+  }
+
+  /// The placeholder shown while a distance is unknown: "-- km" / "-- mi".
+  String get distancePlaceholder => '-- $distanceUnit';
+
+  /// TODAY'S behaviour.
+  static const MarketConfig builtIn = MarketConfig(
+    countryCode: 'IN',
+    countryName: 'India',
+    callingCode: '91',
+    currency: CurrencyConfig(code: 'INR', symbol: '₹'),
+    distanceUnit: 'km',
+    emergency: EmergencyConfig(number: '112', label: 'Emergency services'),
+    // The driver app's built-in onboarding list is its own (see
+    // [liveCityNames]); the server names the live cities.
+    cities: [],
+    isBuiltIn: true,
+  );
+
+  /// Parses the `data` object of the app-config response. Tolerant: any piece
+  /// that is missing or malformed falls back to the built-in value, so a
+  /// partial document can never break a screen.
+  factory MarketConfig.fromData(Map<String, dynamic> data) {
+    const base = MarketConfig.builtIn;
+    final country = _map(data['country']);
+    final currency = _map(country['currency']);
+    final emergency = _map(country['emergency']);
+    final numbers = emergency['numbers'];
+    String? number;
+    if (numbers is List && numbers.isNotEmpty) {
+      number = _str(_map(numbers.first)['number']);
+    }
+
+    final callingCode = _digits(
+      _str(country['calling_code']) ??
+          _str(_map(country['phone'])['calling_code']),
+    );
+
+    final cities = <CityConfig>[];
+    final rawCities = data['cities'];
+    if (rawCities is List) {
+      for (final c in rawCities) {
+        final m = _map(c);
+        final code = _str(m['code']);
+        final name = _str(m['name']);
+        if (code == null || name == null) continue;
+        final area = _map(m['service_area']);
+        final center = _map(area['center']);
+        final b = _map(area['bounds']);
+        final lat = _num(center['lat']);
+        final lng = _num(center['lng']);
+        final s = _num(b['south']);
+        final w = _num(b['west']);
+        final n = _num(b['north']);
+        final e = _num(b['east']);
+        cities.add(
+          CityConfig(
+            code: code,
+            name: name,
+            center: (lat != null && lng != null) ? LatLng(lat, lng) : null,
+            bounds: (s != null && w != null && n != null && e != null)
+                ? BoundsConfig(south: s, west: w, north: n, east: e)
+                : null,
+          ),
+        );
+      }
+    }
+
+    final notices = <AppNotice>[];
+    final rawNotices = data['notices'];
+    if (rawNotices is List) {
+      for (final n in rawNotices) {
+        final m = _map(n);
+        final message = _str(m['message']);
+        if (message == null) continue;
+        notices.add(
+          AppNotice(
+            id: (m['id'] is num) ? (m['id'] as num).toInt() : message.hashCode,
+            message: message,
+            severity: _str(m['severity']) ?? 'info',
+            blocking: m['blocking'] == true,
+          ),
+        );
+      }
+    }
+
+    final countryCode = _str(country['code'])?.toUpperCase();
+    final unit = _str(country['distance_unit']);
+    return MarketConfig(
+      countryCode: countryCode ?? base.countryCode,
+      countryName: _str(country['name']) ?? base.countryName,
+      callingCode: callingCode ?? base.callingCode,
+      currency: CurrencyConfig(
+        code: _str(currency['code']) ?? base.currency.code,
+        symbol: _str(currency['symbol']) ?? base.currency.symbol,
+        symbolPosition:
+            _str(currency['symbol_position']) ?? base.currency.symbolPosition,
+        minorUnits: (currency['minor_units'] is num)
+            ? (currency['minor_units'] as num).toInt()
+            : base.currency.minorUnits,
+      ),
+      distanceUnit: (unit == 'mi' || unit == 'km') ? unit! : base.distanceUnit,
+      emergency: EmergencyConfig(
+        number: number ?? base.emergency.number,
+        label: _str(emergency['label']) ?? base.emergency.label,
+      ),
+      cities: cities,
+      notices: notices,
+      referralsAvailable: data['referrals_available'] == true,
+      supportPhone: _str(_map(country['support'])['phone']),
+    );
+  }
+}
+
+Map<String, dynamic> _map(Object? v) =>
+    v is Map ? Map<String, dynamic>.from(v) : <String, dynamic>{};
+
+String? _str(Object? v) {
+  if (v == null) return null;
+  final s = v.toString().trim();
+  return s.isEmpty ? null : s;
+}
+
+double? _num(Object? v) => v is num ? v.toDouble() : null;
+
+String? _digits(String? v) {
+  if (v == null) return null;
+  final d = v.replaceAll(RegExp(r'[^0-9]'), '');
+  return d.isEmpty ? null : d;
+}

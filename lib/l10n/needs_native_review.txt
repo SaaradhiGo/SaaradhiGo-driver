@@ -1,0 +1,841 @@
+# Signed-in redesign (2026-11-08): te/hi drafts that need native review.
+# Each key is also marked "needs native review" in app_te.arb and app_hi.arb.
+
+navDocuments
+  en: Documents
+  te: పత్రాలు
+  hi: दस्तावेज़
+shellDriverBadge
+  en: DRIVER
+  te: డ్రైవర్
+  hi: ड्राइवर
+homeOfflineTitle
+  en: You're offline
+  te: మీరు ఆఫ్‌లైన్‌లో ఉన్నారు
+  hi: आप ऑफ़लाइन हैं
+homeOnlineTitle
+  en: You're online
+  te: మీరు ఆన్‌లైన్‌లో ఉన్నారు
+  hi: आप ऑनलाइन हैं
+homeOfflineHint
+  en: Requests appear here when you go online.
+  te: మీరు ఆన్‌లైన్‌కి వెళ్లినప్పుడు రైడ్ అభ్యర్థనలు ఇక్కడ కనిపిస్తాయి.
+  hi: ऑनलाइन होने पर राइड अनुरोध यहाँ दिखेंगे।
+homeTodayEarned
+  en: Today you earned
+  te: ఈ రోజు మీ సంపాదన
+  hi: आज आपकी कमाई
+homeTripsToday
+  en: Trips today
+  te: ఈ రోజు ట్రిప్‌లు
+  hi: आज की ट्रिप
+offerNewRequest
+  en: New ride request
+  te: కొత్త రైడ్ అభ్యర్థన
+  hi: नया राइड अनुरोध
+offerToPickupDistance
+  en: {distance} to pickup
+  te: పికప్‌కు {distance}
+  hi: पिकअप तक {distance}
+offerTripDistance
+  en: {distance} trip
+  te: {distance} ట్రిప్
+  hi: {distance} की ट्रिप
+offerTripFare
+  en: Trip fare
+  te: ట్రిప్ ఛార్జీ
+  hi: ट्रिप किराया
+codeAsk
+  en: Ask the rider for their ride code
+  te: రైడర్‌ను వారి రైడ్ కోడ్ అడగండి
+  hi: राइडर से उनका राइड कोड पूछें
+codeHint
+  en: The trip starts only when the code matches.
+  te: కోడ్ సరిపోలినప్పుడే ట్రిప్ ప్రారంభమవుతుంది.
+  hi: कोड मिलने पर ही ट्रिप शुरू होगी।
+codeYouEarn
+  en: You earn on this trip
+  te: ఈ ట్రిప్‌లో మీ సంపాదన
+  hi: इस ट्रिप पर आपकी कमाई
+codeChecking
+  en: Checking the code…
+  te: కోడ్ తనిఖీ చేస్తోంది…
+  hi: कोड जाँचा जा रहा है…
+earnChipWeek
+  en: Week
+  te: వారం
+  hi: सप्ताह
+earnChipMonth
+  en: Month
+  te: నెల
+  hi: महीना
+earnHeroToday
+  en: You earned today
+  te: ఈ రోజు మీరు సంపాదించింది
+  hi: आज आपने कमाया
+earnTripsCount
+  en: {count, plural, =1{1 trip} other{{count} trips}}
+  te: {count, plural, =1{1 ట్రిప్} other{{count} ట్రిప్‌లు}}
+  hi: {count, plural, =1{1 ट्रिप} other{{count} ट्रिप}}
+earnAfterCommission
+  en: after commission
+  te: కమీషన్ తర్వాత
+  hi: कमीशन के बाद
+earnTips
+  en: Tips
+  te: టిప్స్
+  hi: टिप
+earnYouEarned
+  en: You earned
+  te: మీ సంపాదన
+  hi: आपकी कमाई
+earnCashCollected
+  en: Cash you collected
+  te: మీరు వసూలు చేసిన నగదు
+  hi: आपने लिया नकद
+earnReadyToWithdraw
+  en: Ready to withdraw
+  te: విత్‌డ్రా చేయడానికి సిద్ధం
+  hi: निकालने के लिए तैयार
+earnAllHistory
+  en: All earnings and payouts
+  te: అన్ని సంపాదనలు, చెల్లింపులు
+  hi: सारी कमाई और भुगतान
+loadErrEarnings
+  en: We couldn't load your earnings.
+  te: మీ సంపాదనను లోడ్ చేయలేకపోయాము.
+  hi: हम आपकी कमाई लोड नहीं कर सके।
+loadErrBalance
+  en: We couldn't load your balance.
+  te: మీ బ్యాలెన్స్‌ను లోడ్ చేయలేకపోయాము.
+  hi: हम आपका बैलेंस लोड नहीं कर सके।
+earnNoTrips
+  en: No trips yet
+  te: ఇంకా ట్రిప్‌లు లేవు
+  hi: अभी तक कोई ट्रिप नहीं
+earnNoTripsHint
+  en: Go online to get your first ride request.
+  te: మీ మొదటి రైడ్ అభ్యర్థన కోసం ఆన్‌లైన్‌కి వెళ్లండి.
+  hi: अपनी पहली राइड रिक्वेस्ट पाने के लिए ऑनलाइन जाएँ।
+earnNoPayouts
+  en: No payouts yet
+  te: ఇంకా చెల్లింపులు లేవు
+  hi: अभी तक कोई भुगतान नहीं
+authSessionExpired
+  en: Your session has expired. Please log in again.
+  te: మీ సెషన్ ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.
+  hi: आपका सत्र समाप्त हो गया है। कृपया फिर से लॉग इन करें।
+offerToPickupDistanceMinutes
+  en: {distance} · {minutes} min to pickup
+  te: పికప్‌కు {distance} · {minutes} నిమి
+  hi: पिकअप तक {distance} · {minutes} मिनट
+callRider
+  en: Call {name}
+  te: {name}కు కాల్ చేయి
+  hi: {name} को कॉल करें
+callAction
+  en: Call
+  te: కాల్
+  hi: कॉल
+callUnavailable
+  en: Calling is not available right now.
+  te: ప్రస్తుతం కాల్ చేయడం అందుబాటులో లేదు.
+  hi: अभी कॉल करना उपलब्ध नहीं है।
+
+# Payouts (2026-11-09): next payout and Withdraw now.
+earnNextPayout
+  en: Next payout: {date} · estimated {amount}
+earnPayoutsOnRequest
+  en: Payouts here are on request.
+instantTitle
+  en: Withdraw now
+instantAmount
+  en: Amount
+instantSaaradhigoFee
+  en: SaaradhiGo fee
+instantYouReceive
+  en: You receive
+instantTo
+  en: To
+instantArrives
+  en: Arrives
+instantSeeFee
+  en: See the fee
+instantConfirm
+  en: Withdraw {amount}
+instantFailed
+  en: That did not go through. Nothing was changed.
+instantSent
+  en: Your withdrawal is on its way.
+
+# Driver fee plans (2026-11-09).
+offerPlatformFeeToday
+  en: Platform fee today so far: {amount} of {cap}
+offerPlatformFeeTodayNoCap
+  en: Platform fee today so far: {amount}
+earnPlatformFee
+  en: Platform fee
+earnPlatformFeeToday
+  en: Today so far: {amount}
+earnHowFeeWorks
+  en: How our fee works
+feePerTrip
+  en: {fee} for each trip.
+feeDailyPass
+  en: {fee} for a day with at least one trip.
+feeCap
+  en: Never more than {cap} in a day.
+feeFloor
+  en: No fee on a day when your fares are under {floor}.
+feeWaiver
+  en: No fee in your first {days} days.
+feeKeep80
+  en: You always keep at least 80% of every fare.
+feeOncePerDay
+  en: The fee is taken once a day, after the day ends.
+
+# Daily instant limit (2026-11-10).
+withdrawInstantFeeLine
+  en: Withdrawn {amount} · provider fee {fee} · received {received}
+# Driver requirements (2026-11-10): te/hi drafts that need native review.
+reqTitle
+  en: Get ready to drive
+  te: డ్రైవ్ చేయడానికి సిద్ధం అవ్వండి
+  hi: ड्राइव के लिए तैयार हों
+reqProgress
+  en: {done} of {total} done
+  te: {total}లో {done} పూర్తయ్యాయి
+  hi: {total} में से {done} पूरे
+reqBlocking
+  en: You can go online once these are done and approved: {list}.
+  te: ఇవి పూర్తయి ఆమోదం పొందిన తర్వాత మీరు ఆన్‌లైన్‌కు వెళ్లవచ్చు: {list}.
+  hi: ये पूरे होकर मंज़ूर होने के बाद आप ऑनलाइन जा सकते हैं: {list}.
+reqAllIn
+  en: Everything is in. Our team reviews it, usually the same day.
+  te: అన్నీ అందాయి. మా బృందం సాధారణంగా అదే రోజు సమీక్షిస్తుంది.
+  hi: सब कुछ मिल गया है। हमारी टीम आमतौर पर उसी दिन समीक्षा करती है।
+reqApproved
+  en: You are approved. Keep your documents up to date to stay online.
+  te: మీకు ఆమోదం లభించింది. ఆన్‌లైన్‌లో ఉండేందుకు పత్రాలను తాజాగా ఉంచండి.
+  hi: आपको मंज़ूरी मिल गई है। ऑनलाइन रहने के लिए दस्तावेज़ अपडेट रखें।
+reqLoadFailed
+  en: We couldn't load your checklist.
+  te: మీ చెక్‌లిస్ట్ లోడ్ కాలేదు.
+  hi: आपकी चेकलिस्ट लोड नहीं हो सकी।
+reqSectionPersonal
+  en: About you
+  te: మీ గురించి
+  hi: आपके बारे में
+reqSectionIdentity
+  en: Identity and checks
+  te: గుర్తింపు మరియు తనిఖీలు
+  hi: पहचान और जांच
+reqSectionVehicle
+  en: Your vehicle
+  te: మీ వాహనం
+  hi: आपका वाहन
+reqSectionPayouts
+  en: Payouts
+  te: చెల్లింపులు
+  hi: भुगतान
+reqStatusMissing
+  en: Missing
+  te: లేదు
+  hi: नहीं है
+reqStatusInReview
+  en: In review
+  te: సమీక్షలో ఉంది
+  hi: समीक्षा में
+reqStatusApproved
+  en: Approved
+  te: ఆమోదించబడింది
+  hi: मंज़ूर
+reqStatusRejected
+  en: Rejected
+  te: తిరస్కరించబడింది
+  hi: अस्वीकृत
+reqStatusExpiring
+  en: Expiring {date}
+  te: {date}న గడువు ముగుస్తుంది
+  hi: {date} को समाप्त
+reqStatusDone
+  en: Done
+  te: పూర్తయింది
+  hi: हो गया
+reqOptional
+  en: optional
+  te: ఐచ్ఛికం
+  hi: वैकल्पिक
+reqSave
+  en: Save
+  te: సేవ్ చేయి
+  hi: सेव करें
+reqSaved
+  en: Saved.
+  te: సేవ్ అయింది.
+  hi: सेव हो गया।
+reqSaveFailed
+  en: We could not save that. Try again.
+  te: సేవ్ కాలేదు. మళ్లీ ప్రయత్నించండి.
+  hi: सेव नहीं हो सका। फिर से कोशिश करें।
+reqUploaded
+  en: Uploaded. Our team will review it.
+  te: అప్‌లోడ్ అయింది. మా బృందం సమీక్షిస్తుంది.
+  hi: अपलोड हो गया। हमारी टीम समीक्षा करेगी।
+reqUpload
+  en: Upload
+  te: అప్‌లోడ్
+  hi: अपलोड
+reqReplace
+  en: Replace
+  te: మార్చు
+  hi: बदलें
+reqTakePhoto
+  en: Take photo
+  te: ఫోటో తీయండి
+  hi: फ़ोटो लें
+reqChoose
+  en: Choose
+  te: ఎంచుకోండి
+  hi: चुनें
+reqOther
+  en: Other
+  te: ఇతర
+  hi: अन्य
+reqPersonalTitle
+  en: Personal details
+  te: వ్యక్తిగత వివరాలు
+  hi: व्यक्तिगत विवरण
+reqFullName
+  en: Full name as on your licence
+  te: లైసెన్స్‌లో ఉన్నట్టు పూర్తి పేరు
+  hi: लाइसेंस के अनुसार पूरा नाम
+reqNameInReview
+  en: Your new name is in review.
+  te: మీ కొత్త పేరు సమీక్షలో ఉంది.
+  hi: आपका नया नाम समीक्षा में है।
+reqDob
+  en: Date of birth
+  te: పుట్టిన తేదీ
+  hi: जन्म तिथि
+reqMinAge
+  en: You must be at least {n}.
+  te: మీకు కనీసం {n} సంవత్సరాలు ఉండాలి.
+  hi: आपकी उम्र कम से कम {n} होनी चाहिए।
+reqAddress
+  en: Current address
+  te: ప్రస్తుత చిరునామా
+  hi: वर्तमान पता
+reqLine1
+  en: Address line 1
+  te: చిరునామా లైన్ 1
+  hi: पता पंक्ति 1
+reqLine2
+  en: Address line 2 (optional)
+  te: చిరునామా లైన్ 2 (ఐచ్ఛికం)
+  hi: पता पंक्ति 2 (वैकल्पिक)
+reqCity
+  en: City
+  te: నగరం
+  hi: शहर
+reqState
+  en: State
+  te: రాష్ట్రం
+  hi: राज्य
+reqPin
+  en: PIN code
+  te: పిన్ కోడ్
+  hi: पिन कोड
+reqZip
+  en: ZIP code
+  te: ZIP కోడ్
+  hi: ZIP कोड
+reqPermanentSame
+  en: Permanent address is the same
+  te: శాశ్వత చిరునామా అదే
+  hi: स्थायी पता यही है
+reqPhoto
+  en: Profile photo
+  te: ప్రొఫైల్ ఫోటో
+  hi: प्रोफ़ाइल फ़ोटो
+reqPhotoGuide
+  en: Hold the phone at eye level. Fit your face inside the oval, in good light, with nothing covering it. Riders see this photo once approved.
+  te: ఫోన్‌ను కంటి ఎత్తులో పట్టుకోండి. మంచి వెలుతురులో, ఏదీ కప్పకుండా మీ ముఖాన్ని అండాకారంలో ఉంచండి. ఆమోదం తర్వాత రైడర్లు ఈ ఫోటో చూస్తారు.
+  hi: फ़ोन आँखों की ऊँचाई पर रखें। अच्छी रोशनी में, बिना कुछ ढके, चेहरा अंडाकार में रखें। मंज़ूरी के बाद राइडर यह फ़ोटो देखते हैं।
+reqContactsTitle
+  en: Emergency contacts
+  te: అత్యవసర సంప్రదింపులు
+  hi: आपातकालीन संपर्क
+reqContactsHint
+  en: Support and our safety team call them only if you need help on a trip. Riders never see them.
+  te: ట్రిప్‌లో మీకు సహాయం అవసరమైతేనే సపోర్ట్ బృందం వారికి కాల్ చేస్తుంది. రైడర్లు వారిని చూడరు.
+  hi: ट्रिप पर मदद चाहिए तभी सपोर्ट टीम उन्हें कॉल करती है। राइडर उन्हें नहीं देखते।
+reqContact
+  en: Contact {n}
+  te: సంప్రదింపు {n}
+  hi: संपर्क {n}
+reqName
+  en: Name
+  te: పేరు
+  hi: नाम
+reqRelationship
+  en: Relationship
+  te: సంబంధం
+  hi: रिश्ता
+reqMobile
+  en: Mobile number
+  te: మొబైల్ నంబర్
+  hi: मोबाइल नंबर
+reqIdentityTitle
+  en: Identity and checks
+  te: గుర్తింపు మరియు తనిఖీలు
+  hi: पहचान और जांच
+reqLicenceNumber
+  en: Driving licence number
+  te: డ్రైవింగ్ లైసెన్స్ నంబర్
+  hi: ड्राइविंग लाइसेंस नंबर
+reqLicenceState
+  en: Issuing state
+  te: జారీ చేసిన రాష్ట్రం
+  hi: जारी करने वाला राज्य
+reqLicenceExpiry
+  en: Licence expiry date
+  te: లైసెన్స్ గడువు తేదీ
+  hi: लाइसेंस समाप्ति तिथि
+reqLicenceFront
+  en: Licence (front)
+  te: లైసెన్స్ (ముందు)
+  hi: लाइसेंस (आगे)
+reqLicenceBack
+  en: Licence (back)
+  te: లైసెన్స్ (వెనుక)
+  hi: लाइसेंस (पीछे)
+reqAadhaarLast4
+  en: Last 4 digits of your Aadhaar
+  te: మీ ఆధార్ చివరి 4 అంకెలు
+  hi: आपके आधार के आखिरी 4 अंक
+reqAadhaarNever
+  en: We never store your full Aadhaar number.
+  te: మీ పూర్తి ఆధార్ నంబర్‌ను మేము ఎప్పుడూ నిల్వ చేయము.
+  hi: हम आपका पूरा आधार नंबर कभी नहीं रखते।
+reqAadhaarCopy
+  en: Aadhaar copy
+  te: ఆధార్ కాపీ
+  hi: आधार की कॉपी
+reqPan
+  en: PAN
+  te: పాన్
+  hi: पैन
+reqPanCard
+  en: PAN card
+  te: పాన్ కార్డ్
+  hi: पैन कार्ड
+reqPolice
+  en: Police verification certificate
+  te: పోలీస్ ధృవీకరణ పత్రం
+  hi: पुलिस सत्यापन प्रमाणपत्र
+reqAddressProof
+  en: Address proof
+  te: చిరునామా రుజువు
+  hi: पते का प्रमाण
+reqBackground
+  en: Background check: {status}
+  te: నేపథ్య తనిఖీ: {status}
+  hi: बैकग्राउंड जांच: {status}
+reqOnFile
+  en: On file: {value}
+  te: నమోదైనది: {value}
+  hi: दर्ज: {value}
+reqVehicleTitle
+  en: Vehicle
+  te: వాహనం
+  hi: वाहन
+reqVehicleType
+  en: Vehicle type
+  te: వాహన రకం
+  hi: वाहन का प्रकार
+reqMake
+  en: Make
+  te: తయారీదారు
+  hi: कंपनी
+reqModel
+  en: Model
+  te: మోడల్
+  hi: मॉडल
+reqYear
+  en: Year
+  te: సంవత్సరం
+  hi: साल
+reqColour
+  en: Colour
+  te: రంగు
+  hi: रंग
+reqPlate
+  en: Number plate
+  te: నంబర్ ప్లేట్
+  hi: नंबर प्लेट
+reqVehicleReview
+  en: Saving sends your vehicle for review. You can go online again once it is approved.
+  te: సేవ్ చేస్తే మీ వాహనం సమీక్షకు వెళ్తుంది. ఆమోదం వచ్చాక మళ్లీ ఆన్‌లైన్‌కు వెళ్లవచ్చు.
+  hi: सेव करने पर वाहन समीक्षा के लिए जाएगा। मंज़ूरी के बाद आप फिर ऑनलाइन जा सकते हैं।
+reqPhotosTitle
+  en: Vehicle photos
+  te: వాహన ఫోటోలు
+  hi: वाहन की फ़ोटो
+reqSideFront
+  en: Front
+  te: ముందు
+  hi: आगे
+reqSideBack
+  en: Back
+  te: వెనుక
+  hi: पीछे
+reqSideLeft
+  en: Left side
+  te: ఎడమ వైపు
+  hi: बायाँ हिस्सा
+reqSideRight
+  en: Right side
+  te: కుడి వైపు
+  hi: दायाँ हिस्सा
+reqSideInside
+  en: Inside
+  te: లోపల
+  hi: अंदर
+reqSideGuide
+  en: Stand back so the whole {side} fits in the frame, with the number plate readable where it shows.
+  te: {side} మొత్తం ఫ్రేమ్‌లో కనిపించేలా వెనక్కి నిలబడండి, నంబర్ ప్లేట్ చదవగలిగేలా.
+  hi: पूरा {side} फ़्रेम में आए इतना पीछे खड़े हों, नंबर प्लेट पढ़ी जा सके।
+reqAddVehicleFirst
+  en: Add your vehicle first.
+  te: ముందుగా మీ వాహనాన్ని జోడించండి.
+  hi: पहले अपना वाहन जोड़ें।
+reqPayoutsTitle
+  en: Bank and payouts
+  te: బ్యాంక్ మరియు చెల్లింపులు
+  hi: बैंक और भुगतान
+reqBank
+  en: Bank account
+  te: బ్యాంక్ ఖాతా
+  hi: बैंक खाता
+reqUpi
+  en: UPI ID
+  te: UPI ఐడి
+  hi: UPI आईडी
+reqHolder
+  en: Account holder name
+  te: ఖాతాదారు పేరు
+  hi: खाताधारक का नाम
+reqAccount
+  en: Account number
+  te: ఖాతా నంబర్
+  hi: खाता संख्या
+reqAccountAgain
+  en: Account number again
+  te: ఖాతా నంబర్ మళ్లీ
+  hi: खाता संख्या दोबारा
+reqIfsc
+  en: IFSC
+  te: IFSC కోడ్
+  hi: IFSC कोड
+reqIfscUnknown
+  en: We could not find that IFSC.
+  te: ఆ IFSC కనుగొనలేకపోయాం.
+  hi: वह IFSC नहीं मिला।
+reqHoldNote
+  en: Changing your payout details pauses payouts for 24 hours, and we text you about the change.
+  te: చెల్లింపు వివరాలు మారిస్తే 24 గంటలు చెల్లింపులు ఆగుతాయి, మేము SMS పంపుతాము.
+  hi: भुगतान विवरण बदलने पर 24 घंटे भुगतान रुकते हैं, और हम SMS भेजते हैं।
+reqStripeHint
+  en: Payouts in the USA go through Stripe. Stripe asks for your bank and tax details; SaaradhiGo never sees them.
+  te: USAలో చెల్లింపులు Stripe ద్వారా. Stripe మీ బ్యాంక్, పన్ను వివరాలు అడుగుతుంది; SaaradhiGo చూడదు.
+  hi: अमेरिका में भुगतान Stripe से होते हैं। Stripe बैंक और टैक्स विवरण मांगता है; SaaradhiGo नहीं देखता।
+reqStripeSetup
+  en: Set up payouts
+  te: చెల్లింపులు సెటప్ చేయండి
+  hi: भुगतान सेट करें
+reqFix
+  en: Fix
+  te: సరిచేయి
+  hi: ठीक करें
+reqAdd
+  en: Add
+  te: జోడించు
+  hi: जोड़ें
+# Driver area v2 (2026-11-10): te/hi drafts that need native review.
+setupSavedAuto
+  en: Saved automatically
+  te: ఆటోమేటిక్‌గా సేవ్ అయింది
+  hi: अपने-आप सेव हो गया
+setupStepPersonal
+  en: Personal details
+  te: వ్యక్తిగత వివరాలు
+  hi: निजी जानकारी
+setupStepPersonalDesc
+  en: Photo, name, date of birth, address
+  te: ఫోటో, పేరు, పుట్టిన తేదీ, చిరునామా
+  hi: फ़ोटो, नाम, जन्मतिथि, पता
+setupStepContact
+  en: Emergency contact
+  te: అత్యవసర సంప్రదింపు
+  hi: आपातकालीन संपर्क
+setupStepContactDesc
+  en: Someone we can call in an SOS
+  te: SOS సమయంలో మేము కాల్ చేయగల వ్యక్తి
+  hi: SOS में हम जिसे कॉल कर सकें
+setupStepIdentity
+  en: Licence and identity
+  te: లైసెన్స్, గుర్తింపు
+  hi: लाइसेंस और पहचान
+setupItemLicence
+  en: Licence
+  te: లైసెన్స్
+  hi: लाइसेंस
+setupItemAadhaar
+  en: Aadhaar
+  te: ఆధార్
+  hi: आधार
+setupItemPan
+  en: PAN
+  te: PAN
+  hi: PAN
+setupItemPolice
+  en: police check
+  te: పోలీస్ తనిఖీ
+  hi: पुलिस जाँच
+setupItemBackground
+  en: background check
+  te: బ్యాక్‌గ్రౌండ్ తనిఖీ
+  hi: बैकग्राउंड जाँच
+setupStepVehicle
+  en: Your vehicle
+  te: మీ వాహనం
+  hi: आपका वाहन
+setupStepVehicleDesc
+  en: Type, make, model, year, plate
+  te: రకం, కంపెనీ, మోడల్, సంవత్సరం, నంబర్ ప్లేట్
+  hi: प्रकार, कंपनी, मॉडल, साल, नंबर प्लेट
+setupStepVehicleDocs
+  en: Vehicle photos and papers
+  te: వాహన ఫోటోలు, పత్రాలు
+  hi: वाहन की फ़ोटो और काग़ज़
+setupStepVehicleDocsDesc
+  en: 5 photos, RC, insurance, permit…
+  te: 5 ఫోటోలు, RC, బీమా, పర్మిట్…
+  hi: 5 फ़ोटो, RC, बीमा, परमिट…
+setupStepPayouts
+  en: Bank and payouts
+  te: బ్యాంక్, చెల్లింపులు
+  hi: बैंक और भुगतान
+setupStepPayoutsDesc
+  en: Where we send your earnings
+  te: మీ సంపాదన ఎక్కడికి పంపాలి
+  hi: आपकी कमाई कहाँ भेजें
+setupStepHeader
+  en: Step {number} of {total} · about {minutes} minutes left
+  te: దశ {number}/{total} · సుమారు {minutes} నిమిషాలు మిగిలాయి
+  hi: चरण {number}/{total} · लगभग {minutes} मिनट बाकी
+setupStepHeaderNoTime
+  en: Step {number} of {total}
+  te: దశ {number}/{total}
+  hi: चरण {number}/{total}
+setupStepsProgress
+  en: {done} of {total} steps
+  te: {total}లో {done} దశలు
+  hi: {total} में से {done} चरण
+setupUploadedOn
+  en: Uploaded {date}
+  te: {date}న అప్‌లోడ్ అయింది
+  hi: {date} को अपलोड हुआ
+setupBack
+  en: Back
+  te: వెనుకకు
+  hi: वापस
+setupSaveContinue
+  en: Save and continue
+  te: సేవ్ చేసి కొనసాగించండి
+  hi: सेव करके आगे बढ़ें
+setupContinue
+  en: Continue setup
+  te: సెటప్ కొనసాగించండి
+  hi: सेटअप जारी रखें
+setupApproved
+  en: You're approved to drive
+  te: మీకు డ్రైవ్ చేయడానికి ఆమోదం లభించింది
+  hi: आपको ड्राइव करने की मंज़ूरी मिल गई है
+setupNeedsAction
+  en: Needs action
+  te: చర్య అవసరం
+  hi: कार्रवाई ज़रूरी
+setupToDo
+  en: To do
+  te: చేయాల్సింది
+  hi: करना है
+profApproved
+  en: Approved to drive
+  te: డ్రైవ్ చేయడానికి ఆమోదం ఉంది
+  hi: ड्राइव के लिए मंज़ूर
+profSetupInProgress
+  en: Setup in progress
+  te: సెటప్ జరుగుతోంది
+  hi: सेटअप जारी है
+profNew
+  en: New
+  te: కొత్త
+  hi: नया
+profRatingTrips
+  en: {rating} ★ · {count, plural, =1{1 trip} other{{count} trips}}
+  te: {rating} ★ · {count, plural, =1{1 ట్రిప్} other{{count} ట్రిప్‌లు}}
+  hi: {rating} ★ · {count, plural, =1{1 ट्रिप} other{{count} ट्रिप}}
+profSecPersonal
+  en: Personal details
+  te: వ్యక్తిగత వివరాలు
+  hi: निजी जानकारी
+profSecContacts
+  en: Emergency contacts
+  te: అత్యవసర సంప్రదింపులు
+  hi: आपातकालीन संपर्क
+profSecIdentity
+  en: Licence and identity
+  te: లైసెన్స్, గుర్తింపు
+  hi: लाइसेंस और पहचान
+profSecVehicle
+  en: Vehicle
+  te: వాహనం
+  hi: वाहन
+profSecBank
+  en: Bank and payouts
+  te: బ్యాంక్, చెల్లింపులు
+  hi: बैंक और भुगतान
+profSecLanguage
+  en: Language and preferences
+  te: భాష, ప్రాధాన్యతలు
+  hi: भाषा और पसंद
+profLicence
+  en: Licence {number}
+  te: లైసెన్స్ {number}
+  hi: लाइसेंस {number}
+profAadhaar
+  en: Aadhaar {masked}
+  te: ఆధార్ {masked}
+  hi: आधार {masked}
+profPan
+  en: PAN {masked}
+  te: PAN {masked}
+  hi: PAN {masked}
+profStripeReady
+  en: Paid through Stripe
+  te: Stripe ద్వారా చెల్లింపు
+  hi: Stripe से भुगतान
+profNotAdded
+  en: Not added yet
+  te: ఇంకా జోడించలేదు
+  hi: अभी जोड़ा नहीं
+profEdit
+  en: Edit
+  te: మార్చు
+  hi: बदलें
+profOpen
+  en: Open
+  te: తెరువు
+  hi: खोलें
+earnHistTitle
+  en: Earnings history
+  te: సంపాదన చరిత్ర
+  hi: कमाई का इतिहास
+earnHistOpen
+  en: Earnings by day, week, month or year
+  te: రోజు, వారం, నెల లేదా సంవత్సరం వారీగా సంపాదన
+  hi: दिन, हफ़्ते, महीने या साल के हिसाब से कमाई
+earnPerDay
+  en: Day
+  te: రోజు
+  hi: दिन
+earnPerWeek
+  en: Week
+  te: వారం
+  hi: हफ़्ता
+earnPerMonth
+  en: Month
+  te: నెల
+  hi: महीना
+earnPerYear
+  en: Year
+  te: సంవత్సరం
+  hi: साल
+earnPerCustom
+  en: Custom range
+  te: మీకు నచ్చిన తేదీలు
+  hi: अपनी तारीखें
+earnCalendarYear
+  en: Calendar year
+  te: క్యాలెండర్ సంవత్సరం
+  hi: कैलेंडर साल
+earnTaxYear
+  en: Indian tax year (Apr–Mar)
+  te: భారత పన్ను సంవత్సరం (ఏప్రి–మార్చి)
+  hi: भारतीय टैक्स साल (अप्रैल–मार्च)
+earnTaxYearLabel
+  en: Tax year {from}–{to}
+  te: పన్ను సంవత్సరం {from}–{to}
+  hi: टैक्स साल {from}–{to}
+earnPrev
+  en: Previous
+  te: మునుపటి
+  hi: पिछला
+earnNext
+  en: Next
+  te: తదుపరి
+  hi: अगला
+earnAvgPerTrip
+  en: Avg {amount} per trip
+  te: ఒక్కో ట్రిప్‌కు సగటు {amount}
+  hi: प्रति ट्रिप औसत {amount}
+earnTipsFrom
+  en: {count, plural, =1{From 1 rider} other{From {count} riders}}
+  te: {count, plural, =1{1 రైడర్ నుండి} other{{count} రైడర్ల నుండి}}
+  hi: {count, plural, =1{1 राइडर से} other{{count} राइडर से}}
+earnTipsOff
+  en: Tips are not on yet
+  te: టిప్స్ ఇంకా ప్రారంభం కాలేదు
+  hi: टिप अभी शुरू नहीं हुई
+earnPaidToBank
+  en: Paid to your bank
+  te: మీ బ్యాంక్‌కు చెల్లించింది
+  hi: आपके बैंक में भेजा गया
+earnPayoutsCount
+  en: {count, plural, =1{1 payout} other{{count} payouts}}
+  te: {count, plural, =1{1 చెల్లింపు} other{{count} చెల్లింపులు}}
+  hi: {count, plural, =1{1 भुगतान} other{{count} भुगतान}}
+earnRestInCash
+  en: rest in cash
+  te: మిగతాది నగదుగా
+  hi: बाकी नकद में
+earnAllMonths
+  en: All months
+  te: అన్ని నెలలు
+  hi: सभी महीने
+earnSoFar
+  en: (so far)
+  te: (ఇప్పటివరకు)
+  hi: (अब तक)
+earnColTrips
+  en: Trips
+  te: ట్రిప్‌లు
+  hi: ट्रिप
+earnStatement
+  en: Statement (PDF)
+  te: స్టేట్‌మెంట్ (PDF)
+  hi: स्टेटमेंट (PDF)
+earnStatementFailed
+  en: Could not download the statement. Try again.
+  te: స్టేట్‌మెంట్ డౌన్‌లోడ్ కాలేదు. మళ్లీ ప్రయత్నించండి.
+  hi: स्टेटमेंट डाउनलोड नहीं हुआ। फिर से कोशिश करें।
+earnTripsOnDay
+  en: Trips on {date}
+  te: {date} నాటి ట్రిప్‌లు
+  hi: {date} की ट्रिप
+earnNoTripsDay
+  en: No trips this day.
+  te: ఈ రోజు ట్రిప్‌లు లేవు.
+  hi: इस दिन कोई ट्रिप नहीं।

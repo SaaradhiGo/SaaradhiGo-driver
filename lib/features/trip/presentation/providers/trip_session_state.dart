@@ -1,0 +1,90 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../../../domain/models/trip_model.dart';
+
+part 'trip_session_state.freezed.dart';
+
+/// Live state of the single active ride session.
+///
+/// There is at most one active trip per driver, so this is a flat snapshot
+/// rather than a union: [status] is the authoritative lifecycle state (driven by
+/// the socket), [trip] holds the accumulated trip data, and the boolean flags
+/// track the transient transport/action conditions the UI must reflect.
+@freezed
+abstract class TripSessionState with _$TripSessionState {
+  const TripSessionState._();
+
+  const factory TripSessionState({
+    TripModel? trip,
+    TripStatus? status,
+
+    /// Socket opening / accept in flight, before `connection_established`.
+    @Default(false) bool connecting,
+
+    /// A driver action was sent and we are awaiting its broadcast or error.
+    @Default(false) bool actionInProgress,
+
+    /// OTP-specific rejection, surfaced inline on the OTP field.
+    String? otpError,
+
+    /// Any other non-fatal error message to show as a banner/snackbar.
+    String? errorMessage,
+
+    /// Reason why the trip was cancelled (if cancelled by rider or system).
+    String? cancellationReason,
+
+    /// This offer was won by another driver (`trip_taken`).
+    @Default(false) bool takenByOther,
+
+    /// The transport exhausted its reconnect budget.
+    @Default(false) bool socketError,
+
+    /// A cash trip's `confirm_cash` has been acknowledged by the backend.
+    @Default(false) bool cashConfirmed,
+
+    /// The offer we accepted was gone by the time the backend answered, or
+    /// never confirmed. The driver is NOT on a trip and should be back on the
+    /// duty screen. Distinct from `takenByOther` (a known race with another
+    /// driver) and from `socketError` (transport, trip may still be ours).
+    @Default(false) bool offerLost,
+
+    /// True when the backend refused the accept for a reason about the
+    /// DRIVER (a fatigue lockout, a cancellation cooldown) rather than about
+    /// the ride. The two need different words on screen: "ride no longer
+    /// available" is actively wrong when the ride is fine and the driver is
+    /// the one who cannot take it.
+    @Default(false) bool refusedByBackend,
+
+    /// Support (ops) ended this STARTED trip (`operator_end.py`): the socket
+    /// said `complete` with the support-end message. The driver is told it was
+    /// ended by SaaradhiGo and what was earned, not shown a plain "completed".
+    @Default(false) bool endedBySupport,
+
+    /// Support (ops) released this trip before pickup (`admin_trips.py`): the
+    /// socket said `cancel` with the support message.
+    @Default(false) bool releasedBySupport,
+  }) = _TripSessionState;
+
+  /// No trip is in flight.
+  bool get isIdle => trip == null && status == null && !connecting;
+
+  /// A driver-blocking async operation is running.
+  bool get isBusy => connecting || actionInProgress;
+
+  /// The trip has settled into a terminal state.
+  bool get isTerminal => status?.isTerminal ?? false;
+
+  /// True when an active, non-terminal trip is underway.
+  bool get isActive => trip != null && status != null && !isTerminal;
+
+  /// A completed cash trip whose collection has not yet been confirmed. The
+  /// driver must confirm before leaving the summary (and the socket is held
+  /// open for it — the backend requires `completed` + a live channel).
+  bool get needsCashCollection =>
+      status == TripStatus.completed &&
+      trip?.paymentMethod == 'cash' &&
+      !cashConfirmed &&
+      // A trip the rider was not charged for (a platform-funded end) has
+      // nothing to collect, so the driver is not asked to confirm cash.
+      trip?.paymentStatus != 'waived';
+}

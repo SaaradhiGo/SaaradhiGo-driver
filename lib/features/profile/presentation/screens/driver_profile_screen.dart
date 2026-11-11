@@ -1,0 +1,810 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../core/market/market_providers.dart';
+import '../../../../core/network/connectivity_provider.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
+import '../../../../domain/models/driver_profile_model.dart';
+import '../../../../shared/widgets/bottom_sheet_container.dart';
+import '../../../../shared/widgets/buttons.dart';
+import '../../../../shared/widgets/driver_avatar.dart';
+import '../../../../shared/widgets/glass_panel.dart';
+import '../../../auth/presentation/providers/auth_notifier.dart';
+import '../../../vehicle/presentation/providers/vehicle_info_providers.dart';
+import '../providers/profile_providers.dart';
+import '../widgets/display_settings_rows.dart';
+import '../widgets/profile_sections.dart';
+import 'package:saaradhigo_driver/ui/sg_text.dart';
+
+/// Driver Profile / Account Suite screen (`/profile`).
+class DriverProfileScreen extends ConsumerStatefulWidget {
+  const DriverProfileScreen({super.key});
+
+  @override
+  ConsumerState<DriverProfileScreen> createState() =>
+      _DriverProfileScreenState();
+}
+
+class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final state = ref.read(driverProfileNotifierProvider);
+      if (state is ProfileStateInitial) {
+        ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      }
+      final vehicleState = ref.read(vehicleInfoNotifierProvider);
+      if (vehicleState.status == VehicleInfoStatus.initial) {
+        ref.read(vehicleInfoNotifierProvider.notifier).fetchVehicleInfo();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profileState = ref.watch(driverProfileNotifierProvider);
+
+    // Auto-retry a failed profile fetch when connectivity returns
+    // (docs/14_ERROR_HANDLING.md:11).
+    ref.listen<bool>(isOnlineNetworkProvider, (previous, next) {
+      if (previous == true || next != true) return;
+      if (ref.read(driverProfileNotifierProvider) is ProfileStateError) {
+        ref.read(driverProfileNotifierProvider.notifier).fetchProfile();
+      }
+    });
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'Profile',
+          style: AppTypography.headlineSm.copyWith(
+            color: AppColors.onBackground,
+          ),
+        ),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout_rounded, color: AppColors.error),
+            tooltip: 'Log Out',
+            onPressed: () => _confirmLogout(context),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: switch (profileState) {
+          ProfileStateLoading() => Center(
+            child: CircularProgressIndicator(color: AppColors.primaryText),
+          ),
+          ProfileStateError(:final message) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.margin),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    color: AppColors.error,
+                    size: 48,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodyMd.copyWith(
+                      color: AppColors.error,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      // Explicitly full-width; the theme now only sets a
+                      // height floor.
+                      minimumSize: const Size.fromHeight(
+                        AppSpacing.primaryButtonHeight,
+                      ),
+                    ),
+                    onPressed: () => ref
+                        .read(driverProfileNotifierProvider.notifier)
+                        .fetchProfile(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ProfileStateLoaded(:final profile) => RefreshIndicator(
+            color: AppColors.primaryText,
+            backgroundColor: AppColors.surfaceContainer,
+            onRefresh: () =>
+                ref.read(driverProfileNotifierProvider.notifier).fetchProfile(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.margin,
+                vertical: AppSpacing.lg,
+              ),
+              child: Column(
+                children: [
+                  _buildHeader(context, profile),
+                  const SizedBox(height: AppSpacing.sm),
+                  ProfileSummary(profile: profile),
+                  const SizedBox(height: AppSpacing.lg),
+                  ProfileSections(profile: profile),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildActiveVehicleDetails(profile),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildPersonalDetails(profile),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildQuickActions(context),
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
+          ),
+          _ => const SizedBox.shrink(),
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, DriverProfileModel profile) {
+    final fullName = profile.user?.fullName?.trim();
+    final displayName = (fullName == null || fullName.isEmpty)
+        ? 'Driver Partner'
+        : fullName;
+    final avatarUrl = profile.user?.avatar;
+
+    return Center(
+      child: Column(
+        children: [
+          DriverAvatar(
+            url: avatarUrl,
+            fallbackName: displayName,
+            size: 96,
+            isVerified: profile.approved,
+            onTap: () => _pickAndUploadAvatar(context),
+            border: Border.all(
+              color: AppColors.primaryContainer.withValues(alpha: 0.6),
+              width: 2,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            displayName,
+            textAlign: TextAlign.center,
+            style: AppTypography.headlineSm.copyWith(
+              color: AppColors.onBackground,
+            ),
+          ),
+          // No tier pill here: every driver showed "Elite Partner" whether
+          // or not they were. The Elite Tier row below says what is true.
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActiveVehicleDetails(DriverProfileModel profile) {
+    final vehicle = profile.activeVehicleDetails;
+
+    if (vehicle == null) {
+      final vehicleState = ref.watch(vehicleInfoNotifierProvider);
+      final hasFleetVehicles = vehicleState.allVehicles.isNotEmpty;
+
+      return GlassPanel(
+        padding: const EdgeInsets.all(AppSpacing.margin),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.directions_car_outlined,
+                    color: AppColors.primaryText,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'No Active Vehicle Set',
+                              style: AppTypography.headlineSm.copyWith(
+                                color: AppColors.onBackground,
+                                fontSize: SgText.sizeBody,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.pendingContainer.withValues(
+                                alpha: 0.2,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusPill,
+                              ),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: Text(
+                              'REQUIRED',
+                              style: AppTypography.labelCaps.copyWith(
+                                color: AppColors.primaryText,
+                                fontSize: SgText.sizeSmall,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Register or assign your vehicle to start accepting rides and going online.',
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                          fontSize: SgText.sizeSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (hasFleetVehicles)
+              PrimaryButton(
+                text: 'Select Active Vehicle',
+                onPressed: () => _showFleetSelectorSheet(context, vehicleState),
+              )
+            else
+              PrimaryButton(
+                text: '+ Add Vehicle',
+                onPressed: () => context.push('/vehicle/add'),
+              ),
+          ],
+        ),
+      );
+    }
+
+    final brand = vehicle['brand']?.toString() ?? '';
+    final model = vehicle['model']?.toString() ?? '';
+    final vehicleName = '$brand $model'.trim();
+    final vehicleNumber = vehicle['vehicle_number']?.toString() ?? 'N/A';
+    final vehicleTypeMap = vehicle['vehicle_type'];
+    final vehicleType = vehicleTypeMap is Map
+        ? (vehicleTypeMap['description']?.toString() ??
+              vehicleTypeMap['type']?.toString() ??
+              'N/A')
+        : 'N/A';
+    final color = vehicle['color']?.toString() ?? '';
+    final year = vehicle['year']?.toString() ?? '';
+    final colorYearStr = [color, year].where((s) => s.isNotEmpty).join(' • ');
+
+    return GlassPanel(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.margin,
+              vertical: AppSpacing.sm + 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.radiusMd),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.directions_car_rounded,
+                  color: AppColors.primaryText,
+                  size: 20,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'Active Vehicle Information',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onBackground,
+                    fontSize: SgText.sizeSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _infoRow(
+            'Vehicle Model',
+            vehicleName.isNotEmpty ? vehicleName : 'N/A',
+          ),
+          _infoRow('License Plate', vehicleNumber, isMono: true),
+          _infoRow('Category', vehicleType),
+          _infoRow(
+            'Color & Year',
+            colorYearStr.isNotEmpty ? colorYearStr : 'N/A',
+            isLast: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFleetSelectorSheet(BuildContext context, VehicleInfoState state) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) => BottomSheetContainer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.margin),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Select Active Vehicle',
+                style: AppTypography.headlineSm.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.unit),
+              Text(
+                'Select a vehicle to activate for your driving session.',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              for (final v in state.allVehicles) ...[
+                Container(
+                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: v.id == state.activeVehicle?.id
+                        ? AppColors.primaryContainer.withValues(alpha: 0.15)
+                        : AppColors.surfaceContainer,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    border: v.id == state.activeVehicle?.id
+                        ? Border.all(color: AppColors.primaryText)
+                        : null,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.directions_car_rounded,
+                        color: AppColors.primaryText,
+                      ),
+                      title: Text(
+                        '${v.brand ?? ''} ${v.model ?? ''}'.trim(),
+                        style: AppTypography.bodyLg.copyWith(
+                          color: AppColors.onBackground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        v.vehicleNumber,
+                        style: AppTypography.dataMono.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                      trailing: v.id == state.activeVehicle?.id
+                          ? Icon(
+                              Icons.check_circle,
+                              color: AppColors.primaryText,
+                            )
+                          : TextButton(
+                              child: const Text('Activate'),
+                              onPressed: () async {
+                                Navigator.pop(sheetCtx);
+                                await ref
+                                    .read(vehicleInfoNotifierProvider.notifier)
+                                    .switchActiveVehicle(v.id);
+                                await ref
+                                    .read(
+                                      driverProfileNotifierProvider.notifier,
+                                    )
+                                    .fetchProfile();
+                              },
+                            ),
+                      onTap: v.id == state.activeVehicle?.id
+                          ? null
+                          : () async {
+                              Navigator.pop(sheetCtx);
+                              await ref
+                                  .read(vehicleInfoNotifierProvider.notifier)
+                                  .switchActiveVehicle(v.id);
+                              await ref
+                                  .read(driverProfileNotifierProvider.notifier)
+                                  .fetchProfile();
+                            },
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton.icon(
+                icon: Icon(Icons.add_rounded, color: AppColors.primaryText),
+                label: const Text('Add New Vehicle'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primaryText,
+                  side: BorderSide(color: AppColors.primaryText),
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(sheetCtx);
+                  context.push('/vehicle/add');
+                },
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPersonalDetails(DriverProfileModel profile) {
+    final phone = profile.user?.phoneNumber ?? 'N/A';
+    final email = profile.user?.email ?? 'N/A';
+    final license = profile.licenseDoc != null ? 'Uploaded' : 'Not Uploaded';
+    final expiry = profile.licenseExpiry != null
+        ? profile.licenseExpiry!.toIso8601String().split('T').first
+        : 'N/A';
+
+    return GlassPanel(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.margin,
+              vertical: AppSpacing.sm + 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.radiusMd),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.person_rounded,
+                  color: AppColors.primaryText,
+                  size: 20,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'Personal Information',
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onBackground,
+                    fontSize: SgText.sizeSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _infoRow('Phone Number', phone, isMono: true),
+          _infoRow('Email', email),
+          _infoRow('Licence Document', license),
+          _infoRow('Licence Expiry', expiry, isLast: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow(
+    String label,
+    String value, {
+    bool isMono = false,
+    bool isLast = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.margin,
+        vertical: AppSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(
+                  color: AppColors.outlineVariant.withValues(alpha: 0.1),
+                ),
+              ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: AppTypography.bodyMd.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            value,
+            style: isMono
+                ? AppTypography.dataMono.copyWith(color: AppColors.onBackground)
+                : AppTypography.bodyMd.copyWith(color: AppColors.onBackground),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return GlassPanel(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                Icons.military_tech_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'Elite Tier',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              subtitle: Text(
+                'Quality scores & qualification status',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                  fontSize: SgText.sizeSmall,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/elite'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                Icons.directions_car_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'Active Vehicle Information',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/vehicle'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                Icons.description_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'Compliance & Document Vault',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/documents'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                Icons.notifications_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'Notifications Center',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/notifications'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              key: const Key('profile_notification_preferences'),
+              leading: Icon(Icons.tune_rounded, color: AppColors.primaryText),
+              title: Text(
+                'Notification preferences',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/notification-preferences'),
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                Icons.security_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'Safety & Emergency Center',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/safety'),
+            ),
+          ),
+          // Hidden unless a referral offer is live for drivers in this market
+          // (app-config `referrals_available`; a missing key is false).
+          if (ref.watch(marketConfigProvider).referralsAvailable) ...[
+            Divider(
+              height: 1,
+              color: AppColors.outlineVariant.withValues(alpha: 0.1),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                key: const Key('profile_refer_tile'),
+                leading: Icon(
+                  Icons.group_add_rounded,
+                  color: AppColors.primaryText,
+                ),
+                title: Text(
+                  'Refer & Earn',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onBackground,
+                  ),
+                ),
+                subtitle: Text(
+                  'Refer drivers and earn rewards',
+                  style: AppTypography.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                    fontSize: SgText.sizeSmall,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.onSurfaceVariant,
+                ),
+                onTap: () => context.push('/refer'),
+              ),
+            ),
+          ],
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          const DisplaySettingsRows(),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickAndUploadAvatar(BuildContext context) async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file != null && context.mounted) {
+      final bytes = await file.readAsBytes();
+      await ref
+          .read(driverProfileNotifierProvider.notifier)
+          .changeAvatar(bytes: bytes, fileName: file.name);
+    }
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: AppColors.surfaceContainerHigh,
+        title: Text(
+          'Log Out',
+          style: AppTypography.headlineSm.copyWith(
+            color: AppColors.onBackground,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to log out of SaaradhiGo?',
+          style: AppTypography.bodyMd.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogCtx);
+              ref.read(authNotifierProvider.notifier).logout();
+            },
+            child: Text(
+              'Log Out',
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

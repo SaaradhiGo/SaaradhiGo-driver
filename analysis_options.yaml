@@ -7,6 +7,27 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+    # lib_backup/** was excluded here because it held 53 files of archived
+    # pre-rewrite code. It has been deleted: nothing in lib/, test/ or
+    # integration_test/ referenced it, it is outside lib/ so it was never
+    # compiled into the app, and every capability in it exists in the live
+    # tree (onboarding_licence_screen, incoming_ride_bottom_sheet,
+    # features/support, core/storage/*). Recover it from git history if ever
+    # needed.
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    invalid_annotation_target: ignore
+    non_abstract_class_inherits_abstract_member: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

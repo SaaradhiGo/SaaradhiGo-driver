@@ -1,0 +1,1792 @@
+{
+  "@@locale": "en",
+  "appearanceTitle": "Appearance",
+  "@appearanceTitle": {
+    "description": "Profile row: light or dark theme"
+  },
+  "appearanceAutomatic": "Automatic",
+  "@appearanceAutomatic": {
+    "description": "Theme follows sunrise and sunset"
+  },
+  "appearanceAutomaticHint": "Light by day, dark after sunset",
+  "@appearanceAutomaticHint": {
+    "description": "Explains the automatic theme"
+  },
+  "appearanceDark": "Dark",
+  "@appearanceDark": {
+    "description": "Dark theme"
+  },
+  "appearanceLight": "Light",
+  "@appearanceLight": {
+    "description": "Light theme"
+  },
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "Profile row: app language"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Language name, in its own script"
+  },
+  "languageTelugu": "తెలుగు",
+  "@languageTelugu": {
+    "description": "Language name, in its own script"
+  },
+  "languageHindi": "हिन्दी",
+  "@languageHindi": {
+    "description": "Language name, in its own script"
+  },
+  "brandLogoLabel": "Saaradhi Go",
+  "@brandLogoLabel": {
+    "description": "Screen-reader label for the logo; brand name, not translated"
+  },
+  "commonPleaseWait": "Please wait",
+  "@commonPleaseWait": {
+    "description": "Button label while a request runs"
+  },
+  "commonMenu": "Menu",
+  "@commonMenu": {
+    "description": "Screen-reader label for the menu button"
+  },
+  "commonSafety": "Safety",
+  "@commonSafety": {
+    "description": "Red Safety button on Home"
+  },
+  "commonMinutes": "{n} min",
+  "@commonMinutes": {
+    "description": "A duration in whole minutes",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "riderFallback": "the rider",
+  "@riderFallback": {
+    "description": "Stands in for the rider's name when it is unknown"
+  },
+  "payCash": "Cash",
+  "@payCash": {
+    "description": "Payment method: cash"
+  },
+  "payOnline": "Online",
+  "@payOnline": {
+    "description": "Payment method: paid in the app"
+  },
+  "homeTodayTrips": "{count, plural, =1{Today · 1 trip} other{Today · {count} trips}}",
+  "@homeTodayTrips": {
+    "description": "Earnings card heading",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeToday": "Today",
+  "@homeToday": {
+    "description": "Earnings card heading before trips load"
+  },
+  "homeYouKeep": "You keep",
+  "@homeYouKeep": {
+    "description": "Today's net earnings, after commission"
+  },
+  "homeTodaysEarnings": "Today's earnings",
+  "@homeTodaysEarnings": {
+    "description": "Today's gross earnings (older API)"
+  },
+  "homeCommission": "Commission",
+  "@homeCommission": {
+    "description": "Today's commission label"
+  },
+  "homeOpenEarnings": "Open earnings",
+  "@homeOpenEarnings": {
+    "description": "Screen-reader hint on the earnings card"
+  },
+  "statusOnline": "Online",
+  "@statusOnline": {
+    "description": "Driver status"
+  },
+  "statusOffline": "Offline",
+  "@statusOffline": {
+    "description": "Driver status"
+  },
+  "statusGoingOnline": "Going online",
+  "@statusGoingOnline": {
+    "description": "Driver status"
+  },
+  "statusGoingOffline": "Going offline",
+  "@statusGoingOffline": {
+    "description": "Driver status"
+  },
+  "statusReconnecting": "Reconnecting",
+  "@statusReconnecting": {
+    "description": "Driver status"
+  },
+  "homeLooking": "Looking for rides near you",
+  "@homeLooking": {
+    "description": "Calm line while online"
+  },
+  "homeGoOnline": "Go online",
+  "@homeGoOnline": {
+    "description": "Primary action on Home"
+  },
+  "homeGoOffline": "Go offline",
+  "@homeGoOffline": {
+    "description": "Action on Home while online"
+  },
+  "homeCentreOnMe": "Centre on me",
+  "@homeCentreOnMe": {
+    "description": "Map button"
+  },
+  "homeMessages": "Messages",
+  "@homeMessages": {
+    "description": "Screen-reader label for the bell"
+  },
+  "offerSecondsLeft": "{seconds}s left",
+  "@offerSecondsLeft": {
+    "description": "Offer countdown",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "offerYouEarn": "You earn",
+  "@offerYouEarn": {
+    "description": "The driver's earning on the offer"
+  },
+  "offerFare": "Fare",
+  "@offerFare": {
+    "description": "The trip fare"
+  },
+  "offerFareLine": "Fare {fare} − {percent}% commission {commission}",
+  "@offerFareLine": {
+    "description": "How the earning follows from the fare",
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "commission": {
+        "type": "String"
+      }
+    }
+  },
+  "offerToPickup": "To pickup",
+  "@offerToPickup": {
+    "description": "Offer tile: distance to the rider"
+  },
+  "offerTrip": "Trip",
+  "@offerTrip": {
+    "description": "Offer tile: the trip itself"
+  },
+  "offerRiderPays": "Rider pays",
+  "@offerRiderPays": {
+    "description": "Offer tile: payment method"
+  },
+  "offerPickup": "Pickup",
+  "@offerPickup": {
+    "description": "Pickup place label"
+  },
+  "offerDrop": "Drop",
+  "@offerDrop": {
+    "description": "Drop place label"
+  },
+  "offerAccept": "Accept",
+  "@offerAccept": {
+    "description": "Accept the ride"
+  },
+  "offerDecline": "Decline",
+  "@offerDecline": {
+    "description": "Decline the ride"
+  },
+  "offerExpired": "Offer expired",
+  "@offerExpired": {
+    "description": "The offer ran out"
+  },
+  "offerRiderRating": "Rider {rating}",
+  "@offerRiderRating": {
+    "description": "The rider's rating on the offer",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "pinAtPickup": "At pickup",
+  "@pinAtPickup": {
+    "description": "PIN screen status"
+  },
+  "pinAsk": "Ask {name} for the trip PIN",
+  "@pinAsk": {
+    "description": "PIN screen heading",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinStartTrip": "Start trip",
+  "@pinStartTrip": {
+    "description": "Start the trip once the PIN is in"
+  },
+  "tripCancelRide": "Cancel ride",
+  "@tripCancelRide": {
+    "description": "Quiet cancel link"
+  },
+  "pinMessage": "Message {name}",
+  "@pinMessage": {
+    "description": "Message button on the rider row",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinDeleteDigit": "Delete digit",
+  "@pinDeleteDigit": {
+    "description": "Keypad backspace"
+  },
+  "pinDigits": "Trip PIN, {typed} of {length} digits",
+  "@pinDigits": {
+    "description": "Screen-reader label for the PIN boxes",
+    "placeholders": {
+      "typed": {
+        "type": "int"
+      },
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "pinMismatch": "That PIN does not match. Ask {name} again.",
+  "@pinMismatch": {
+    "description": "Calm refusal of a wrong PIN",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pinTooMany": "Too many tries. Ask {name} to read the PIN again.",
+  "@pinTooMany": {
+    "description": "Too many wrong PINs",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeJustStarted": "Just started",
+  "@homeJustStarted": {
+    "description": "Online time under a minute"
+  },
+  "earnTitle": "Earnings",
+  "@earnTitle": {
+    "description": "Earnings screen title"
+  },
+  "earnPeriodToday": "Today",
+  "@earnPeriodToday": {
+    "description": "Period tab"
+  },
+  "earnPeriodWeek": "This week",
+  "@earnPeriodWeek": {
+    "description": "Period tab"
+  },
+  "earnPeriodMonth": "This month",
+  "@earnPeriodMonth": {
+    "description": "Period tab"
+  },
+  "earnTrips": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@earnTrips": {
+    "description": "Trip count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnEarned": "Earned",
+  "@earnEarned": {
+    "description": "Gross earnings (older API)"
+  },
+  "earnLast7": "Last 7 days",
+  "@earnLast7": {
+    "description": "Bar chart heading"
+  },
+  "earnBreakdown": "Breakdown",
+  "@earnBreakdown": {
+    "description": "Breakdown card heading"
+  },
+  "earnTripFares": "Trip fares",
+  "@earnTripFares": {
+    "description": "Breakdown line: gross fares"
+  },
+  "earnNet": "Net earned",
+  "@earnNet": {
+    "description": "Breakdown line: net"
+  },
+  "earnCashInHand": "Cash in hand",
+  "@earnCashInHand": {
+    "description": "Breakdown line: cash collected"
+  },
+  "earnWithdrawable": "Withdrawable",
+  "@earnWithdrawable": {
+    "description": "Balance that can be withdrawn"
+  },
+  "earnWithdraw": "Withdraw {amount}",
+  "@earnWithdraw": {
+    "description": "Withdraw button",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPayoutMissing": "Add your bank or UPI details to withdraw.",
+  "@earnPayoutMissing": {
+    "description": "Why Withdraw is blocked"
+  },
+  "earnAddPayout": "Add payout details",
+  "@earnAddPayout": {
+    "description": "Opens the bank details step"
+  },
+  "earnRetry": "Try again",
+  "@earnRetry": {
+    "description": "Retry a failed load"
+  },
+  "earnLoadFailed": "Could not load your earnings",
+  "@earnLoadFailed": {
+    "description": "Load error"
+  },
+  "docsTitle": "Documents",
+  "@docsTitle": {
+    "description": "Documents screen title"
+  },
+  "docsProgress": "{done} of {total} done",
+  "@docsProgress": {
+    "description": "Documents progress",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "docsApproved": "Approved",
+  "@docsApproved": {
+    "description": "Document status"
+  },
+  "docsInReview": "In review",
+  "@docsInReview": {
+    "description": "Document status"
+  },
+  "docsUploaded": "Uploaded",
+  "@docsUploaded": {
+    "description": "Document status: present, not yet reviewed"
+  },
+  "docsRejected": "Rejected",
+  "@docsRejected": {
+    "description": "Document status"
+  },
+  "docsMissing": "Not uploaded",
+  "@docsMissing": {
+    "description": "Document status"
+  },
+  "docsNeedsAttention": "Needs a new photo",
+  "@docsNeedsAttention": {
+    "description": "Rejected card heading"
+  },
+  "docsFrameGuide": "Fit the whole document inside the frame, flat and in good light.",
+  "@docsFrameGuide": {
+    "description": "Camera framing guide"
+  },
+  "docsOpenCamera": "Open camera",
+  "@docsOpenCamera": {
+    "description": "Retake a rejected document"
+  },
+  "docsUploadedOk": "Uploaded. We will review it.",
+  "@docsUploadedOk": {
+    "description": "Upload success"
+  },
+  "docsUploadFailed": "Upload failed. Please try again.",
+  "@docsUploadFailed": {
+    "description": "Upload failure"
+  },
+  "docsPayoutTitle": "Payout details missing",
+  "@docsPayoutTitle": {
+    "description": "Missing payout card heading"
+  },
+  "docsCallSupport": "Call driver support",
+  "@docsCallSupport": {
+    "description": "Support call button"
+  },
+  "docsLoadFailed": "Could not load your documents",
+  "@docsLoadFailed": {
+    "description": "Load error"
+  },
+  "tripOpenInMaps": "Open in Maps",
+  "@tripOpenInMaps": {
+    "description": "Hands the route to the phone's map app"
+  },
+  "tripNightMode": "Night mode since sunset",
+  "@tripNightMode": {
+    "description": "Chip when the automatic theme picked dark"
+  },
+  "tripDropping": "Dropping {name}",
+  "@tripDropping": {
+    "description": "On-trip sheet heading",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEndAtDrop": "End trip at drop",
+  "@tripEndAtDrop": {
+    "description": "Complete the trip"
+  },
+  "breakdownTripFares": "Trip Fares (Gross)",
+  "@breakdownTripFares": {
+    "description": "Breakdown line: gross fares"
+  },
+  "breakdownCommission": "Platform Commission",
+  "@breakdownCommission": {
+    "description": "Breakdown line: commission"
+  },
+  "breakdownNet": "Net Driver Earnings",
+  "@breakdownNet": {
+    "description": "Breakdown line: net"
+  },
+  "homeOfferGone": "That ride is no longer available.",
+  "@homeOfferGone": {
+    "description": "Snackbar: a pushed offer was never described by dispatch"
+  },
+  "homeOfferDeclined": "Ride request declined.",
+  "@homeOfferDeclined": {
+    "description": "Snackbar after Decline"
+  },
+  "homeNoticeReconnecting": "Reconnecting to dispatch",
+  "@homeNoticeReconnecting": {
+    "description": "Home notice while the dispatch socket reconnects"
+  },
+  "homeNoticeWeakGps": "Weak GPS signal",
+  "@homeNoticeWeakGps": {
+    "description": "Home notice"
+  },
+  "homeNoticeFindingLocation": "Finding your location",
+  "@homeNoticeFindingLocation": {
+    "description": "Home notice before the first GPS fix"
+  },
+  "homeNoticeLimitedBackground": "Keep the app open to receive rides, or allow background location.",
+  "@homeNoticeLimitedBackground": {
+    "description": "Home notice: location only while the app is open"
+  },
+  "homeNoticeUpgrade": "Upgrade",
+  "@homeNoticeUpgrade": {
+    "description": "Action on the limited-background notice"
+  },
+  "blockerVerifyTitle": "Verification in progress",
+  "@blockerVerifyTitle": {
+    "description": "Home blocker: documents not yet approved"
+  },
+  "blockerVerifyBody": "You can go online once your documents are approved.",
+  "@blockerVerifyBody": {
+    "description": "Home blocker body"
+  },
+  "blockerVerifyAction": "Check status",
+  "@blockerVerifyAction": {
+    "description": "Home blocker action"
+  },
+  "blockerVehicleTitle": "Add your vehicle",
+  "@blockerVehicleTitle": {
+    "description": "Home blocker: no active vehicle"
+  },
+  "blockerVehicleBody": "Add the vehicle you will drive to go online.",
+  "@blockerVehicleBody": {
+    "description": "Home blocker body"
+  },
+  "blockerVehicleAction": "Add vehicle",
+  "@blockerVehicleAction": {
+    "description": "Home blocker action and snackbar action"
+  },
+  "blockerLocationOffTitle": "Location is off",
+  "@blockerLocationOffTitle": {
+    "description": "Home blocker: location services off"
+  },
+  "blockerLocationOffBody": "Turn on location to receive ride requests.",
+  "@blockerLocationOffBody": {
+    "description": "Home blocker body"
+  },
+  "blockerLocationOffAction": "Turn on location",
+  "@blockerLocationOffAction": {
+    "description": "Home blocker action"
+  },
+  "blockerLocationAccessTitle": "Location access needed",
+  "@blockerLocationAccessTitle": {
+    "description": "Home blocker: permission missing"
+  },
+  "blockerLocationBlockedBody": "Location permission is blocked. Allow it in Settings to go online.",
+  "@blockerLocationBlockedBody": {
+    "description": "Home blocker body: permanently denied"
+  },
+  "blockerLocationNeededBody": "SaaradhiGo needs your location to receive ride requests.",
+  "@blockerLocationNeededBody": {
+    "description": "Home blocker body: not yet granted"
+  },
+  "blockerOpenSettings": "Open settings",
+  "@blockerOpenSettings": {
+    "description": "Home blocker action"
+  },
+  "blockerAllowLocation": "Allow location",
+  "@blockerAllowLocation": {
+    "description": "Home blocker action"
+  },
+  "menuProfile": "Profile",
+  "@menuProfile": {
+    "description": "Home menu row"
+  },
+  "menuVehicle": "Vehicle",
+  "@menuVehicle": {
+    "description": "Home menu row"
+  },
+  "menuDocuments": "Documents",
+  "@menuDocuments": {
+    "description": "Home menu row"
+  },
+  "menuRewards": "Rewards",
+  "@menuRewards": {
+    "description": "Home menu row"
+  },
+  "menuReferDriver": "Refer a driver",
+  "@menuReferDriver": {
+    "description": "Home menu row"
+  },
+  "menuHelp": "Help and support",
+  "@menuHelp": {
+    "description": "Home menu row"
+  },
+  "menuDriverFallback": "Driver",
+  "@menuDriverFallback": {
+    "description": "Home menu header when the name is unknown"
+  },
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom tab"
+  },
+  "navTrips": "Trips",
+  "@navTrips": {
+    "description": "Bottom tab"
+  },
+  "navEarnings": "Earnings",
+  "@navEarnings": {
+    "description": "Bottom tab"
+  },
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Bottom tab"
+  },
+  "tripTakenTitle": "Ride taken",
+  "@tripTakenTitle": {
+    "description": "Trip screen: another driver accepted"
+  },
+  "tripTakenBody": "This ride was accepted by another driver.",
+  "@tripTakenBody": {
+    "description": "Trip screen body"
+  },
+  "tripRefusedTitle": "You cannot take this ride",
+  "@tripRefusedTitle": {
+    "description": "Trip screen: the server refused the accept for a reason about the driver"
+  },
+  "tripGoneTitle": "Ride no longer available",
+  "@tripGoneTitle": {
+    "description": "Trip screen: accept never confirmed"
+  },
+  "tripGoneBody": "That ride is no longer available. You are back online.",
+  "@tripGoneBody": {
+    "description": "Trip screen body"
+  },
+  "tripNoneTitle": "No active trip",
+  "@tripNoneTitle": {
+    "description": "Trip screen with no session"
+  },
+  "tripNoneBody": "There is no trip assigned to you right now.",
+  "@tripNoneBody": {
+    "description": "Trip screen body"
+  },
+  "tripSupportReleasedBody": "SaaradhiGo support cancelled this trip. You are free to take new trips.",
+  "@tripSupportReleasedBody": {
+    "description": "Trip screen: support released the driver"
+  },
+  "tripCancelledTitle": "Ride cancelled",
+  "@tripCancelledTitle": {
+    "description": "Trip screen: cancelled"
+  },
+  "tripCancelledBody": "This ride has been cancelled by the passenger.",
+  "@tripCancelledBody": {
+    "description": "Trip screen body"
+  },
+  "tripConnecting": "Connecting to the trip…",
+  "@tripConnecting": {
+    "description": "Trip loading"
+  },
+  "tripPreparing": "Preparing ride…",
+  "@tripPreparing": {
+    "description": "Trip loading"
+  },
+  "tripBackHome": "Back to home",
+  "@tripBackHome": {
+    "description": "Trip ended button"
+  },
+  "tripCancelledByPassenger": "Ride Cancelled by Passenger",
+  "@tripCancelledByPassenger": {
+    "description": "Cancelled sheet title"
+  },
+  "tripCancelledDefaultReason": "The passenger has cancelled this ride request.",
+  "@tripCancelledDefaultReason": {
+    "description": "Cancelled sheet body when the server gave no reason"
+  },
+  "tripReturningOnline": "Returning online in {seconds}s",
+  "@tripReturningOnline": {
+    "description": "Cancelled sheet countdown",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "cancelSheetTitle": "Cancel this ride?",
+  "@cancelSheetTitle": {
+    "description": "Driver cancel sheet title"
+  },
+  "cancelSheetBody": "Select a reason. Frequent cancellations can affect your rating.",
+  "@cancelSheetBody": {
+    "description": "Driver cancel sheet body"
+  },
+  "cancelReasonNoShow": "Rider is a no-show",
+  "@cancelReasonNoShow": {
+    "description": "Cancel reason no_show"
+  },
+  "cancelReasonVehicle": "Vehicle issue",
+  "@cancelReasonVehicle": {
+    "description": "Cancel reason vehicle_issue"
+  },
+  "cancelReasonSafety": "Safety concern",
+  "@cancelReasonSafety": {
+    "description": "Cancel reason safety"
+  },
+  "cancelReasonPersonal": "Personal emergency",
+  "@cancelReasonPersonal": {
+    "description": "Cancel reason personal"
+  },
+  "cancelReasonOther": "Other",
+  "@cancelReasonOther": {
+    "description": "Cancel reason other"
+  },
+  "tripNavigate": "Navigate",
+  "@tripNavigate": {
+    "description": "Pill that opens the map app"
+  },
+  "tripRiderFallback": "Rider",
+  "@tripRiderFallback": {
+    "description": "Rider row when the name is unknown"
+  },
+  "tripArrived": "I've arrived",
+  "@tripArrived": {
+    "description": "Button at pickup"
+  },
+  "tripCashCollected": "Cash collected",
+  "@tripCashCollected": {
+    "description": "Summary button on a cash trip"
+  },
+  "tripDone": "Done",
+  "@tripDone": {
+    "description": "Summary button"
+  },
+  "tripRateRider": "Rate the rider",
+  "@tripRateRider": {
+    "description": "Summary link"
+  },
+  "tripRateName": "Rate {name}",
+  "@tripRateName": {
+    "description": "Summary link with the rider's first name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tripCollectInCash": "Collect in cash",
+  "@tripCollectInCash": {
+    "description": "Label over the cash amount to collect"
+  },
+  "tripCollectBody": "Collect {amount} cash from {name}, then confirm below.",
+  "@tripCollectBody": {
+    "description": "Summary body on a cash trip",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryRatingSaved": "Thanks — rating saved.",
+  "@summaryRatingSaved": {
+    "description": "Snackbar after rating the passenger"
+  },
+  "summaryTripComplete": "Trip complete",
+  "@summaryTripComplete": {
+    "description": "Trip summary title"
+  },
+  "summaryFareDistance": "Fare for the distance driven",
+  "@summaryFareDistance": {
+    "description": "Trip summary caption when support ended the trip"
+  },
+  "summaryFare": "Fare",
+  "@summaryFare": {
+    "description": "Trip summary caption"
+  },
+  "summaryCashCollected": "Cash collected",
+  "@summaryCashCollected": {
+    "description": "Trip summary paid line on a cash trip"
+  },
+  "summaryPaidBy": "Paid by {method}",
+  "@summaryPaidBy": {
+    "description": "Trip summary paid line",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryDistance": "Distance",
+  "@summaryDistance": {
+    "description": "Trip summary fact"
+  },
+  "summaryTime": "Time",
+  "@summaryTime": {
+    "description": "Trip summary fact"
+  },
+  "summaryPayment": "Payment",
+  "@summaryPayment": {
+    "description": "Trip summary fact"
+  },
+  "summaryPromoPaid": "Promo paid by SaaradhiGo",
+  "@summaryPromoPaid": {
+    "description": "Trip summary note"
+  },
+  "summarySupportEarned": "You earned {amount} for the distance driven.",
+  "@summarySupportEarned": {
+    "description": "Trip summary note when support ended the trip",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryWorkingOut": "Working out what you earned...",
+  "@summaryWorkingOut": {
+    "description": "Trip summary note while loading"
+  },
+  "summaryEarningsLater": "Your earnings for this trip will show in your earnings list.",
+  "@summaryEarningsLater": {
+    "description": "Trip summary note fallback"
+  },
+  "payUpi": "UPI",
+  "@payUpi": {
+    "description": "Payment method"
+  },
+  "payCard": "Card",
+  "@payCard": {
+    "description": "Payment method"
+  },
+  "payWallet": "Wallet",
+  "@payWallet": {
+    "description": "Payment method"
+  },
+  "rateTapStar": "Tap a star to rate the passenger.",
+  "@rateTapStar": {
+    "description": "Rate sheet error"
+  },
+  "rateSaveFailed": "Could not save your rating.",
+  "@rateSaveFailed": {
+    "description": "Rate sheet error"
+  },
+  "rateHowWasTripWith": "How was your trip with {name}?",
+  "@rateHowWasTripWith": {
+    "description": "Rate sheet title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rateHowWasPassenger": "How was your passenger?",
+  "@rateHowWasPassenger": {
+    "description": "Rate sheet title without a name"
+  },
+  "rateHint": "Anything the team should know? (optional)",
+  "@rateHint": {
+    "description": "Rate sheet comment hint"
+  },
+  "rateSubmit": "SUBMIT RATING",
+  "@rateSubmit": {
+    "description": "Rate sheet button"
+  },
+  "rateNotNow": "Not now",
+  "@rateNotNow": {
+    "description": "Rate sheet dismiss"
+  },
+  "tripHeadingToPickup": "Heading to pickup",
+  "@tripHeadingToPickup": {
+    "description": "Label over the pickup address after the driver accepts"
+  },
+  "tripPickupOnMap": "Pickup point on the map",
+  "@tripPickupOnMap": {
+    "description": "Pickup line when the trip has no pickup address"
+  },
+  "tripDropOnMap": "Drop point on the map",
+  "@tripDropOnMap": {
+    "description": "Drop line when the trip has no drop address"
+  },
+  "tripNoMapApp": "No map app could open the route.",
+  "@tripNoMapApp": {
+    "description": "Snackbar when no navigation app opens"
+  },
+  "tripCancelledByYou": "Cancelled by you",
+  "@tripCancelledByYou": {
+    "description": "Cancelled screen title when the server says the driver cancelled"
+  },
+  "tripCancelledByRider": "Cancelled by the rider",
+  "@tripCancelledByRider": {
+    "description": "Cancelled screen title when the server says the rider cancelled"
+  },
+  "tripCancelledNeutral": "Trip cancelled",
+  "@tripCancelledNeutral": {
+    "description": "Cancelled screen title when the server does not say who cancelled"
+  },
+  "tripCancelledNext": "You can take your next ride.",
+  "@tripCancelledNext": {
+    "description": "Body under the cancelled title"
+  },
+  "tripCancelReason": "Reason: {reason}",
+  "@tripCancelReason": {
+    "description": "The cancel reason the server sent",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "tripSupportEndedTitle": "Trip ended by SaaradhiGo",
+  "@tripSupportEndedTitle": {
+    "description": "Summary title when support ended the trip"
+  },
+  "tripSupportEndedPlatformPaid": "Trip ended by SaaradhiGo: earnings paid by SaaradhiGo",
+  "@tripSupportEndedPlatformPaid": {
+    "description": "Note when support ended the trip and the platform pays"
+  },
+  "tripSupportReleasedTitle": "Trip cancelled by SaaradhiGo",
+  "@tripSupportReleasedTitle": {
+    "description": "Title when support released the trip before pickup"
+  },
+  "tripNotConnected": "Not connected to the trip. Please retry.",
+  "@tripNotConnected": {
+    "description": "Banner when a trip action has no live channel"
+  },
+  "tripLostConnection": "Lost connection to the trip. Reopen to reconnect.",
+  "@tripLostConnection": {
+    "description": "Banner when the trip socket gave up reconnecting"
+  },
+  "tripUnconfirmed": "We could not confirm that ride. You are back online.",
+  "@tripUnconfirmed": {
+    "description": "Shown when an accept was never confirmed"
+  },
+  "tripNoLongerAvailable": "That ride is no longer available. You are back online.",
+  "@tripNoLongerAvailable": {
+    "description": "Shown when the accepted offer was already gone"
+  },
+  "tripMissingId": "Ride request is missing a trip id.",
+  "@tripMissingId": {
+    "description": "Shown when an offer has no trip id"
+  },
+  "appearanceDarkHint": "Black and gold",
+  "@appearanceDarkHint": {
+    "description": "Hint under Dark in the appearance choices"
+  },
+  "appearanceToggle": "Switch to {mode}",
+  "@appearanceToggle": {
+    "description": "Screen-reader label of the sun/moon button on home",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelWhyTooLong": "Waited too long",
+  "@cancelWhyTooLong": {
+    "description": "Cancel reason code too_long (rider)"
+  },
+  "cancelWhyWrongLocation": "Wrong pickup location",
+  "@cancelWhyWrongLocation": {
+    "description": "Cancel reason code wrong_location (rider)"
+  },
+  "cancelWhyDriverNoShow": "The driver did not arrive",
+  "@cancelWhyDriverNoShow": {
+    "description": "Cancel reason code no_show when the rider cancelled"
+  },
+  "cancelWhyNoDriver": "No driver accepted in time",
+  "@cancelWhyNoDriver": {
+    "description": "Cancel reason code no_driver_accepted"
+  },
+  "navDocuments": "Documents",
+  "@navDocuments": {
+    "description": "Bottom tab"
+  },
+  "shellDriverBadge": "DRIVER",
+  "@shellDriverBadge": {
+    "description": "Badge beside the logo in the top bar"
+  },
+  "homeOfflineTitle": "You're offline",
+  "@homeOfflineTitle": {
+    "description": "Home sheet title while offline"
+  },
+  "homeOnlineTitle": "You're online",
+  "@homeOnlineTitle": {
+    "description": "Home sheet title while online"
+  },
+  "homeOfflineHint": "Requests appear here when you go online.",
+  "@homeOfflineHint": {
+    "description": "Home sheet line while offline"
+  },
+  "homeTodayEarned": "Today you earned",
+  "@homeTodayEarned": {
+    "description": "Home tile label"
+  },
+  "homeTripsToday": "Trips today",
+  "@homeTripsToday": {
+    "description": "Home tile label"
+  },
+  "offerNewRequest": "New ride request",
+  "@offerNewRequest": {
+    "description": "Offer card eyebrow"
+  },
+  "offerToPickupDistance": "{distance} to pickup",
+  "@offerToPickupDistance": {
+    "description": "Offer headline after the vehicle class",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripDistance": "{distance} trip",
+  "@offerTripDistance": {
+    "description": "Offer drop line when no address",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "offerTripFare": "Trip fare",
+  "@offerTripFare": {
+    "description": "Offer fare row"
+  },
+  "codeAsk": "Ask the rider for their ride code",
+  "@codeAsk": {
+    "description": "Code entry heading"
+  },
+  "codeHint": "The trip starts only when the code matches.",
+  "@codeHint": {
+    "description": "Under the code boxes"
+  },
+  "codeYouEarn": "You earn on this trip",
+  "@codeYouEarn": {
+    "description": "Code screen earning row"
+  },
+  "codeChecking": "Checking the code…",
+  "@codeChecking": {
+    "description": "Start trip button while the server checks the code"
+  },
+  "earnChipWeek": "Week",
+  "@earnChipWeek": {
+    "description": "Earnings period chip"
+  },
+  "earnChipMonth": "Month",
+  "@earnChipMonth": {
+    "description": "Earnings period chip"
+  },
+  "earnHeroToday": "You earned today",
+  "@earnHeroToday": {
+    "description": "Earnings hero label"
+  },
+  "earnTripsCount": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@earnTripsCount": {
+    "description": "Trip count in the earnings hero",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnAfterCommission": "after commission",
+  "@earnAfterCommission": {
+    "description": "Earnings hero suffix"
+  },
+  "earnTips": "Tips",
+  "@earnTips": {
+    "description": "Earnings row (flag off)"
+  },
+  "earnYouEarned": "You earned",
+  "@earnYouEarned": {
+    "description": "Earnings row"
+  },
+  "earnCashCollected": "Cash you collected",
+  "@earnCashCollected": {
+    "description": "Earnings row"
+  },
+  "earnReadyToWithdraw": "Ready to withdraw",
+  "@earnReadyToWithdraw": {
+    "description": "Earnings row"
+  },
+  "earnAllHistory": "All earnings and payouts",
+  "@earnAllHistory": {
+    "description": "Link to the full earnings screen"
+  },
+  "loadErrEarnings": "We couldn't load your earnings.",
+  "@loadErrEarnings": {
+    "description": "Error state of an earnings card"
+  },
+  "loadErrBalance": "We couldn't load your balance.",
+  "@loadErrBalance": {
+    "description": "Error state of the withdrawable balance"
+  },
+  "earnNoTrips": "No trips yet",
+  "@earnNoTrips": {
+    "description": "Empty state title, new driver"
+  },
+  "earnNoTripsHint": "Go online to get your first ride request.",
+  "@earnNoTripsHint": {
+    "description": "Empty state body, new driver"
+  },
+  "earnNoPayouts": "No payouts yet",
+  "@earnNoPayouts": {
+    "description": "Empty state of the payouts list"
+  },
+  "authSessionExpired": "Your session has expired. Please log in again.",
+  "@authSessionExpired": {
+    "description": "Shown on Log in after the session ended"
+  },
+  "offerToPickupDistanceMinutes": "{distance} · {minutes} min to pickup",
+  "@offerToPickupDistanceMinutes": {
+    "description": "Offer headline after the vehicle class, with minutes",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "callRider": "Call {name}",
+  "@callRider": {
+    "description": "Masked call button label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Call",
+  "@callAction": {
+    "description": "Masked call button on the trip sheet"
+  },
+  "callUnavailable": "Calling is not available right now.",
+  "@callUnavailable": {
+    "description": "Masked call failed"
+  },
+  "earnNextPayout": "Next payout: {date} · estimated {amount}",
+  "@earnNextPayout": {
+    "description": "Payouts (owner ruling 9 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPayoutsOnRequest": "Payouts here are on request.",
+  "@earnPayoutsOnRequest": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantTitle": "Withdraw now",
+  "@instantTitle": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantAmount": "Amount",
+  "@instantAmount": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantSaaradhigoFee": "SaaradhiGo fee",
+  "@instantSaaradhigoFee": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantYouReceive": "You receive",
+  "@instantYouReceive": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantTo": "To",
+  "@instantTo": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantArrives": "Arrives",
+  "@instantArrives": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantSeeFee": "See the fee",
+  "@instantSeeFee": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantConfirm": "Withdraw {amount}",
+  "@instantConfirm": {
+    "description": "Payouts (owner ruling 9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "instantFailed": "That did not go through. Nothing was changed.",
+  "@instantFailed": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "instantSent": "Your withdrawal is on its way.",
+  "@instantSent": {
+    "description": "Payouts (owner ruling 9 Nov)"
+  },
+  "offerPlatformFeeToday": "Platform fee today so far: {amount} of {cap}",
+  "@offerPlatformFeeToday": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "offerPlatformFeeTodayNoCap": "Platform fee today so far: {amount}",
+  "@offerPlatformFeeTodayNoCap": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPlatformFee": "Platform fee",
+  "@earnPlatformFee": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "earnPlatformFeeToday": "Today so far: {amount}",
+  "@earnPlatformFeeToday": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnHowFeeWorks": "How our fee works",
+  "@earnHowFeeWorks": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "feePerTrip": "{fee} for each trip.",
+  "@feePerTrip": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "feeDailyPass": "{fee} for a day with at least one trip.",
+  "@feeDailyPass": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "feeCap": "Never more than {cap} in a day.",
+  "@feeCap": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "feeFloor": "No fee on a day when your fares are under {floor}.",
+  "@feeFloor": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "floor": {
+        "type": "String"
+      }
+    }
+  },
+  "feeWaiver": "No fee in your first {days} days.",
+  "@feeWaiver": {
+    "description": "Driver fee plans (9 Nov)",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "feeKeep80": "You always keep at least 80% of every fare.",
+  "@feeKeep80": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "feeOncePerDay": "The fee is taken once a day, after the day ends.",
+  "@feeOncePerDay": {
+    "description": "Driver fee plans (9 Nov)"
+  },
+  "withdrawInstantFeeLine": "Withdrawn {amount} · provider fee {fee} · received {received}",
+  "@withdrawInstantFeeLine": {
+    "description": "Daily instant limit (10 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      },
+      "received": {
+        "type": "String"
+      }
+    }
+  },
+  "reqTitle": "Get ready to drive",
+  "reqProgress": "{done} of {total} done",
+  "@reqProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "reqBlocking": "You can go online once these are done and approved: {list}.",
+  "@reqBlocking": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAllIn": "Everything is in. Our team reviews it, usually the same day.",
+  "reqApproved": "You are approved. Keep your documents up to date to stay online.",
+  "reqLoadFailed": "We couldn't load your checklist.",
+  "reqSectionPersonal": "About you",
+  "reqSectionIdentity": "Identity and checks",
+  "reqSectionVehicle": "Your vehicle",
+  "reqSectionPayouts": "Payouts",
+  "reqStatusMissing": "Missing",
+  "reqStatusInReview": "In review",
+  "reqStatusApproved": "Approved",
+  "reqStatusRejected": "Rejected",
+  "reqStatusExpiring": "Expiring {date}",
+  "@reqStatusExpiring": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reqStatusDone": "Done",
+  "reqOptional": "optional",
+  "reqSave": "Save",
+  "reqSaved": "Saved.",
+  "reqSaveFailed": "We could not save that. Try again.",
+  "reqUploaded": "Uploaded. Our team will review it.",
+  "reqUpload": "Upload",
+  "reqReplace": "Replace",
+  "reqTakePhoto": "Take photo",
+  "reqChoose": "Choose",
+  "reqOther": "Other",
+  "reqPersonalTitle": "Personal details",
+  "reqFullName": "Full name as on your licence",
+  "reqNameInReview": "Your new name is in review.",
+  "reqDob": "Date of birth",
+  "reqMinAge": "You must be at least {n}.",
+  "@reqMinAge": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAddress": "Current address",
+  "reqLine1": "Address line 1",
+  "reqLine2": "Address line 2 (optional)",
+  "reqCity": "City",
+  "reqState": "State",
+  "reqPin": "PIN code",
+  "reqZip": "ZIP code",
+  "reqPermanentSame": "Permanent address is the same",
+  "reqPhoto": "Profile photo",
+  "reqPhotoGuide": "Hold the phone at eye level. Fit your face inside the oval, in good light, with nothing covering it. Riders see this photo once approved.",
+  "reqContactsTitle": "Emergency contacts",
+  "reqContactsHint": "Support and our safety team call them only if you need help on a trip. Riders never see them.",
+  "reqContact": "Contact {n}",
+  "@reqContact": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reqName": "Name",
+  "reqRelationship": "Relationship",
+  "reqMobile": "Mobile number",
+  "reqIdentityTitle": "Identity and checks",
+  "reqLicenceNumber": "Driving licence number",
+  "reqLicenceState": "Issuing state",
+  "reqLicenceExpiry": "Licence expiry date",
+  "reqLicenceFront": "Licence (front)",
+  "reqLicenceBack": "Licence (back)",
+  "reqAadhaarLast4": "Last 4 digits of your Aadhaar",
+  "reqAadhaarNever": "We never store your full Aadhaar number.",
+  "reqAadhaarCopy": "Aadhaar copy",
+  "reqPan": "PAN",
+  "reqPanCard": "PAN card",
+  "reqPolice": "Police verification certificate",
+  "reqAddressProof": "Address proof",
+  "reqBackground": "Background check: {status}",
+  "@reqBackground": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "reqOnFile": "On file: {value}",
+  "@reqOnFile": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reqVehicleTitle": "Vehicle",
+  "reqVehicleType": "Vehicle type",
+  "reqMake": "Make",
+  "reqModel": "Model",
+  "reqYear": "Year",
+  "reqColour": "Colour",
+  "reqPlate": "Number plate",
+  "reqVehicleReview": "Saving sends your vehicle for review. You can go online again once it is approved.",
+  "reqPhotosTitle": "Vehicle photos",
+  "reqSideFront": "Front",
+  "reqSideBack": "Back",
+  "reqSideLeft": "Left side",
+  "reqSideRight": "Right side",
+  "reqSideInside": "Inside",
+  "reqSideGuide": "Stand back so the whole {side} fits in the frame, with the number plate readable where it shows.",
+  "@reqSideGuide": {
+    "placeholders": {
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "reqAddVehicleFirst": "Add your vehicle first.",
+  "reqPayoutsTitle": "Bank and payouts",
+  "reqBank": "Bank account",
+  "reqUpi": "UPI ID",
+  "reqHolder": "Account holder name",
+  "reqAccount": "Account number",
+  "reqAccountAgain": "Account number again",
+  "reqIfsc": "IFSC",
+  "reqIfscUnknown": "We could not find that IFSC.",
+  "reqHoldNote": "Changing your payout details pauses payouts for 24 hours, and we text you about the change.",
+  "reqStripeHint": "Payouts in the USA go through Stripe. Stripe asks for your bank and tax details; SaaradhiGo never sees them.",
+  "reqStripeSetup": "Set up payouts",
+  "reqFix": "Fix",
+  "reqAdd": "Add",
+  "setupSavedAuto": "Saved automatically",
+  "@setupSavedAuto": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPersonal": "Personal details",
+  "@setupStepPersonal": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPersonalDesc": "Photo, name, date of birth, address",
+  "@setupStepPersonalDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepContact": "Emergency contact",
+  "@setupStepContact": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepContactDesc": "Someone we can call in an SOS",
+  "@setupStepContactDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepIdentity": "Licence and identity",
+  "@setupStepIdentity": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemLicence": "Licence",
+  "@setupItemLicence": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemAadhaar": "Aadhaar",
+  "@setupItemAadhaar": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemPan": "PAN",
+  "@setupItemPan": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemPolice": "police check",
+  "@setupItemPolice": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupItemBackground": "background check",
+  "@setupItemBackground": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicle": "Your vehicle",
+  "@setupStepVehicle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDesc": "Type, make, model, year, plate",
+  "@setupStepVehicleDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDocs": "Vehicle photos and papers",
+  "@setupStepVehicleDocs": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepVehicleDocsDesc": "5 photos, RC, insurance, permit…",
+  "@setupStepVehicleDocsDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPayouts": "Bank and payouts",
+  "@setupStepPayouts": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepPayoutsDesc": "Where we send your earnings",
+  "@setupStepPayoutsDesc": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupStepHeader": "Step {number} of {total} · about {minutes} minutes left",
+  "@setupStepHeader": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepHeaderNoTime": "Step {number} of {total}",
+  "@setupStepHeaderNoTime": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepsProgress": "{done} of {total} steps",
+  "@setupStepsProgress": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setupUploadedOn": "Uploaded {date}",
+  "@setupUploadedOn": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "setupBack": "Back",
+  "@setupBack": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupSaveContinue": "Save and continue",
+  "@setupSaveContinue": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupContinue": "Continue setup",
+  "@setupContinue": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupApproved": "You're approved to drive",
+  "@setupApproved": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupNeedsAction": "Needs action",
+  "@setupNeedsAction": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "setupToDo": "To do",
+  "@setupToDo": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profApproved": "Approved to drive",
+  "@profApproved": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSetupInProgress": "Setup in progress",
+  "@profSetupInProgress": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profNew": "New",
+  "@profNew": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profRatingTrips": "{rating} ★ · {count, plural, =1{1 trip} other{{count} trips}}",
+  "@profRatingTrips": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profSecPersonal": "Personal details",
+  "@profSecPersonal": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecContacts": "Emergency contacts",
+  "@profSecContacts": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecIdentity": "Licence and identity",
+  "@profSecIdentity": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecVehicle": "Vehicle",
+  "@profSecVehicle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecBank": "Bank and payouts",
+  "@profSecBank": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profSecLanguage": "Language and preferences",
+  "@profSecLanguage": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profLicence": "Licence {number}",
+  "@profLicence": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "profAadhaar": "Aadhaar {masked}",
+  "@profAadhaar": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profPan": "PAN {masked}",
+  "@profPan": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "profStripeReady": "Paid through Stripe",
+  "@profStripeReady": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profNotAdded": "Not added yet",
+  "@profNotAdded": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profEdit": "Edit",
+  "@profEdit": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "profOpen": "Open",
+  "@profOpen": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnHistTitle": "Earnings history",
+  "@earnHistTitle": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnHistOpen": "Earnings by day, week, month or year",
+  "@earnHistOpen": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerDay": "Day",
+  "@earnPerDay": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerWeek": "Week",
+  "@earnPerWeek": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerMonth": "Month",
+  "@earnPerMonth": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerYear": "Year",
+  "@earnPerYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPerCustom": "Custom range",
+  "@earnPerCustom": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnCalendarYear": "Calendar year",
+  "@earnCalendarYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTaxYear": "Indian tax year (Apr–Mar)",
+  "@earnTaxYear": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTaxYearLabel": "Tax year {from}–{to}",
+  "@earnTaxYearLabel": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "earnPrev": "Previous",
+  "@earnPrev": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnNext": "Next",
+  "@earnNext": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnAvgPerTrip": "Avg {amount} per trip",
+  "@earnAvgPerTrip": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "earnTipsFrom": "{count, plural, =1{From 1 rider} other{From {count} riders}}",
+  "@earnTipsFrom": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnTipsOff": "Tips are not on yet",
+  "@earnTipsOff": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPaidToBank": "Paid to your bank",
+  "@earnPaidToBank": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnPayoutsCount": "{count, plural, =1{1 payout} other{{count} payouts}}",
+  "@earnPayoutsCount": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earnRestInCash": "rest in cash",
+  "@earnRestInCash": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnAllMonths": "All months",
+  "@earnAllMonths": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnSoFar": "(so far)",
+  "@earnSoFar": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnColTrips": "Trips",
+  "@earnColTrips": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnStatement": "Statement (PDF)",
+  "@earnStatement": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnStatementFailed": "Could not download the statement. Try again.",
+  "@earnStatementFailed": {
+    "description": "Driver area v2 (10 Nov)"
+  },
+  "earnTripsOnDay": "Trips on {date}",
+  "@earnTripsOnDay": {
+    "description": "Driver area v2 (10 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "earnNoTripsDay": "No trips this day.",
+  "@earnNoTripsDay": {
+    "description": "Driver area v2 (10 Nov)"
+  }
+}
