@@ -30,7 +30,12 @@ class DriverDocumentsView extends StatelessWidget {
     this.onAddPayout,
     this.onCallSupport,
     this.onTapItem,
+    this.expiries = const {},
   });
+
+  /// Expiry dates by document key, already in the market's format. A row with
+  /// one shows "Expires dd/mm/yyyy" under its name.
+  final Map<String, String> expiries;
 
   final DocsOverview overview;
 
@@ -133,6 +138,7 @@ class DriverDocumentsView extends StatelessWidget {
                 _DocRow(
                   item: item,
                   word: docStateWord(l, item.state),
+                  expires: expiries[item.key],
                   onTap: onTapItem == null ? null : () => onTapItem!(item),
                 ),
               ],
@@ -175,10 +181,16 @@ class DriverDocumentsView extends StatelessWidget {
 }
 
 class _DocRow extends StatelessWidget {
-  const _DocRow({required this.item, required this.word, this.onTap});
+  const _DocRow({
+    required this.item,
+    required this.word,
+    this.expires,
+    this.onTap,
+  });
 
   final DocItem item;
   final String word;
+  final String? expires;
   final VoidCallback? onTap;
 
   @override
@@ -201,7 +213,20 @@ class _DocRow extends StatelessWidget {
             children: [
               SgIcon(icon, size: 22, color: color),
               const SizedBox(width: SgSpace.s3),
-              Expanded(child: Text(item.label, style: SgText.body)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.label, style: SgText.body),
+                    if ((expires ?? '').isNotEmpty)
+                      Text(
+                        'Expires $expires',
+                        key: Key('docs_expires_${item.key}'),
+                        style: SgText.caption,
+                      ),
+                  ],
+                ),
+              ),
               const SizedBox(width: SgSpace.s2),
               Text(
                 word,

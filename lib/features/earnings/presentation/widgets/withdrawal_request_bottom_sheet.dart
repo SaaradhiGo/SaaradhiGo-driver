@@ -140,10 +140,7 @@ class _WithdrawalRequestBottomSheetState
                     ),
                   ),
                   IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: AppColors.onSurfaceVariant,
-                    ),
+                    icon: Icon(Icons.close, color: AppColors.onSurfaceVariant),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -319,13 +316,45 @@ class _WithdrawalRequestBottomSheetState
                 [
                   if (minAmount > 0)
                     'Minimum withdrawal is ${formatThreshold(minAmount, currency)}.',
-                  if (feeDisplay != null) 'Transfer fee is $feeDisplay.',
                 ].join(' '),
                 style: AppTypography.labelCaps.copyWith(
                   color: AppColors.onSurfaceVariant,
                   fontSize: SgText.sizeSmall,
                 ),
               ),
+              // The fee on its own line, in the server's words, before the
+              // driver confirms. Nothing when the server charges none.
+              if (feeDisplay != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  key: const Key('withdraw_fee'),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceContainer,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    border: Border.all(color: AppColors.outlineVariant),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Transfer fee',
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.onBackground,
+                        ),
+                      ),
+                      Text(
+                        feeDisplay,
+                        style: AppTypography.bodyMd.copyWith(
+                          color: AppColors.primaryText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: AppSpacing.lg),
 
               // Submit Button

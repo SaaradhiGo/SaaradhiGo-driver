@@ -38,6 +38,7 @@ import '../features/trip/presentation/providers/trip_providers.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
 import '../features/requirements/get_ready_screen.dart';
 import '../features/requirements/requirement_forms.dart';
+import '../features/about/about_screen.dart';
 import '../features/requirements/setup_steps.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
@@ -363,6 +364,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/refer',
         builder: (context, state) => const DriverReferralScreen(),
       ),
+      GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
       GoRoute(
         path: '/elite',
         builder: (context, state) => const ElitePartnerScreen(),

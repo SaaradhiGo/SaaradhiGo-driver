@@ -110,7 +110,9 @@ void main() {
           currency: 'INR',
         ),
       );
-      expect(find.textContaining('Transfer fee is 1.5%.'), findsOneWidget);
+      // The fee is its own line now: the label, then the server's text.
+      expect(find.text('Transfer fee'), findsOneWidget);
+      expect(find.text('1.5%'), findsOneWidget);
       expect(
         find.textContaining('Minimum withdrawal is \u20B9500.'),
         findsOneWidget,
