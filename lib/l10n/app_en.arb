@@ -393,7 +393,7 @@
   "@docsRejected": {
     "description": "Document status"
   },
-  "docsMissing": "Not uploaded",
+  "docsMissing": "Missing",
   "@docsMissing": {
     "description": "Document status"
   },
@@ -424,6 +424,14 @@
   "docsCallSupport": "Call driver support",
   "@docsCallSupport": {
     "description": "Support call button"
+  },
+  "docsExpiring": "Expiring soon",
+  "@docsExpiring": {
+    "description": "Document status: expiry is near"
+  },
+  "docsExpired": "Expired",
+  "@docsExpired": {
+    "description": "Document status: past its expiry date"
   },
   "docsLoadFailed": "Could not load your documents",
   "@docsLoadFailed": {

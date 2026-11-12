@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../ui/driver_f_logic.dart';
+import '../../../documents/checklist_docs.dart';
+import '../../../requirements/requirements_api.dart';
 
 /// `GET /driver/earnings/daily/?days=31` (the chart shows the last 7; week and
 /// month sum them). Null when the call fails or the body
@@ -43,13 +45,12 @@ final payoutDetailsOnFileProvider = FutureProvider.autoDispose<bool?>((
   }
 });
 
-/// `GET /driver/driver/onboarding/`: the document checklist.
+/// The Documents rows: the shared requirements checklist
+/// (`GET /driver/requirements/`, field `checklist`). The old onboarding call
+/// is kept for the upload action only.
 final docsOverviewProvider = FutureProvider.autoDispose<DocsOverview>((
   ref,
 ) async {
-  final dio = ref.watch(dioClientProvider).dio;
-  final res = await dio.get(ApiEndpoints.driverOnboarding);
-  final parsed = parseDocsOverview(res.data);
-  if (parsed == null) throw const FormatException('No document list');
-  return parsed;
+  final r = await ref.watch(requirementsApiProvider).load();
+  return docsFromRequirements(r);
 });
