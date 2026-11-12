@@ -82,7 +82,7 @@ void main() {
     expect(docStateOfChecklist('expiring').name, 'expiring');
     expect(docStateOfChecklist('expired').name, 'expired');
     final l = AppLocalizationsEn();
-    expect(docStateWord(l, docStateOfChecklist('expiring')), 'Expiring soon');
+    expect(docStateWord(l, docStateOfChecklist('expiring')), 'Expiring');
     expect(docStateWord(l, docStateOfChecklist('expired')), 'Expired');
   });
 }

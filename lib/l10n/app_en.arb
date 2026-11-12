@@ -425,7 +425,7 @@
   "@docsCallSupport": {
     "description": "Support call button"
   },
-  "docsExpiring": "Expiring soon",
+  "docsExpiring": "Expiring",
   "@docsExpiring": {
     "description": "Document status: expiry is near"
   },
