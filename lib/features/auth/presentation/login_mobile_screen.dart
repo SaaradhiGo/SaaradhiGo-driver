@@ -328,7 +328,13 @@ class _LegalLinks extends StatelessWidget {
           TextButton(
             key: Key('login_link_${link.path.substring(1)}'),
             onPressed: () => openPolicy(link),
-            child: Text(link.label),
+            child: Text(
+              link.label,
+              style: SgText.small.copyWith(
+                color: SgColors.goldText,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
       ],
     );
