@@ -77,6 +77,15 @@ String? sgMoney2(Object? raw, {String? currency}) {
 String sgMarketDate(DateTime d, String? country) =>
     DateFormat(country == 'US' ? 'MM/dd/yyyy' : 'dd/MM/yyyy').format(d);
 
+/// An ISO date from the API ("2027-03-09", or a full timestamp) in the market's
+/// numeric order. The text unchanged when it is not a date; empty for null.
+String sgMarketDateText(String? iso, String? country) {
+  final raw = (iso ?? '').trim();
+  if (raw.isEmpty) return '';
+  final d = DateTime.tryParse(raw);
+  return d == null ? raw : sgMarketDate(d, country);
+}
+
 /// The hint for a date input in the market's order.
 String sgDateHint(String? country) =>
     country == 'US' ? 'mm/dd/yyyy' : 'dd/mm/yyyy';

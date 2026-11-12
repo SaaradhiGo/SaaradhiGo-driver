@@ -711,6 +711,31 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               onTap: () => context.push('/safety'),
             ),
           ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              key: const Key('profile_about'),
+              leading: Icon(
+                Icons.info_outline_rounded,
+                color: AppColors.primaryText,
+              ),
+              title: Text(
+                'About',
+                style: AppTypography.bodyMd.copyWith(
+                  color: AppColors.onBackground,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/about'),
+            ),
+          ),
           // Hidden unless a referral offer is live for drivers in this market
           // (app-config `referrals_available`; a missing key is false).
           if (ref.watch(marketConfigProvider).referralsAvailable) ...[
