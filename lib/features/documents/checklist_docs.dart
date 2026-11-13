@@ -5,15 +5,18 @@ import '../requirements/requirements_api.dart';
 /// (`GET /driver/requirements/`, field `checklist`): the same items, statuses
 /// and expiry dates the web, the console and the approval gate read.
 
-DocState docStateOfChecklist(String status) => switch (status) {
-  'approved' => DocState.approved,
-  'done' => DocState.done,
-  'expiring' => DocState.expiring,
-  'expired' => DocState.expired,
-  'in_review' => DocState.inReview,
-  'rejected' => DocState.rejected,
-  _ => DocState.missing,
-};
+/// An optional item with nothing provided is [DocState.optionalNotAdded],
+/// never "missing".
+DocState docStateOfChecklist(String status, {String need = 'required'}) =>
+    switch (status) {
+      'approved' => DocState.approved,
+      'done' => DocState.done,
+      'expiring' => DocState.expiring,
+      'expired' => DocState.expired,
+      'in_review' => DocState.inReview,
+      'rejected' => DocState.rejected,
+      _ => need == 'optional' ? DocState.optionalNotAdded : DocState.missing,
+    };
 
 /// The file a re-upload targets: the rejected one, else the first the app can send.
 String? _uploadFileOf(ChecklistItem i) {
@@ -43,7 +46,7 @@ DocsOverview docsFromRequirements(Requirements r) {
         key: i.key,
         label: i.label,
         present: i.files.isNotEmpty || i.isDone,
-        state: docStateOfChecklist(i.status),
+        state: docStateOfChecklist(i.status, need: i.need),
         reason: reason == null || reason.isEmpty ? null : reason,
         vehicle: i.files.any((f) => f.vehicle),
         fileKey: fileKey,

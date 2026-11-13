@@ -44,6 +44,8 @@ class DeleteInfo {
     required this.kept,
     this.pending,
     this.closing = false,
+    this.closureStatus,
+    this.owedMessage,
     this.webUrl,
   });
 
@@ -61,11 +63,17 @@ class DeleteInfo {
     }
 
     final p = j['pending_payouts'];
+    final c = j['closure'];
+    // PR #226 fields: read defensively, they may not be on the server yet.
+    final owe = j['owed_to_saaradhigo'];
+    final oweMsg = owe is Map ? (owe['message'] as String?)?.trim() : null;
     return DeleteInfo(
       deleted: strings(j['deleted'], kFallbackDeleted),
       kept: strings(j['kept'], kFallbackKept),
       pending: p is Map ? PendingPayouts.fromJson(Json.from(p)) : null,
-      closing: j['closure'] is Map,
+      closing: c is Map,
+      closureStatus: c is Map ? c['status'] as String? : null,
+      owedMessage: oweMsg == null || oweMsg.isEmpty ? null : oweMsg,
       webUrl: j['web_url'] as String?,
     );
   }
@@ -75,6 +83,12 @@ class DeleteInfo {
 
   /// The server's closure is set: waiting for earnings to be paid.
   final bool closing;
+
+  /// `closure.status`: waiting_payouts, or waiting_settlement (owes SaaradhiGo).
+  final String? closureStatus;
+
+  /// `owed_to_saaradhigo.message`: shown above the confirm field.
+  final String? owedMessage;
   final String? webUrl;
 }
 
@@ -114,7 +128,10 @@ class DeleteAccountApi {
     );
     final d = _data(r);
     return DeleteResult(
-      closed: r.statusCode == 200 && d['status'] != 'waiting_payouts',
+      closed:
+          r.statusCode == 200 &&
+          d['status'] != 'waiting_payouts' &&
+          d['status'] != 'waiting_settlement',
       message: (d['message'] as String?) ?? '',
     );
   }
@@ -250,6 +267,21 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
       key: const Key('delete_list'),
       padding: const EdgeInsets.all(SgSpace.s4),
       children: [
+        if (info.owedMessage != null)
+          Container(
+            key: const Key('delete_owes_saaradhigo'),
+            margin: const EdgeInsets.only(bottom: SgSpace.s4),
+            padding: const EdgeInsets.all(SgSpace.s4),
+            decoration: BoxDecoration(
+              color: SgColors.bg100,
+              borderRadius: BorderRadius.circular(SgRadius.md),
+              border: Border.all(color: SgColors.gold500, width: 2),
+            ),
+            child: Text(
+              info.owedMessage!,
+              style: SgText.body.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
         _section('What is deleted', info.deleted),
         _section('What we must keep', info.kept),
         if (owedText != null)
@@ -275,7 +307,9 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
             ),
             child: Text(
               _closingMessage ??
-                  'Closing: waiting for your earnings to be paid',
+                  (info.closureStatus == 'waiting_settlement'
+                      ? 'Closing: waiting for what you owe to be settled'
+                      : 'Closing: waiting for your earnings to be paid'),
               style: SgText.body.copyWith(fontWeight: FontWeight.w600),
             ),
           )

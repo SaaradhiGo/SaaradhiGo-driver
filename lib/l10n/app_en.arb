@@ -397,6 +397,10 @@
   "@docsMissing": {
     "description": "Document status"
   },
+  "docsOptionalNotAdded": "Optional · not added",
+  "@docsOptionalNotAdded": {
+    "description": "Document status: an optional item the driver has not provided"
+  },
   "docsNeedsAttention": "Needs a new photo",
   "@docsNeedsAttention": {
     "description": "Rejected card heading"

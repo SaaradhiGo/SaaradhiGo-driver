@@ -19,6 +19,7 @@ class SgIcons {
   static const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
   static const pin =
       '<path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>';
+  static const optional = '<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>';
   static const close = '<path d="M6 6l12 12M18 6L6 18"/>';
   static const back = '<path d="M15 5l-7 7 7 7"/>';
   static const cash =

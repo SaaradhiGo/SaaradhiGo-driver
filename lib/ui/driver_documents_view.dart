@@ -20,6 +20,7 @@ String docStateWord(AppLocalizations l, DocState s) => switch (s) {
   DocState.uploaded => l.docsUploaded,
   DocState.rejected => l.docsRejected,
   DocState.missing => l.docsMissing,
+  DocState.optionalNotAdded => l.docsOptionalNotAdded,
 };
 
 class DriverDocumentsView extends StatelessWidget {
@@ -202,6 +203,7 @@ class _DocRow extends StatelessWidget {
       DocState.approved || DocState.done => (SgColors.success, SgIcons.check),
       DocState.expired => (SgColors.danger, SgIcons.clock),
       DocState.missing => (SgColors.inkMuted, SgIcons.pin),
+      DocState.optionalNotAdded => (SgColors.inkMuted, SgIcons.optional),
       _ => (SgColors.goldText, SgIcons.clock),
     };
     return InkWell(

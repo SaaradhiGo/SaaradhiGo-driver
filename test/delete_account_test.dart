@@ -7,14 +7,15 @@ import 'package:saaradhigo_driver/features/profile/delete/delete_account.dart';
 class _Api extends DeleteAccountApi {
   _Api(this._info) : super(Dio());
   final DeleteInfo _info;
-  
+
   int posts = 0;
   @override
   Future<DeleteInfo> info() async => _info;
+  DeleteResult result = const DeleteResult(closed: false, message: 'Later.');
   @override
   Future<DeleteResult> delete(String reason) async {
     posts++;
-    return const DeleteResult(closed: false, message: 'Later.');
+    return result;
   }
 }
 
@@ -93,5 +94,64 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('delete_submit')), findsNothing);
+  });
+
+  testWidgets('owed to SaaradhiGo: message above the confirm field', (t) async {
+    await t.pumpWidget(
+      _host(
+        _Api(
+          DeleteInfo.fromJson({
+            'owed_to_saaradhigo': {
+              'amount': '50.00',
+              'currency': 'INR',
+              'message': 'You owe SaaradhiGo Rs 50. Settle it to close.',
+            },
+          }),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final msg = find.text('You owe SaaradhiGo Rs 50. Settle it to close.');
+    expect(msg, findsOneWidget);
+    expect(
+      t.getTopLeft(msg).dy,
+      lessThan(t.getTopLeft(find.byKey(const Key('delete_confirm_field'))).dy),
+    );
+  });
+
+  testWidgets('waiting_settlement closure replaces the button', (t) async {
+    await t.pumpWidget(
+      _host(
+        _Api(
+          DeleteInfo.fromJson({
+            'closure': {'status': 'waiting_settlement'},
+          }),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(
+      find.text('Closing: waiting for what you owe to be settled'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('delete_submit')), findsNothing);
+  });
+
+  testWidgets('202 waiting_settlement shows the message, stays signed in', (
+    t,
+  ) async {
+    final api = _Api(DeleteInfo.fromJson({}))
+      ..result = const DeleteResult(
+        closed: false,
+        message: 'Settle what you owe first.',
+      );
+    await t.pumpWidget(_host(api));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('delete_confirm_field')), 'DELETE');
+    await t.pump();
+    await t.ensureVisible(find.byKey(const Key('delete_submit')));
+    await t.tap(find.byKey(const Key('delete_submit')));
+    await t.pumpAndSettle();
+    expect(find.text('Settle what you owe first.'), findsOneWidget);
   });
 }

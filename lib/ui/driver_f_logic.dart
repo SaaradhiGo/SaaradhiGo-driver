@@ -131,6 +131,9 @@ enum DocState {
   uploaded,
   rejected,
   missing,
+
+  /// An optional item the driver has not provided: grey, never "Missing".
+  optionalNotAdded,
 }
 
 class DocItem {

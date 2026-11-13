@@ -320,6 +320,10 @@
   "@docsMissing": {
     "description": "needs native review"
   },
+  "docsOptionalNotAdded": "वैकल्पिक · जोड़ा नहीं",
+  "@docsOptionalNotAdded": {
+    "description": "Document status"
+  },
   "docsNeedsAttention": "नई फ़ोटो चाहिए",
   "@docsNeedsAttention": {
     "description": "needs native review"
