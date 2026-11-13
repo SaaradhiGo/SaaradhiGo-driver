@@ -348,6 +348,14 @@
   "@docsCallSupport": {
     "description": "needs native review"
   },
+  "docsExpiring": "త్వరలో ముగుస్తుంది",
+  "@docsExpiring": {
+    "description": "Document status: expiry is near - needs native review"
+  },
+  "docsExpired": "ముగిసింది",
+  "@docsExpired": {
+    "description": "Document status: past its expiry date - needs native review"
+  },
   "docsLoadFailed": "మీ పత్రాలు లోడ్ కాలేదు",
   "@docsLoadFailed": {
     "description": "needs native review"

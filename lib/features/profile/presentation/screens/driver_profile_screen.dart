@@ -736,6 +736,26 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
               onTap: () => context.push('/about'),
             ),
           ),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              key: const Key('profile_delete_account'),
+              leading: Icon(Icons.person_off_outlined, color: AppColors.error),
+              title: Text(
+                'Delete account',
+                style: AppTypography.bodyMd.copyWith(color: AppColors.error),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.onSurfaceVariant,
+              ),
+              onTap: () => context.push('/profile/delete'),
+            ),
+          ),
           // Hidden unless a referral offer is live for drivers in this market
           // (app-config `referrals_available`; a missing key is false).
           if (ref.watch(marketConfigProvider).referralsAvailable) ...[

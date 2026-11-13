@@ -13,6 +13,9 @@ import 'sg_widgets.dart';
 
 String docStateWord(AppLocalizations l, DocState s) => switch (s) {
   DocState.approved => l.docsApproved,
+  DocState.done => l.reqStatusDone,
+  DocState.expiring => l.docsExpiring,
+  DocState.expired => l.docsExpired,
   DocState.inReview => l.docsInReview,
   DocState.uploaded => l.docsUploaded,
   DocState.rejected => l.docsRejected,
@@ -196,7 +199,8 @@ class _DocRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (color, icon) = switch (item.state) {
-      DocState.approved => (SgColors.success, SgIcons.check),
+      DocState.approved || DocState.done => (SgColors.success, SgIcons.check),
+      DocState.expired => (SgColors.danger, SgIcons.clock),
       DocState.missing => (SgColors.inkMuted, SgIcons.pin),
       _ => (SgColors.goldText, SgIcons.clock),
     };

@@ -25,7 +25,12 @@ class DailyEarning {
 
 /// The figures one Earnings tab shows: trips, net, commission and gross.
 class PeriodFigures {
-  const PeriodFigures({required this.trips, this.net, this.commission, this.gross});
+  const PeriodFigures({
+    required this.trips,
+    this.net,
+    this.commission,
+    this.gross,
+  });
   final int trips;
   final String? net;
   final String? commission;
@@ -61,8 +66,11 @@ PeriodFigures? periodFigures(
   if (days == null || days.isEmpty) return null;
   final today = days.last.date;
   final start = period == 1
-      ? DateTime(today.year, today.month, today.day)
-          .subtract(Duration(days: today.weekday - DateTime.monday))
+      ? DateTime(
+          today.year,
+          today.month,
+          today.day,
+        ).subtract(Duration(days: today.weekday - DateTime.monday))
       : DateTime(today.year, today.month, 1);
   final inPeriod = days.where((d) => !d.date.isBefore(start)).toList();
   final allGross = inPeriod.every((d) => d.gross != null);
@@ -114,7 +122,16 @@ List<DailyEarning>? parseDailyEarnings(dynamic body) {
 }
 
 /// A document's state as the driver reads it.
-enum DocState { approved, inReview, uploaded, rejected, missing }
+enum DocState {
+  approved,
+  done,
+  expiring,
+  expired,
+  inReview,
+  uploaded,
+  rejected,
+  missing,
+}
 
 class DocItem {
   const DocItem({
@@ -124,7 +141,15 @@ class DocItem {
     required this.state,
     this.reason,
     this.vehicle = false,
+    this.fileKey,
+    this.expires,
   });
+
+  /// The file behind the row that a re-upload targets (checklist rows).
+  final String? fileKey;
+
+  /// ISO expiry date from the checklist, if the item has one.
+  final String? expires;
 
   final String key;
   final String label;
@@ -142,7 +167,13 @@ class DocsOverview {
     this.docStatus,
     this.rejectionReason,
     this.vehicleId,
+    this.checklistDone,
+    this.checklistTotal,
   });
+
+  /// The shared checklist's own counts, when the rows come from it.
+  final int? checklistDone;
+  final int? checklistTotal;
 
   final List<DocItem> items;
   final String? docStatus;
@@ -151,11 +182,12 @@ class DocsOverview {
   final String? rejectionReason;
   final int? vehicleId;
 
-  int get total => items.length;
+  int get total => checklistTotal ?? items.length;
 
   /// Approved items, or (with no per-item status) present items once the
   /// driver's documents are approved.
-  int get done => items.where((i) => i.state == DocState.approved).length;
+  int get done =>
+      checklistDone ?? items.where((i) => i.state == DocState.approved).length;
 
   /// Rejected first, then missing, then the rest in the API's order.
   List<DocItem> get ordered {
@@ -196,7 +228,11 @@ DocState docStateOf(Map<String, dynamic> item, String? docStatus) {
       : DocState.uploaded;
 }
 
-const _mvagRecords = {'health_insurance', 'term_insurance', 'induction_training'};
+const _mvagRecords = {
+  'health_insurance',
+  'term_insurance',
+  'induction_training',
+};
 
 /// Parses `GET /driver/driver/onboarding/`. Null when the body has no lists.
 DocsOverview? parseDocsOverview(dynamic body) {
