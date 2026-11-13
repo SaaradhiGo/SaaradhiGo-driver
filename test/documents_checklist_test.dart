@@ -6,11 +6,13 @@ import 'package:saaradhigo_driver/features/documents/checklist_docs.dart';
 import 'package:saaradhigo_driver/features/requirements/requirements_api.dart';
 import 'package:saaradhigo_driver/l10n/app_localizations_en.dart';
 import 'package:saaradhigo_driver/ui/driver_documents_view.dart';
+import 'package:saaradhigo_driver/ui/driver_f_logic.dart';
 import 'package:saaradhigo_driver/ui/sg_format.dart';
 
 /// Parity with the web: QA driver 59's real checklist (approved, 18 of 18)
 /// must show the same status word and expiry text per item.
 void main() {
+  _optionalTests();
   Map<String, dynamic> load() {
     final raw =
         jsonDecode(
@@ -36,7 +38,7 @@ void main() {
     final got = <String, Map<String, String>>{};
     for (final i in items) {
       got[i.key] = {
-        'status': docStateWord(l, docStateOfChecklist(i.status)),
+        'status': docStateWord(l, docStateOfChecklist(i.status, need: i.need)),
         'expiry': sgMarketDateText(i.expires, country),
       };
     }
@@ -44,7 +46,10 @@ void main() {
     expect(got, hasLength(19));
     expect(got['profile_photo'], {'status': 'Approved', 'expiry': ''});
     expect(got['legal_name'], {'status': 'Done', 'expiry': ''});
-    expect(got['permanent_address'], {'status': 'Missing', 'expiry': ''});
+    expect(got['permanent_address'], {
+      'status': 'Optional · not added',
+      'expiry': '',
+    });
     expect(got['driving_licence'], {
       'status': 'Approved',
       'expiry': '31/10/2028',
@@ -97,4 +102,25 @@ Requirements _requirementsOf(Map<String, dynamic> raw) {
     },
     ...raw,
   });
+}
+
+void _optionalTests() {
+  test(
+    'optional: provided shows its normal status, missing shows grey label',
+    () {
+      final l = AppLocalizationsEn();
+      expect(
+        docStateWord(l, docStateOfChecklist('approved', need: 'optional')),
+        'Approved',
+      );
+      expect(
+        docStateOfChecklist('missing', need: 'required'),
+        DocState.missing,
+      );
+      expect(
+        docStateWord(l, docStateOfChecklist('missing', need: 'optional')),
+        'Optional · not added',
+      );
+    },
+  );
 }

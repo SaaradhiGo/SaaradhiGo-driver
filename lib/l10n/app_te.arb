@@ -320,6 +320,10 @@
   "@docsMissing": {
     "description": "needs native review"
   },
+  "docsOptionalNotAdded": "ఐచ్ఛికం · జోడించలేదు",
+  "@docsOptionalNotAdded": {
+    "description": "Document status"
+  },
   "docsNeedsAttention": "కొత్త ఫోటో కావాలి",
   "@docsNeedsAttention": {
     "description": "needs native review"
