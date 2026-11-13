@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/market/market_providers.dart';
+import '../../../../ui/sg_format.dart';
 import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -475,8 +476,10 @@ class _DriverProfileScreenState extends ConsumerState<DriverProfileScreen> {
     final phone = profile.user?.phoneNumber ?? 'N/A';
     final email = profile.user?.email ?? 'N/A';
     final license = profile.licenseDoc != null ? 'Uploaded' : 'Not Uploaded';
+    // 13 Nov: the market's date order (dd/mm/yyyy India, mm/dd/yyyy USA), as Documents shows it.
     final expiry = profile.licenseExpiry != null
-        ? profile.licenseExpiry!.toIso8601String().split('T').first
+        ? sgMarketDateText(profile.licenseExpiry!.toIso8601String(),
+            ref.read(marketConfigProvider).countryCode)
         : 'N/A';
 
     return GlassPanel(
