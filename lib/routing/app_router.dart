@@ -129,11 +129,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             // past. `approved` is still honoured on its own so a backend
             // that does not send the new field behaves exactly as before.
             if (profile.approved || profile.dispatchEligible) {
+              // 13 Nov: Profile > Edit opens one setup step (/onboarding/step/<key>) for an
+              // approved driver too; only the rest of the wizard sends them home.
+              final editingAStep = state.uri.path.startsWith('/onboarding/step/');
               return (isGoingToLogin ||
                       isGoingToSplash ||
                       isGoingToOtp ||
                       isGoingToVerificationStatus ||
-                      isOnboarding)
+                      (isOnboarding && !editingAStep))
                   ? '/'
                   : null;
             }

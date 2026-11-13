@@ -516,7 +516,10 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
                   entry.key != 'net_earnings') ...[
                 _buildBreakdownRow(
                   _formatBreakdownKey(entry.key),
-                  '${marketSymbol()}${entry.value}',
+                  // 13 Nov: a multiplier is "1.25×", not money.
+                  entry.key.contains('multiplier')
+                      ? '${entry.value}×'
+                      : '${marketSymbol()}${entry.value}',
                   isDeduction:
                       entry.key.contains('fee') ||
                       entry.key.contains('commission') ||
