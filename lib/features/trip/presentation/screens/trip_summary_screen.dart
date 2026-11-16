@@ -80,11 +80,15 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
       riderName: trip.riderName,
       // A platform-paid end: the rider's fare is zero and means nothing to
       // the driver, whose earning is in the panel below. Never show ₹0.
-      amount: endedBySupport && platformPaid ? null : exactMoney(_fare),
+      amount: endedBySupport && platformPaid
+          ? null
+          : exactMoney(_fare, currency: trip.currency),
       amountCaption: endedBySupport
           ? (platformPaid ? null : l.summaryFareDistance)
           : l.summaryFare,
-      cashToCollect: needsCash ? exactMoney('$_cashAmount') : null,
+      cashToCollect: needsCash
+          ? exactMoney('$_cashAmount', currency: trip.currency)
+          : null,
       paidLine: needsCash || platformPaid
           ? null
           : cash
@@ -110,7 +114,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
           TripNote(
             key: const Key('summary_promo_paid'),
             text: l.summaryPromoPaid,
-            trailing: exactMoney(trip.promoDiscount),
+            trailing: exactMoney(trip.promoDiscount, currency: trip.currency),
           ),
         if (endedBySupport) _supportEarnings(),
       ],

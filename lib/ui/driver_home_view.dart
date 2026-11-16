@@ -11,11 +11,18 @@ import 'sg_tokens.dart';
 import 'sg_widgets.dart';
 import 'sg_l10n.dart';
 import 'sg_load_state.dart';
+import 'sg_format.dart';
 
 /// Whole currency units: "₹248". Null for an amount that does not parse.
-String? wholeMoney(String? raw) {
+/// [currency] is the trip's own ("USD"); a US trip never reads in rupees,
+/// whatever market config the app holds (16 Nov, trip 226).
+String? wholeMoney(String? raw, {String? currency}) {
   if (raw == null) return null;
   final market = MarketConfigStore.instance.current;
+  final code = (currency ?? '').trim().toUpperCase();
+  if (code.isNotEmpty && code != market.currencyCode.toUpperCase()) {
+    return sgMoney(raw, currency: code);
+  }
   final value = double.tryParse(market.stripSymbol(raw).replaceAll(',', ''));
   if (value == null) return null;
   final digits = value.round().abs().toString();
