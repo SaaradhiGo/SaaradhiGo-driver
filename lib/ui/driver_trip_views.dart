@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../core/market/market_config_store.dart';
 import 'driver_home_view.dart';
+import 'sg_format.dart';
 import 'sg_l10n.dart';
 import '../l10n/app_localizations.dart' show lookupAppLocalizations;
 import 'sg_text.dart';
@@ -40,10 +41,10 @@ String exactMoney(String? raw) {
   return '${market.currencySymbol}${value.toStringAsFixed(2)}';
 }
 
-/// "8.4 km · 20 min"; null when neither is known.
-String? distanceTimeLine(double? km, double? minutes) {
+/// "8.4 km · 20 min" ("5.2 mi" for a US trip); null when neither is known.
+String? distanceTimeLine(double? km, double? minutes, {String? currency}) {
   final parts = [
-    if (km != null) '${km.toStringAsFixed(1)} km',
+    if (km != null) sgDistance(km, currency: currency),
     if (minutes != null) '${minutes.round().clamp(1, 999)} min',
   ];
   return parts.isEmpty ? null : parts.join(' · ');
@@ -257,9 +258,9 @@ class RiderRow extends StatelessWidget {
         if (onCall != null) ...[
           Semantics(
             button: true,
-            label: sgL10n(context).callRider(
-              first.isEmpty ? sgL10n(context).riderFallback : first,
-            ),
+            label: sgL10n(
+              context,
+            ).callRider(first.isEmpty ? sgL10n(context).riderFallback : first),
             child: InkWell(
               key: const Key('trip_call'),
               customBorder: const CircleBorder(),
@@ -750,7 +751,9 @@ class _PinCheckViewState extends State<PinCheckView> {
                       Text(
                         l.pinAtPickup.toUpperCase(),
                         key: const Key('pin_at_pickup'),
-                        style: SgText.eyebrow.copyWith(color: SgColors.inkMuted),
+                        style: SgText.eyebrow.copyWith(
+                          color: SgColors.inkMuted,
+                        ),
                       ),
                       Text(
                         title,
@@ -838,9 +841,7 @@ class _PinCheckViewState extends State<PinCheckView> {
                       showCursor: false,
                       autocorrect: false,
                       enableSuggestions: false,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         counterText: '',
                         border: InputBorder.none,

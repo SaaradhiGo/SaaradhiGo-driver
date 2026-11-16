@@ -70,7 +70,11 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
       sheet: InTripSheet(
         destination: trip.destinationAddress ?? sgL10n(context).tripDropOnMap,
         riderName: trip.riderName,
-        leftLine: distanceTimeLine(trip.distanceKm, trip.durationMin),
+        leftLine: distanceTimeLine(
+          trip.distanceKm,
+          trip.durationMin,
+          currency: trip.currency,
+        ),
         fare: fare == null ? null : exactMoney(fare),
         earning: trip.driverEarning == null
             ? null

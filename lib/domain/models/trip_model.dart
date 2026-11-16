@@ -265,6 +265,10 @@ abstract class TripModel with _$TripModel {
     String? promoDiscount,
     @JsonKey(name: 'rider_payable', readValue: _readRiderPayable)
     String? riderPayable,
+    // The trip's market: USD trips read miles and month-first dates in the
+    // trip's own IANA zone (e.g. America/Boise); null from an older server.
+    String? currency,
+    String? timezone,
   }) = _TripModel;
 
   factory TripModel.fromJson(Map<String, dynamic> json) =>
@@ -291,6 +295,5 @@ extension TripActivity on TripModel {
   /// True only for a trip the driver is on now. The server's `is_active`
   /// decides when it is sent; an older server is read from the status. A
   /// completed or cancelled trip is never active, whatever else it says.
-  bool get isActiveOnServer =>
-      !status.isTerminal && (serverActive ?? true);
+  bool get isActiveOnServer => !status.isTerminal && (serverActive ?? true);
 }

@@ -10,6 +10,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/models/trip_model.dart';
 import '../providers/trip_history_providers.dart';
 import '../widgets/trip_route_mini_map.dart';
+import 'package:saaradhigo_driver/ui/sg_format.dart';
 import 'package:saaradhigo_driver/ui/sg_text.dart';
 
 class TripDetailsScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,9 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
         ),
         title: Text(
           'Trip Details',
-          style: AppTypography.headlineSm.copyWith(color: AppColors.primaryText),
+          style: AppTypography.headlineSm.copyWith(
+            color: AppColors.primaryText,
+          ),
         ),
         centerTitle: true,
       ),
@@ -347,9 +350,12 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
           child: _buildStatTile(
             icon: Icons.route_outlined,
             value: trip.distanceKm != null
-                ? trip.distanceKm!.toStringAsFixed(1)
+                ? sgDistance(
+                    trip.distanceKm!,
+                    currency: trip.currency,
+                  ).split(' ').first
                 : '--',
-            label: 'KM',
+            label: sgDistanceUnit(currency: trip.currency).toUpperCase(),
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -439,11 +445,7 @@ class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.cancel_outlined,
-                color: AppColors.error,
-                size: 20,
-              ),
+              Icon(Icons.cancel_outlined, color: AppColors.error, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Trip Cancelled',

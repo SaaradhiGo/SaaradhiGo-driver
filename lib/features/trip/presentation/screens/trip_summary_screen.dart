@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/models/trip_model.dart';
 import '../../../../ui/driver_trip_views.dart';
+import '../../../../ui/sg_format.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../earnings/presentation/earnings_display.dart';
 import '../providers/support_end_provider.dart';
@@ -91,7 +92,10 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen> {
           : l.summaryPaidBy(payment),
       facts: [
         if (trip.distanceKm != null)
-          (l.summaryDistance, '${trip.distanceKm!.toStringAsFixed(1)} km'),
+          (
+            l.summaryDistance,
+            sgDistance(trip.distanceKm!, currency: trip.currency),
+          ),
         if (trip.durationMin != null)
           (l.summaryTime, l.commonMinutes(trip.durationMin!.round())),
         (l.summaryPayment, payment),
