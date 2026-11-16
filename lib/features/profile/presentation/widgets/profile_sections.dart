@@ -7,6 +7,7 @@ import '../../../../ui/sg_format.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_text.dart';
 import '../../../../ui/sg_tokens.dart';
+import '../../../requirements/requirement_forms.dart' show stripeStatusLabel;
 import '../../../requirements/requirements_api.dart';
 import 'display_settings_rows.dart';
 
@@ -98,7 +99,7 @@ class ProfileSections extends ConsumerWidget {
           ].where((s) => s.isNotEmpty).join(' · ');
     final bank = pm['bank'] as Json?;
     final payout = r.country == 'US'
-        ? (pm['stripe_status'] == 'ready' ? l.profStripeReady : null)
+        ? stripeStatusLabel(l, pm['stripe_status'])
         : bank != null
         ? '${bank['bank_name']} ${lastFourMasked('${bank['account_masked']}', gap: '')}'
         : pm['upi_masked'] != null
@@ -134,9 +135,11 @@ class ProfileSections extends ConsumerWidget {
         [
           if ('${id['license_number'] ?? ''}'.isNotEmpty)
             l.profLicence('${id['license_number']}'),
-          if (id['aadhaar_masked'] != null)
+          // India's identity numbers never show for a US driver.
+          if (r.country != 'US' && id['aadhaar_masked'] != null)
             l.profAadhaar(lastFourMasked('${id['aadhaar_masked']}')),
-          if (id['pan_masked'] != null) l.profPan('${id['pan_masked']}'),
+          if (r.country != 'US' && id['pan_masked'] != null)
+            l.profPan('${id['pan_masked']}'),
         ],
       ),
       ('vehicle', l.profSecVehicle, 'vehicle', [?vehicle]),

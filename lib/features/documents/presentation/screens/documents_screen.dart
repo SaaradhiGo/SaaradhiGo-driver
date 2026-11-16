@@ -85,7 +85,7 @@ class DocumentsScreen extends ConsumerWidget {
               canOpenCamera: (item) =>
                   uploadKeyFor(item.fileKey ?? item.key) != null,
               onOpenCamera: (item) => _retake(context, ref, overview, item),
-              onAddPayout: () => context.push('/onboarding/photo-bank'),
+              onAddPayout: () => context.push('/onboarding/step/payouts'),
               onCallSupport: support == null
                   ? null
                   : () => launchUrl(

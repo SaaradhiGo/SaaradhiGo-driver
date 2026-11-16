@@ -19,6 +19,15 @@ import 'requirements_api.dart';
 /// step's Save and continue runs the form's save through a [SetupSaveHandle].
 
 /// The step's Save and continue calls the embedded form's save through this.
+/// "Stripe: Not started | In progress | Ready", exactly as the server says;
+/// anything else reads Not started, never Ready.
+String stripeStatusLabel(AppLocalizations l, Object? status) =>
+    l.profStripeStatus(switch (status) {
+      'ready' => l.stripeReady,
+      'in_progress' => l.stripeInProgress,
+      _ => l.stripeNotStarted,
+    });
+
 class SetupSaveHandle {
   Future<bool> Function()? _save;
   Future<bool> save() => _save?.call() ?? Future.value(true);
@@ -940,6 +949,12 @@ class _PayoutsState extends ConsumerState<PayoutsReqScreen> with _Saver {
           });
           return _list(widget.embedded, [
             Text(l.reqStripeHint, style: SgText.body),
+            const SizedBox(height: SgSpace.s2),
+            Text(
+              stripeStatusLabel(l, pm['stripe_status']),
+              key: const Key('req_stripe_status'),
+              style: SgText.body.copyWith(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: SgSpace.s3),
             if (pm['stripe_status'] != 'ready')
               widget.embedded
