@@ -13,6 +13,7 @@ import 'package:web_socket_channel/status.dart' as status;
 // 1000 (normal closure) is the right code for a client hanging up anyway --
 // 1001 means "the server is going away", which is not what is happening.
 import '../utils/app_logger.dart';
+import 'ws_ticket.dart';
 
 enum WebSocketState { disconnected, connecting, connected, error }
 
@@ -49,12 +50,17 @@ class WebSocketService {
     WebSocketChannelFactory? channelFactory,
     int maxReconnectAttempts = 6,
     Duration Function(int attempt)? reconnectDelayBuilder,
+    Future<Uri> Function(Uri uri)? ticketExchanger,
   }) : _urlBuilder = urlBuilder,
+       _ticketExchanger = ticketExchanger ?? ticketedWsUri,
        _channelFactory = channelFactory ?? WebSocketChannel.connect,
        _maxReconnectAttempts = maxReconnectAttempts,
        _reconnectDelayBuilder = reconnectDelayBuilder ?? _defaultReconnectDelay;
 
   final WebSocketUrlBuilder _urlBuilder;
+
+  /// Swaps `?token=` for a 30 s single-use ticket before every connect.
+  final Future<Uri> Function(Uri uri) _ticketExchanger;
   final WebSocketChannelFactory _channelFactory;
   final int _maxReconnectAttempts;
   final Duration Function(int attempt) _reconnectDelayBuilder;
@@ -114,7 +120,7 @@ class WebSocketService {
 
     Uri uri;
     try {
-      uri = await _urlBuilder();
+      uri = await _ticketExchanger(await _urlBuilder());
     } catch (e) {
       AppLogger.e('WS URL build failed: ${e.runtimeType}');
       _handleDisconnect(session);
