@@ -28,6 +28,7 @@ import '../../trip/presentation/providers/trip_providers.dart';
 import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
 import 'widgets/driver_map.dart';
+import 'widgets/payout_setup_banner.dart';
 import 'widgets/limited_background_banner.dart';
 
 /// `/` -- the driver home: a map, the online status, today's earnings and the
@@ -373,6 +374,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
         },
         blocker: blocker,
         notices: [
+          const PayoutSetupBanner(),
           if (availability is AvailabilityStateReconnecting)
             HomeNotice(l.homeNoticeReconnecting),
           if (weakSignal) HomeNotice(l.homeNoticeWeakGps),

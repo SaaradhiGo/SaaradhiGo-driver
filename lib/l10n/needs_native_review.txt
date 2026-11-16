@@ -839,3 +839,37 @@ earnNoTripsDay
   en: No trips this day.
   te: ఈ రోజు ట్రిప్‌లు లేవు.
   hi: इस दिन कोई ट्रिप नहीं।
+
+# Launch round 2 (2026-11-16).
+homePayoutSetupBanner
+  en: Set up payouts to get paid
+  te: డబ్బు పొందడానికి చెల్లింపులు సెటప్ చేయండి
+  hi: पैसे पाने के लिए भुगतान सेट करें
+earnWaitingPayoutSetup
+  en: Waiting for payout setup
+  te: చెల్లింపుల సెటప్ కోసం వేచి ఉంది
+  hi: भुगतान सेटअप का इंतज़ार
+cancelConfirmTitle
+  en: Cancel this trip?
+  te: ఈ ట్రిప్‌ను రద్దు చేయాలా?
+  hi: यह ट्रिप रद्द करें?
+cancelConfirmBody
+  en: The rider is told at once and this trip ends.
+  te: రైడర్‌కు వెంటనే తెలియజేస్తాం, ఈ ట్రిప్ ముగుస్తుంది.
+  hi: राइडर को तुरंत बताया जाएगा और यह ट्रिप खत्म हो जाएगी।
+cancelConfirmFee
+  en: An unjustified cancellation can cost you {percent}% of the fare, up to {cap}.
+  te: కారణం లేని రద్దుకు ఛార్జీలో {percent}% వరకు, గరిష్ఠంగా {cap} కట్ కావచ్చు.
+  hi: बिना उचित कारण रद्द करने पर किराए का {percent}%, अधिकतम {cap}, कट सकता है।
+cancelConfirmYes
+  en: Cancel trip
+  te: ట్రిప్ రద్దు చేయండి
+  hi: ट्रिप रद्द करें
+cancelConfirmKeep
+  en: Keep trip
+  te: ట్రిప్ కొనసాగించండి
+  hi: ट्रिप जारी रखें
+offerNoCommission
+  en: No commission
+  te: కమీషన్ లేదు
+  hi: कोई कमीशन नहीं

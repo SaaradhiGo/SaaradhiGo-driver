@@ -118,7 +118,14 @@ class MarketConfig {
     this.referralsAvailable = false,
     this.isBuiltIn = false,
     this.supportPhone,
+    this.cancelFeePercent,
+    this.cancelFeeCapMinor,
   });
+
+  /// `country.cancel_policy` when `charges_fee` is true (MVAG 2025 fee is on):
+  /// the percent as sent ("10.00") and the cap in minor units. Null otherwise.
+  final String? cancelFeePercent;
+  final int? cancelFeeCapMinor;
 
   /// `country.support.phone`: SaaradhiGo's support line, or null while none
   /// is configured (the safety centre then hides the row).
@@ -176,15 +183,20 @@ class MarketConfig {
   /// [raw] with this market's currency symbol in front, unless it already has one.
   String withSymbol(String raw) {
     final t = raw.trim();
-    if (t.startsWith(currencySymbol) || t.startsWith('₹') || t.startsWith(r'$')) {
+    if (t.startsWith(currencySymbol) ||
+        t.startsWith('₹') ||
+        t.startsWith(r'$')) {
       return t;
     }
     return '$currencySymbol$t';
   }
 
   /// [raw] without any currency symbol or spaces, for parsing.
-  String stripSymbol(String raw) =>
-      raw.replaceAll(currencySymbol, '').replaceAll('₹', '').replaceAll(r'$', '').trim();
+  String stripSymbol(String raw) => raw
+      .replaceAll(currencySymbol, '')
+      .replaceAll('₹', '')
+      .replaceAll(r'$', '')
+      .trim();
 
   /// A short distance string in this market's unit: "12.3 km" / "7.6 mi".
   String formatDistanceKm(double km, {int decimals = 1}) {
@@ -289,6 +301,8 @@ class MarketConfig {
     }
 
     final countryCode = _str(country['code'])?.toUpperCase();
+    final cancel = _map(country['cancel_policy']);
+    final chargesFee = cancel['charges_fee'] == true;
     final unit = _str(country['distance_unit']);
     return MarketConfig(
       countryCode: countryCode ?? base.countryCode,
@@ -312,6 +326,10 @@ class MarketConfig {
       notices: notices,
       referralsAvailable: data['referrals_available'] == true,
       supportPhone: _str(_map(country['support'])['phone']),
+      cancelFeePercent: chargesFee ? _str(cancel['fee_percent']) : null,
+      cancelFeeCapMinor: chargesFee && cancel['fee_cap_minor'] is num
+          ? (cancel['fee_cap_minor'] as num).toInt()
+          : null,
     );
   }
 }

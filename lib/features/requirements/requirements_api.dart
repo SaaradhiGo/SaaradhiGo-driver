@@ -150,6 +150,9 @@ class Requirements {
   Json get personal => raw['personal'] as Json;
   Json get identity => raw['identity'] as Json;
   Json get payoutMethod => raw['payout_method'] as Json;
+
+  /// Payouts can go out (backend #249). Missing `ready` reads as false; driving never waits on it.
+  bool get payoutReady => (raw['payout_method'] as Map?)?['ready'] == true;
   List<Json> get states => List<Json>.from(raw['states'] as List);
   List<Json> get relationships => List<Json>.from(raw['relationships'] as List);
   List<String> get vehicleTypes =>
@@ -220,6 +223,12 @@ final requirementsProvider = FutureProvider.autoDispose<Requirements>((
   if (ref.mounted) ref.read(driverPausedProvider.notifier).set(r.paused);
   return r;
 });
+
+/// Whether payouts are set up: null while unknown (loading or failed), so no
+/// screen claims either way on a guess.
+final payoutReadyProvider = Provider.autoDispose<bool?>(
+  (ref) => ref.watch(requirementsProvider).asData?.value.payoutReady,
+);
 
 /// The pause from the last requirements load; null when not paused (or unknown).
 final driverPausedProvider = NotifierProvider<DriverPaused, PausedInfo?>(

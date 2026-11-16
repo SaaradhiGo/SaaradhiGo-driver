@@ -1874,5 +1874,45 @@
   "pausedSeeWhy": "See why",
   "@pausedSeeWhy": {
     "description": "US parity (15 Nov)"
+  },
+  "homePayoutSetupBanner": "Set up payouts to get paid",
+  "@homePayoutSetupBanner": {
+    "description": "Home banner while payouts are not set up"
+  },
+  "earnWaitingPayoutSetup": "Waiting for payout setup",
+  "@earnWaitingPayoutSetup": {
+    "description": "Wallet balance label while payouts are not set up"
+  },
+  "cancelConfirmTitle": "Cancel this trip?",
+  "@cancelConfirmTitle": {
+    "description": "Driver cancel confirmation title"
+  },
+  "cancelConfirmBody": "The rider is told at once and this trip ends.",
+  "@cancelConfirmBody": {
+    "description": "Driver cancel confirmation body"
+  },
+  "cancelConfirmFee": "An unjustified cancellation can cost you {percent}% of the fare, up to {cap}.",
+  "@cancelConfirmFee": {
+    "description": "Driver cancel penalty line (market cancel_policy)",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelConfirmYes": "Cancel trip",
+  "@cancelConfirmYes": {
+    "description": "Destructive confirm button"
+  },
+  "cancelConfirmKeep": "Keep trip",
+  "@cancelConfirmKeep": {
+    "description": "Dismiss the cancel confirmation"
+  },
+  "offerNoCommission": "No commission",
+  "@offerNoCommission": {
+    "description": "Offer card when the commission is zero"
   }
 }
