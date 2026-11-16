@@ -320,6 +320,10 @@
   "@docsMissing": {
     "description": "needs native review"
   },
+  "docsOptionalNotAdded": "ఐచ్ఛికం · జోడించలేదు",
+  "@docsOptionalNotAdded": {
+    "description": "Document status"
+  },
   "docsNeedsAttention": "కొత్త ఫోటో కావాలి",
   "@docsNeedsAttention": {
     "description": "needs native review"
@@ -347,6 +351,14 @@
   "docsCallSupport": "డ్రైవర్ సపోర్ట్‌కి కాల్ చేయండి",
   "@docsCallSupport": {
     "description": "needs native review"
+  },
+  "docsExpiring": "త్వరలో ముగుస్తుంది",
+  "@docsExpiring": {
+    "description": "Document status: expiry is near - needs native review"
+  },
+  "docsExpired": "ముగిసింది",
+  "@docsExpired": {
+    "description": "Document status: past its expiry date - needs native review"
   },
   "docsLoadFailed": "మీ పత్రాలు లోడ్ కాలేదు",
   "@docsLoadFailed": {

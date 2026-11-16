@@ -41,9 +41,6 @@ String? _rawFlag(String key) {
 class DriverDesignFlags {
   DriverDesignFlags._();
 
-  /// "Tips" row: needs a tips amount from the earnings API (none today).
-  static const tipsRow = false;
-
   /// "Withdraw ₹X" button: no new in-app money flow tonight; the existing
   /// withdrawal screen stays under "All earnings and payouts".
   static const withdrawButton = false;

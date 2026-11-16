@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../core/market/market_config_store.dart';
+import '../../ui/sg_format.dart';
 import '../../ui/sg_text.dart';
 import '../../ui/sg_tokens.dart';
 import '../../ui/sg_widgets.dart';
@@ -196,7 +198,15 @@ class StatusChip extends StatelessWidget {
     final (text, color) = switch (item.status) {
       'approved' => (l.reqStatusApproved, SgColors.success),
       'done' => (l.reqStatusDone, SgColors.success),
-      'expiring' => (l.reqStatusExpiring(item.expires ?? ''), SgColors.gold500),
+      'expiring' => (
+        l.reqStatusExpiring(
+          sgMarketDateText(
+            item.expires,
+            MarketConfigStore.instance.current.countryCode,
+          ),
+        ),
+        SgColors.gold500,
+      ),
       'in_review' => (l.reqStatusInReview, SgColors.gold500),
       'rejected' => (l.reqStatusRejected, SgColors.danger),
       _ => (l.reqStatusMissing, SgColors.inkMuted),

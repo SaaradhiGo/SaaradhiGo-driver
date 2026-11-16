@@ -8,6 +8,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/market/market_providers.dart';
 import '../../../../ui/driver_documents_view.dart';
 import '../../../../ui/driver_f_logic.dart';
+import '../../../../ui/sg_format.dart';
+import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/dio_client.dart';
 import '../../../../ui/sg_l10n.dart';
 import '../../../../ui/sg_text.dart';
 import '../../../../ui/sg_tokens.dart';
@@ -25,14 +28,17 @@ class DocumentsScreen extends ConsumerWidget {
     final docs = ref.watch(docsOverviewProvider);
     final payoutOnFile = ref.watch(payoutDetailsOnFileProvider).value;
     final vault = ref.watch(documentVaultNotifierProvider);
-    final support = ref.watch(marketConfigProvider).supportPhone;
+    final market = ref.watch(marketConfigProvider);
+    final support = market.supportPhone;
+    // Expiry dates come from the requirements checklist, the one list the
+    // server keeps (the same items the setup screen shows).
 
     Future<void> refresh() async {
       ref.invalidate(docsOverviewProvider);
       ref.invalidate(payoutDetailsOnFileProvider);
-      await ref.read(docsOverviewProvider.future).catchError(
-        (_) => const DocsOverview(items: []),
-      );
+      await ref
+          .read(docsOverviewProvider.future)
+          .catchError((_) => const DocsOverview(items: []));
     }
 
     return Scaffold(
@@ -64,13 +70,22 @@ class DocumentsScreen extends ConsumerWidget {
             ),
             data: (overview) => DriverDocumentsView(
               overview: overview,
+              expiries: {
+                for (final i in overview.items)
+                  if (sgMarketDateText(
+                    i.expires,
+                    market.countryCode,
+                  ).isNotEmpty)
+                    i.key: sgMarketDateText(i.expires, market.countryCode),
+              },
               payoutMissing: payoutOnFile == false,
               uploadingKey: vault.isUploading
                   ? _backendKeyFor(overview, vault.uploadingDocumentKey)
                   : null,
-              canOpenCamera: (item) => uploadKeyFor(item.key) != null,
+              canOpenCamera: (item) =>
+                  uploadKeyFor(item.fileKey ?? item.key) != null,
               onOpenCamera: (item) => _retake(context, ref, overview, item),
-              onAddPayout: () => context.push('/onboarding/photo-bank'),
+              onAddPayout: () => context.push('/onboarding/step/payouts'),
               onCallSupport: support == null
                   ? null
                   : () => launchUrl(
@@ -86,7 +101,7 @@ class DocumentsScreen extends ConsumerWidget {
 
   static String? _backendKeyFor(DocsOverview o, String? uploadKey) {
     for (final i in o.items) {
-      if (uploadKeyFor(i.key) == uploadKey) return i.key;
+      if (uploadKeyFor(i.fileKey ?? i.key) == uploadKey) return i.key;
     }
     return null;
   }
@@ -99,13 +114,24 @@ class DocumentsScreen extends ConsumerWidget {
     DocsOverview overview,
     DocItem item,
   ) async {
-    final key = uploadKeyFor(item.key);
+    final key = uploadKeyFor(item.fileKey ?? item.key);
     if (key == null) return;
     final l = sgL10n(context);
     final messenger = ScaffoldMessenger.maybeOf(context);
     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked == null) return;
     final bytes = await picked.readAsBytes();
+    // Only the upload needs the old onboarding data: the vehicle id.
+    int? vehicleId;
+    if (item.vehicle) {
+      try {
+        final res = await ref
+            .read(dioClientProvider)
+            .dio
+            .get(ApiEndpoints.driverOnboarding);
+        vehicleId = parseDocsOverview(res.data)?.vehicleId;
+      } catch (_) {}
+    }
     final ok = await ref
         .read(documentVaultNotifierProvider.notifier)
         .reuploadDocument(
@@ -113,7 +139,7 @@ class DocumentsScreen extends ConsumerWidget {
           bytes: bytes,
           fileName: picked.name,
           mimeType: lookupMimeType(picked.path) ?? 'image/jpeg',
-          vehicleId: item.vehicle ? overview.vehicleId : null,
+          vehicleId: vehicleId,
         );
     ref.invalidate(docsOverviewProvider);
     messenger?.showSnackBar(

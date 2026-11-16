@@ -265,7 +265,7 @@ class _EarningsDashboardScreenState
             payoutMissing:
                 ref.watch(payoutDetailsOnFileProvider).value == false,
             onWithdraw: () => WithdrawalRequestBottomSheet.show(context),
-            onAddPayout: () => context.push('/onboarding/photo-bank'),
+            onAddPayout: () => context.push('/onboarding/step/payouts'),
           ),
           const SizedBox(height: AppSpacing.md),
 

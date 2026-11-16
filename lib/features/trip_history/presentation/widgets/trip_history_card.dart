@@ -15,11 +15,16 @@ class TripHistoryCard extends StatelessWidget {
 
   const TripHistoryCard({super.key, required this.trip, required this.onTap});
 
-  /// "Sun, 8 Nov · 1:15 am" (the year when it is not this year).
+  /// "Sun, 8 Nov · 1:15 am" (India) or "Sat, Nov 14, 5:55 PM" (US), in the
+  /// trip's own time zone.
   String _formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return 'Recent Trip';
-    final date = DateTime.tryParse(dateStr)?.toLocal();
-    return date == null ? dateStr : sgDayTime(date);
+    return sgTripDayTime(
+          dateStr,
+          currency: trip.currency,
+          timezone: trip.timezone,
+        ) ??
+        dateStr;
   }
 
   @override
@@ -146,11 +151,7 @@ class TripHistoryCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 14,
-                    color: AppColors.error,
-                  ),
+                  Icon(Icons.info_outline, size: 14, color: AppColors.error),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
@@ -192,7 +193,10 @@ class TripHistoryCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [AppColors.primaryText, AppColors.outlineVariant],
+                          colors: [
+                            AppColors.primaryText,
+                            AppColors.outlineVariant,
+                          ],
                         ),
                       ),
                     ),
@@ -256,8 +260,11 @@ class TripHistoryCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       trip.distanceKm != null
-                          ? '${trip.distanceKm!.toStringAsFixed(1)} km'
-                          : '-- km',
+                          ? sgDistance(
+                              trip.distanceKm!,
+                              currency: trip.currency,
+                            )
+                          : '-- ${sgDistanceUnit(currency: trip.currency)}',
                       style: AppTypography.bodyMd.copyWith(
                         color: AppColors.onSurfaceVariant,
                         fontSize: SgText.sizeSmall,

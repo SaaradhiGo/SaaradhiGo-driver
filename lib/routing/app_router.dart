@@ -38,6 +38,10 @@ import '../features/trip/presentation/providers/trip_providers.dart';
 import '../features/trip/presentation/screens/trip_flow_screen.dart';
 import '../features/requirements/get_ready_screen.dart';
 import '../features/requirements/requirement_forms.dart';
+import '../features/about/about_screen.dart';
+import '../features/profile/delete/delete_account.dart';
+import '../features/requirements/paused_screen.dart';
+import '../features/requirements/requirements_api.dart';
 import '../features/requirements/setup_steps.dart';
 import '../shared/widgets/main_shell_screen.dart';
 import 'page_not_found_screen.dart';
@@ -115,6 +119,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           },
           loaded: (s) {
             final profile = s.profile;
+            final path = state.uri.path;
+            // 15 Nov: the old India-only wizard is retired; its links land on
+            // the server checklist, which asks each market for its own items.
+            if (path == '/onboarding/photo-bank') {
+              return '/onboarding/step/payouts';
+            }
+            // A paused driver never reaches Home (where Go online lives).
+            final paused = ref.read(driverPausedProvider) != null;
+            if (paused && (path == '/' || path == '/onboarding/ready')) {
+              return '/paused';
+            }
+            if (!paused && path == '/paused') return '/';
 
             // 1. If the backend says this driver may operate, they belong on
             // the home screen.
@@ -127,34 +143,35 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             // past. `approved` is still honoured on its own so a backend
             // that does not send the new field behaves exactly as before.
             if (profile.approved || profile.dispatchEligible) {
+              // 13 Nov: Profile > Edit opens one setup step (/onboarding/step/<key>) for an
+              // approved driver too; only the rest of the wizard sends them home.
+              final editingAStep = state.uri.path.startsWith(
+                '/onboarding/step/',
+              );
               return (isGoingToLogin ||
                       isGoingToSplash ||
                       isGoingToOtp ||
                       isGoingToVerificationStatus ||
-                      isOnboarding)
+                      (isOnboarding && !editingAStep))
                   ? '/'
                   : null;
             }
 
-            // 2. Since the backend omits the `user` object in /driver/profile, we infer `isUpdated`
-            // by checking if they have uploaded a vehicle or license (which happen after personal details).
-            final isUpdated =
-                profile.user?.isUpdated ??
-                (profile.activeVehicleDetails != null ||
-                    profile.licenseDoc != null);
-
-            if (!isUpdated) {
-              // Driver has not completed personal details yet.
-              return !isOnboarding ? '/onboarding/personal' : null;
-            } else {
-              // Driver has completed personal details but is NOT approved yet.
-              // Allow them to navigate between other onboarding screens (vehicle, photo, licence).
-              // If they are not on an onboarding screen, put them in the verification waiting room.
-              if (isOnboarding) return null;
-              return !isGoingToVerificationStatus
-                  ? '/verification-status'
-                  : null;
+            // 2. Not approved yet: the server's checklist (/onboarding/ready)
+            // for every market; the old wizard's screens send there too.
+            const legacy = {
+              '/onboarding/personal',
+              '/onboarding/vehicle',
+              '/onboarding/licence',
+              '/verification-status',
+            };
+            if (legacy.contains(path)) return '/onboarding/ready';
+            if (isOnboarding ||
+                path == '/paused' ||
+                path.startsWith('/support')) {
+              return null;
             }
+            return '/onboarding/ready';
           },
           orElse: () => null,
         );
@@ -269,6 +286,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const GetReadyScreen(),
       ),
       GoRoute(
+        path: '/paused',
+        builder: (context, state) => const PausedScreen(),
+      ),
+      GoRoute(
         path: '/onboarding/step/:key',
         builder: (context, state) =>
             SetupStepScreen(stepKey: state.pathParameters['key'] ?? ''),
@@ -363,6 +384,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/refer',
         builder: (context, state) => const DriverReferralScreen(),
       ),
+      GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
+      GoRoute(
+        path: '/profile/delete',
+        builder: (context, state) => const DeleteAccountScreen(),
+      ),
       GoRoute(
         path: '/elite',
         builder: (context, state) => const ElitePartnerScreen(),
@@ -374,7 +400,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   // When auth state changes, tell the router to re-evaluate the redirect logic.
   ref.listen(authNotifierProvider, (previous, next) {
+    if (next is! AuthAuthenticated) {
+      ref.read(driverPausedProvider.notifier).set(null);
+    }
     router.refresh();
+  });
+
+  ref.listen(driverPausedProvider, (previous, next) {
+    if ((previous == null) != (next == null)) router.refresh();
   });
 
   ref.listen(driverProfileNotifierProvider, (previous, next) {

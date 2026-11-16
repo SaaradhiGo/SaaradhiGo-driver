@@ -1,3 +1,4 @@
+import '../../about/about_screen.dart' show kDriverPolicyLinks, openPolicy;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -219,6 +220,8 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
               isLoading: isLoading,
               onPressed: isLoading ? () {} : _submitPhone,
             ),
+            const SizedBox(height: AppSpacing.sm),
+            const _LegalLinks(),
           ],
         ),
       ),
@@ -306,6 +309,34 @@ class _LoginMobileScreenState extends ConsumerState<LoginMobileScreen>
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "Driver terms" and "Privacy policy" under the sign-in button.
+class _LegalLinks extends StatelessWidget {
+  const _LegalLinks();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        for (final link in kDriverPolicyLinks.where(
+          (l) => l.path == '/driver-terms' || l.path == '/privacy',
+        ))
+          TextButton(
+            key: Key('login_link_${link.path.substring(1)}'),
+            onPressed: () => openPolicy(link),
+            child: Text(
+              link.label,
+              style: SgText.small.copyWith(
+                color: SgColors.goldText,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

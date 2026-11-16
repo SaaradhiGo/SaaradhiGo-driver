@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saaradhigo_driver/features/requirements/get_ready_screen.dart';
+import 'package:saaradhigo_driver/features/requirements/paused_screen.dart';
 import 'package:saaradhigo_driver/features/requirements/requirement_forms.dart';
 import 'package:saaradhigo_driver/features/requirements/requirements_api.dart';
 import 'package:saaradhigo_driver/features/requirements/setup_steps.dart';
@@ -213,21 +214,25 @@ class _FakeApi extends RequirementsApi {
   }
 }
 
-Widget _app(Widget child, String country, {RequirementsApi? api}) =>
-    ProviderScope(
-      key: ValueKey(country),
-      overrides: [
-        requirementsProvider.overrideWith(
-          (ref) async => Requirements.fromJson(_market(country)),
-        ),
-        if (api != null) requirementsApiProvider.overrideWithValue(api),
-      ],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: child,
-      ),
-    );
+Widget _app(
+  Widget child,
+  String country, {
+  RequirementsApi? api,
+  Json extra = const {},
+}) => ProviderScope(
+  key: ValueKey(country),
+  overrides: [
+    requirementsProvider.overrideWith(
+      (ref) async => Requirements.fromJson({..._market(country), ...extra}),
+    ),
+    if (api != null) requirementsApiProvider.overrideWithValue(api),
+  ],
+  child: MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: child,
+  ),
+);
 
 void main() {
   testWidgets('the setup lists six steps with their states and one primary', (
@@ -340,4 +345,89 @@ void main() {
     expect(api.saved.single, containsPair('brand', 'Hindustan'));
     expect(api.saved.single, containsPair('vehicle_number', 'TS10CD5678'));
   });
+
+  testWidgets('a paused driver reads why, what to do and Contact support', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      _app(
+        const PausedScreen(),
+        'US',
+        extra: {
+          'paused': {
+            'reason_code': 'documents',
+            'reason': 'There is a problem with one of your documents.',
+            'since': '2026-11-14T18:00:00Z',
+            'permanent': false,
+          },
+        },
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(find.text('Your account is paused'), findsOneWidget);
+    expect(
+      find.text('There is a problem with one of your documents.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('11/14/2026'), findsOneWidget);
+    expect(find.byKey(const Key('paused_support')), findsOneWidget);
+    expect(find.text('Contact support'), findsOneWidget);
+  });
+
+  testWidgets('a closed account says so', (t) async {
+    await t.pumpWidget(
+      _app(
+        const PausedScreen(),
+        'IN',
+        extra: {
+          'paused': {
+            'reason_code': 'deactivated',
+            'reason': 'Your account has been closed.',
+            'since': '2026-11-14T18:00:00Z',
+            'permanent': true,
+          },
+        },
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(find.text('Your account is closed'), findsOneWidget);
+  });
+
+  test('no paused object means not paused', () {
+    expect(Requirements.fromJson(_market('US')).paused, isNull);
+    final p = Requirements.fromJson({
+      ..._market('US'),
+      'paused': {'reason_code': 'fraud', 'reason': 'x', 'permanent': false},
+    }).paused!;
+    expect(p.reasonCode, 'fraud');
+    expect(p.permanent, isFalse);
+  });
+
+  for (final (status, text) in [
+    ('not_started', 'Stripe: Not started'),
+    ('in_progress', 'Stripe: In progress'),
+    ('ready', 'Stripe: Ready'),
+    (null, 'Stripe: Not started'),
+  ]) {
+    testWidgets('Stripe status $status reads "$text"', (t) async {
+      await t.pumpWidget(
+        _app(
+          const PayoutsReqScreen(),
+          'US',
+          extra: {
+            'payout_method': {'kind': 'stripe', 'stripe_status': status},
+          },
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(
+        t.widget<Text>(find.byKey(const Key('req_stripe_status'))).data,
+        text,
+      );
+      expect(
+        find.byKey(const Key('req_stripe')),
+        status == 'ready' ? findsNothing : findsOneWidget,
+      );
+    });
+  }
 }

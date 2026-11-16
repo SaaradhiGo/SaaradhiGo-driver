@@ -320,6 +320,10 @@
   "@docsMissing": {
     "description": "needs native review"
   },
+  "docsOptionalNotAdded": "वैकल्पिक · जोड़ा नहीं",
+  "@docsOptionalNotAdded": {
+    "description": "Document status"
+  },
   "docsNeedsAttention": "नई फ़ोटो चाहिए",
   "@docsNeedsAttention": {
     "description": "needs native review"
@@ -347,6 +351,14 @@
   "docsCallSupport": "ड्राइवर सहायता को कॉल करें",
   "@docsCallSupport": {
     "description": "needs native review"
+  },
+  "docsExpiring": "जल्द समाप्त होगा",
+  "@docsExpiring": {
+    "description": "Document status: expiry is near - needs native review"
+  },
+  "docsExpired": "समाप्त",
+  "@docsExpired": {
+    "description": "Document status: past its expiry date - needs native review"
   },
   "docsLoadFailed": "आपके दस्तावेज़ लोड नहीं हुए",
   "@docsLoadFailed": {

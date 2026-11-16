@@ -106,7 +106,7 @@ void main() {
       expect(find.text('Payout details missing'), findsOneWidget);
       expect(find.text('Uploaded'), findsOneWidget);
       expect(find.text('In review'), findsOneWidget);
-      expect(find.text('Not uploaded'), findsOneWidget);
+      expect(find.text('Missing'), findsOneWidget);
       expect(find.text('Approved'), findsOneWidget);
       await tester.tap(find.text('Open camera'));
       expect(opened, 1);
