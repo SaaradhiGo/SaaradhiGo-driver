@@ -24,6 +24,34 @@ final feePlanProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((
   }
 });
 
+/// The server's own sentence for how the fee works ("No platform fee"), from
+/// the day's earnings history; null when it is not there.
+final feeNoteProvider = FutureProvider.autoDispose<String?>((ref) async {
+  try {
+    final dio = ref.watch(dioClientProvider).dio;
+    final res = await dio.get(
+      '/driver/earnings/history/',
+      queryParameters: {'period': 'day'},
+    );
+    final body = res.data;
+    final data = body is Map && body['data'] is Map ? body['data'] : body;
+    final note = data is Map && data['summary'] is Map
+        ? '${(data['summary'] as Map)['fee_note'] ?? ''}'.trim()
+        : '';
+    return note.isEmpty ? null : note;
+  } catch (_) {
+    return null;
+  }
+});
+
+/// Whether the driver pays a platform fee plan rather than a commission. A US
+/// driver with no plan in force pays nothing, which is still not a commission.
+bool usesFeePlan(Map<String, dynamic>? data, {required bool us}) {
+  final plan = data?['plan'];
+  if (plan is Map) return plan['plan_type'] != 'percent_commission';
+  return us;
+}
+
 class PlatformFeeSection extends ConsumerWidget {
   const PlatformFeeSection({super.key});
 
@@ -31,7 +59,11 @@ class PlatformFeeSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = sgL10n(context);
     final data = ref.watch(feePlanProvider).asData?.value;
+    final note = ref.watch(feeNoteProvider).asData?.value;
     final plan = data?['plan'];
+    if (data != null && plan == null && note != null) {
+      return _noteOnly(l.earnPlatformFee, note);
+    }
     if (plan is! Map ||
         plan['plan_type'] == 'percent_commission' ||
         data?['applies_to_my_class'] != true) {
@@ -50,6 +82,7 @@ class PlatformFeeSection extends ConsumerWidget {
         : const {};
     final today = data?['today'];
     final how = <String>[
+      ?note,
       if (amounts['per_trip_fee_minor'] != null)
         l.feePerTrip(m(amounts['per_trip_fee_minor'])),
       if (amounts['daily_pass_minor'] != null)
@@ -59,7 +92,6 @@ class PlatformFeeSection extends ConsumerWidget {
         l.feeFloor(m(plan['earnings_floor_minor'])),
       if (plan['waiver_first_days'] != null)
         l.feeWaiver('${plan['waiver_first_days']}'),
-      l.feeKeep80,
       l.feeOncePerDay,
     ];
     return Padding(
@@ -110,4 +142,17 @@ class PlatformFeeSection extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _noteOnly(String title, String note) => Padding(
+    padding: const EdgeInsets.only(top: SgSpace.s3),
+    child: Column(
+      key: const Key('earn_platform_fee'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: SgText.body.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: SgSpace.s1),
+        Text(note, key: const Key('earn_fee_note'), style: SgText.body),
+      ],
+    ),
+  );
 }

@@ -106,6 +106,40 @@ Future<ResponseBody> _newAccount(RequestOptions o) async {
   return _json(404, {'status': 'error'});
 }
 
+/// A US driver (15 Nov): tips on the period, no fee plan in force, and the
+/// server's own fee sentence.
+Future<ResponseBody> _usDriver(RequestOptions o) async {
+  switch (o.path) {
+    case '/driver/earnings/period/':
+      return _json(
+        200,
+        _ok({
+          'period': o.queryParameters['period'],
+          'start': '2026-11-14',
+          'end': '2026-11-14',
+          'gross': '20.00',
+          'commission': '0.00',
+          'net': '20.00',
+          'tips': '4.00',
+          'earned': '24.00',
+          'cash_collected': '0.00',
+          'trips': 2,
+          'currency': 'USD',
+        }),
+      );
+    case '/driver/fee-plan/':
+      return _json(200, _ok({'plan': null, 'applies_to_my_class': false}));
+    case '/driver/earnings/history/':
+      return _json(
+        200,
+        _ok({
+          'summary': {'fee_note': 'No platform fee'},
+        }),
+      );
+  }
+  return _newAccount(o);
+}
+
 void _expectNoPlaceholders() {
   for (final p in ['–', '…', '•••', '...']) {
     expect(find.text(p), findsNothing, reason: 'placeholder "$p" on screen');
@@ -311,5 +345,27 @@ void main() {
       tester.widget<Text>(find.byKey(const Key('earn_hero_amount'))).data,
       '₹0.00',
     );
+  });
+
+  testWidgets('US driver: tips shown, earned includes them, no commission', (
+    tester,
+  ) async {
+    adapter.handler = _usDriver;
+    await pumpEarnings(tester);
+
+    expect(
+      tester.widget<Text>(find.byKey(const Key('earn_tips'))).data,
+      '+ \$4.00',
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const Key('earn_hero_amount'))).data,
+      '\$24.00',
+    );
+    expect(find.text('Commission'), findsNothing);
+    expect(find.textContaining('after commission'), findsNothing);
+    expect(find.byKey(const Key('earn_fee_note')), findsOneWidget);
+    expect(find.text('No platform fee'), findsOneWidget);
+    expect(find.textContaining('80%'), findsNothing);
+    expect(find.textContaining('Sat, Nov 14'), findsOneWidget);
   });
 }
