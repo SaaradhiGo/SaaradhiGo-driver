@@ -119,13 +119,20 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
     // While a card loads it shows skeletons, not a stale or partial figure.
     String? shown(Object? v) => phase == _Phase.ready ? money(v) : null;
 
-    Object? gross, commission, net, cash;
+    final country = sgIsUsTrip(currency) ? 'US' : null;
+    final feePlan = usesFeePlan(
+      ref.watch(feePlanProvider).asData?.value,
+      us: country == 'US',
+    );
+    Object? gross, commission, net, cash, tips, earned;
     int? trips;
     if (period != null) {
       gross = period['gross'];
       commission = period['commission'];
       net = period['net'];
       cash = period['cash_collected'];
+      tips = period['tips'];
+      earned = period['earned'];
       trips = int.tryParse('${period['trips']}');
     } else if (summary != null && _period == 'today') {
       gross = summary.todayEarned;
@@ -133,7 +140,8 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
       net = summary.todayNet;
       trips = summary.todayTrips;
     }
-    final hero = money(net ?? gross);
+    // 14 Nov: what the driver earned includes tips; `net` alone is the trips.
+    final hero = money(earned ?? net ?? gross);
     final heroLabel = switch (_period) {
       'week' => l.earnPeriodWeek,
       'month' => l.earnPeriodMonth,
@@ -141,11 +149,12 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
     };
     final meta = [
       if (period != null)
-        ?_range(period)
+        ?_range(period, country)
       else if (_period == 'today')
-        sgDay(DateTime.now()),
+        sgDay(DateTime.now(), country: country),
       if (trips != null) l.earnTripsCount(trips),
-      if (net != null && commission != null) l.earnAfterCommission,
+      if (net != null && commission != null)
+        feePlan ? l.earnAfterPlatformFee : l.earnAfterCommission,
     ].join(' · ');
     final ready = balance == null
         ? null
@@ -222,17 +231,24 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
                             shown(gross),
                             loading: phase == _Phase.loading,
                           ),
-                          ?_row(
-                            l.homeCommission,
-                            _minus(shown(commission)),
-                            color: SgColors.danger,
-                            loading: phase == _Phase.loading,
-                          ),
-                          if (DriverDesignFlags.tipsRow)
-                            ?_row(l.earnTips, null),
+                          // A fee plan charges by the day, not per fare: no
+                          // zero "commission" line; the fee section says why.
+                          if (!feePlan || _nonZero(commission))
+                            ?_row(
+                              feePlan ? l.earnPlatformFee : l.homeCommission,
+                              _minus(shown(commission)),
+                              color: SgColors.danger,
+                              loading: phase == _Phase.loading,
+                            ),
+                          if (tips != null)
+                            ?_row(
+                              l.earnTips,
+                              _plus(shown(tips)),
+                              valueKey: const Key('earn_tips'),
+                            ),
                           ?_row(
                             l.earnYouEarned,
-                            shown(net),
+                            shown(earned ?? net),
                             strong: true,
                             color: SgColors.pickup,
                             loading: phase == _Phase.loading,
@@ -381,13 +397,21 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
   );
 
   /// `start` and `end` are the period's first and last local days.
-  String? _range(Map<String, dynamic> p) {
+  String? _range(Map<String, dynamic> p, String? country) {
     final s = DateTime.tryParse('${p['start']}');
     final e = DateTime.tryParse('${p['end']}');
     if (s == null) return null;
-    final start = sgDay(s);
+    final start = sgDay(s, country: country);
     if (e == null || !e.isAfter(s)) return start;
-    return '$start – ${sgDay(e)}';
+    return '$start – ${sgDay(e, country: country)}';
+  }
+
+  static bool _nonZero(Object? v) => (double.tryParse('$v') ?? 0) != 0;
+
+  /// "+ $4.00"; a zero amount carries no plus.
+  String? _plus(String? v) {
+    if (v == null) return null;
+    return RegExp(r'[1-9]').hasMatch(v) ? '+ $v' : v;
   }
 
   /// "− ₹860.00"; a zero amount carries no minus.

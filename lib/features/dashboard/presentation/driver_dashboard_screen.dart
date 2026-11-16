@@ -23,6 +23,7 @@ import '../../earnings/presentation/providers/earnings_providers.dart';
 import '../../support/presentation/widgets/sos_widgets.dart';
 import '../../notifications/presentation/providers/notifications_providers.dart';
 import '../../profile/presentation/providers/profile_providers.dart';
+import '../../requirements/requirements_api.dart';
 import '../../trip/presentation/providers/trip_providers.dart';
 import '../data/data_sources/driver_location_consumer.dart';
 import 'providers/dashboard_providers.dart';
@@ -296,6 +297,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
 
     _listenForSideEffects();
 
+    // Loading the requirements tells the router (and this screen) about a pause.
+    ref.watch(requirementsProvider);
+    ref.watch(driverPausedProvider);
     final engaged = availability.isEngaged;
     final canStart =
         hasNetwork &&
@@ -416,6 +420,14 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
   /// invites a tap that is certain to be refused.
   HomeBlocker? _blocker(ProfileState profileState, LocationState location) {
     final l = sgL10n(context);
+    if (ref.read(driverPausedProvider) != null) {
+      return HomeBlocker(
+        title: l.pausedTitle,
+        body: l.pausedBlockerBody,
+        actionLabel: l.pausedSeeWhy,
+        onAction: () => context.go('/paused'),
+      );
+    }
     if (profileState is ProfileStateLoaded) {
       final profile = profileState.profile;
       if (!profile.approved && !profile.dispatchEligible) {
@@ -423,7 +435,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen>
           title: l.blockerVerifyTitle,
           body: l.blockerVerifyBody,
           actionLabel: l.blockerVerifyAction,
-          onAction: () => context.push('/verification-status'),
+          onAction: () => context.push('/onboarding/ready'),
         );
       }
       final hasVehicle =

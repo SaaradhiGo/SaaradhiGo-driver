@@ -1800,5 +1800,79 @@
   "earnNoTripsDay": "No trips this day.",
   "@earnNoTripsDay": {
     "description": "Driver area v2 (10 Nov)"
+  },
+  "profStripeStatus": "Stripe: {status}",
+  "@profStripeStatus": {
+    "description": "US parity (15 Nov)",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "stripeNotStarted": "Not started",
+  "@stripeNotStarted": {
+    "description": "US parity (15 Nov)"
+  },
+  "stripeInProgress": "In progress",
+  "@stripeInProgress": {
+    "description": "US parity (15 Nov)"
+  },
+  "stripeReady": "Ready",
+  "@stripeReady": {
+    "description": "US parity (15 Nov)"
+  },
+  "earnAfterPlatformFee": "after platform fee",
+  "@earnAfterPlatformFee": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedTitle": "Your account is paused",
+  "@pausedTitle": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedClosedTitle": "Your account is closed",
+  "@pausedClosedTitle": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedWhy": "Why",
+  "@pausedWhy": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedSince": "Since {date}",
+  "@pausedSince": {
+    "description": "US parity (15 Nov)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pausedWhatToDo": "What you can do",
+  "@pausedWhatToDo": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedWhatToDoBody": "You can't go online while your account is paused. We will contact you when our review is done. If you have questions or think this is a mistake, contact support.",
+  "@pausedWhatToDoBody": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedClosedBody": "You can't go online. If you think this is a mistake, contact support.",
+  "@pausedClosedBody": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedContactSupport": "Contact support",
+  "@pausedContactSupport": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedCallSupport": "Call support",
+  "@pausedCallSupport": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedBlockerBody": "You can't go online until this is resolved.",
+  "@pausedBlockerBody": {
+    "description": "US parity (15 Nov)"
+  },
+  "pausedSeeWhy": "See why",
+  "@pausedSeeWhy": {
+    "description": "US parity (15 Nov)"
   }
 }

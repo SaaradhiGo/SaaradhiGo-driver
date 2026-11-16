@@ -72,6 +72,19 @@ class SetupStep {
   final List<String> items;
 }
 
+/// A pause in force (14 Nov): the server's words for why, never the operator's note.
+class PausedInfo {
+  PausedInfo.fromJson(Json j)
+    : reasonCode = (j['reason_code'] as String?) ?? 'other',
+      reason = (j['reason'] as String?) ?? '',
+      since = DateTime.tryParse('${j['since']}'),
+      permanent = j['permanent'] == true;
+
+  final String reasonCode, reason;
+  final DateTime? since;
+  final bool permanent;
+}
+
 class Requirements {
   Requirements.fromJson(this.raw)
     : country = (raw['config'] as Json)['country'] as String,
@@ -93,9 +106,13 @@ class Requirements {
           SetupStep.fromJson(st as Json),
       ],
       nextStep = (raw['checklist'] as Json)['next_step'] as String?,
-      minutesLeft = ((raw['checklist'] as Json)['minutes_left'] as int?) ?? 0;
+      minutesLeft = ((raw['checklist'] as Json)['minutes_left'] as int?) ?? 0,
+      paused = raw['paused'] is Map
+          ? PausedInfo.fromJson(Map<String, dynamic>.from(raw['paused'] as Map))
+          : null;
 
   final Json raw;
+  final PausedInfo? paused;
   final List<SetupStep> steps;
   final String? nextStep;
   final int minutesLeft;
@@ -195,9 +212,25 @@ class RequirementsApi {
 final requirementsApiProvider = Provider<RequirementsApi>(
   (ref) => RequirementsApi(ref.watch(dioClientProvider).dio),
 );
-final requirementsProvider = FutureProvider.autoDispose<Requirements>(
-  (ref) => ref.watch(requirementsApiProvider).load(),
+final requirementsProvider = FutureProvider.autoDispose<Requirements>((
+  ref,
+) async {
+  final r = await ref.watch(requirementsApiProvider).load();
+  // The router reads the pause synchronously, so the last load leaves it here.
+  if (ref.mounted) ref.read(driverPausedProvider.notifier).set(r.paused);
+  return r;
+});
+
+/// The pause from the last requirements load; null when not paused (or unknown).
+final driverPausedProvider = NotifierProvider<DriverPaused, PausedInfo?>(
+  DriverPaused.new,
 );
+
+class DriverPaused extends Notifier<PausedInfo?> {
+  @override
+  PausedInfo? build() => null;
+  void set(PausedInfo? p) => state = p;
+}
 
 /// The server's message for a refused save, else null.
 String? serverMessage(Object e) {
