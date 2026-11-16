@@ -1832,5 +1832,45 @@
   "earnNoTripsDay": "ఈ రోజు ట్రిప్‌లు లేవు.",
   "@earnNoTripsDay": {
     "description": "needs native review"
+  },
+  "homePayoutSetupBanner": "డబ్బు పొందడానికి చెల్లింపులు సెటప్ చేయండి",
+  "@homePayoutSetupBanner": {
+    "description": "needs native review"
+  },
+  "earnWaitingPayoutSetup": "చెల్లింపుల సెటప్ కోసం వేచి ఉంది",
+  "@earnWaitingPayoutSetup": {
+    "description": "needs native review"
+  },
+  "cancelConfirmTitle": "ఈ ట్రిప్‌ను రద్దు చేయాలా?",
+  "@cancelConfirmTitle": {
+    "description": "needs native review"
+  },
+  "cancelConfirmBody": "రైడర్‌కు వెంటనే తెలియజేస్తాం, ఈ ట్రిప్ ముగుస్తుంది.",
+  "@cancelConfirmBody": {
+    "description": "needs native review"
+  },
+  "cancelConfirmFee": "కారణం లేని రద్దుకు ఛార్జీలో {percent}% వరకు, గరిష్ఠంగా {cap} కట్ కావచ్చు.",
+  "@cancelConfirmFee": {
+    "description": "needs native review",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelConfirmYes": "ట్రిప్ రద్దు చేయండి",
+  "@cancelConfirmYes": {
+    "description": "needs native review"
+  },
+  "cancelConfirmKeep": "ట్రిప్ కొనసాగించండి",
+  "@cancelConfirmKeep": {
+    "description": "needs native review"
+  },
+  "offerNoCommission": "కమీషన్ లేదు",
+  "@offerNoCommission": {
+    "description": "needs native review"
   }
 }

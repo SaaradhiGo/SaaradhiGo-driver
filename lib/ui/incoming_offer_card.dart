@@ -433,7 +433,10 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
     final feeLine = !o.onDailyFee
         ? null
         : (o.platformFeeCap != null
-              ? l.offerPlatformFeeToday(o.platformFeeToday ?? '0', o.platformFeeCap!)
+              ? l.offerPlatformFeeToday(
+                  o.platformFeeToday ?? '0',
+                  o.platformFeeCap!,
+                )
               : l.offerPlatformFeeTodayNoCap(o.platformFeeToday ?? '0'));
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -492,7 +495,14 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             value: o.fare!,
             valueKey: o.earning == null ? const Key('offer_amount') : null,
           ),
-        if (commission != null) ...[
+        if (commission != null && isZeroAmount(commission)) ...[
+          const SizedBox(height: 6),
+          Text(
+            l.offerNoCommission,
+            key: const Key('offer_no_commission'),
+            style: SgText.small.copyWith(color: SgColors.inkMuted),
+          ),
+        ] else if (commission != null) ...[
           const SizedBox(height: 6),
           _FareRow(
             key: const Key('offer_commission_row'),
@@ -756,3 +766,8 @@ class _FareRow extends StatelessWidget {
     ),
   );
 }
+
+/// True when a formatted amount or rate ("₹0", "$0.00", "0%") is zero in any
+/// currency: it has digits and none of them is non-zero.
+bool isZeroAmount(String text) =>
+    RegExp(r'\d').hasMatch(text) && !RegExp(r'[1-9]').hasMatch(text);
