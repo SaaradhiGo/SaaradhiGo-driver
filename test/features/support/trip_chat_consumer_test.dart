@@ -69,6 +69,7 @@ void main() {
       tokenReader: () async => 'jwt',
       wsBaseUrlReader: () => 'wss://api.example/',
       serviceFactory: (urlBuilder) => WebSocketService(
+        ticketExchanger: (u) async => u,
         urlBuilder: urlBuilder,
         channelFactory: (_) => channel,
       ),
@@ -96,6 +97,7 @@ void main() {
       tokenReader: () async => 'jwt',
       wsBaseUrlReader: () => 'wss://api.example/',
       serviceFactory: (urlBuilder) => WebSocketService(
+        ticketExchanger: (u) async => u,
         urlBuilder: urlBuilder,
         channelFactory: (_) => channel,
       ),
