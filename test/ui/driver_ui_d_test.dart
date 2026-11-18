@@ -76,12 +76,12 @@ void main() {
       expect(amount.style!.fontSize, 28);
     });
 
-    testWidgets('Go online is 72px', (tester) async {
+    testWidgets('Go online is 48px (product standard)', (tester) async {
       setPhoneSurface(tester);
       addTearDown(tester.view.reset);
       await tester.pumpWidget(sgApp(homeFrame()));
       expect(
-          tester.getSize(find.byKey(const Key('home_go_online'))).height, 72);
+          tester.getSize(find.byKey(const Key('home_go_online'))).height, 48);
     });
 
     testWidgets('a blocker shows as a card and disables Go online',

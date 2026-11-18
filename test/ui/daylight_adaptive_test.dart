@@ -193,13 +193,14 @@ void main() {
     });
   });
 
-  test('light tokens are the brief\'s', () {
+  // 17 Nov 2026: the light tokens are the product standard's (white ground, three greys).
+  test('light tokens are the standard\'s', () {
     const p = SgPalette.light;
-    expect(p.bg000, const Color(0xFFFAF7F2));
+    expect(p.bg000, const Color(0xFFFFFFFF));
     expect(p.bg100, const Color(0xFFFFFFFF));
     expect(p.gold500, const Color(0xFFF5A623));
     expect(p.onGold, const Color(0xFF1B1A17));
-    expect(p.goldText, const Color(0xFF8A5300));
+    expect(p.goldText, const Color(0xFF8A5A00));
     expect(p.logo, const Color(0xFF7A6000));
     expect(p.pickup, const Color(0xFF0D7762));
     expect(p.danger, const Color(0xFFB3261E));
