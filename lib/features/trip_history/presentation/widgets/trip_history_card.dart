@@ -99,9 +99,7 @@ class TripHistoryCard extends StatelessWidget {
                     Text(
                       fareText,
                       style: AppTypography.dataMono.copyWith(
-                        color: isCompleted
-                            ? AppColors.primaryText
-                            : AppColors.onSurfaceVariant,
+                        color: isCompleted ? SgColors.ink : AppColors.onSurfaceVariant,
                         fontSize: SgText.sizeTitle,
                         fontWeight: FontWeight.w600,
                       ),
@@ -113,18 +111,13 @@ class TripHistoryCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: isCompleted
-                            ? AppColors.primaryContainer.withValues(alpha: 0.15)
-                            : AppColors.surfaceContainerHigh,
+                        // 18 Nov: status colours for status (green for done), never a gold-cream pill.
+                        color: isCompleted ? SgStatus.okBg : AppColors.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(
                           AppSpacing.radiusPill,
                         ),
                         border: Border.all(
-                          color: isCompleted
-                              ? AppColors.primaryContainer.withValues(
-                                  alpha: 0.4,
-                                )
-                              : AppColors.outlineVariant,
+                          color: isCompleted ? SgStatus.okBg : AppColors.outlineVariant,
                         ),
                       ),
                       child: Text(
@@ -132,9 +125,7 @@ class TripHistoryCard extends StatelessWidget {
                             ? 'Completed'
                             : (isCancelled ? 'Cancelled' : 'In Progress'),
                         style: AppTypography.labelCaps.copyWith(
-                          color: isCompleted
-                              ? AppColors.primaryText
-                              : AppColors.onSurfaceVariant,
+                          color: isCompleted ? SgStatus.okInk : AppColors.onSurfaceVariant,
                           fontSize: SgText.sizeSmall,
                         ),
                       ),

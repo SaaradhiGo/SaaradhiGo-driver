@@ -864,13 +864,16 @@ class HomeNotice extends StatelessWidget {
       vertical: SgSpace.s1,
     ),
     constraints: const BoxConstraints(minHeight: kSgTouch),
+    // 18 Nov: a white card with a hairline; the warning colour is the icon only, not a cream tile.
     decoration: BoxDecoration(
-      color: SgStatus.warnBg,
+      color: SgColors.bg100,
       borderRadius: BorderRadius.circular(SgRadius.md),
-      border: Border.all(color: SgStatus.warnLine),
+      border: Border.all(color: SgColors.line),
     ),
     child: Row(
       children: [
+        Icon(Icons.info_outline, size: 20, color: SgStatus.warnInk),
+        const SizedBox(width: SgSpace.s2),
         Expanded(
           child: Text(
             text,

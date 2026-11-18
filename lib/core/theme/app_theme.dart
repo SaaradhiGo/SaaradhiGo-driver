@@ -48,6 +48,10 @@ class AppTheme {
         bodyColor: AppColors.onBackground,
         displayColor: AppColors.whiteText,
       ),
+      // 18 Nov: a text button is gold TEXT (4.5:1), never the gold fill colour.
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(foregroundColor: SgColors.goldText),
+      ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,

@@ -144,8 +144,8 @@ class SgPalette {
     gold700: Color(0xFFD48A0E),
     onGold: Color(0xFF1B1A17),
     goldText: Color(0xFF8A5A00),
-    goldLine: Color(0x478A5300), // rgba(138,83,0,0.28)
-    goldSoft: Color(0x24F5A623), // rgba(245,166,35,0.14)
+    goldLine: Color(0xFFF5A623), // 18 Nov: a selected edge is the marigold itself
+    goldSoft: Color(0xFFF6F6F6), // 18 Nov: selected fills are the grey band, not cream
     logo: Color(0xFF7A6000),
     bgGlass: Color(0xE6FFFFFF),
     scrim: Color(0x66000000),
