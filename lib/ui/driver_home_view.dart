@@ -351,9 +351,9 @@ class DriverHomeView extends StatelessWidget {
         : (blocker?.body ?? l.homeOfflineHint);
     return Container(
       key: const Key('home_sheet'),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SgNoir.sheet,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, SgSpace.s4),
       child: Column(
@@ -592,7 +592,7 @@ class _NoirLoadError extends StatelessWidget {
   );
 }
 
-/// 72px, radius 18: amber "Go online" with the power icon, or an outlined
+/// 48px, radius 12 (product standard): amber "Go online" with the power icon, or an outlined
 /// "Go offline" on the dark sheet.
 class _NoirButton extends StatelessWidget {
   const _NoirButton({
@@ -619,18 +619,18 @@ class _NoirButton extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: primary ? (on ? SgNoir.amber : SgNoir.pill) : SgNoir.sheet,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 72),
+            constraints: const BoxConstraints(minHeight: 48),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             decoration: primary
                 ? null
                 : BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: SgNoir.line),
                   ),
             child: Row(

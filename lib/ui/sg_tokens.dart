@@ -125,24 +125,25 @@ class SgPalette {
     classSuv: Color(0xFFAAB6C8),
   );
 
+  // 17 Nov 2026: the product standard (white, light grey bands, three greys), as on the web.
   static const light = SgPalette(
     brightness: Brightness.light,
-    bg000: Color(0xFFFAF7F2),
+    bg000: Color(0xFFFFFFFF),
     bg100: Color(0xFFFFFFFF),
-    bg200: Color(0xFFF3EEE6),
-    bg300: Color(0xFFE9E3D9),
-    line: Color(0xFFE7E1D7),
-    lineStrong: Color(0xFF8C8579),
-    ink: Color(0xFF1B1A17),
-    inkMuted: Color(0xFF57524A),
-    inkSubtle: Color(0xFF6B655B),
+    bg200: Color(0xFFF6F6F6),
+    bg300: Color(0xFFE4E4E4),
+    line: Color(0xFFE4E4E4),
+    lineStrong: Color(0xFF8A8A8A),
+    ink: Color(0xFF121212),
+    inkMuted: Color(0xFF4A4A4A),
+    inkSubtle: Color(0xFF6B6B6B),
     // Daylight (owner brief, 6 Nov): a marigold primary with ink on it, and
     // #8A5300 for gold as text and links.
     gold500: Color(0xFFF5A623),
     gold300: Color(0xFFF8BF5E),
     gold700: Color(0xFFD48A0E),
     onGold: Color(0xFF1B1A17),
-    goldText: Color(0xFF8A5300),
+    goldText: Color(0xFF8A5A00),
     goldLine: Color(0x478A5300), // rgba(138,83,0,0.28)
     goldSoft: Color(0x24F5A623), // rgba(245,166,35,0.14)
     logo: Color(0xFF7A6000),
@@ -168,7 +169,7 @@ class SgPalette {
 class SgColors {
   SgColors._();
 
-  static SgPalette _active = SgPalette.dark;
+  static SgPalette _active = SgPalette.light;
 
   /// The palette every getter answers from.
   static SgPalette get palette => _active;
@@ -321,34 +322,40 @@ const Duration kSgSheet = Duration(milliseconds: 240);
 /// DRIVER badge, the home sheet and the tab bar -- is the same in both themes.
 class SgNoir {
   SgNoir._();
+  // 17 Nov 2026 (product standard): the driver's home sheet follows the theme. Light is the
+  // default: a white sheet, grey tiles, the standard's greys; the top bar stays black (the header).
+  // Dark keeps the night-one look.
   static const bar = Color(0xFF0B0B0B);
-  static const sheet = Color(0xFF1B1A17);
-  static const tile = Color(0xFF262420);
-  static const pill = Color(0xFF2E2C28);
-  static const ink = Color(0xFFF3EEE6);
-  static const inkMuted = Color(0xFFA8A29A);
-  static const pillInk = Color(0xFFD8D2C6);
-  static const gold = Color(0xFFF5C451);
-  static const line = Color(0xFF3A3A3A);
+  // On the black bar, in every theme.
+  static const onBar = Color(0xFFF3EEE6);
+  static const barLine = Color(0xFF3A3A3A);
+  static Color get sheet => SgColors.isDark ? const Color(0xFF1B1A17) : const Color(0xFFFFFFFF);
+  static Color get tile => SgColors.isDark ? const Color(0xFF262420) : const Color(0xFFF6F6F6);
+  static Color get pill => SgColors.isDark ? const Color(0xFF2E2C28) : const Color(0xFFF6F6F6);
+  static Color get ink => SgColors.isDark ? const Color(0xFFF3EEE6) : const Color(0xFF121212);
+  static Color get inkMuted => SgColors.isDark ? const Color(0xFFA8A29A) : const Color(0xFF4A4A4A);
+  static Color get pillInk => SgColors.isDark ? const Color(0xFFD8D2C6) : const Color(0xFF4A4A4A);
+  static Color get gold => SgColors.isDark ? const Color(0xFFF5C451) : const Color(0xFF8A5A00);
+  static Color get line => SgColors.isDark ? const Color(0xFF3A3A3A) : const Color(0xFFE4E4E4);
   static const amber = Color(0xFFF5A623);
-  static const onAmber = Color(0xFF1B1A17);
+  static const onAmber = Color(0xFF121212);
 }
 
 /// Status tints from the designs (ok, warn, err), per theme.
 class SgStatus {
   SgStatus._();
   static Color get okBg =>
-      SgColors.isDark ? const Color(0xFF12332A) : const Color(0xFFDDF1E6);
+      SgColors.isDark ? const Color(0xFF12332A) : const Color(0xFFE8F3F0);
   static Color get okInk =>
       SgColors.isDark ? const Color(0xFF46C98B) : const Color(0xFF0B6B57);
   static Color get warnBg =>
-      SgColors.isDark ? const Color(0xFF3A2C10) : const Color(0xFFFCEFD3);
+      SgColors.isDark ? const Color(0xFF3A2C10) : const Color(0xFFFFF4DC);
   static Color get warnLine =>
       SgColors.isDark ? const Color(0xFF5A4518) : const Color(0xFFF0D9A8);
   static Color get warnInk =>
       SgColors.isDark ? const Color(0xFFF5C451) : const Color(0xFF7A4A00);
   static Color get rowFill =>
-      SgColors.isDark ? const Color(0xFF242424) : const Color(0xFFF3EEE6);
+      SgColors.isDark ? const Color(0xFF242424) : const Color(0xFFF6F6F6);
   static Color get disabledBg =>
       SgColors.isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE7E1D7);
   static Color get disabledInk =>

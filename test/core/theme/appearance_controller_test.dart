@@ -25,19 +25,22 @@ void main() {
 
   tearDown(() => AppearanceController.clock = DateTime.now);
 
-  test('automatic is the default: light at noon in Hyderabad', () async {
-    await AppearanceController.restore();
-    AppearanceController.clock = () => DateTime.utc(2026, 11, 5, 6, 30);
-    final s = container(fix: hyderabad).read(appearanceControllerProvider);
-    expect(s.mode, AppearanceMode.automatic);
-    expect(s.brightness, Brightness.light);
-  });
-
-  test('automatic: dark at 21:00 in Hyderabad', () async {
+  // 17 Nov 2026 (product standard): light is the default, at any hour, until the driver chooses.
+  test('light is the default, even at 21:00 in Hyderabad', () async {
     await AppearanceController.restore();
     AppearanceController.clock = () => DateTime.utc(2026, 11, 5, 15, 30);
     final s = container(fix: hyderabad).read(appearanceControllerProvider);
-    expect(s.brightness, Brightness.dark);
+    expect(s.mode, AppearanceMode.light);
+    expect(s.brightness, Brightness.light);
+  });
+
+  test('automatic, when chosen: light at noon, dark at 21:00 in Hyderabad', () async {
+    SharedPreferences.setMockInitialValues({AppearanceController.prefsKey: 'automatic'});
+    await AppearanceController.restore();
+    AppearanceController.clock = () => DateTime.utc(2026, 11, 5, 6, 30);
+    expect(container(fix: hyderabad).read(appearanceControllerProvider).brightness, Brightness.light);
+    AppearanceController.clock = () => DateTime.utc(2026, 11, 5, 15, 30);
+    expect(container(fix: hyderabad).read(appearanceControllerProvider).brightness, Brightness.dark);
   });
 
   test('a forced mode wins and is persisted', () async {
