@@ -15,6 +15,7 @@ import '../../../../ui/sg_load_state.dart';
 import '../../../../ui/sg_text.dart';
 import '../../../../ui/sg_tokens.dart';
 import '../providers/earnings_providers.dart';
+import '../../../requirements/requirements_api.dart';
 
 /// One period's totals from `GET /driver/earnings/period/?period=`.
 ///
@@ -87,6 +88,8 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
     final state = ref.watch(earningsNotifierProvider);
     final summary = state.summary;
     final balance = state.withdrawalBalance;
+    // Until payouts can go out the balance is not withdrawable; unknown keeps the usual words.
+    final payoutReady = ref.watch(payoutReadyProvider);
     // The period endpoint decides whether Week and Month exist at all; only
     // a 404 (an older backend) takes them away.
     final todayPeriod = ref.watch(driverEarningsPeriodProvider('today'));
@@ -287,7 +290,9 @@ class _DriverEarningsTabState extends ConsumerState<DriverEarningsTab> {
                           )
                         else
                           ?_row(
-                            l.earnReadyToWithdraw,
+                            payoutReady == false
+                                ? l.earnWaitingPayoutSetup
+                                : l.earnReadyToWithdraw,
                             ready,
                             strong: true,
                             loading: balance == null,

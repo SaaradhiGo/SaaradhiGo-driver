@@ -11,11 +11,18 @@ import 'sg_tokens.dart';
 import 'sg_widgets.dart';
 import 'sg_l10n.dart';
 import 'sg_load_state.dart';
+import 'sg_format.dart';
 
 /// Whole currency units: "₹248". Null for an amount that does not parse.
-String? wholeMoney(String? raw) {
+/// [currency] is the trip's own ("USD"); a US trip never reads in rupees,
+/// whatever market config the app holds (16 Nov, trip 226).
+String? wholeMoney(String? raw, {String? currency}) {
   if (raw == null) return null;
   final market = MarketConfigStore.instance.current;
+  final code = (currency ?? '').trim().toUpperCase();
+  if (code.isNotEmpty && code != market.currencyCode.toUpperCase()) {
+    return sgMoney(raw, currency: code);
+  }
   final value = double.tryParse(market.stripSymbol(raw).replaceAll(',', ''));
   if (value == null) return null;
   final digits = value.round().abs().toString();
@@ -344,9 +351,9 @@ class DriverHomeView extends StatelessWidget {
         : (blocker?.body ?? l.homeOfflineHint);
     return Container(
       key: const Key('home_sheet'),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SgNoir.sheet,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, SgSpace.s4),
       child: Column(
@@ -585,7 +592,7 @@ class _NoirLoadError extends StatelessWidget {
   );
 }
 
-/// 72px, radius 18: amber "Go online" with the power icon, or an outlined
+/// 48px, radius 12 (product standard): amber "Go online" with the power icon, or an outlined
 /// "Go offline" on the dark sheet.
 class _NoirButton extends StatelessWidget {
   const _NoirButton({
@@ -612,18 +619,18 @@ class _NoirButton extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: primary ? (on ? SgNoir.amber : SgNoir.pill) : SgNoir.sheet,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 72),
+            constraints: const BoxConstraints(minHeight: 48),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             decoration: primary
                 ? null
                 : BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: SgNoir.line),
                   ),
             child: Row(
@@ -857,13 +864,16 @@ class HomeNotice extends StatelessWidget {
       vertical: SgSpace.s1,
     ),
     constraints: const BoxConstraints(minHeight: kSgTouch),
+    // 18 Nov: a white card with a hairline; the warning colour is the icon only, not a cream tile.
     decoration: BoxDecoration(
-      color: SgStatus.warnBg,
+      color: SgColors.bg100,
       borderRadius: BorderRadius.circular(SgRadius.md),
-      border: Border.all(color: SgStatus.warnLine),
+      border: Border.all(color: SgColors.line),
     ),
     child: Row(
       children: [
+        Icon(Icons.info_outline, size: 20, color: SgStatus.warnInk),
+        const SizedBox(width: SgSpace.s2),
         Expanded(
           child: Text(
             text,

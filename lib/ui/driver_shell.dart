@@ -41,7 +41,7 @@ class DriverTopBar extends StatelessWidget {
                   width: 44,
                   height: 44,
                   child: Center(
-                    child: SgIcon(SgIcons.back, color: SgNoir.ink),
+                    child: SgIcon(SgIcons.back, color: SgNoir.onBar),
                   ),
                 ),
               ),
@@ -53,7 +53,7 @@ class DriverTopBar extends StatelessWidget {
                 title!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: SgText.title.copyWith(color: SgNoir.ink),
+                style: SgText.title.copyWith(color: SgNoir.onBar),
               ),
             )
           else ...[
@@ -102,12 +102,12 @@ class DriverTopBar extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: SgNoir.line),
+                    border: Border.all(color: SgNoir.barLine),
                   ),
                   child: Center(
                     child: SgIcon(
                       '<path d="M4 7h16M4 12h16M4 17h16"/>',
-                      color: SgNoir.ink,
+                      color: SgNoir.onBar,
                     ),
                   ),
                 ),

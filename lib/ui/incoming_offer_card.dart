@@ -10,11 +10,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../core/market/market_config_store.dart';
 import '../core/notifications/offer_alert.dart';
 import '../core/maps/sg_map.dart';
 import '../domain/models/trip_model.dart';
 import 'driver_home_view.dart';
+import 'sg_format.dart';
 import 'sg_l10n.dart';
 import 'sg_text.dart';
 import 'sg_tokens.dart';
@@ -67,6 +67,7 @@ class OfferData {
     this.pickup,
     this.destination,
     this.expiresAt,
+    this.currency,
   });
 
   /// Whole currency: "₹248".
@@ -107,6 +108,9 @@ class OfferData {
   final LatLng? destination;
   final DateTime? expiresAt;
 
+  /// The trip's currency from the frame ("USD"): money and distance follow it.
+  final String? currency;
+
   /// The "Fare ₹X − Y% commission ₹Z" line is shown only when every part of
   /// it came from the frame.
   bool get hasFareLine =>
@@ -144,17 +148,21 @@ class OfferData {
         .toLowerCase();
     final klass = trip?.vehicleType ?? text(['ride_class', 'vehicle_class']);
     final rating = number(['rider_rating'])?.toDouble();
+    final cur = trip?.currency ?? text(['currency']);
     LatLng? point(double? lat, double? lng) =>
         lat == null || lng == null ? null : LatLng(lat, lng);
 
     return OfferData(
-      fare: wholeMoney(trip?.estimatedFare ?? text(['estimated_fare', 'fare'])),
-      earning: wholeMoney(text(['earning'])),
+      fare: wholeMoney(
+        trip?.estimatedFare ?? text(['estimated_fare', 'fare']),
+        currency: cur,
+      ),
+      earning: wholeMoney(text(['earning']), currency: cur),
       commissionPercent: percentText(p['commission_rate']),
-      commissionAmount: wholeMoney(text(['commission_amount'])),
+      commissionAmount: wholeMoney(text(['commission_amount']), currency: cur),
       feePlanType: text(['fee_plan_type']),
-      platformFeeToday: wholeMoney(text(['platform_fee_today'])),
-      platformFeeCap: wholeMoney(text(['platform_fee_cap'])),
+      platformFeeToday: wholeMoney(text(['platform_fee_today']), currency: cur),
+      platformFeeCap: wholeMoney(text(['platform_fee_cap']), currency: cur),
       riderRating: rating != null && rating > 0 ? rating : null,
       classCode: klass,
       className: klass == null || klass.isEmpty
@@ -178,6 +186,7 @@ class OfferData {
       pickup: point(trip?.pickupLat, trip?.pickupLng),
       destination: point(trip?.destinationLat, trip?.destinationLng),
       expiresAt: DateTime.tryParse(text(['expires_at']) ?? '')?.toLocal(),
+      currency: cur,
     );
   }
 }
@@ -398,10 +407,9 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
   }
 
   Widget _body(AppLocalizations l, OfferData o) {
-    final market = MarketConfigStore.instance.current;
     final pickupDistance = o.pickupKm == null
         ? null
-        : market.formatDistanceKm(o.pickupKm!);
+        : sgDistance(o.pickupKm!, currency: o.currency);
     final headline = [
       ?o.className,
       if (pickupDistance != null)
@@ -420,7 +428,7 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
 
     final tripDistance = o.tripKm == null
         ? null
-        : l.offerTripDistance(market.formatDistanceKm(o.tripKm!));
+        : l.offerTripDistance(sgDistance(o.tripKm!, currency: o.currency));
     // Commission: the frame's own amount, else the rate the earnings API
     // reports (the fee rule: shown as the API sent it, never computed here).
     final commission = o.onDailyFee
@@ -433,7 +441,10 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
     final feeLine = !o.onDailyFee
         ? null
         : (o.platformFeeCap != null
-              ? l.offerPlatformFeeToday(o.platformFeeToday ?? '0', o.platformFeeCap!)
+              ? l.offerPlatformFeeToday(
+                  o.platformFeeToday ?? '0',
+                  o.platformFeeCap!,
+                )
               : l.offerPlatformFeeTodayNoCap(o.platformFeeToday ?? '0'));
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -492,7 +503,14 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             value: o.fare!,
             valueKey: o.earning == null ? const Key('offer_amount') : null,
           ),
-        if (commission != null) ...[
+        if (commission != null && isZeroAmount(commission)) ...[
+          const SizedBox(height: 6),
+          Text(
+            l.offerNoCommission,
+            key: const Key('offer_no_commission'),
+            style: SgText.small.copyWith(color: SgColors.inkMuted),
+          ),
+        ] else if (commission != null) ...[
           const SizedBox(height: 6),
           _FareRow(
             key: const Key('offer_commission_row'),
@@ -756,3 +774,8 @@ class _FareRow extends StatelessWidget {
     ),
   );
 }
+
+/// True when a formatted amount or rate ("₹0", "$0.00", "0%") is zero in any
+/// currency: it has digits and none of them is non-zero.
+bool isZeroAmount(String text) =>
+    RegExp(r'\d').hasMatch(text) && !RegExp(r'[1-9]').hasMatch(text);

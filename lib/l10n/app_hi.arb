@@ -1832,5 +1832,45 @@
   "earnNoTripsDay": "इस दिन कोई ट्रिप नहीं।",
   "@earnNoTripsDay": {
     "description": "needs native review"
+  },
+  "homePayoutSetupBanner": "पैसे पाने के लिए भुगतान सेट करें",
+  "@homePayoutSetupBanner": {
+    "description": "needs native review"
+  },
+  "earnWaitingPayoutSetup": "भुगतान सेटअप का इंतज़ार",
+  "@earnWaitingPayoutSetup": {
+    "description": "needs native review"
+  },
+  "cancelConfirmTitle": "यह ट्रिप रद्द करें?",
+  "@cancelConfirmTitle": {
+    "description": "needs native review"
+  },
+  "cancelConfirmBody": "राइडर को तुरंत बताया जाएगा और यह ट्रिप खत्म हो जाएगी।",
+  "@cancelConfirmBody": {
+    "description": "needs native review"
+  },
+  "cancelConfirmFee": "बिना उचित कारण रद्द करने पर किराए का {percent}%, अधिकतम {cap}, कट सकता है।",
+  "@cancelConfirmFee": {
+    "description": "needs native review",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelConfirmYes": "ट्रिप रद्द करें",
+  "@cancelConfirmYes": {
+    "description": "needs native review"
+  },
+  "cancelConfirmKeep": "ट्रिप जारी रखें",
+  "@cancelConfirmKeep": {
+    "description": "needs native review"
+  },
+  "offerNoCommission": "कोई कमीशन नहीं",
+  "@offerNoCommission": {
+    "description": "needs native review"
   }
 }

@@ -15,6 +15,7 @@ void main() {
       positionReader: () => const LatLng(17.385, 78.486),
       wsBaseUrlReader: () => 'wss://api.example/',
       serviceFactory: (urlBuilder) => WebSocketService(
+        ticketExchanger: (u) async => u,
         urlBuilder: urlBuilder,
         channelFactory: (_) => channel,
       ),
@@ -87,6 +88,7 @@ void main() {
       positionReader: () => const LatLng(17.385, 78.486),
       wsBaseUrlReader: () => 'wss://api.example/',
       serviceFactory: (urlBuilder) => WebSocketService(
+        ticketExchanger: (u) async => u,
         urlBuilder: urlBuilder,
         channelFactory: (_) => channel,
       ),

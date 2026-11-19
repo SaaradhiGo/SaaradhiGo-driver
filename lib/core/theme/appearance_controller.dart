@@ -1,6 +1,7 @@
 /// Light or dark, and who decides.
 ///
-/// Automatic (the default): light between local sunrise and sunset, dark from
+/// Light is the default (product standard, 17 Nov 2026: light unless the driver chooses).
+/// Automatic (a choice in Profile): light between local sunrise and sunset, dark from
 /// sunset to sunrise. The sun times are computed on the device (sun_times.dart)
 /// from the clock and the last GPS fix the app already has; with no fix, the
 /// first market city's centre from app-config; with neither, 06:00-18:00 on
@@ -58,7 +59,7 @@ class AppearanceController extends Notifier<AppearanceState> {
 
   /// Read before the first frame by [restore], so the app opens in the right
   /// theme without a flash.
-  static AppearanceMode _restored = AppearanceMode.automatic;
+  static AppearanceMode _restored = AppearanceMode.light;
 
   /// The clock. Tests replace it.
   @visibleForTesting
@@ -70,13 +71,13 @@ class AppearanceController extends Notifier<AppearanceState> {
       final prefs = await SharedPreferences.getInstance();
       _restored = _parse(prefs.getString(prefsKey));
     } catch (_) {
-      _restored = AppearanceMode.automatic;
+      _restored = AppearanceMode.light;
     }
   }
 
   static AppearanceMode _parse(String? raw) => AppearanceMode.values.firstWhere(
     (m) => m.name == raw,
-    orElse: () => AppearanceMode.automatic,
+    orElse: () => AppearanceMode.light,
   );
 
   Timer? _timer;

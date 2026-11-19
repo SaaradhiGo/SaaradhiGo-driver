@@ -75,10 +75,10 @@ class ActiveTripNavigationScreen extends ConsumerWidget {
           trip.durationMin,
           currency: trip.currency,
         ),
-        fare: fare == null ? null : exactMoney(fare),
+        fare: fare == null ? null : exactMoney(fare, currency: trip.currency),
         earning: trip.driverEarning == null
             ? null
-            : exactMoney(trip.driverEarning),
+            : exactMoney(trip.driverEarning, currency: trip.currency),
         payment: paymentLabel(trip.paymentMethod, sgL10n(context)),
         busy: session.isBusy,
         onComplete: () =>

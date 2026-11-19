@@ -33,8 +33,13 @@ String initialsOf(String? full) {
 
 /// The exact amount to collect: "₹150", or "$12.40" when there are cents.
 /// Cash is never rounded on screen; INR fares already arrive whole.
-String exactMoney(String? raw) {
+String exactMoney(String? raw, {String? currency}) {
   final market = MarketConfigStore.instance.current;
+  final code = (currency ?? '').trim().toUpperCase();
+  if (code.isNotEmpty && code != market.currencyCode.toUpperCase()) {
+    final v = double.tryParse((raw ?? '').replaceAll(',', '').trim()) ?? 0;
+    return sgMoney(v, currency: code, whole: v == v.roundToDouble()) ?? '';
+  }
   final value =
       double.tryParse(market.stripSymbol(raw ?? '').replaceAll(',', '')) ?? 0;
   if (value == value.roundToDouble()) return wholeMoney('$value') ?? '';

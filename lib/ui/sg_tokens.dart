@@ -125,26 +125,27 @@ class SgPalette {
     classSuv: Color(0xFFAAB6C8),
   );
 
+  // 17 Nov 2026: the product standard (white, light grey bands, three greys), as on the web.
   static const light = SgPalette(
     brightness: Brightness.light,
-    bg000: Color(0xFFFAF7F2),
+    bg000: Color(0xFFFFFFFF),
     bg100: Color(0xFFFFFFFF),
-    bg200: Color(0xFFF3EEE6),
-    bg300: Color(0xFFE9E3D9),
-    line: Color(0xFFE7E1D7),
-    lineStrong: Color(0xFF8C8579),
-    ink: Color(0xFF1B1A17),
-    inkMuted: Color(0xFF57524A),
-    inkSubtle: Color(0xFF6B655B),
+    bg200: Color(0xFFF6F6F6),
+    bg300: Color(0xFFE4E4E4),
+    line: Color(0xFFE4E4E4),
+    lineStrong: Color(0xFF8A8A8A),
+    ink: Color(0xFF121212),
+    inkMuted: Color(0xFF4A4A4A),
+    inkSubtle: Color(0xFF6B6B6B),
     // Daylight (owner brief, 6 Nov): a marigold primary with ink on it, and
     // #8A5300 for gold as text and links.
     gold500: Color(0xFFF5A623),
     gold300: Color(0xFFF8BF5E),
     gold700: Color(0xFFD48A0E),
     onGold: Color(0xFF1B1A17),
-    goldText: Color(0xFF8A5300),
-    goldLine: Color(0x478A5300), // rgba(138,83,0,0.28)
-    goldSoft: Color(0x24F5A623), // rgba(245,166,35,0.14)
+    goldText: Color(0xFF8A5A00),
+    goldLine: Color(0xFFF5A623), // 18 Nov: a selected edge is the marigold itself
+    goldSoft: Color(0xFFF6F6F6), // 18 Nov: selected fills are the grey band, not cream
     logo: Color(0xFF7A6000),
     bgGlass: Color(0xE6FFFFFF),
     scrim: Color(0x66000000),
@@ -168,7 +169,7 @@ class SgPalette {
 class SgColors {
   SgColors._();
 
-  static SgPalette _active = SgPalette.dark;
+  static SgPalette _active = SgPalette.light;
 
   /// The palette every getter answers from.
   static SgPalette get palette => _active;
@@ -321,36 +322,107 @@ const Duration kSgSheet = Duration(milliseconds: 240);
 /// DRIVER badge, the home sheet and the tab bar -- is the same in both themes.
 class SgNoir {
   SgNoir._();
+  // 17 Nov 2026 (product standard): the driver's home sheet follows the theme. Light is the
+  // default: a white sheet, grey tiles, the standard's greys; the top bar stays black (the header).
+  // Dark keeps the night-one look.
   static const bar = Color(0xFF0B0B0B);
-  static const sheet = Color(0xFF1B1A17);
-  static const tile = Color(0xFF262420);
-  static const pill = Color(0xFF2E2C28);
-  static const ink = Color(0xFFF3EEE6);
-  static const inkMuted = Color(0xFFA8A29A);
-  static const pillInk = Color(0xFFD8D2C6);
-  static const gold = Color(0xFFF5C451);
-  static const line = Color(0xFF3A3A3A);
+  // On the black bar, in every theme.
+  static const onBar = Color(0xFFF3EEE6);
+  static const barLine = Color(0xFF3A3A3A);
+  static Color get sheet => SgColors.isDark ? const Color(0xFF1B1A17) : const Color(0xFFFFFFFF);
+  static Color get tile => SgColors.isDark ? const Color(0xFF262420) : const Color(0xFFF6F6F6);
+  static Color get pill => SgColors.isDark ? const Color(0xFF2E2C28) : const Color(0xFFF6F6F6);
+  static Color get ink => SgColors.isDark ? const Color(0xFFF3EEE6) : const Color(0xFF121212);
+  static Color get inkMuted => SgColors.isDark ? const Color(0xFFA8A29A) : const Color(0xFF4A4A4A);
+  static Color get pillInk => SgColors.isDark ? const Color(0xFFD8D2C6) : const Color(0xFF4A4A4A);
+  static Color get gold => SgColors.isDark ? const Color(0xFFF5C451) : const Color(0xFF8A5A00);
+  static Color get line => SgColors.isDark ? const Color(0xFF3A3A3A) : const Color(0xFFE4E4E4);
   static const amber = Color(0xFFF5A623);
-  static const onAmber = Color(0xFF1B1A17);
+  static const onAmber = Color(0xFF121212);
 }
 
 /// Status tints from the designs (ok, warn, err), per theme.
 class SgStatus {
   SgStatus._();
   static Color get okBg =>
-      SgColors.isDark ? const Color(0xFF12332A) : const Color(0xFFDDF1E6);
+      SgColors.isDark ? const Color(0xFF12332A) : const Color(0xFFE8F3F0);
   static Color get okInk =>
       SgColors.isDark ? const Color(0xFF46C98B) : const Color(0xFF0B6B57);
   static Color get warnBg =>
-      SgColors.isDark ? const Color(0xFF3A2C10) : const Color(0xFFFCEFD3);
+      SgColors.isDark ? const Color(0xFF3A2C10) : const Color(0xFFFFF4DC);
   static Color get warnLine =>
       SgColors.isDark ? const Color(0xFF5A4518) : const Color(0xFFF0D9A8);
   static Color get warnInk =>
       SgColors.isDark ? const Color(0xFFF5C451) : const Color(0xFF7A4A00);
   static Color get rowFill =>
-      SgColors.isDark ? const Color(0xFF242424) : const Color(0xFFF3EEE6);
+      SgColors.isDark ? const Color(0xFF242424) : const Color(0xFFF6F6F6);
   static Color get disabledBg =>
       SgColors.isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE7E1D7);
   static Color get disabledInk =>
       SgColors.isDark ? const Color(0xFF8C8579) : const Color(0xFF8A857C);
+}
+
+/// The product standard (owner brief, 17 Nov 2026), the same values as the web's `--ui-*` tokens:
+/// white ground, very light grey bands, three text greys, black header, gold only for the primary
+/// action and key highlights, status colours only for status. Light unless the person chooses dark.
+/// `sg_standard_theme.dart` builds the app theme from it; Phase 2 moves every screen onto it.
+@immutable
+class SgStandardPalette {
+  const SgStandardPalette._({
+    required this.brightness,
+    required this.bg,
+    required this.band,
+    required this.surface,
+    required this.line,
+    required this.lineStrong,
+    required this.text,
+    required this.text2,
+    required this.text3,
+    required this.ink,
+    required this.onInk,
+    required this.gold,
+    required this.onGold,
+    required this.goldText,
+    required this.ok,
+    required this.okBg,
+    required this.warn,
+    required this.warnBg,
+    required this.bad,
+    required this.badBg,
+  });
+
+  final Brightness brightness;
+  final Color bg, band, surface, line, lineStrong, text, text2, text3, ink, onInk;
+  final Color gold, onGold, goldText, ok, okBg, warn, warnBg, bad, badBg;
+
+  static const light = SgStandardPalette._(
+    brightness: Brightness.light,
+    bg: Color(0xFFFFFFFF), band: Color(0xFFF6F6F6), surface: Color(0xFFFFFFFF),
+    line: Color(0xFFE4E4E4), lineStrong: Color(0xFFBDBDBD),
+    text: Color(0xFF121212), text2: Color(0xFF4A4A4A), text3: Color(0xFF6B6B6B),
+    ink: Color(0xFF000000), onInk: Color(0xFFFFFFFF),
+    gold: Color(0xFFF5A623), onGold: Color(0xFF121212), goldText: Color(0xFF8A5A00),
+    ok: Color(0xFF0D7762), okBg: Color(0xFFE8F3F0), warn: Color(0xFF8A5A00), warnBg: Color(0xFFFFF4DC),
+    bad: Color(0xFFB3261E), badBg: Color(0xFFFCECEB),
+  );
+
+  static const dark = SgStandardPalette._(
+    brightness: Brightness.dark,
+    bg: Color(0xFF0B0B0B), band: Color(0xFF141414), surface: Color(0xFF161616),
+    line: Color(0xFF2C2C2C), lineStrong: Color(0xFF4A4A4A),
+    text: Color(0xFFF2F2F2), text2: Color(0xFFC4C4C4), text3: Color(0xFF9A9A9A),
+    ink: Color(0xFF000000), onInk: Color(0xFFFFFFFF),
+    gold: Color(0xFFF5A623), onGold: Color(0xFF121212), goldText: Color(0xFFF5C451),
+    ok: Color(0xFF3CC29E), okBg: Color(0xFF0F2A23), warn: Color(0xFFF5C451), warnBg: Color(0xFF2B2210),
+    bad: Color(0xFFF2867E), badBg: Color(0xFF2E1412),
+  );
+}
+
+/// The standard's sizes: type 14/16/20/28/40, an 8 px grid, 48 px buttons, one radius.
+abstract final class SgStandard {
+  static const small = 14.0, body = 16.0, title = 20.0, heading = 28.0, display = 40.0;
+  static const space1 = 8.0, space2 = 16.0, space3 = 24.0, space4 = 32.0, space6 = 48.0;
+  static const buttonHeight = 48.0, tapTarget = 44.0;
+  static const radius = 12.0, cardRadius = 16.0;
+  static const icon = 24.0, iconSmall = 20.0, iconStroke = 1.75;
 }

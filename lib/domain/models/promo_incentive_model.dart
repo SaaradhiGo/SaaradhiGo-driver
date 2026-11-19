@@ -137,7 +137,7 @@ class PromoIncentive {
   /// "12 of 20 trips".
   String get progressText => targetTrips > 0
       ? '$progressTrips of $targetTrips ${targetTrips == 1 ? 'trip' : 'trips'}'
-      : '$progressTrips trips';
+      : '$progressTrips ${progressTrips == 1 ? 'trip' : 'trips'}';
 
   /// The reward in the currency the row carries, else the market's.
   String get rewardText {

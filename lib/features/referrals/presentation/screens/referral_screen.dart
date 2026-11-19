@@ -283,7 +283,7 @@ class DriverReferralScreen extends ConsumerWidget {
       return 'You joined with a referral code. Your reward is pending review.';
     }
     if (a.requiredTrips > 0) {
-      return 'You joined with a referral code: ${a.tripsCompleted} of ${a.requiredTrips} trips done.';
+      return 'You joined with a referral code: ${a.tripsCompleted} of ${a.requiredTrips} ${a.requiredTrips == 1 ? 'trip' : 'trips'} done.';
     }
     return 'You joined with a referral code.';
   }
@@ -330,7 +330,7 @@ class DriverReferralScreen extends ConsumerWidget {
       label = 'Reward on its way';
     } else {
       label = r.requiredTrips > 0
-          ? '${r.tripsCompleted} of ${r.requiredTrips} trips'
+          ? '${r.tripsCompleted} of ${r.requiredTrips} ${r.requiredTrips == 1 ? 'trip' : 'trips'}'
           : 'Joined';
     }
     return Padding(

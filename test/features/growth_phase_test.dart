@@ -295,6 +295,8 @@ void main() {
       final i = _parse([incentiveRow()]).single;
       expect(i.name, 'Weekend 3');
       expect(i.progressText, '1 of 3 trips');
+      // 18 Nov (owner): counts read as English, '1 of 1 trip', never '1 of 1 trips'.
+      expect(_parse([incentiveRow(target: 1, progress: 1)]).single.progressText, '1 of 1 trip');
       expect(i.rewardMinor, 30000);
       expect(i.rewardText, '₹300.00');
       expect(i.stateAt(now), PromoIncentiveState.inProgress);
