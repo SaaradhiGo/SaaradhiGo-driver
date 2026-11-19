@@ -213,7 +213,7 @@ class QuestCard extends StatelessWidget {
                           children: [
                             Flexible(
                               child: Text(
-                                '${quest.progressTrips} of ${quest.targetTrips} trips',
+                                '${quest.progressTrips} of ${quest.targetTrips} ${quest.targetTrips == 1 ? 'trip' : 'trips'}',
                                 style: AppTypography.labelCaps.copyWith(
                                   color: AppColors.onSurfaceVariant,
                                   fontSize: SgText.sizeSmall,
