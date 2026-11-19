@@ -161,12 +161,12 @@ class PromoIncentive {
     return 'Ends in ${remaining.inMinutes}m';
   }
 
-  /// "No commission · Tax: not configured · Paid in your weekly payout", the
+  /// "No platform fee · Tax: not configured · Paid in your weekly payout", the
   /// same wording as the earnings breakdown (earnings_display.rewardNote).
   String get rewardNote {
     final parts = <String>[
       commission.toLowerCase() == 'none'
-          ? 'No commission'
+          ? 'No platform fee'
           : 'Commission: $commission',
       'Tax: $tax',
       'Paid in your weekly payout',

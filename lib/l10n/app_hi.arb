@@ -1869,7 +1869,7 @@
   "@cancelConfirmKeep": {
     "description": "needs native review"
   },
-  "offerNoCommission": "कोई कमीशन नहीं",
+  "offerNoCommission": "कोई प्लेटफ़ॉर्म शुल्क नहीं",
   "@offerNoCommission": {
     "description": "needs native review"
   }

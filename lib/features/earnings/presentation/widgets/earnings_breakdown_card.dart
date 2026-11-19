@@ -107,7 +107,8 @@ class EarningsBreakdownCard extends StatelessWidget {
               color: AppColors.onBackground,
             ),
           // Commission and net are shown only when the API sent a commission.
-          if (commission != null) ...[
+          // 19 Nov (owner): only where a plan takes a commission (not zero).
+          if (commission != null && RegExp(r'[1-9]').hasMatch('$commission')) ...[
             Divider(
               color: AppColors.outlineVariant.withValues(alpha: 0.3),
               height: 16,
