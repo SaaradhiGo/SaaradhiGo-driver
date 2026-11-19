@@ -786,7 +786,8 @@ class EarningsNoirCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (commission != null) ...[
+                    // 19 Nov (owner): the commission line shows only where a plan takes one (not zero).
+          if (commission != null && RegExp(r'[1-9]').hasMatch(commission!)) ...[
                       const SizedBox(width: SgSpace.s3),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,

@@ -56,7 +56,7 @@ String rewardNote({String? commission, String? tax}) {
   final parts = <String>[
     if (commission != null && commission.trim().isNotEmpty)
       commission.trim().toLowerCase() == 'none'
-          ? 'No commission'
+          ? 'No platform fee'
           : 'Commission: ${commission.trim()}',
     if (tax != null && tax.trim().isNotEmpty) 'Tax: ${tax.trim()}',
     'Paid in your weekly payout',

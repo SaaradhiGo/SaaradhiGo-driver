@@ -302,7 +302,7 @@ void main() {
       expect(i.stateAt(now), PromoIncentiveState.inProgress);
       expect(
         i.rewardNote,
-        'No commission · Tax: not configured · Paid in your weekly payout',
+        'No platform fee · Tax: not configured · Paid in your weekly payout',
       );
     });
 
@@ -519,7 +519,7 @@ void main() {
         expect(find.text('Earned'), findsOneWidget);
         expect(
           find.text(
-            'No commission · Tax: not configured · Paid in your weekly payout',
+            'No platform fee · Tax: not configured · Paid in your weekly payout',
           ),
           findsNWidgets(2),
         );
@@ -703,7 +703,7 @@ void main() {
       );
       expect(
         find.text(
-          'No commission · Tax: not configured · Paid in your weekly payout',
+          'No platform fee · Tax: not configured · Paid in your weekly payout',
         ),
         findsOneWidget,
       );
