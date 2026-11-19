@@ -130,7 +130,8 @@ class EarningsNoirPanel extends StatelessWidget {
             isNet ? l.homeYouKeep : l.earnEarned,
             style: SgText.body.copyWith(color: p.inkMuted),
           ),
-          if (commission != null) ...[
+          // 19 Nov (owner): the commission line shows only where a plan takes one (not zero).
+          if (commission != null && RegExp(r'[1-9]').hasMatch(commission!)) ...[
             const SizedBox(height: SgSpace.s3),
             Container(height: 1, color: p.line),
             const SizedBox(height: SgSpace.s3),

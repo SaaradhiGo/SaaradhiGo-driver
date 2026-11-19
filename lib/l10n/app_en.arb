@@ -1911,7 +1911,7 @@
   "@cancelConfirmKeep": {
     "description": "Dismiss the cancel confirmation"
   },
-  "offerNoCommission": "No commission",
+  "offerNoCommission": "No platform fee",
   "@offerNoCommission": {
     "description": "Offer card when the commission is zero"
   }

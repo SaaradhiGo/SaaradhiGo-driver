@@ -503,14 +503,16 @@ class _IncomingOfferCardState extends State<IncomingOfferCard> {
             value: o.fare!,
             valueKey: o.earning == null ? const Key('offer_amount') : null,
           ),
-        if (commission != null && isZeroAmount(commission)) ...[
+        // 19 Nov (owner): "commission" only where a plan takes one. A zero commission under a fee
+        // plan says nothing here (the plan's fee line below does); with no plan, "No platform fee".
+        if (commission != null && isZeroAmount(commission) && feeLine == null) ...[
           const SizedBox(height: 6),
           Text(
             l.offerNoCommission,
             key: const Key('offer_no_commission'),
             style: SgText.small.copyWith(color: SgColors.inkMuted),
           ),
-        ] else if (commission != null) ...[
+        ] else if (commission != null && !isZeroAmount(commission)) ...[
           const SizedBox(height: 6),
           _FareRow(
             key: const Key('offer_commission_row'),

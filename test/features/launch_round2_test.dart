@@ -21,7 +21,7 @@ import 'package:saaradhigo_driver/ui/incoming_offer_card.dart';
 import '../support/driver_ui_fixtures.dart';
 
 /// Launch round 2 (16 Nov): drive before payout setup, confirm a cancel,
-/// and say "No commission" rather than a red zero.
+/// and say "No platform fee" rather than a red zero.
 
 class _Earnings extends EarningsNotifier {
   @override
@@ -213,10 +213,10 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('zero shows No commission, not a red minus', (tester) async {
+    testWidgets('zero shows No platform fee, not a red minus', (tester) async {
       await pump(tester, {'commission_rate': '0', 'commission_amount': '0.00'});
       expect(find.byKey(const Key('offer_no_commission')), findsOneWidget);
-      expect(find.text('No commission'), findsOneWidget);
+      expect(find.text('No platform fee'), findsOneWidget);
       expect(find.byKey(const Key('offer_commission_row')), findsNothing);
     });
 

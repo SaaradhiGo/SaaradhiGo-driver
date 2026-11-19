@@ -426,7 +426,7 @@ void main() {
         expect(find.text('Referral rewards'), findsOneWidget);
         expect(
           find.text(
-            'No commission · Tax: not configured · Paid in your weekly payout',
+            'No platform fee · Tax: not configured · Paid in your weekly payout',
           ),
           findsOneWidget,
         );

@@ -1869,7 +1869,7 @@
   "@cancelConfirmKeep": {
     "description": "needs native review"
   },
-  "offerNoCommission": "కమీషన్ లేదు",
+  "offerNoCommission": "ప్లాట్‌ఫామ్ ఫీజు లేదు",
   "@offerNoCommission": {
     "description": "needs native review"
   }
