@@ -11,6 +11,16 @@ import 'market_config_store.dart';
 /// another market is configured.
 String marketSymbol() => MarketConfigStore.instance.current.currencySymbol;
 
+/// An amount in the market's money (owner, 23 Nov): India in whole rupees,
+/// half up ("₹176", never "₹176.35"); other currencies keep their cents.
+String marketAmount(num value) {
+  final inr =
+      MarketConfigStore.instance.current.currencyCode.toUpperCase() == 'INR';
+  return inr
+      ? '${marketSymbol()}${value.round()}'
+      : '${marketSymbol()}${value.toStringAsFixed(2)}';
+}
+
 /// The symbol for an amount: the API's own currency when it named one,
 /// otherwise the market's.
 String symbolFor(String? apiCurrency) {

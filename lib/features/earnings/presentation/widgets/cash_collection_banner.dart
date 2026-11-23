@@ -54,7 +54,7 @@ class CashCollectionBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Collect ${marketSymbol()}${amount.toStringAsFixed(2)} cash from rider',
+                  'Collect ${marketAmount(amount)} cash from rider',
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.onBackground,
                     fontWeight: FontWeight.w600,

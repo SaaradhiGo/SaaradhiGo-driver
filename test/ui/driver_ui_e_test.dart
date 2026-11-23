@@ -49,7 +49,7 @@ void main() {
 
   test('money for cash is exact; road distance gives minutes', () {
     expect(exactMoney('150.00'), '₹150');
-    expect(exactMoney('12.40'), '₹12.40');
+    expect(exactMoney('12.40'), '₹12');
     expect(roadLine(const []), isNull);
     expect(
       roadLine(const [LatLng(17.4400, 78.38), LatLng(17.4490, 78.38)]),

@@ -352,7 +352,7 @@ class _IncentivesRewardsScreenState
   }
 
   Widget _buildSummaryFooter(BuildContext context, IncentivesState state) {
-    final formattedTotal = state.totalWeeklyEarned.toStringAsFixed(2);
+    final formattedTotal = marketAmount(state.totalWeeklyEarned);
 
     return GlassPanel(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -397,7 +397,7 @@ class _IncentivesRewardsScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${marketSymbol()}$formattedTotal',
+                    formattedTotal,
                     style: AppTypography.dataMono.copyWith(
                       color: AppColors.primaryText,
                       fontWeight: FontWeight.w600,

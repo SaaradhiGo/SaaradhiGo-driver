@@ -59,7 +59,7 @@ void main() {
         );
 
         expect(find.text('Payout Withdrawal'), findsOneWidget);
-        expect(find.text('\u20B98200.00'), findsOneWidget);
+        expect(find.text('\u20B98200'), findsOneWidget);
 
         // Tap quick amount: ₹1,000
         await tester.tap(find.text('₹1,000'));
