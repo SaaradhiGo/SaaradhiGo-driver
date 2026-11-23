@@ -873,3 +873,9 @@ offerNoCommission
   en: No commission
   te: కమీషన్ లేదు
   hi: कोई कमीशन नहीं
+
+feeTodayLine
+  en: Today: {words}
+
+feeCommission
+  en: {pct}% of each fare

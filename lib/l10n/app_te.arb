@@ -1872,5 +1872,23 @@
   "offerNoCommission": "ప్లాట్‌ఫామ్ ఫీజు లేదు",
   "@offerNoCommission": {
     "description": "needs native review"
+  },
+  "feeTodayLine": "ఈరోజు: {words}",
+  "@feeTodayLine": {
+    "description": "Driver fee models (Srini's ruling, 22 Nov) -- needs native review",
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "feeCommission": "ప్రతి ఛార్జీలో {pct}%",
+  "@feeCommission": {
+    "description": "Driver fee models (Srini's ruling, 22 Nov) -- needs native review",
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
   }
 }
