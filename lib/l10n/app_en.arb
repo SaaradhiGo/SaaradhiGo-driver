@@ -1914,5 +1914,23 @@
   "offerNoCommission": "No platform fee",
   "@offerNoCommission": {
     "description": "Offer card when the commission is zero"
+  },
+  "feeTodayLine": "Today: {words}",
+  "@feeTodayLine": {
+    "description": "Driver fee models (Srini's ruling, 22 Nov)",
+    "placeholders": {
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "feeCommission": "{pct}% of each fare",
+  "@feeCommission": {
+    "description": "Driver fee models (Srini's ruling, 22 Nov)",
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -64,11 +64,16 @@ class PlatformFeeSection extends ConsumerWidget {
     if (data != null && plan == null && note != null) {
       return _noteOnly(l.earnPlatformFee, note);
     }
+    final mine = data?['my_amounts'] is Map ? data!['my_amounts'] as Map : const {};
+    // 22 Nov: a commission plan with its own percentage is shown like the other plan types.
     if (plan is! Map ||
-        plan['plan_type'] == 'percent_commission' ||
+        (plan['plan_type'] == 'percent_commission' &&
+            mine['commission_percent'] == null) ||
         data?['applies_to_my_class'] != true) {
       return const SizedBox.shrink();
     }
+    final feeWords = data?['fee_words']?.toString();
+    final notice = data?['notice']?.toString();
     final currency = plan['currency']?.toString();
     String m(Object? minor) =>
         sgMoney(
@@ -87,6 +92,8 @@ class PlatformFeeSection extends ConsumerWidget {
         l.feePerTrip(m(amounts['per_trip_fee_minor'])),
       if (amounts['daily_pass_minor'] != null)
         l.feeDailyPass(m(amounts['daily_pass_minor'])),
+      if (amounts['commission_percent'] != null)
+        l.feeCommission('${amounts['commission_percent']}'),
       if (plan['daily_cap_minor'] != null) l.feeCap(m(plan['daily_cap_minor'])),
       if ((plan['earnings_floor_minor'] ?? 0) != 0)
         l.feeFloor(m(plan['earnings_floor_minor'])),
@@ -104,6 +111,20 @@ class PlatformFeeSection extends ConsumerWidget {
             l.earnPlatformFee,
             style: SgText.body.copyWith(fontWeight: FontWeight.w600),
           ),
+          if (feeWords != null && feeWords.isNotEmpty) ...[
+            const SizedBox(height: SgSpace.s2),
+            Text(
+              l.feeTodayLine(feeWords),
+              key: const Key('earn_fee_line'),
+              style: SgText.body,
+            ),
+          ],
+          if (notice != null && notice.isNotEmpty && notice != 'null')
+            Text(
+              notice,
+              key: const Key('earn_fee_notice'),
+              style: SgText.small.copyWith(color: SgColors.inkMuted),
+            ),
           if (today is Map) ...[
             const SizedBox(height: SgSpace.s2),
             Text(
