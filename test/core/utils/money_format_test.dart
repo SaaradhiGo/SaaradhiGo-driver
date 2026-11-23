@@ -12,7 +12,7 @@ void main() {
 
     test('formatMoney and formatThreshold', () {
       expect(formatMoney(30, 'USD'), '\$30.00');
-      expect(formatMoney(8200, 'INR'), '\u20B98200.00');
+      expect(formatMoney(8200, 'INR'), '\u20B98200');
       expect(formatThreshold(500, 'INR'), '\u20B9500');
       expect(formatThreshold(1, 'USD'), '\$1');
       expect(formatThreshold(1.5, 'USD'), '\$1.50');

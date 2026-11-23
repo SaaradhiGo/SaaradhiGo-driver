@@ -43,6 +43,10 @@ String exactMoney(String? raw, {String? currency}) {
   final value =
       double.tryParse(market.stripSymbol(raw ?? '').replaceAll(',', '')) ?? 0;
   if (value == value.roundToDouble()) return wholeMoney('$value') ?? '';
+  // 23 Nov (owner): India in whole rupees; other currencies keep their cents.
+  if (market.currencyCode.toUpperCase() == 'INR') {
+    return '${market.currencySymbol}${value.round()}';
+  }
   return '${market.currencySymbol}${value.toStringAsFixed(2)}';
 }
 

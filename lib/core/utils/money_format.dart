@@ -20,8 +20,13 @@ String currencySymbol(String? currency) {
 }
 
 /// `symbol` + `amount` to [decimals] places.
-String formatMoney(double amount, String? currency, {int decimals = 2}) =>
-    '${currencySymbol(currency)}${amount.toStringAsFixed(decimals)}';
+String formatMoney(double amount, String? currency, {int decimals = 2}) {
+  // 23 Nov (owner): a whole India amount reads "₹300", not "₹300.00"; paise
+  // the gateway charged (a provider fee) stay exact.
+  final inr = (currency ?? '').trim().toUpperCase() == 'INR';
+  final d = inr && amount == amount.roundToDouble() ? 0 : decimals;
+  return '${currencySymbol(currency)}${amount.toStringAsFixed(d)}';
+}
 
 /// A threshold such as a minimum: no decimals when it is a whole number.
 String formatThreshold(double amount, String? currency) =>

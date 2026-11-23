@@ -144,7 +144,7 @@ class PromoIncentive {
     final code = currency.isEmpty ? null : currency;
     final amount = rewardMinor / 100;
     return code == null
-        ? '${marketSymbol()}${amount.toStringAsFixed(2)}'
+        ? marketAmount(amount)
         : formatMoney(amount, code);
   }
 

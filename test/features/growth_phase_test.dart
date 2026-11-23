@@ -298,7 +298,7 @@ void main() {
       // 18 Nov (owner): counts read as English, '1 of 1 trip', never '1 of 1 trips'.
       expect(_parse([incentiveRow(target: 1, progress: 1)]).single.progressText, '1 of 1 trip');
       expect(i.rewardMinor, 30000);
-      expect(i.rewardText, '₹300.00');
+      expect(i.rewardText, '₹300');
       expect(i.stateAt(now), PromoIncentiveState.inProgress);
       expect(
         i.rewardNote,
@@ -316,7 +316,7 @@ void main() {
     test('a row with no currency falls back to the market currency', () {
       MarketConfigStore.instance.debugSet(market());
       final i = _parse([incentiveRow(currency: '')]).single;
-      expect(i.rewardText, '₹300.00');
+      expect(i.rewardText, '₹300');
     });
 
     test('each state', () {
@@ -511,11 +511,11 @@ void main() {
         );
         expect(find.text('Weekend 20'), findsOneWidget);
         expect(find.text('12 of 20 trips'), findsOneWidget);
-        expect(find.text('Reward ₹300.00'), findsOneWidget);
+        expect(find.text('Reward ₹300'), findsOneWidget);
         expect(find.text('In progress'), findsOneWidget);
         expect(find.text('Night 5'), findsOneWidget);
         expect(find.text('5 of 5 trips'), findsOneWidget);
-        expect(find.text('Reward ₹500.00'), findsOneWidget);
+        expect(find.text('Reward ₹500'), findsOneWidget);
         expect(find.text('Earned'), findsOneWidget);
         expect(
           find.text(
@@ -697,7 +697,7 @@ void main() {
       expect(find.text('WXYZ2345'), findsOneWidget);
       expect(
         find.text(
-          'When a driver you refer completes 5 trips, you get ₹100.00 and they get ₹50.00.',
+          'When a driver you refer completes 5 trips, you get ₹100 and they get ₹50.',
         ),
         findsOneWidget,
       );
@@ -707,7 +707,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.text('Rewards earned: ₹100.00'), findsOneWidget);
+      expect(find.text('Rewards earned: ₹100'), findsOneWidget);
       expect(find.text('2 of 5 trips'), findsOneWidget);
       expect(find.text('Pending review'), findsNWidgets(2)); // stat label + row
       expect(find.textContaining('fraud'), findsNothing);
