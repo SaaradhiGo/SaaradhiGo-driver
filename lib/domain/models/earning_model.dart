@@ -74,6 +74,8 @@ abstract class EarningModel with _$EarningModel {
       readValue: _readTripId,
     )
     int? tripId,
+    /// The trip's reference as people see it (HYD-261116-K7Q4); the id is never shown (24 Nov).
+    @JsonKey(name: 'trip_ref') String? tripRef,
     @JsonKey(
       name: 'amount_collected',
       fromJson: nullableMoneyFromJson,

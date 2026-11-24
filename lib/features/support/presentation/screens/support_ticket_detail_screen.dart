@@ -110,7 +110,7 @@ class _SupportTicketDetailScreenState
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          'Ticket #${widget.ticketId}',
+          'Support ticket',
           style: AppTypography.headlineSm.copyWith(
             color: AppColors.onBackground,
             fontSize: SgText.sizeTitle,

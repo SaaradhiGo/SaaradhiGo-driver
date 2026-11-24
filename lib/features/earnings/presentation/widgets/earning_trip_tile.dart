@@ -127,7 +127,7 @@ class EarningTripTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Trip #${earning.tripId ?? earning.id}',
+                          earning.tripRef ?? 'Trip',
                           style: AppTypography.bodyMd.copyWith(
                             color: AppColors.onBackground,
                             fontWeight: FontWeight.w600,
