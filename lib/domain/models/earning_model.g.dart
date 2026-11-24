@@ -11,6 +11,7 @@ _EarningModel _$EarningModelFromJson(
 ) => _EarningModel(
   id: json['id'] == null ? 0 : intFromJson(json['id']),
   tripId: nullableIntFromJson(_readTripId(json, 'trip_id')),
+  tripRef: json['trip_ref'] as String?,
   amountCollected: nullableMoneyFromJson(_readGross(json, 'amount_collected')),
   platformFee: nullableMoneyFromJson(_readCommission(json, 'platform_fee')),
   netEarning: nullableMoneyFromJson(_readNet(json, 'net_earning')),
@@ -35,6 +36,7 @@ Map<String, dynamic> _$EarningModelToJson(_EarningModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'trip_id': instance.tripId,
+      'trip_ref': instance.tripRef,
       'amount_collected': instance.amountCollected,
       'platform_fee': instance.platformFee,
       'net_earning': instance.netEarning,

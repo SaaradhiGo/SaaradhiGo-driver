@@ -278,8 +278,9 @@ void main() {
       await t.pumpWidget(
         _host(EarningTripTile(earning: _row(indiaOnlineRow()))),
       );
-      expect(find.text('Trip #9002'), findsNothing);
-      expect(find.text('Trip #9001'), findsOneWidget);
+      // 24 Nov (owner): the trip's reference, never its id.
+      expect(find.textContaining('#900'), findsNothing);
+      expect(find.text('HYD-261116-K7Q4'), findsOneWidget);
       expect(find.text('+₹170.00'), findsOneWidget);
       expect(find.text('Collect'), findsNothing);
       expect(find.textContaining('Promo paid'), findsNothing);
